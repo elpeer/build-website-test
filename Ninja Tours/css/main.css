@@ -27,20 +27,11 @@ section { position: relative; overflow: hidden; }
   --header-height-mob: 3.75rem;
 }
 
-/* ---------- Fonts (drop files into fonts/ and uncomment) ---------- */
+/* ---------- Fonts ----------
+   Primary: "Noto Sans Hebrew" — loaded from Google Fonts in index.html.
+   Icomoon: drop the icon font into fonts/icomoon/ and uncomment below.
+*/
 /*
-@font-face {
-  font-family: "Simpler Pro"; src: url("../fonts/SimplerPro-Regular.woff2") format("woff2");
-  font-weight: 400; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: "Simpler Pro"; src: url("../fonts/SimplerPro-Bold.woff2") format("woff2");
-  font-weight: 700; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: ploni; src: url("../fonts/plonimlv2aaa-regular.woff2") format("woff2");
-  font-weight: 400; font-style: normal; font-display: swap;
-}
 @font-face {
   font-family: icomoon;
   src: url("../fonts/icomoon/icomoon.woff2") format("woff2"),
@@ -68,7 +59,7 @@ body {
   line-height: 1.5;
   font-weight: 400;
   color: var(--color-text);
-  font-family: "Simpler Pro", "Heebo", "Arial Hebrew", sans-serif;
+  font-family: "Noto Sans Hebrew", "Arial Hebrew", sans-serif;
   background: #fff;
 }
 
@@ -145,21 +136,55 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; color: var(--color-heading); }
   .d-none-mob { display: none !important; }
 }
 
-/* ---------- Icons (icomoon placeholders — use real font when available) ---------- */
-[class*="icon__"]::before {
-  font-family: icomoon;
-  font-style: normal;
-  font-weight: 400;
-  -webkit-font-smoothing: antialiased;
+/* ---------- Icons ----------
+   SVG-mask icons (no font file needed). When the icomoon font is added,
+   override these rules in fonts.css to use ::before with codepoints.
+*/
+[class*="icon__"] {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  vertical-align: middle;
 }
-.icon__arrow-left::before  { content: "\e900"; }
-.icon__arrow-right::before { content: "\e901"; }
-.icon__plus::before        { content: "\e90a"; }
-.icon__check::before       { content: "\e904"; }
-.icon__dropdown::before    { content: "\e906"; }
-.icon__phone::before       { content: "\260E"; font-family: inherit; }
-.icon__bag::before         { content: "\e903"; }
-.icon__play::before        { content: "\e909"; }
+.icon__arrow-left {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M14 7l-5 5 5 5V7z'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M14 7l-5 5 5 5V7z'/></svg>");
+}
+.icon__arrow-right {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M10 7l5 5-5 5V7z'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M10 7l5 5-5 5V7z'/></svg>");
+}
+.icon__plus {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z'/></svg>");
+}
+.icon__check {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z'/></svg>");
+}
+.icon__dropdown {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M7 10l5 5 5-5H7z'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M7 10l5 5 5-5H7z'/></svg>");
+}
+.icon__phone {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M6.6 10.8a15 15 0 006.6 6.6l2.2-2.2c.3-.3.7-.4 1-.3 1.1.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 013 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.3 1l-2.2 2.2z'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M6.6 10.8a15 15 0 006.6 6.6l2.2-2.2c.3-.3.7-.4 1-.3 1.1.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 013 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.3 1l-2.2 2.2z'/></svg>");
+}
+.icon__bag {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M7 7V5a5 5 0 0110 0v2h3v13a2 2 0 01-2 2H6a2 2 0 01-2-2V7h3zm2 0h6V5a3 3 0 00-6 0v2z'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M7 7V5a5 5 0 0110 0v2h3v13a2 2 0 01-2 2H6a2 2 0 01-2-2V7h3zm2 0h6V5a3 3 0 00-6 0v2z'/></svg>");
+}
+.icon__play {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M8 5v14l11-7L8 5z'/></svg>");
+          mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='currentColor' d='M8 5v14l11-7L8 5z'/></svg>");
+}
 
 /* ---------- Section title ---------- */
 .section-title {
@@ -627,6 +652,39 @@ h1, h2, h3, h4, h5, h6 { font-weight: 400; color: var(--color-heading); }
 @media (max-width: 768px) and (orientation: portrait) {
   .footer-bottom { padding-inline: 1.5rem; }
 }
+
+/* ---------- Default content page (legal / a11y / etc) ---------- */
+.default-page {
+  padding-inline: 1.25rem;
+  padding-block: 2.75rem 8.875rem;
+}
+@media (max-width: 768px) and (orientation: portrait) {
+  .default-page { padding-block: 1rem 4rem; }
+}
+.default-page__inner {
+  max-width: 53.75rem;
+  margin-inline: auto;
+}
+@media (orientation: landscape), (min-width: 769px) and (orientation: portrait) {
+  .default-page__inner { font-size: 1.125rem; }
+}
+.default-page__inner h1 {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 768px) and (orientation: portrait) {
+  .default-page__inner h1 { font-size: 1.75rem; margin-bottom: 1rem; }
+}
+.default-page__inner h2 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+@media (max-width: 768px) and (orientation: portrait) {
+  .default-page__inner h2 { font-size: 1.125rem; }
+}
+.default-page__inner p:not(:last-child) { margin-bottom: 0.75rem; }
 
 /* ---------- Phone button (header) ---------- */
 .phone-btn {

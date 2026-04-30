@@ -38,12 +38,10 @@ libs/
 └── fancybox/fancybox.js + fancybox.css
 ```
 
-## פונטים שעדיין צריך להוסיף
+## פונטים
 
-הסגנונות מצפים ל-`Simpler Pro` (גוף), `ploni` (כותרות מוצר) ו-`icomoon` (אייקונים).
-הצניחו את הקבצים תחת `fonts/` והפעילו את בלוקי `@font-face` ב-`css/main.css` (כרגע מוערים).
-
-עד אז ה-fallback הוא `Heebo`/`Arial Hebrew`/sans-serif והאייקונים יציגו codepoint ריק.
+- **Noto Sans Hebrew** (Google Fonts) — נטען אוטומטית ב-`<head>` של כל עמוד. משקלים: 300/400/500/600/700/800/900.
+- **Icomoon** (אופציונלי) — אייקונים כרגע ממומשים כ-SVG mask (עובד מיד בלי קובץ פונט). אם רוצים לעבור לפונט icomoon, הצניחו את הקבצים תחת `fonts/icomoon/` והחליפו את בלוק `[class*="icon__"]` ב-`css/main.css` (יש שם הוראות).
 
 ## מה עוד חסר
 
