@@ -2,7 +2,7 @@
   <g font-family="Inter, 'Noto Sans Hebrew', sans-serif">
     <circle cx="40" cy="40" r="22" fill="#d62828"/>
     <text x="40" y="46" text-anchor="middle" font-size="20" font-weight="800" fill="#ffffff" font-family="Inter, sans-serif">N</text>
-    <text x="78" y="38" font-size="20" font-weight="800" fill="#1a1a1f">NINJA</text>
-    <text x="78" y="58" font-size="13" font-weight="500" fill="#1a1a1f" letter-spacing="3">TOURS</text>
+    <text x="78" y="38" font-size="20" font-weight="800" fill="#ffffff">NINJA</text>
+    <text x="78" y="58" font-size="13" font-weight="500" fill="#ffffff" letter-spacing="3">TOURS</text>
   </g>
 </svg>

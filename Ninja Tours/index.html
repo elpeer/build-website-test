@@ -3,28 +3,28 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>נינג'ה טורס | טיולים מאורגנים בחו"ל</title>
+  <title>נינג'ה טורס | תכנון טיול עצמאי ליפן</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-  <meta name="description" content="נינג'ה טורס - טיולים מאורגנים, חבילות נופש וחוויות בחו"ל. תכנון אישי, מחירים משתלמים ושירות אישי לאורך כל הדרך." />
+  <meta name="description" content="נינג'ה טורס - תכנון טיול עצמאי ליפן. מסלולים מותאמים אישית, אטרקציות מומלצות, ליווי 24/7. תכנון חינם וללא התחייבות." />
   <link rel="canonical" href="https://ninjatours.co.il/" />
 
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="he_IL" />
   <meta property="og:site_name" content="נינג'ה טורס" />
-  <meta property="og:title" content="נינג'ה טורס | טיולים מאורגנים בחו"ל" />
-  <meta property="og:description" content="טיולים מאורגנים, חבילות נופש וחוויות בחו"ל." />
+  <meta property="og:title" content="נינג'ה טורס | תכנון טיול עצמאי ליפן" />
+  <meta property="og:description" content="תכנון טיול עצמאי ליפן עם ליווי אישי 24/7." />
   <meta property="og:url" content="https://ninjatours.co.il/" />
   <meta property="og:image" content="https://ninjatours.co.il/img/og-cover.jpg" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="נינג'ה טורס | טיולים מאורגנים בחו"ל" />
-  <meta name="twitter:description" content="טיולים מאורגנים, חבילות נופש וחוויות בחו"ל." />
+  <meta name="twitter:title" content="נינג'ה טורס | תכנון טיול עצמאי ליפן" />
+  <meta name="twitter:description" content="תכנון טיול עצמאי ליפן עם ליווי אישי 24/7." />
   <meta name="twitter:image" content="https://ninjatours.co.il/img/og-cover.jpg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" />
@@ -50,19 +50,6 @@
     }
   }
   </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "נינג'ה טורס",
-    "url": "https://ninjatours.co.il/",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://ninjatours.co.il/?s={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  }
-  </script>
 </head>
 
 <body>
@@ -71,192 +58,604 @@
 
   <header class="header">
     <div class="header-inner">
-      <div class="wrapper">
-        <a href="/" class="logo" aria-label="לעמוד הבית של נינג'ה טורס">
-          <img src="img/logo.svg" alt="נינג'ה טורס" />
-        </a>
-        <nav class="main-menu" aria-label="תפריט ראשי">
-          <ul>
-            <li><a href="#" aria-current="page">בית</a></li>
-            <li class="menu-item-has-children"><a href="#">טיולים</a>
-              <ul class="sub-menu">
-                <li><a href="#">אירופה</a></li>
-                <li><a href="#">המזרח הרחוק</a></li>
-                <li><a href="#">דרום אמריקה</a></li>
-              </ul>
-            </li>
-            <li><a href="#">עלינו</a></li>
-            <li><a href="#">בלוג</a></li>
-            <li><a href="#">צור קשר</a></li>
-          </ul>
-        </nav>
-      </div>
+      <a href="/" class="logo" aria-label="לעמוד הבית של נינג'ה טורס">
+        <img src="img/logo.svg" alt="נינג'ה טורס" />
+      </a>
+      <nav class="main-menu" aria-label="תפריט ראשי">
+        <ul>
+          <li><a href="#" aria-current="page">בית</a></li>
+          <li><a href="#tour-types">סוגי טיולים</a></li>
+          <li><a href="#attractions">אטרקציות</a></li>
+          <li><a href="#process">תהליך התכנון</a></li>
+          <li><a href="#testimonials">המלצות</a></li>
+          <li><a href="#plan-trip">צרו קשר</a></li>
+        </ul>
+      </nav>
       <div class="header-actions">
-        <a href="tel:+97230000000" class="phone-btn" aria-label="התקשרו אלינו">
-          <i class="icon__phone" aria-hidden="true"></i>
+        <a href="#plan-trip" class="btn --primary header-cta">
+          <span>תכנון לי טיול</span>
+          <i class="icon__arrow-left" aria-hidden="true"></i>
         </a>
       </div>
       <button class="burger-btn" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="mobile-menu">
-        <span></span>
-        <span></span>
-        <span></span>
+        <span></span><span></span><span></span>
       </button>
     </div>
   </header>
 
   <main id="main">
 
+    <!-- ========== HERO ========== -->
     <section class="home-hero" id="home-hero">
       <div class="home-hero__inner">
         <div class="home-hero__media">
           <picture>
             <source srcset="img/home/hero-mob.jpg" media="(max-width: 768px) and (orientation: portrait)" />
-            <img src="img/home/hero.jpg" alt="" loading="eager" fetchpriority="high" />
+            <img src="img/home/hero.jpg" alt="הר פוג'י ופריחת דובדבן ביפן" loading="eager" fetchpriority="high" />
           </picture>
         </div>
         <div class="home-hero__content">
-          <h1>טיולים שהופכים לזיכרונות</h1>
-          <p>חבילות מאורגנות וחוויות מותאמות אישית ביעדים הכי שווים בעולם.</p>
+          <h1>מתכננים לכם טיול עצמאי ליפן</h1>
+          <ul class="home-hero__service" aria-label="היתרונות שלנו">
+            <li><i class="icon__check" aria-hidden="true"></i><span>תכנון מדויק</span></li>
+            <li><i class="icon__check" aria-hidden="true"></i><span>שירות אישי</span></li>
+            <li><i class="icon__check" aria-hidden="true"></i><span>זמינות 24/7</span></li>
+          </ul>
+          <p>מסלול מותאם בדיוק לכם, אטרקציות מנצחות וליווי לאורך כל הדרך — בלי לדאוג לדבר.</p>
           <div class="home-hero__actions">
-            <a href="#tours" class="btn --primary">
-              <span>גלו את הטיולים</span>
+            <a href="#plan-trip" class="btn --primary">
+              <span>תכנון לי טיול</span>
               <i class="icon__arrow-left" aria-hidden="true"></i>
             </a>
           </div>
         </div>
+        <div class="home-hero__sakura" aria-hidden="true"></div>
       </div>
     </section>
 
-    <section class="features" id="features">
+    <!-- ========== WHY US ========== -->
+    <section class="why-us" id="why-us">
       <div class="container">
-        <div class="features__inner">
-          <div class="features__item" data-aos="fade-right" data-aos-delay="100" data-aos-anchor="#features">
-            <div class="features__item-image"><img src="img/home/feature-1.svg" alt="" /></div>
-            <div class="features__item-text"><p>ליווי אישי לאורך כל הטיול</p></div>
-          </div>
-          <div class="features__item" data-aos="fade-right" data-aos-delay="200" data-aos-anchor="#features">
-            <div class="features__item-image"><img src="img/home/feature-2.svg" alt="" /></div>
-            <div class="features__item-text"><p>קבוצות קטנות ואיכותיות</p></div>
-          </div>
-          <div class="features__item" data-aos="fade-right" data-aos-delay="300" data-aos-anchor="#features">
-            <div class="features__item-image"><img src="img/home/feature-3.svg" alt="" /></div>
-            <div class="features__item-text"><p>תכנון מסלול גמיש</p></div>
-          </div>
-          <div class="features__item" data-aos="fade-right" data-aos-delay="400" data-aos-anchor="#features">
-            <div class="features__item-image"><img src="img/home/feature-4.svg" alt="" /></div>
-            <div class="features__item-text"><p>מחירים משתלמים ללא הפתעות</p></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="tours-slider" id="tours">
-      <div class="container">
-        <h2 class="section-title" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#tours">הטיולים החמים שלנו</h2>
-        <div class="tours-slider__items" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#tours">
-          <div class="default-slider" data-initial="0" data-loop="true">
-            <div class="swiper-wrapper">
-
-              <div class="swiper-slide">
-                <article class="tour-slide">
-                  <a href="#" class="tour-slide__image">
-                    <img src="img/home/tour-1.jpg" alt="טיול ליפן" />
-                    <span class="tour-slide__label"><span>יפן</span></span>
-                  </a>
-                  <div class="tour-slide__text">
-                    <h3 class="tour-slide__title">יפן הקסומה</h3>
-                    <p>14 ימים בטוקיו, קיוטו ואוסקה — פריחת הדובדבן בעיצומה.</p>
-                    <a href="#" class="link"><span>פרטים והרשמה</span><i class="icon__arrow-left" aria-hidden="true"></i></a>
-                  </div>
-                </article>
-              </div>
-
-              <div class="swiper-slide">
-                <article class="tour-slide">
-                  <a href="#" class="tour-slide__image">
-                    <img src="img/home/tour-2.jpg" alt="טיול לאיטליה" />
-                    <span class="tour-slide__label"><span>איטליה</span></span>
-                  </a>
-                  <div class="tour-slide__text">
-                    <h3 class="tour-slide__title">איטליה הקלאסית</h3>
-                    <p>10 ימים ברומא, פירנצה וונציה — אומנות, אוכל ותרבות.</p>
-                    <a href="#" class="link"><span>פרטים והרשמה</span><i class="icon__arrow-left" aria-hidden="true"></i></a>
-                  </div>
-                </article>
-              </div>
-
-              <div class="swiper-slide">
-                <article class="tour-slide">
-                  <a href="#" class="tour-slide__image">
-                    <img src="img/home/tour-3.jpg" alt="טיול לפרו" />
-                    <span class="tour-slide__label"><span>פרו</span></span>
-                  </a>
-                  <div class="tour-slide__text">
-                    <h3 class="tour-slide__title">פרו ומאצ'ו פיצ'ו</h3>
-                    <p>12 ימים בשביל האינקה — ההרפתקה של חייכם.</p>
-                    <a href="#" class="link"><span>פרטים והרשמה</span><i class="icon__arrow-left" aria-hidden="true"></i></a>
-                  </div>
-                </article>
-              </div>
-
-            </div>
-            <div class="btns">
-              <button class="swiper-btn-prev default-prev" aria-label="טיול קודם"><i class="icon__arrow-right" aria-hidden="true"></i></button>
-              <div class="default-pagination"></div>
-              <button class="swiper-btn-next default-next" aria-label="טיול הבא"><i class="icon__arrow-left" aria-hidden="true"></i></button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="cta" id="cta">
-      <div class="container">
-        <div class="cta__inner" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#cta">
-          <h2 class="section-title">לא מוצאים את הטיול המתאים?</h2>
-          <p>נבנה לכם מסלול מותאם אישית לפי תקציב, אופי הקבוצה והתאריכים שלכם.</p>
-          <a href="#" class="btn --primary">
-            <span>תכננו לי טיול</span>
+        <h2 class="section-title --centered" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#why-us">
+          למה לתכנן <span class="--accent">איתנו</span> את הטיול ליפן?
+        </h2>
+        <ul class="why-us__list" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#why-us">
+          <li class="why-us__item">
+            <span class="why-us__num">05</span>
+            <div class="why-us__icon"><i class="icon__bag" aria-hidden="true"></i></div>
+            <h3 class="why-us__title">מסלול חכם וגמיש</h3>
+            <p>בונים מסלול שמתאים לקצב, לתקציב ולחוויות שאתם רוצים.</p>
+          </li>
+          <li class="why-us__item">
+            <span class="why-us__num">04</span>
+            <div class="why-us__icon"><i class="icon__pin" aria-hidden="true"></i></div>
+            <h3 class="why-us__title">אטרקציות מנצחות</h3>
+            <p>בוחרים יחד את החוויות הכי שוות לכל אזור.</p>
+          </li>
+          <li class="why-us__item --highlight">
+            <span class="why-us__num">03</span>
+            <div class="why-us__icon"><i class="icon__torii" aria-hidden="true"></i></div>
+            <h3 class="why-us__title">היכרות עמוקה עם יפן</h3>
+            <p>צוות שטיילו ביפן עשרות פעמים יודעים בדיוק מה כדאי.</p>
+          </li>
+          <li class="why-us__item">
+            <span class="why-us__num">02</span>
+            <div class="why-us__icon"><i class="icon__chat" aria-hidden="true"></i></div>
+            <h3 class="why-us__title">תכנון בלי לחץ</h3>
+            <p>מקבלים תוכנית סופית מסודרת — אתם רק נהנים.</p>
+          </li>
+          <li class="why-us__item">
+            <span class="why-us__num">01</span>
+            <div class="why-us__icon"><i class="icon__support" aria-hidden="true"></i></div>
+            <h3 class="why-us__title">תמיכה 24/7 בטיול</h3>
+            <p>זמינים עבורכם בכל רגע, בכל מקום ביפן.</p>
+          </li>
+        </ul>
+        <div class="button-wrapper" data-aos="fade-up" data-aos-delay="300" data-aos-anchor="#why-us">
+          <a href="#plan-trip" class="btn --primary">
+            <span>בואו נתחיל</span>
             <i class="icon__arrow-left" aria-hidden="true"></i>
           </a>
         </div>
       </div>
     </section>
 
-    <section class="faq" id="faq">
+    <!-- ========== TOUR TYPES ========== -->
+    <section class="tour-types" id="tour-types">
       <div class="container">
-        <h2 class="section-title" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#faq">שאלות נפוצות</h2>
+        <h2 class="section-title --centered" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#tour-types">
+          איזה סוג טיול <span class="--accent">מתאים לכם?</span>
+        </h2>
+        <p class="section-subtitle" data-aos="fade-up" data-aos-delay="150" data-aos-anchor="#tour-types">
+          בחרו את אופי הטיול שמדבר אליכם — ואנחנו נבנה לכם מסלול מותאם אישית.
+        </p>
 
-        <div class="accordion-item">
-          <button class="accordion-item__head" aria-expanded="false">
-            <h3>איך מזמינים טיול?</h3>
-            <span class="plus-btn" aria-hidden="true"></span>
-          </button>
-          <div class="accordion-item__body editor-area">
-            <p>בוחרים טיול באתר, ממלאים פרטים, וצוות הסוכנות חוזר אליכם תוך 24 שעות לאישור והשלמת ההזמנה.</p>
+        <div class="tour-types__items" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#tour-types">
+          <div class="default-slider tour-types__slider" data-initial="0" data-loop="true" data-offset="24">
+            <div class="swiper-wrapper">
+
+              <div class="swiper-slide">
+                <article class="tour-card">
+                  <a href="#" class="tour-card__image">
+                    <img src="img/home/tour-type-1.jpg" alt="טיול אקטיבי" />
+                  </a>
+                  <div class="tour-card__label"><span>אקטיבי</span></div>
+                </article>
+              </div>
+
+              <div class="swiper-slide">
+                <article class="tour-card">
+                  <a href="#" class="tour-card__image">
+                    <img src="img/home/tour-type-2.jpg" alt="טיול רומנטי" />
+                  </a>
+                  <div class="tour-card__label"><span>רומנטי</span></div>
+                </article>
+              </div>
+
+              <div class="swiper-slide">
+                <article class="tour-card">
+                  <a href="#" class="tour-card__image">
+                    <img src="img/home/tour-type-3.jpg" alt="טיול משפחתי" />
+                  </a>
+                  <div class="tour-card__label"><span>משפחתי</span></div>
+                </article>
+              </div>
+
+              <div class="swiper-slide">
+                <article class="tour-card">
+                  <a href="#" class="tour-card__image">
+                    <img src="img/home/tour-type-4.jpg" alt="טיול קלאסי" />
+                  </a>
+                  <div class="tour-card__label"><span>קלאסי</span></div>
+                </article>
+              </div>
+
+            </div>
+            <div class="btns">
+              <button class="swiper-btn-prev default-prev" aria-label="הקודם"><i class="icon__arrow-right" aria-hidden="true"></i></button>
+              <div class="default-pagination"></div>
+              <button class="swiper-btn-next default-next" aria-label="הבא"><i class="icon__arrow-left" aria-hidden="true"></i></button>
+            </div>
           </div>
         </div>
 
-        <div class="accordion-item">
-          <button class="accordion-item__head" aria-expanded="false">
-            <h3>האם המחיר כולל טיסות?</h3>
-            <span class="plus-btn" aria-hidden="true"></span>
+        <div class="button-wrapper" data-aos="fade-up" data-aos-delay="300" data-aos-anchor="#tour-types">
+          <a href="#plan-trip" class="btn --primary">
+            <span>תכנון לי טיול</span>
+            <i class="icon__arrow-left" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== ATTRACTIONS ========== -->
+    <section class="attractions" id="attractions">
+      <div class="container">
+        <h2 class="section-title --centered" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#attractions">
+          מגוון אטרקציות <span class="--accent">מומלצות ביפן</span>
+        </h2>
+        <p class="section-subtitle" data-aos="fade-up" data-aos-delay="150" data-aos-anchor="#attractions">
+          חוויות, אתרים וטעמים — כל מה שתצטרכו כדי להפוך את הטיול לבלתי נשכח.
+        </p>
+
+        <div class="attractions__filters" role="tablist" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#attractions">
+          <button class="attractions__filter isActive" data-filter="all" role="tab" aria-selected="true">
+            <i class="icon__star" aria-hidden="true"></i><span>כל האטרקציות</span>
           </button>
-          <div class="accordion-item__body editor-area">
-            <p>כן, אלא אם מצוין אחרת. כל פרטי הכלול והלא כלול מופיעים בעמוד הטיול הספציפי.</p>
-          </div>
+          <button class="attractions__filter" data-filter="nature" role="tab" aria-selected="false">
+            <i class="icon__leaf" aria-hidden="true"></i><span>טבע</span>
+          </button>
+          <button class="attractions__filter" data-filter="culture" role="tab" aria-selected="false">
+            <i class="icon__torii" aria-hidden="true"></i><span>תרבות</span>
+          </button>
+          <button class="attractions__filter" data-filter="food" role="tab" aria-selected="false">
+            <i class="icon__bowl" aria-hidden="true"></i><span>אוכל</span>
+          </button>
+          <button class="attractions__filter" data-filter="city" role="tab" aria-selected="false">
+            <i class="icon__city" aria-hidden="true"></i><span>עירוני</span>
+          </button>
         </div>
 
-        <div class="accordion-item">
-          <button class="accordion-item__head" aria-expanded="false">
-            <h3>מהי מדיניות הביטולים?</h3>
-            <span class="plus-btn" aria-hidden="true"></span>
-          </button>
-          <div class="accordion-item__body editor-area">
-            <p>מדיניות הביטולים מותאמת לסוג הטיול ולמועד היציאה. פרטים מלאים בתקנון האתר.</p>
-          </div>
+        <div class="attractions__grid" data-aos="fade-up" data-aos-delay="300" data-aos-anchor="#attractions">
+          <a href="#" class="attraction-card" data-category="nature">
+            <div class="attraction-card__image">
+              <img src="img/home/attraction-1.jpg" alt="הר פוג'י" />
+            </div>
+            <div class="attraction-card__text">
+              <h3>הר פוג'י</h3>
+              <p>הסמל המוכר ביותר של יפן וחוויית טבע מרהיבה.</p>
+            </div>
+          </a>
+
+          <a href="#" class="attraction-card" data-category="culture">
+            <div class="attraction-card__image">
+              <img src="img/home/attraction-2.jpg" alt="טירת היימג'י" />
+            </div>
+            <div class="attraction-card__text">
+              <h3>טירת היימג'י</h3>
+              <p>אחת הטירות היפות והשלמות ביפן.</p>
+            </div>
+          </a>
+
+          <a href="#" class="attraction-card" data-category="nature">
+            <div class="attraction-card__image">
+              <img src="img/home/attraction-3.jpg" alt="כפר ההרים שירקאוואגו" />
+            </div>
+            <div class="attraction-card__text">
+              <h3>כפר שירקאוואגו</h3>
+              <p>כפר מסורתי בהרים — אתר UNESCO.</p>
+            </div>
+          </a>
+
+          <a href="#" class="attraction-card" data-category="culture">
+            <div class="attraction-card__image">
+              <img src="img/home/attraction-4.jpg" alt="טורי באי מיאג'ימה" />
+            </div>
+            <div class="attraction-card__text">
+              <h3>שער הטורי במיאג'ימה</h3>
+              <p>שער הצף במים — אחד הצילומים האייקוניים ביפן.</p>
+            </div>
+          </a>
+
+          <a href="#" class="attraction-card" data-category="food">
+            <div class="attraction-card__image">
+              <img src="img/home/attraction-5.jpg" alt="ראמן מסורתי" />
+            </div>
+            <div class="attraction-card__text">
+              <h3>סיור אוכל בטוקיו</h3>
+              <p>מהראמן הטוב ביותר ועד שווקי הסושי.</p>
+            </div>
+          </a>
+
+          <a href="#" class="attraction-card" data-category="city">
+            <div class="attraction-card__image">
+              <img src="img/home/attraction-6.jpg" alt="פנסי אקיהברה" />
+            </div>
+            <div class="attraction-card__text">
+              <h3>אקיהברה בלילה</h3>
+              <p>שכונת הטכנולוגיה והאנימה של טוקיו.</p>
+            </div>
+          </a>
         </div>
 
+        <div class="button-wrapper" data-aos="fade-up" data-aos-delay="400" data-aos-anchor="#attractions">
+          <a href="#" class="btn --primary">
+            <span>לכל האטרקציות</span>
+            <i class="icon__arrow-left" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PROCESS ========== -->
+    <section class="process" id="process">
+      <div class="container">
+        <h2 class="section-title --centered" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#process">
+          תהליך פשוט, תכנון <span class="--accent">בחינם</span>, ללא התחייבות
+        </h2>
+
+        <div class="process__inner">
+          <div class="process__phone" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#process">
+            <img src="img/home/process-phone.png" alt="האפליקציה של נינג'ה טורס" />
+          </div>
+
+          <ol class="process__steps">
+            <li class="process-step" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#process">
+              <div class="process-step__head">
+                <span class="process-step__num">01</span>
+                <div class="process-step__heading">
+                  <span class="process-step__eyebrow">השלב הראשון בדרך לטיול</span>
+                  <h3>שיחת היכרות וגיבוש החזון</h3>
+                </div>
+              </div>
+              <div class="process-step__body">
+                <p>אנחנו לומדים מה חשוב לכם — תקציב, סגנון, יעדים מועדפים — ובונים את החזון של הטיול.</p>
+              </div>
+              <div class="process-step__media">
+                <img src="img/home/process-1.jpg" alt="פגישת ייעוץ" />
+              </div>
+            </li>
+
+            <li class="process-step" data-aos="fade-up" data-aos-delay="300" data-aos-anchor="#process">
+              <div class="process-step__head">
+                <span class="process-step__num">02</span>
+                <div class="process-step__heading">
+                  <span class="process-step__eyebrow">השלב השני בדרך לטיול</span>
+                  <h3>תכנון מסלול מפורט יום-יום</h3>
+                </div>
+              </div>
+              <div class="process-step__body">
+                <p>אנחנו בונים מסלול מסודר עם המלצות לטיסות, מלונות, אטרקציות ותחבורה.</p>
+              </div>
+              <div class="process-step__media">
+                <img src="img/home/process-2.jpg" alt="תכנון מסלול במפה" />
+              </div>
+            </li>
+
+            <li class="process-step" data-aos="fade-up" data-aos-delay="400" data-aos-anchor="#process">
+              <div class="process-step__head">
+                <span class="process-step__num">03</span>
+                <div class="process-step__heading">
+                  <span class="process-step__eyebrow">השלב השלישי בדרך לטיול</span>
+                  <h3>יוצאים לטיול עם ליווי 24/7</h3>
+                </div>
+              </div>
+              <div class="process-step__body">
+                <p>אנחנו זמינים לכם לאורך כל הטיול — בווטסאפ, בטלפון או בצ'אט.</p>
+              </div>
+              <div class="process-step__media">
+                <img src="img/home/process-3.jpg" alt="פגודה מסורתית ביפן" />
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="button-wrapper" data-aos="fade-up" data-aos-delay="500" data-aos-anchor="#process">
+          <a href="#plan-trip" class="btn --primary">
+            <span>תכנון לי טיול</span>
+            <i class="icon__arrow-left" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TAILORED TRIPS BANNER (signature broken element) ========== -->
+    <section class="tailored-banner" id="tailored-banner" aria-hidden="true">
+      <div class="tailored-banner__ghost">TAILORED TRIPS</div>
+      <div class="tailored-banner__media">
+        <img src="img/home/fuji-banner.jpg" alt="" />
+      </div>
+    </section>
+
+    <!-- ========== CUSTOMER TOURS ========== -->
+    <section class="customer-tours" id="customer-tours">
+      <div class="container">
+        <h2 class="section-title --centered" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#customer-tours">
+          טיולים מותאמים <span class="--accent">שבנינו ללקוחות</span>
+        </h2>
+
+        <div class="customer-tours__grid" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#customer-tours">
+          <a href="#" class="customer-tour">
+            <div class="customer-tour__image">
+              <img src="img/home/customer-1.jpg" alt="טיול משפחת כהן ליפן" />
+            </div>
+            <div class="customer-tour__text">
+              <h3>משפחת כהן · 14 ימים</h3>
+              <p>טוקיו · קיוטו · אוסקה</p>
+              <span class="customer-tour__price">₪14,500 לאדם</span>
+            </div>
+          </a>
+
+          <a href="#" class="customer-tour">
+            <div class="customer-tour__image">
+              <img src="img/home/customer-2.jpg" alt="טיול זוג בני בכר ליפן" />
+            </div>
+            <div class="customer-tour__text">
+              <h3>בני ושירה · 12 ימים</h3>
+              <p>טוקיו · האקונה · קיוטו</p>
+              <span class="customer-tour__price">₪13,200 לאדם</span>
+            </div>
+          </a>
+
+          <a href="#" class="customer-tour">
+            <div class="customer-tour__image">
+              <img src="img/home/customer-3.jpg" alt="טיול חברים ליפן" />
+            </div>
+            <div class="customer-tour__text">
+              <h3>חברים על דובדבן · 10 ימים</h3>
+              <p>טוקיו · קיוטו · נארה</p>
+              <span class="customer-tour__price">₪11,900 לאדם</span>
+            </div>
+          </a>
+
+          <a href="#" class="customer-tour">
+            <div class="customer-tour__image">
+              <img src="img/home/customer-4.jpg" alt="טיול הוריי דרור ליפן" />
+            </div>
+            <div class="customer-tour__text">
+              <h3>הוריי דרור · 16 ימים</h3>
+              <p>טוקיו · הוקאידו · אוסקה</p>
+              <span class="customer-tour__price">₪16,800 לאדם</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="button-wrapper" data-aos="fade-up" data-aos-delay="300" data-aos-anchor="#customer-tours">
+          <a href="#" class="btn --primary">
+            <span>לעוד מסלולים</span>
+            <i class="icon__arrow-left" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== TESTIMONIALS ========== -->
+    <section class="testimonials" id="testimonials">
+      <div class="container">
+        <h2 class="section-title --centered" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#testimonials">
+          לקוחות <span class="--accent">משתפים בחוויות</span>
+        </h2>
+
+        <div class="testimonials__items" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#testimonials">
+          <div class="default-slider testimonials__slider" data-initial="0" data-loop="true" data-offset="24">
+            <div class="swiper-wrapper">
+
+              <div class="swiper-slide">
+                <article class="testimonial">
+                  <div class="testimonial__head">
+                    <div class="testimonial__avatar"><img src="img/home/avatar-1.jpg" alt="" /></div>
+                    <div class="testimonial__meta">
+                      <h3>שירלי כהן</h3>
+                      <span class="testimonial__source">
+                        <img src="img/icons/google.svg" alt="" /> Google Review
+                      </span>
+                    </div>
+                  </div>
+                  <ul class="testimonial__stars" aria-label="5 כוכבים">
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                  </ul>
+                  <p>טיול חיינו! המסלול היה מדויק, ההמלצות בול ויש את הזמינות 24/7 שעשתה את ההבדל. תודה ענקית.</p>
+                </article>
+              </div>
+
+              <div class="swiper-slide">
+                <article class="testimonial">
+                  <div class="testimonial__head">
+                    <div class="testimonial__avatar"><img src="img/home/avatar-2.jpg" alt="" /></div>
+                    <div class="testimonial__meta">
+                      <h3>אלון לוי</h3>
+                      <span class="testimonial__source">
+                        <img src="img/icons/google.svg" alt="" /> Google Review
+                      </span>
+                    </div>
+                  </div>
+                  <ul class="testimonial__stars" aria-label="5 כוכבים">
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                  </ul>
+                  <p>הצוות בנה לנו מסלול שמתאים בדיוק לקצב של המשפחה. המלונות, האטרקציות והאוכל — הכל מדויק.</p>
+                </article>
+              </div>
+
+              <div class="swiper-slide">
+                <article class="testimonial">
+                  <div class="testimonial__head">
+                    <div class="testimonial__avatar"><img src="img/home/avatar-3.jpg" alt="" /></div>
+                    <div class="testimonial__meta">
+                      <h3>דנה אבני</h3>
+                      <span class="testimonial__source">
+                        <img src="img/icons/google.svg" alt="" /> Google Review
+                      </span>
+                    </div>
+                  </div>
+                  <ul class="testimonial__stars" aria-label="5 כוכבים">
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                  </ul>
+                  <p>פשוט כיף לחזור הביתה ולהגיד שלא היה רגע אחד שלא ידענו מה לעשות. ממליצה בחום.</p>
+                </article>
+              </div>
+
+              <div class="swiper-slide">
+                <article class="testimonial">
+                  <div class="testimonial__head">
+                    <div class="testimonial__avatar"><img src="img/home/avatar-4.jpg" alt="" /></div>
+                    <div class="testimonial__meta">
+                      <h3>יוסי ברק</h3>
+                      <span class="testimonial__source">
+                        <img src="img/icons/google.svg" alt="" /> Google Review
+                      </span>
+                    </div>
+                  </div>
+                  <ul class="testimonial__stars" aria-label="5 כוכבים">
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                    <li><i class="icon__star" aria-hidden="true"></i></li>
+                  </ul>
+                  <p>היחס האישי, הזמינות והדיוק — אין על נינג'ה טורס. כבר הזמנתי טיול שני.</p>
+                </article>
+              </div>
+
+            </div>
+            <div class="btns">
+              <button class="swiper-btn-prev default-prev" aria-label="הקודם"><i class="icon__arrow-right" aria-hidden="true"></i></button>
+              <div class="default-pagination"></div>
+              <button class="swiper-btn-next default-next" aria-label="הבא"><i class="icon__arrow-left" aria-hidden="true"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== FOUNDERS ========== -->
+    <section class="founders" id="founders">
+      <div class="container --flex">
+        <div class="founders__media" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#founders">
+          <img src="img/home/founders.jpg" alt="הצוות של נינג'ה טורס" />
+        </div>
+        <div class="founders__content" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#founders">
+          <h2 class="section-title">
+            יוצרים טיול בלתי נשכח <br>
+            <span class="--accent">למשפחות, זוגות וקבוצות</span>
+          </h2>
+          <div class="editor-area">
+            <p>נינג'ה טורס היא סוכנות הטיולים העצמאיים המובילה ליפן. אנחנו תכננו מאות טיולים, ביקרנו ביפן עשרות פעמים ויודעים בדיוק מה הופך טיול לחוויה של פעם בחיים.</p>
+            <p>הצוות שלנו דובר עברית, אנגלית ויפנית — ונותן ליווי אישי מתחילת התכנון ועד החזרה הביתה.</p>
+          </div>
+          <a href="#plan-trip" class="btn --primary">
+            <span>בואו נתחיל לתכנן</span>
+            <i class="icon__arrow-left" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PLAN TRIP / FORM ========== -->
+    <section class="plan-trip" id="plan-trip">
+      <div class="plan-trip__sakura plan-trip__sakura--start" aria-hidden="true"></div>
+      <div class="plan-trip__sakura plan-trip__sakura--end" aria-hidden="true"></div>
+
+      <div class="container">
+        <h2 class="section-title --centered" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#plan-trip">
+          מוכנים לטיול של <span class="--accent">פעם בחיים?</span>
+        </h2>
+
+        <div class="plan-trip__inner" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#plan-trip">
+          <div class="plan-trip__visual">
+            <div class="plan-trip__visual-text">
+              <span>LET'S PLAN</span>
+              <strong>YOUR TRIP</strong>
+            </div>
+            <img src="img/home/plan-mountain.jpg" alt="" />
+          </div>
+
+          <form class="plan-trip__form" novalidate>
+            <p class="plan-trip__form-title">בואו נתכנן את הטיול שלכם</p>
+
+            <div class="form-grid">
+              <div class="form-item --type-2">
+                <label for="form-name">שם מלא</label>
+                <input type="text" id="form-name" name="name" required autocomplete="name" placeholder="שם מלא">
+              </div>
+              <div class="form-item --type-2">
+                <label for="form-phone">טלפון</label>
+                <input type="tel" id="form-phone" name="phone" required autocomplete="tel" inputmode="numeric" placeholder="טלפון">
+              </div>
+              <div class="form-item --type-2 --wide">
+                <label for="form-email">אימייל</label>
+                <input type="email" id="form-email" name="email" required autocomplete="email" placeholder="אימייל">
+              </div>
+              <div class="form-item --type-2 --wide">
+                <label for="form-message">ספרו לנו על הטיול הבא שלכם</label>
+                <textarea id="form-message" name="message" rows="3" placeholder="תאריכים, סוג טיול, יעדים מועדפים..."></textarea>
+              </div>
+            </div>
+
+            <button type="submit" class="btn --primary --wide">
+              <span>שלחו לי הצעה</span>
+              <i class="icon__arrow-left" aria-hidden="true"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PRE-FOOTER MOUNTAIN ========== -->
+    <section class="pre-footer" aria-hidden="true">
+      <div class="pre-footer__media">
+        <img src="img/home/pre-footer.jpg" alt="" />
       </div>
     </section>
 
@@ -264,71 +663,59 @@
 
   <footer class="footer">
     <div class="container --row">
-      <div class="footer-logo">
-        <a href="/"><img src="img/logo.svg" alt="נינג'ה טורס" /></a>
-      </div>
-      <div class="footer-subscribe">
-        <div class="footer-subscribe__title">הצטרפו לניוזלטר</div>
-        <div class="footer-subscribe__text">קבלו עדכונים על טיולים חדשים והנחות בלעדיות.</div>
-        <form>
-          <div class="form-flex">
-            <label for="newsletter-email" class="visually-hidden">כתובת אימייל</label>
-            <input id="newsletter-email" type="email" name="email" placeholder="אימייל" required />
-            <button class="btn --primary" type="submit" aria-label="הרשמה לניוזלטר">
-              <i class="icon__arrow-left" aria-hidden="true"></i>
-            </button>
-          </div>
-        </form>
-      </div>
-      <div class="footer-menus">
-        <ul class="footer-menus__items">
+      <div class="footer__menus">
+        <ul class="footer__menus-items">
           <li class="menu-item-has-children">
-            <a href="#">כללי</a>
+            <a href="#">קטגוריות</a>
+            <ul class="sub-menu">
+              <li><a href="#">סוגי טיולים</a></li>
+              <li><a href="#">אטרקציות</a></li>
+              <li><a href="#">המלצות</a></li>
+            </ul>
+          </li>
+          <li class="menu-item-has-children">
+            <a href="#">מידע נוסף</a>
             <ul class="sub-menu">
               <li><a href="#">עלינו</a></li>
               <li><a href="#">בלוג</a></li>
-              <li><a href="#">שאלות ותשובות</a></li>
-            </ul>
-          </li>
-          <li class="menu-item-has-children">
-            <a href="#">טיולים</a>
-            <ul class="sub-menu">
-              <li><a href="#">אירופה</a></li>
-              <li><a href="#">המזרח הרחוק</a></li>
-              <li><a href="#">דרום אמריקה</a></li>
+              <li><a href="#">שאלות נפוצות</a></li>
             </ul>
           </li>
         </ul>
-        <div class="contacts">
-          <span>שירות לקוחות</span>
+
+        <div class="footer__contacts">
+          <span class="footer__contacts-title">דברו איתנו</span>
           <a href="mailto:info@ninjatours.co.il">info@ninjatours.co.il</a>
           <a href="tel:+97230000000">03-0000000</a>
         </div>
-        <div class="social-media">
-          <div class="social-media__title">עקבו אחרינו</div>
+
+        <div class="footer__social">
+          <span class="footer__social-title">עקבו אחרינו</span>
           <ul>
-            <li><a href="#" aria-label="אינסטגרם"><img src="img/icons/instagram.svg" alt="" /></a></li>
-            <li><a href="#" aria-label="פייסבוק"><img src="img/icons/facebook.svg" alt="" /></a></li>
-            <li><a href="#" aria-label="טיקטוק"><img src="img/icons/tiktok.svg" alt="" /></a></li>
+            <li><a href="#" aria-label="אינסטגרם"><i class="icon__instagram" aria-hidden="true"></i></a></li>
+            <li><a href="#" aria-label="פייסבוק"><i class="icon__facebook" aria-hidden="true"></i></a></li>
+            <li><a href="#" aria-label="טיקטוק"><i class="icon__tiktok" aria-hidden="true"></i></a></li>
           </ul>
         </div>
       </div>
+
+      <div class="footer__brand">
+        <a href="/" class="footer__logo" aria-label="נינג'ה טורס">
+          <img src="img/logo-light.svg" alt="נינג'ה טורס" />
+        </a>
+        <p class="footer__tagline">תכנון יפן <br>שעובד.</p>
+      </div>
     </div>
-    <div class="footer-middle">
+
+    <div class="footer__legal">
       <div class="container --row">
-        <div class="footer-middle__menus">
-          <ul>
-            <li><a href="/terms">תקנון ותנאי שימוש</a></li>
-            <li><a href="/privacy">מדיניות פרטיות</a></li>
-            <li><a href="/cancellations">ביטולי עסקה</a></li>
-            <li><a href="accessibility.html">הצהרת נגישות</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div class="container">
-        <p>© נינג'ה טורס. כל הזכויות שמורות.</p>
+        <ul>
+          <li><a href="/terms">תקנון ותנאי שימוש</a></li>
+          <li><a href="/privacy">מדיניות פרטיות</a></li>
+          <li><a href="/cancellations">ביטול עסקה</a></li>
+          <li><a href="accessibility.html">הצהרת נגישות</a></li>
+        </ul>
+        <p>© נינג'ה טורס. כל הזכויות שמורות. עיצוב ופיתוח: אלוויט דיגיטל סטודיו.</p>
       </div>
     </div>
   </footer>
