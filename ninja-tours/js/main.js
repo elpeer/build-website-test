@@ -171,6 +171,27 @@
     };
     if (typeof Swiper !== 'undefined') testimonialsSlider();
 
+    // -----------------------------------------------------------------------
+    // Partners marquee — clone the template 4× per row so the track is wide
+    // enough that translateX(-25%) always keeps the next set in view.
+    // -----------------------------------------------------------------------
+    (function initPartnersMarquee() {
+      var rows = document.querySelectorAll('.partners__row[data-marquee]');
+      if (!rows.length) return;
+      rows.forEach(function (row) {
+        var key = row.getAttribute('data-marquee');
+        var tpl = document.getElementById('partners-set-' + key);
+        if (!tpl) return;
+        if (row.querySelector('.partners__track')) return;
+        var track = document.createElement('div');
+        track.className = 'partners__track partners__track--' + key;
+        for (var i = 0; i < 4; i++) {
+          track.appendChild(tpl.content.cloneNode(true));
+        }
+        row.appendChild(track);
+      });
+    })();
+
     // Fancybox is auto-bound to [data-fancybox] elements once loaded.
     // hideScrollbar: false prevents the body padding-right shim Fancybox
     // adds on open, which was causing a few pixels of horizontal scroll
