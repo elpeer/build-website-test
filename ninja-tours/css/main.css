@@ -1046,10 +1046,17 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .contact {
   position: relative;
   isolation: isolate;
+  /* Section height locked to the background image's height (1800px = 112.5rem
+     at the 1920 reference viewport, scales with vw) so the inner composition
+     sits centered exactly like the reference. */
+  min-height: 112.5rem;
+  display: flex;
+  align-items: center;
   padding-block: 5rem 6rem;
   background: #fff5e9 url('../images/footer_bg.jpg') center/cover no-repeat;
   overflow: hidden;
 }
+.contact__inner { width: 100%; }
 
 .contact__leaf {
   position: absolute;
@@ -1194,7 +1201,10 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 
 @media (max-width: 768px) and (orientation: portrait) {
-  .contact { padding-block: 3rem 4rem; }
+  .contact {
+    min-height: 0;
+    padding-block: 3rem 4rem;
+  }
   .contact__inner { padding-inline: 1rem; }
   .contact__head { margin-block-end: 2rem; }
   .contact__title { font-size: 1.875rem; }
