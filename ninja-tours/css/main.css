@@ -1212,7 +1212,9 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 @media (max-width: 768px) and (orientation: portrait) {
   .contact {
-    min-height: 0;
+    /* Mobile section height locked to footer_mobile_bg.jpg (1872px = 117rem
+       at the 390 reference viewport, scales with vw) */
+    min-height: 117rem;
     padding-block: 3rem 4rem;
     background-image: url('../images/footer_mobile_bg.jpg');
   }
