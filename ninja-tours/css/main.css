@@ -958,6 +958,105 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 
 /* ==========================================================================
+   Partners — two rows of partner logos that auto-marquee in opposite
+   directions. Each logo card has a fixed height, padding and background;
+   width adjusts to the logo's own aspect ratio.
+   ========================================================================== */
+.partners {
+  background: #fffaf5;
+  padding-block: 5rem 4rem;
+  overflow: hidden;
+}
+
+.partners__head {
+  text-align: center;
+  max-width: 80rem;
+  margin: 0 auto 2.5rem;
+  padding-inline: 2.5rem;
+}
+.partners__title {
+  font-size: 3.25rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #063874;
+  margin: 0;
+}
+.partners__title em {
+  color: #d2170a;
+  font-style: normal;
+  font-weight: 700;
+}
+.partners__lead {
+  margin: 1rem auto 0;
+  max-width: 56rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #444;
+}
+
+.partners__row {
+  overflow: hidden;
+  margin-block-start: 1rem;
+}
+
+.partners__track {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  width: max-content;
+  /* Half width = one full set of logos. translateX(-50%) moves through one
+     set so the next (duplicate) set is in view → seamless loop */
+  animation: partners-scroll 50s linear infinite;
+}
+.partners__track--b {
+  animation-direction: reverse;
+  animation-duration: 60s;
+}
+
+@keyframes partners-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (any-hover: hover) {
+  .partners__track:hover { animation-play-state: paused; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .partners__track { animation: none; }
+}
+
+.partners__logo {
+  flex: 0 0 auto;
+  background: #f4ebde;
+  border-radius: 1rem;
+  padding: 1.25rem 2rem;
+  height: 7.5rem;            /* fixed height per the brief */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.partners__logo img {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .partners { padding-block: 3rem 2.5rem; }
+  .partners__head { margin-block-end: 1.5rem; padding-inline: 1rem; }
+  .partners__title { font-size: 1.875rem; }
+  .partners__lead { font-size: 0.9375rem; }
+  .partners__track { gap: 0.75rem; }
+  .partners__logo {
+    height: 5rem;
+    padding: 0.875rem 1.25rem;
+    border-radius: 0.875rem;
+  }
+}
+
+/* ==========================================================================
    About — image left + title/text/CTA right (desktop). Mobile stacks
    image first then text per the design brief.
    ========================================================================== */
