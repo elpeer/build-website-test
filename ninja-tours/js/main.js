@@ -5,15 +5,17 @@
 
 (function ($) {
   'use strict';
+  if (typeof $ === 'undefined') return;
 
   $(document).ready(function () {
 
     // -----------------------------------------------------------------------
-    // Preloader
+    // Preloader — hide on ready (or load, whichever fires)
     // -----------------------------------------------------------------------
-    $(window).on('load', function () {
-      $('.preloader').addClass('--hidden');
-    });
+    function hidePreloader() { $('.preloader').addClass('--hidden'); }
+    if (document.readyState === 'complete') hidePreloader();
+    else $(window).on('load', hidePreloader);
+    setTimeout(hidePreloader, 1500); // safety net
 
     // -----------------------------------------------------------------------
     // Sticky header
