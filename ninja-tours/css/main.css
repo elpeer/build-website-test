@@ -19,6 +19,7 @@ html {
   scroll-behavior: smooth;
   scroll-padding: 5.625rem 0 0 0;
   font-size: 0.83333vw;
+  overflow-x: hidden;
 }
 
 @media (max-width: 768px) and (orientation: portrait) {

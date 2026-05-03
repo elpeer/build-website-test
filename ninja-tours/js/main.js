@@ -141,9 +141,11 @@
     if (typeof Swiper !== 'undefined') customTripsSlider();
 
     // Fancybox is auto-bound to [data-fancybox] elements once loaded.
-    // Re-bind here in case it loaded after DOMReady.
+    // hideScrollbar: false prevents the body padding-right shim Fancybox
+    // adds on open, which was causing a few pixels of horizontal scroll
+    // on the page after the modal closed.
     if (typeof Fancybox !== 'undefined' && Fancybox.bind) {
-      Fancybox.bind('[data-fancybox]', {});
+      Fancybox.bind('[data-fancybox]', { hideScrollbar: false });
     }
 
     // -----------------------------------------------------------------------
