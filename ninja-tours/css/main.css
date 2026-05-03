@@ -141,11 +141,11 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 /* Solid blue with red icon circle (used by Why-us CTA) */
 .btn-pill.--blue {
-  background: #0038b7;
+  background: #063874;
   color: #fff;
 }
-.btn-pill.--blue .btn-pill__icon { background: #d11c1b; color: #fff; }
-.btn-pill.--blue:hover { background: #002b8e; }
+.btn-pill.--blue .btn-pill__icon { background: #d2170a; color: #fff; }
+.btn-pill.--blue:hover { background: #042957; }
 
 .btn-pill.--light {
   background: rgba(255, 255, 255, 0.18);
@@ -499,12 +499,12 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
    • Mobile: horizontal scroll-snap slider
    ========================================================================== */
 .why-us {
-  background: #ece3d5;
+  background: #fffaf5;
   padding-block: 6.25rem 5rem;
 }
 
 .why-us .container {
-  max-width: 75rem;
+  max-width: 95.3125rem;
   margin-inline: auto;
   padding-inline: 2.5rem;
 }
@@ -530,7 +530,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
-  background: #d11c1b;
+  background: #d2170a;
   display: inline-block;
 }
 
@@ -538,12 +538,12 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   font-size: 4rem;
   line-height: 1.2;
   font-weight: 700;
-  color: #0038b7;
+  color: #063874;
   letter-spacing: 0;
   margin: 0;
 }
 .why-us__title em {
-  color: #d11c1b;
+  color: #d2170a;
   font-style: normal;
   font-weight: 700;
 }
@@ -564,6 +564,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   padding: 2rem 1.5rem;
   text-align: start;
   border-radius: 1.25rem;
+  min-height: 18rem;
 }
 
 /* Subtle vertical divider between cards (skipped around active card) */
@@ -618,31 +619,21 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   line-height: 1.6;
   font-weight: 400;
   color: #5a5a5a;
-  margin: 0;
-  max-height: 0;
-  overflow: hidden;
+  margin: 0.75rem 0 0;
   opacity: 0;
-  transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
 @media (any-hover: hover) {
-  .why-us__card:hover .why-us__card-desc {
-    max-height: 8rem;
-    opacity: 1;
-    margin-block-start: 0.75rem;
-  }
+  .why-us__card:hover .why-us__card-desc { opacity: 1; }
 }
-.why-us__card.--active .why-us__card-desc {
-  max-height: 8rem;
-  opacity: 1;
-  margin-block-start: 0.75rem;
-}
+.why-us__card.--active .why-us__card-desc { opacity: 1; }
 
 .why-us__card.--active {
-  flex: 0 0 17rem;
-  background: #f7f0e3;
-  padding: 2.5rem 1.75rem;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+  flex: 1.5 1 0;
+  background: #f4ebde;
+  padding: 2.5rem 2rem;
+  min-height: 20rem;
 }
 
 .why-us__cta {
