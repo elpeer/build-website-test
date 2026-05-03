@@ -564,20 +564,19 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   padding: 2rem 1.5rem;
   text-align: start;
   border-radius: 1.25rem;
-  min-height: 18rem;
+  min-height: 20rem;
+  transition: background 0.3s ease;
 }
 
-/* Subtle vertical divider between cards (skipped around active card) */
+/* Subtle vertical divider between cards */
 .why-us__card + .why-us__card::before {
   content: "";
   position: absolute;
   inset-inline-end: 100%;
-  inset-block: 1.75rem;
+  inset-block: 2rem;
   width: 1px;
-  background: rgba(34, 34, 34, 0.12);
+  background: rgba(34, 34, 34, 0.1);
 }
-.why-us__card.--active::before,
-.why-us__card.--active + .why-us__card::before { display: none; }
 
 .why-us__card-head {
   display: flex;
@@ -601,9 +600,12 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   display: block;
 }
 
+/* Body anchored to bottom of card → title sits at the bottom by default,
+   so all card titles align across the row. On hover the description
+   reveals via grid 0fr→1fr, growing the body upward without shifting
+   the card height. */
 .why-us__card-body {
   margin-block-start: auto;
-  padding-block-start: 4rem;
 }
 
 .why-us__card-title {
@@ -619,21 +621,25 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   line-height: 1.6;
   font-weight: 400;
   color: #5a5a5a;
-  margin: 0.75rem 0 0;
+  margin: 0;
+  display: grid;
+  grid-template-rows: 0fr;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: grid-template-rows 0.4s ease, opacity 0.3s ease, margin 0.4s ease;
+}
+.why-us__card-desc > span {
+  overflow: hidden;
+  min-height: 0;
+  display: block;
 }
 
 @media (any-hover: hover) {
-  .why-us__card:hover .why-us__card-desc { opacity: 1; }
-}
-.why-us__card.--active .why-us__card-desc { opacity: 1; }
-
-.why-us__card.--active {
-  flex: 1.5 1 0;
-  background: #f4ebde;
-  padding: 2.5rem 2rem;
-  min-height: 20rem;
+  .why-us__card:hover { background: #f4ebde; }
+  .why-us__card:hover .why-us__card-desc {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-block-start: 0.75rem;
+  }
 }
 
 .why-us__cta {
@@ -665,13 +671,13 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .why-us__card {
     scroll-snap-align: center;
     flex: 0 0 15rem;
-    padding: 1.5rem;
+    padding: 1.75rem 1.5rem;
+    background: #f4ebde;
+    min-height: 18rem;
   }
   .why-us__card + .why-us__card::before { display: none; }
-  .why-us__card.--active { flex: 0 0 15rem; padding: 1.75rem 1.5rem; }
-  .why-us__card-body { padding-block-start: 2.5rem; }
 
-  /* On mobile, show desc always (no hover) */
+  /* On mobile, no hover — show desc always */
   .why-us__card-desc {
     grid-template-rows: 1fr;
     opacity: 1;
