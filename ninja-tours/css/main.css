@@ -1313,8 +1313,9 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   margin-inline: auto;
   padding: 4rem 2.5rem 3rem;
   display: grid;
-  /* Logo column auto-sized; 5 nav/contact columns evenly spaced */
-  grid-template-columns: repeat(5, 1fr) auto;
+  /* Logo column (first DOM child) auto-sized — sits at the inline-start
+     (right in RTL); 5 nav/contact columns evenly spaced after it */
+  grid-template-columns: auto repeat(5, 1fr);
   align-items: start;
   gap: 2rem;
 }
