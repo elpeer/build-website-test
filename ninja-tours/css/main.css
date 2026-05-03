@@ -1159,10 +1159,12 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 .process__step-image {
   grid-column: 1;            /* RTL col 1 = right side of line */
+  grid-row: 1;               /* lock to first row so explicit columns can't push to row 2 */
   margin: 0;
   width: 100%;
   max-width: 36rem;
   justify-self: end;          /* end in RTL = left edge of col → near line */
+  align-self: center;
   border-radius: 1.5rem;
   overflow: hidden;
   aspect-ratio: 4 / 3;
@@ -1177,8 +1179,10 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 .process__step-text {
   grid-column: 2;             /* RTL col 2 = left side of line */
+  grid-row: 1;
   max-width: 24rem;
   justify-self: start;        /* start in RTL = right edge of col → near line */
+  align-self: center;
   text-align: start;
 }
 
