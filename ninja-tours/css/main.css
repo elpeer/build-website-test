@@ -499,7 +499,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
    • Mobile: horizontal scroll-snap slider
    ========================================================================== */
 .why-us {
-  background: #fff;
+  background: #ece3d5;
   padding-block: 6.25rem 5rem;
 }
 
@@ -511,7 +511,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 .why-us__head {
   text-align: center;
-  margin-block-end: 3rem;
+  margin-block-end: 4rem;
 }
 
 .why-us__eyebrow {
@@ -550,21 +550,33 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 .why-us__row {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  gap: 2rem;
-  margin-block-end: 3.5rem;
+  margin-block-end: 4rem;
 }
 
 .why-us__card {
-  flex: 0 0 11rem;
+  flex: 1 1 0;
+  min-width: 0;
+  position: relative;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 1rem;
-  text-align: center;
-  border-radius: 1rem;
-  align-self: stretch;
+  padding: 2rem 1.5rem;
+  text-align: start;
+  border-radius: 1.25rem;
 }
+
+/* Subtle vertical divider between cards (skipped around active card) */
+.why-us__card + .why-us__card::before {
+  content: "";
+  position: absolute;
+  inset-inline-end: 100%;
+  inset-block: 1.75rem;
+  width: 1px;
+  background: rgba(34, 34, 34, 0.12);
+}
+.why-us__card.--active::before,
+.why-us__card.--active + .why-us__card::before { display: none; }
 
 .why-us__card-head {
   display: flex;
@@ -581,15 +593,16 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   color: #222;
 }
 
-.why-us__card-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
+.why-us__card-icon { display: inline-flex; }
 .why-us__card-icon svg {
   width: 3.75rem;
   height: 3rem;
   display: block;
+}
+
+.why-us__card-body {
+  margin-block-start: auto;
+  padding-block-start: 4rem;
 }
 
 .why-us__card-title {
@@ -597,7 +610,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   line-height: 1.4;
   font-weight: 700;
   color: #222;
-  margin: auto 0 0;
+  margin: 0;
 }
 
 .why-us__card-desc {
@@ -605,16 +618,31 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   line-height: 1.6;
   font-weight: 400;
   color: #5a5a5a;
-  margin: 0.75rem 0 0;
+  margin: 0;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+}
+
+@media (any-hover: hover) {
+  .why-us__card:hover .why-us__card-desc {
+    max-height: 8rem;
+    opacity: 1;
+    margin-block-start: 0.75rem;
+  }
+}
+.why-us__card.--active .why-us__card-desc {
+  max-height: 8rem;
+  opacity: 1;
+  margin-block-start: 0.75rem;
 }
 
 .why-us__card.--active {
-  flex: 0 0 16.25rem;
-  background: #f4eee7;
-  padding: 3rem 1.5rem;
-}
-.why-us__card.--active .why-us__card-title {
-  margin-block-start: 3rem;
+  flex: 0 0 17rem;
+  background: #f7f0e3;
+  padding: 2.5rem 1.75rem;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
 }
 
 .why-us__cta {
@@ -624,19 +652,10 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 
 @media (max-width: 768px) and (orientation: portrait) {
-  .why-us {
-    padding-block: 3.5rem;
-  }
-  .why-us .container {
-    padding-inline: 1rem;
-  }
-  .why-us__head {
-    margin-block-end: 2rem;
-  }
-  .why-us__title {
-    font-size: 2rem;
-    line-height: 1.2;
-  }
+  .why-us { padding-block: 3.5rem; }
+  .why-us .container { padding-inline: 1rem; }
+  .why-us__head { margin-block-end: 2.5rem; }
+  .why-us__title { font-size: 2rem; line-height: 1.2; }
 
   .why-us__row {
     overflow-x: auto;
@@ -654,13 +673,17 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
   .why-us__card {
     scroll-snap-align: center;
-    flex: 0 0 14rem;
+    flex: 0 0 15rem;
     padding: 1.5rem;
   }
-  .why-us__card.--active {
-    flex: 0 0 14rem;
-    padding: 2rem 1.5rem;
+  .why-us__card + .why-us__card::before { display: none; }
+  .why-us__card.--active { flex: 0 0 15rem; padding: 1.75rem 1.5rem; }
+  .why-us__card-body { padding-block-start: 2.5rem; }
+
+  /* On mobile, show desc always (no hover) */
+  .why-us__card-desc {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-block-start: 0.75rem;
   }
-  .why-us__card-title { margin-block-start: 2.5rem; }
-  .why-us__card.--active .why-us__card-title { margin-block-start: 2rem; }
 }
