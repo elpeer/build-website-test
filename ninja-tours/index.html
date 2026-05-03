@@ -19,13 +19,29 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://unpkg.com" crossorigin />
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
-
+  <!-- Critical CSS: blocks render so the hero paints with the right styles -->
   <link rel="stylesheet" href="css/main.css" />
+
+  <!-- Fonts: load asynchronously so they don't block first paint -->
+  <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800&display=swap"
+        onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800&display=swap">
+  </noscript>
+
+  <!-- Library CSS: deferred via the media=print swap so they don't block render -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css">
+  </noscript>
 </head>
 
 <body>
@@ -236,7 +252,7 @@
       <div class="trip-types__slider">
         <div class="swiper-wrapper">
           <article class="trip-types__card swiper-slide">
-            <img class="trip-types__card-img" src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=800" alt="טירה יפנית מסורתית" loading="lazy">
+            <img class="trip-types__card-img" src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=800" alt="טירה יפנית מסורתית" loading="lazy" width="470" height="610" decoding="async">
             <span class="trip-types__card-overlay" aria-hidden="true"></span>
             <div class="trip-types__card-body">
               <h3 class="trip-types__card-title">שילוב מושלם</h3>
@@ -245,7 +261,7 @@
           </article>
 
           <article class="trip-types__card swiper-slide">
-            <img class="trip-types__card-img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=800" alt="צומת שיבויה בטוקיו" loading="lazy">
+            <img class="trip-types__card-img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=800" alt="צומת שיבויה בטוקיו" loading="lazy" width="470" height="610" decoding="async">
             <span class="trip-types__card-overlay" aria-hidden="true"></span>
             <div class="trip-types__card-body">
               <h3 class="trip-types__card-title">ערים תוססות</h3>
@@ -254,7 +270,7 @@
           </article>
 
           <article class="trip-types__card swiper-slide">
-            <img class="trip-types__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="ארמון יפני בין עצי מייפל" loading="lazy">
+            <img class="trip-types__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="ארמון יפני בין עצי מייפל" loading="lazy" width="470" height="610" decoding="async">
             <span class="trip-types__card-overlay" aria-hidden="true"></span>
             <div class="trip-types__card-body">
               <h3 class="trip-types__card-title">תרבות ומסורת</h3>
@@ -263,7 +279,7 @@
           </article>
 
           <article class="trip-types__card swiper-slide">
-            <img class="trip-types__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="טבע ונופים ביפן" loading="lazy">
+            <img class="trip-types__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="טבע ונופים ביפן" loading="lazy" width="470" height="610" decoding="async">
             <span class="trip-types__card-overlay" aria-hidden="true"></span>
             <div class="trip-types__card-body">
               <h3 class="trip-types__card-title">טבע ונופים</h3>
@@ -272,7 +288,7 @@
           </article>
 
           <article class="trip-types__card swiper-slide">
-            <img class="trip-types__card-img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=800" alt="אוכל וקולינריה ביפן" loading="lazy">
+            <img class="trip-types__card-img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=800" alt="אוכל וקולינריה ביפן" loading="lazy" width="470" height="610" decoding="async">
             <span class="trip-types__card-overlay" aria-hidden="true"></span>
             <div class="trip-types__card-body">
               <h3 class="trip-types__card-title">אוכל וקולינריה</h3>
@@ -365,7 +381,7 @@
         <div class="attractions__grid">
           <div class="attractions__pair">
             <article class="attractions__card">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=900" alt="מקדשים ואתרים ביפן" loading="lazy">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=900" alt="מקדשים ואתרים ביפן" loading="lazy" width="500" height="375" decoding="async">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <span class="attractions__card-arrow" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -379,7 +395,7 @@
               </div>
             </article>
             <article class="attractions__card">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=900" alt="אוכל וקולינריה ביפן" loading="lazy">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=900" alt="אוכל וקולינריה ביפן" loading="lazy" width="500" height="375" decoding="async">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <span class="attractions__card-arrow" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -396,7 +412,7 @@
 
           <div class="attractions__pair">
             <article class="attractions__card">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900" alt="פעילויות ואקסטרים ביפן" loading="lazy">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900" alt="פעילויות ואקסטרים ביפן" loading="lazy" width="500" height="375" decoding="async">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <span class="attractions__card-arrow" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -410,7 +426,7 @@
               </div>
             </article>
             <article class="attractions__card">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900" alt="הופעות וירידים ביפן" loading="lazy">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900" alt="הופעות וירידים ביפן" loading="lazy" width="500" height="375" decoding="async">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <span class="attractions__card-arrow" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -427,7 +443,7 @@
 
           <div class="attractions__pair">
             <article class="attractions__card">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=900" alt="כפרים ציוריים ביפן" loading="lazy">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=900" alt="כפרים ציוריים ביפן" loading="lazy" width="500" height="375" decoding="async">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <span class="attractions__card-arrow" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -441,7 +457,7 @@
               </div>
             </article>
             <article class="attractions__card">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=900" alt="רכבות וחוויית נסיעה ביפן" loading="lazy">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=900" alt="רכבות וחוויית נסיעה ביפן" loading="lazy" width="500" height="375" decoding="async">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <span class="attractions__card-arrow" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -483,7 +499,7 @@
 
           <article class="process__step">
             <figure class="process__step-image">
-              <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=1200" alt="שיחת היכרות עם הצוות" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=1200" alt="שיחת היכרות עם הצוות" loading="lazy" width="600" height="450" decoding="async">
             </figure>
             <div class="process__step-text">
               <span class="process__step-num">01</span>
@@ -495,7 +511,7 @@
 
           <article class="process__step --reverse">
             <figure class="process__step-image">
-              <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200" alt="תכנון המסלול" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200" alt="תכנון המסלול" loading="lazy" width="600" height="450" decoding="async">
             </figure>
             <div class="process__step-text">
               <span class="process__step-num">02</span>
@@ -507,7 +523,7 @@
 
           <article class="process__step">
             <figure class="process__step-image">
-              <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=1200" alt="טיול ביפן" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=1200" alt="טיול ביפן" loading="lazy" width="600" height="450" decoding="async">
             </figure>
             <div class="process__step-text">
               <span class="process__step-num">03</span>
@@ -531,7 +547,7 @@
     </section>
 
     <section class="image-separator" aria-hidden="true">
-      <img src="images/flat-image-separator.jpg" alt="" loading="lazy">
+      <img src="images/flat-image-separator.jpg" alt="" loading="lazy" width="1920" height="320" decoding="async">
     </section>
 
     <section class="custom-trips" id="custom-trips">
@@ -544,7 +560,7 @@
 
           <article class="custom-trips__card swiper-slide">
             <figure class="custom-trips__card-image">
-              <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="עומק, תרבות וגילוי" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="עומק, תרבות וגילוי" loading="lazy" width="400" height="300" decoding="async">
             </figure>
             <div class="custom-trips__card-body">
               <h3 class="custom-trips__card-title">עומק, תרבות וגילוי</h3>
@@ -560,7 +576,7 @@
 
           <article class="custom-trips__card swiper-slide">
             <figure class="custom-trips__card-image">
-              <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=800" alt="יפן למשפחות וחוויות" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=800" alt="יפן למשפחות וחוויות" loading="lazy" width="400" height="300" decoding="async">
             </figure>
             <div class="custom-trips__card-body">
               <h3 class="custom-trips__card-title">יפן למשפחות וחוויות</h3>
@@ -576,7 +592,7 @@
 
           <article class="custom-trips__card swiper-slide">
             <figure class="custom-trips__card-image">
-              <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=800" alt="טבע, כפרים ונופים" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=800" alt="טבע, כפרים ונופים" loading="lazy" width="400" height="300" decoding="async">
             </figure>
             <div class="custom-trips__card-body">
               <h3 class="custom-trips__card-title">טבע, כפרים ונופים</h3>
@@ -592,7 +608,7 @@
 
           <article class="custom-trips__card swiper-slide">
             <figure class="custom-trips__card-image">
-              <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="ערים, תרבות וקלאסיקה" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="ערים, תרבות וקלאסיקה" loading="lazy" width="400" height="300" decoding="async">
             </figure>
             <div class="custom-trips__card-body">
               <h3 class="custom-trips__card-title">ערים, תרבות וקלאסיקה</h3>
@@ -608,7 +624,7 @@
 
           <article class="custom-trips__card swiper-slide">
             <figure class="custom-trips__card-image">
-              <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=800" alt="שופינג ואופנה בטוקיו" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=800" alt="שופינג ואופנה בטוקיו" loading="lazy" width="400" height="300" decoding="async">
             </figure>
             <div class="custom-trips__card-body">
               <h3 class="custom-trips__card-title">שופינג ואופנה</h3>
@@ -624,7 +640,7 @@
 
           <article class="custom-trips__card swiper-slide">
             <figure class="custom-trips__card-image">
-              <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="ירח דבש ביפן" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="ירח דבש ביפן" loading="lazy" width="400" height="300" decoding="async">
             </figure>
             <div class="custom-trips__card-body">
               <h3 class="custom-trips__card-title">רומנטיקה וירח דבש</h3>
@@ -640,7 +656,7 @@
 
           <article class="custom-trips__card swiper-slide">
             <figure class="custom-trips__card-image">
-              <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=800" alt="סקי בהוקאידו" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=800" alt="סקי בהוקאידו" loading="lazy" width="400" height="300" decoding="async">
             </figure>
             <div class="custom-trips__card-body">
               <h3 class="custom-trips__card-title">סקי וחורף ביפן</h3>
@@ -656,7 +672,7 @@
 
           <article class="custom-trips__card swiper-slide">
             <figure class="custom-trips__card-image">
-              <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=800" alt="קולינריה יפנית" loading="lazy">
+              <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=800" alt="קולינריה יפנית" loading="lazy" width="400" height="300" decoding="async">
             </figure>
             <div class="custom-trips__card-body">
               <h3 class="custom-trips__card-title">עומק קולינרי</h3>
@@ -692,7 +708,7 @@
       <div class="trip-modal-sources" hidden>
       <div id="trip-modal-1" class="trip-modal" dir="rtl"><button type="button" class="trip-modal__close" data-fancybox-close aria-label="סגור"><span class="trip-modal__close-text">סגור</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
         <div class="trip-modal__media">
-          <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200" alt="">
+          <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200" alt="" width="800" height="600" decoding="async" loading="lazy">
         </div>
         <div class="trip-modal__body">
           <h3 class="trip-modal__title">עומק, תרבות וגילוי</h3>
@@ -716,7 +732,7 @@
 
       <div id="trip-modal-2" class="trip-modal" dir="rtl"><button type="button" class="trip-modal__close" data-fancybox-close aria-label="סגור"><span class="trip-modal__close-text">סגור</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
         <div class="trip-modal__media">
-          <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=1200" alt="">
+          <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=1200" alt="" width="800" height="600" decoding="async" loading="lazy">
         </div>
         <div class="trip-modal__body">
           <h3 class="trip-modal__title">יפן למשפחות וחוויות</h3>
@@ -739,7 +755,7 @@
 
       <div id="trip-modal-3" class="trip-modal" dir="rtl"><button type="button" class="trip-modal__close" data-fancybox-close aria-label="סגור"><span class="trip-modal__close-text">סגור</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
         <div class="trip-modal__media">
-          <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=1200" alt="">
+          <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=1200" alt="" width="800" height="600" decoding="async" loading="lazy">
         </div>
         <div class="trip-modal__body">
           <h3 class="trip-modal__title">טבע, כפרים ונופים</h3>
@@ -763,7 +779,7 @@
 
       <div id="trip-modal-4" class="trip-modal" dir="rtl"><button type="button" class="trip-modal__close" data-fancybox-close aria-label="סגור"><span class="trip-modal__close-text">סגור</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
         <div class="trip-modal__media">
-          <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200" alt="">
+          <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200" alt="" width="800" height="600" decoding="async" loading="lazy">
         </div>
         <div class="trip-modal__body">
           <h3 class="trip-modal__title">ערים, תרבות וקלאסיקה</h3>
@@ -793,7 +809,7 @@
           </svg>
         </button>
         <div class="trip-modal__media">
-          <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=1200" alt="">
+          <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=1200" alt="" width="800" height="600" decoding="async" loading="lazy">
         </div>
         <div class="trip-modal__body">
           <h3 class="trip-modal__title">שופינג ואופנה</h3>
@@ -822,7 +838,7 @@
           </svg>
         </button>
         <div class="trip-modal__media">
-          <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200" alt="">
+          <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200" alt="" width="800" height="600" decoding="async" loading="lazy">
         </div>
         <div class="trip-modal__body">
           <h3 class="trip-modal__title">רומנטיקה וירח דבש</h3>
@@ -851,7 +867,7 @@
           </svg>
         </button>
         <div class="trip-modal__media">
-          <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=1200" alt="">
+          <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=1200" alt="" width="800" height="600" decoding="async" loading="lazy">
         </div>
         <div class="trip-modal__body">
           <h3 class="trip-modal__title">סקי וחורף ביפן</h3>
@@ -880,7 +896,7 @@
           </svg>
         </button>
         <div class="trip-modal__media">
-          <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=1200" alt="">
+          <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=1200" alt="" width="800" height="600" decoding="async" loading="lazy">
         </div>
         <div class="trip-modal__body">
           <h3 class="trip-modal__title">עומק קולינרי</h3>
@@ -927,7 +943,7 @@
             <p class="testimonials__quote">חסכו לנו המון זמן, טעויות והתלבטות. קיבלנו תוכנית ברורה, נוחה להבנה. יצאנו לדרך בראש שקט.</p>
             <div class="testimonials__author">
               <div class="testimonials__author-info">
-                <img class="testimonials__author-photo" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&q=80" alt="" loading="lazy">
+                <img class="testimonials__author-photo" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&q=80" alt="" loading="lazy" width="60" height="60" decoding="async">
                 <div class="testimonials__author-text">
                   <span class="testimonials__author-name">גלעד טל</span>
                   <span class="testimonials__author-stars" aria-hidden="true">★★★★★</span>
@@ -946,7 +962,7 @@
             <p class="testimonials__quote">המסלול היה פשוט מושלם עבורנו. שילוב מדויק בין ערים, טבע וחוויות שלא היינו מגיעים אליהן לבד.</p>
             <div class="testimonials__author">
               <div class="testimonials__author-info">
-                <img class="testimonials__author-photo" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&q=80" alt="" loading="lazy">
+                <img class="testimonials__author-photo" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&q=80" alt="" loading="lazy" width="60" height="60" decoding="async">
                 <div class="testimonials__author-text">
                   <span class="testimonials__author-name">יפית ששון</span>
                   <span class="testimonials__author-stars" aria-hidden="true">★★★★★</span>
@@ -965,7 +981,7 @@
             <p class="testimonials__quote">לא ידענו מאיפה להתחיל, ו-Ninja Tours פשוט בנו לנו את כל הטיול מאפס. המסלול היה מדויק, ההמלצות פגעו בול, והליווי לאורך הדרך נתן לנו שקט אמיתי.</p>
             <div class="testimonials__author">
               <div class="testimonials__author-info">
-                <img class="testimonials__author-photo" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="" loading="lazy">
+                <img class="testimonials__author-photo" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="" loading="lazy" width="60" height="60" decoding="async">
                 <div class="testimonials__author-text">
                   <span class="testimonials__author-name">דני שמיר</span>
                   <span class="testimonials__author-stars" aria-hidden="true">★★★★★</span>
@@ -984,7 +1000,7 @@
             <p class="testimonials__quote">הרגשנו שיש לנו מישהו שמבין אותנו באמת. כל יום בטיול היה מתוכנן בצורה חכמה, בלי עומס ובלי פספוסים.</p>
             <div class="testimonials__author">
               <div class="testimonials__author-info">
-                <img class="testimonials__author-photo" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&q=80" alt="" loading="lazy">
+                <img class="testimonials__author-photo" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&q=80" alt="" loading="lazy" width="60" height="60" decoding="async">
                 <div class="testimonials__author-text">
                   <span class="testimonials__author-name">אסף לוי</span>
                   <span class="testimonials__author-stars" aria-hidden="true">★★★★★</span>
@@ -1003,7 +1019,7 @@
             <p class="testimonials__quote">שירות אמיתי – זה ליווי שהרגשנו לאורך כל הדרך. כל בקשה קיבלנו מענה מהיר ולכל פרט שינו לגמרי את החוויה שלנו.</p>
             <div class="testimonials__author">
               <div class="testimonials__author-info">
-                <img class="testimonials__author-photo" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&q=80" alt="" loading="lazy">
+                <img class="testimonials__author-photo" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&q=80" alt="" loading="lazy" width="60" height="60" decoding="async">
                 <div class="testimonials__author-text">
                   <span class="testimonials__author-name">מאיה פרץ</span>
                   <span class="testimonials__author-stars" aria-hidden="true">★★★★★</span>
@@ -1022,7 +1038,7 @@
             <p class="testimonials__quote">חזרנו עם זיכרונות לכל החיים. כל פינה שביקרנו בה הייתה בחירה מדויקת וכל המלון, מסעדה והרכבת היו מסודרים מראש.</p>
             <div class="testimonials__author">
               <div class="testimonials__author-info">
-                <img class="testimonials__author-photo" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&h=200&fit=crop&q=80" alt="" loading="lazy">
+                <img class="testimonials__author-photo" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&h=200&fit=crop&q=80" alt="" loading="lazy" width="60" height="60" decoding="async">
                 <div class="testimonials__author-text">
                   <span class="testimonials__author-name">רון אדרי</span>
                   <span class="testimonials__author-stars" aria-hidden="true">★★★★★</span>
@@ -1041,7 +1057,7 @@
             <p class="testimonials__quote">הילדים בקושי רצו לחזור. הצוות תכנן בדיוק את הקצב הנכון בשבילנו - לא יותר מדי ולא פחות מדי.</p>
             <div class="testimonials__author">
               <div class="testimonials__author-info">
-                <img class="testimonials__author-photo" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200&h=200&fit=crop&q=80" alt="" loading="lazy">
+                <img class="testimonials__author-photo" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200&h=200&fit=crop&q=80" alt="" loading="lazy" width="60" height="60" decoding="async">
                 <div class="testimonials__author-text">
                   <span class="testimonials__author-name">משפחת כהן</span>
                   <span class="testimonials__author-stars" aria-hidden="true">★★★★★</span>
@@ -1087,32 +1103,32 @@
       <div class="partners__row">
         <div class="partners__track">
           <div class="partners__list">
-            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-18.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-32.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-18.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-32.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
           </div>
           <div class="partners__list" aria-hidden="true">
-            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-18.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-32.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-18.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-32.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
           </div>
         </div>
       </div>
@@ -1120,32 +1136,32 @@
       <div class="partners__row partners__row--reverse">
         <div class="partners__track">
           <div class="partners__list">
-            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-32.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-18.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-32.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-18.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
           </div>
           <div class="partners__list" aria-hidden="true">
-            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
-            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-32.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-18.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-32.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-18.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt="" width="200" height="80" decoding="async" loading="lazy"></span>
           </div>
         </div>
       </div>
@@ -1154,7 +1170,7 @@
     <section class="about" id="about">
       <div class="container">
         <figure class="about__image">
-          <img src="https://images.unsplash.com/photo-1521119989659-a83eee488004?w=1100&q=80" alt="הצוות של Ninja Tours" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1521119989659-a83eee488004?w=1100&q=80" alt="הצוות של Ninja Tours" loading="lazy" width="600" height="450" decoding="async">
         </figure>
         <div class="about__text">
           <h2 class="about__title">יוצרים טיול בלתי נשכח<br>למשפחות, זוגות וקבוצות</h2>
@@ -1176,8 +1192,8 @@
     </section>
 
     <section class="contact" id="contact">
-      <img class="contact__leaf contact__leaf--right" src="images/right_leaf.png" alt="" loading="lazy">
-      <img class="contact__leaf contact__leaf--left" src="images/left_leaf.png" alt="" loading="lazy">
+      <img class="contact__leaf contact__leaf--right" src="images/right_leaf.png" alt="" loading="lazy" width="350" height="350" decoding="async">
+      <img class="contact__leaf contact__leaf--left" src="images/left_leaf.png" alt="" loading="lazy" width="350" height="350" decoding="async">
 
       <div class="contact__inner">
         <header class="contact__head">
@@ -1220,7 +1236,7 @@
           </form>
 
           <figure class="contact__image">
-            <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200&q=80" alt="">
+            <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200&q=80" alt="" width="800" height="600" decoding="async" loading="lazy">
             <span class="contact__image-text" aria-hidden="true">LET'S PLAN<br>YOUR TRIP</span>
           </figure>
         </div>
@@ -1328,11 +1344,13 @@
       if (year) year.textContent = new Date().getFullYear();
     })();
   </script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
-  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-  <script src="js/main.js"></script>
+  <!-- All third-party JS deferred so it doesn't block parsing.
+       'defer' preserves load order, runs after HTML is parsed. -->
+  <script defer src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+  <script defer src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+  <script defer src="js/main.js"></script>
 </body>
 
 </html>
