@@ -994,50 +994,44 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   color: #444;
 }
 
-/* Marquee — Ben Nadel-style: each row is a flex container with TWO
-   identical groups + a gap between them. Both groups translate together;
-   when group 1 has slid fully off the start side, the keyframe resets and
-   group 1 (which lives at the end of the DOM order) reappears in its
-   original position thanks to the identical clone. The loop is seamless.
-   Each group must be wider than the viewport so no dead space appears at
-   the end of a cycle — that's why every group hardcodes 12 logos. */
+/* Marquee — pattern from https://stackoverflow.com/a/79742980
+   (Nixit Ahir, CC BY-SA 4.0). The track is the animated element and
+   contains TWO identical lists. translateX goes 0 → -50%, which is
+   exactly one list's width → the second list lands where the first
+   started. Loop snaps invisibly because both lists are identical. */
 .partners__row {
-  display: flex;
-  gap: 1.25rem;
+  width: 100%;
   overflow: hidden;
   margin-block-start: 1rem;
 }
 
-.partners__group {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.partners__track {
   display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  flex-shrink: 0;
-  min-width: 100%;            /* group always at least viewport-wide → no gap */
+  width: max-content;
   animation: partners-scroll 50s linear infinite;
   will-change: transform;
 }
-.partners__row--reverse .partners__group {
+.partners__row--reverse .partners__track {
   animation-direction: reverse;
   animation-duration: 60s;
 }
 
-/* Translate the group by its own width PLUS the gap between groups. After
-   one cycle, group 2 is exactly where group 1 was → the loop snaps back to
-   0% with the same content visible. */
+.partners__list {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
 @keyframes partners-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(calc(-100% - 1.25rem)); }
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 @media (any-hover: hover) {
-  .partners__row:hover .partners__group { animation-play-state: paused; }
+  .partners__track:hover { animation-play-state: paused; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .partners__group { animation: none; }
+  .partners__track { animation: none; }
 }
 
 .partners__logo {
@@ -1046,6 +1040,9 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   border-radius: 1rem;
   padding: 1.25rem 2rem;
   height: 7.5rem;
+  /* Spacing handled by margin so each logo takes a fixed slot in the list
+     (no gap → list widths stay identical and the -50% snap is pixel-perfect) */
+  margin-inline-end: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1063,17 +1060,11 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .partners__head { margin-block-end: 1.5rem; padding-inline: 1rem; }
   .partners__title { font-size: 1.875rem; }
   .partners__lead { font-size: 0.9375rem; }
-  .partners__row { gap: 0.75rem; }
-  .partners__group { gap: 0.75rem; }
   .partners__logo {
     height: 5rem;
     padding: 0.875rem 1.25rem;
     border-radius: 0.875rem;
-  }
-  /* Match the keyframe gap on mobile so the seamless join still aligns */
-  @keyframes partners-scroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(calc(-100% - 0.75rem)); }
+    margin-inline-end: 0.75rem;
   }
 }
 

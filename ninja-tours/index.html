@@ -1078,66 +1078,76 @@
         <p class="partners__lead">אנחנו עובדים עם מגוון רחב של גופים מובילים בכל קטגוריות התיירות: מחברות השכרת רכב, דרך חברות תעופה ומלונות ועד מוקדי תיירות ואטרקציות, כדי שנוכל לדאוג לכם למחירים הטובים ביותר, לשירות אמין ולפתרון שמתאים בדיוק לצרכים שלכם.</p>
       </header>
 
+      <!-- Pattern from https://stackoverflow.com/a/79742980 (Nixit Ahir, CC BY-SA 4.0):
+           outer .partners__row hides overflow; .partners__track is the animated
+           element with width: max-content; inside the track sit TWO identical
+           .partners__list children with no gap between them. translateX(-50%)
+           moves the track by exactly one list width → seamless loop. -->
+
       <div class="partners__row">
-        <ul class="partners__group" aria-label="שותפים">
-          <li class="partners__logo"><img src="images/image-18.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-19.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-20.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-30.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-31.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-32.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-18.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-19.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-20.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-30.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-31.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-32.png" alt=""></li>
-        </ul>
-        <ul class="partners__group" aria-hidden="true">
-          <li class="partners__logo"><img src="images/image-18.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-19.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-20.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-30.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-31.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-32.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-18.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-19.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-20.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-30.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-31.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-32.png" alt=""></li>
-        </ul>
+        <div class="partners__track">
+          <div class="partners__list">
+            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
+          </div>
+          <div class="partners__list" aria-hidden="true">
+            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
+          </div>
+        </div>
       </div>
 
       <div class="partners__row partners__row--reverse">
-        <ul class="partners__group" aria-label="שותפים נוספים">
-          <li class="partners__logo"><img src="images/image-32.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-30.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-19.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-31.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-18.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-20.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-32.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-30.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-19.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-31.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-18.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-20.png" alt=""></li>
-        </ul>
-        <ul class="partners__group" aria-hidden="true">
-          <li class="partners__logo"><img src="images/image-32.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-30.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-19.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-31.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-18.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-20.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-32.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-30.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-19.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-31.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-18.png" alt=""></li>
-          <li class="partners__logo"><img src="images/image-20.png" alt=""></li>
-        </ul>
+        <div class="partners__track">
+          <div class="partners__list">
+            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
+          </div>
+          <div class="partners__list" aria-hidden="true">
+            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-32.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-30.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-19.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-31.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-18.png" alt=""></span>
+            <span class="partners__logo"><img src="images/image-20.png" alt=""></span>
+          </div>
+        </div>
       </div>
     </section>
 
