@@ -22,25 +22,25 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="preconnect" href="https://unpkg.com" crossorigin />
 
-  <!-- Critical CSS: blocks render so the hero paints with the right styles -->
+  <!-- Critical CSS that must apply BEFORE paint:
+       - main.css: hero + everything above the fold
+       - swiper + fancybox: their JS reads layout immediately on init, so
+         these stylesheets must already be applied or the sliders/modals
+         construct without their layout (broke testimonials + custom-trips
+         when we tried to defer them via the media=print trick) -->
   <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
 
-  <!-- Fonts: load asynchronously so they don't block first paint -->
+  <!-- Non-critical CSS — deferred so it doesn't block first paint.
+       Fonts use the preload+swap trick; AOS uses the media=print swap. -->
   <link rel="preload" as="style"
         href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800&display=swap"
         onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" media="print" onload="this.media='all'">
   <noscript>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800&display=swap">
-  </noscript>
-
-  <!-- Library CSS: deferred via the media=print swap so they don't block render -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" media="print" onload="this.media='all'">
-  <noscript>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css">
   </noscript>
 </head>
 
