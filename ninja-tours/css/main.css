@@ -1002,20 +1002,21 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .partners__track {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
   width: max-content;
-  /* Half width = one full set of logos. translateX(-50%) moves through one
-     set so the next (duplicate) set is in view → seamless loop */
-  animation: partners-scroll 50s linear infinite;
+  /* 4 copies of the set are injected by JS, so translateX(-25%) moves
+     by exactly one set width and the next 3 stay in view → no dead space.
+     Spacing handled by margin on each logo (not gap) so the math is exact. */
+  animation: partners-scroll 60s linear infinite;
+  will-change: transform;
 }
 .partners__track--b {
   animation-direction: reverse;
-  animation-duration: 60s;
+  animation-duration: 75s;
 }
 
 @keyframes partners-scroll {
   from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  to   { transform: translateX(-25%); }
 }
 
 @media (any-hover: hover) {
@@ -1031,6 +1032,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   border-radius: 1rem;
   padding: 1.25rem 2rem;
   height: 7.5rem;            /* fixed height per the brief */
+  margin-inline-end: 1.25rem; /* uniform spacing — applied to every logo so that the loop math (translate -25%) lands exactly on the start of the next clone */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1048,11 +1050,11 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .partners__head { margin-block-end: 1.5rem; padding-inline: 1rem; }
   .partners__title { font-size: 1.875rem; }
   .partners__lead { font-size: 0.9375rem; }
-  .partners__track { gap: 0.75rem; }
   .partners__logo {
     height: 5rem;
     padding: 0.875rem 1.25rem;
     border-radius: 0.875rem;
+    margin-inline-end: 0.75rem;
   }
 }
 
