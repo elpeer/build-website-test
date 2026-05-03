@@ -93,6 +93,30 @@
     if (typeof Swiper !== 'undefined') defaultSliders();
 
     // -----------------------------------------------------------------------
+    // Trip Types slider — custom init (nav buttons live outside the swiper)
+    // -----------------------------------------------------------------------
+    window.tripTypesSlider = function () {
+      var $slider = $('.trip-types__slider');
+      if (!$slider.length || typeof Swiper === 'undefined') return;
+      if (!$slider.find('.swiper-wrapper').length) {
+        $slider.children().wrapAll('<div class="swiper-wrapper"></div>');
+      }
+      $slider.addClass('swiper');
+
+      new Swiper($slider.get(0), {
+        slidesPerView: 'auto',
+        spaceBetween: 24,
+        speed: 600,
+        navigation: {
+          prevEl: '.trip-types__nav-prev',
+          nextEl: '.trip-types__nav-next'
+        },
+        a11y: { enabled: true }
+      });
+    };
+    if (typeof Swiper !== 'undefined') tripTypesSlider();
+
+    // -----------------------------------------------------------------------
     // AOS init
     // -----------------------------------------------------------------------
     if (typeof AOS !== 'undefined') {
