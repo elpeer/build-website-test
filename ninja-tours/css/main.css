@@ -966,13 +966,13 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   padding-block: 5rem;
 }
 .about .container {
-  max-width: 95.3125rem;
+  max-width: 78rem;
   margin-inline: auto;
   padding-inline: 2.5rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  gap: 5rem;
+  gap: 2.5rem;
 }
 
 .about__image {
