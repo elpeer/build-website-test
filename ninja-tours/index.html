@@ -44,25 +44,8 @@
         </ul>
       </nav>
 
-      <a href="/" class="logo" aria-label="חזרה לדף הבית">
-        <svg class="logo__mark" viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <g fill="currentColor">
-            <path d="M60 50 a18 18 0 0 1 -18 -18 h36 a18 18 0 0 1 -18 18 z"/>
-            <g stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
-              <line x1="60" y1="6"  x2="60" y2="20"/>
-              <line x1="36" y1="12" x2="42" y2="24"/>
-              <line x1="84" y1="12" x2="78" y2="24"/>
-              <line x1="18" y1="26" x2="30" y2="30"/>
-              <line x1="102" y1="26" x2="90" y2="30"/>
-              <line x1="14" y1="40" x2="28" y2="38"/>
-              <line x1="106" y1="40" x2="92" y2="38"/>
-            </g>
-          </g>
-        </svg>
-        <span class="logo__text">
-          <span class="logo__text-row">NINJA</span>
-          <span class="logo__text-row">TOURS</span>
-        </span>
+      <a href="/" class="logo" aria-label="Ninja Tours - חזרה לדף הבית">
+        <img class="logo__mark" src="images/logo.svg" alt="Ninja Tours" width="120" height="60">
       </a>
 
       <div class="header-end">
@@ -102,13 +85,13 @@
 
     <section class="home-hero" id="home-hero">
       <div class="home-hero__media" aria-hidden="true">
-        <video class="home-hero__video" autoplay muted loop playsinline poster="img/hero-poster.jpg">
+        <video class="home-hero__video" autoplay muted loop playsinline poster="images/hero-poster.jpg">
           <source src="video/hero.mp4" type="video/mp4">
         </video>
         <div class="home-hero__overlay"></div>
       </div>
 
-      <div class="home-hero__content">
+      <div class="home-hero__inner">
         <h1 class="home-hero__title">מתכננים לכם טיול עצמאי ליפן</h1>
 
         <ul class="home-hero__features" aria-label="יתרונות השירות">
@@ -119,7 +102,7 @@
 
         <p class="home-hero__lead">ליווי מלא בעברית - מהרעיון ועד ההזמנה</p>
 
-        <a href="#contact" class="btn-pill --primary home-hero__cta">
+        <a href="#contact" class="btn-pill --primary --lg home-hero__cta">
           <span class="btn-pill__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="19" y1="12" x2="5" y2="12"/>
