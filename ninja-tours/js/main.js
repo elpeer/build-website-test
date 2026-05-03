@@ -117,6 +117,36 @@
     if (typeof Swiper !== 'undefined') tripTypesSlider();
 
     // -----------------------------------------------------------------------
+    // Custom Trips slider (past customer trips)
+    // -----------------------------------------------------------------------
+    window.customTripsSlider = function () {
+      var $slider = $('.custom-trips__slider');
+      if (!$slider.length || typeof Swiper === 'undefined') return;
+      if (!$slider.find('.swiper-wrapper').length) {
+        $slider.children().wrapAll('<div class="swiper-wrapper"></div>');
+      }
+      $slider.addClass('swiper');
+
+      new Swiper($slider.get(0), {
+        slidesPerView: 'auto',
+        spaceBetween: 24,
+        speed: 600,
+        navigation: {
+          prevEl: '.custom-trips__nav-prev',
+          nextEl: '.custom-trips__nav-next'
+        },
+        a11y: { enabled: true }
+      });
+    };
+    if (typeof Swiper !== 'undefined') customTripsSlider();
+
+    // Fancybox is auto-bound to [data-fancybox] elements once loaded.
+    // Re-bind here in case it loaded after DOMReady.
+    if (typeof Fancybox !== 'undefined' && Fancybox.bind) {
+      Fancybox.bind('[data-fancybox]', {});
+    }
+
+    // -----------------------------------------------------------------------
     // Process timeline — red line fills as the user scrolls through it,
     // and each step fades in when it enters the viewport.
     // -----------------------------------------------------------------------
