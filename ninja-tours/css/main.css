@@ -1134,12 +1134,6 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   font-weight: 700;
   margin: 0;
   color: #fff;
-  display: flex;
-  align-items: center;
-}
-.contact__form-title span {
-  border-bottom: 2px solid #fff;
-  padding-block-end: 0.5rem;
 }
 .contact__form-grid {
   display: grid;
@@ -1162,6 +1156,8 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   font: inherit;
   font-size: 1.0625rem;
   text-align: start;
+  /* Force RTL on tel/email/number inputs which otherwise default LTR */
+  direction: rtl;
   border-radius: 0;
 }
 .contact__field input::placeholder { color: rgba(255, 255, 255, 0.75); }
@@ -1278,7 +1274,10 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
     grid-template-columns: 1fr;
     gap: 1.25rem;
   }
-  .contact__form-title { font-size: 1.25rem; }
+  .contact__form-title {
+    font-size: 1.875rem;
+    text-align: center;
+  }
   .contact__image-text { font-size: 2rem; inset-inline-start: 1rem; inset-block-end: 1rem; }
 }
 
