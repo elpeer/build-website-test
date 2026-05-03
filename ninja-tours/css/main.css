@@ -440,6 +440,22 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 
 /* ==========================================================================
+   Image separator — full-bleed image with a 10px gap top/bottom
+   ========================================================================== */
+.image-separator {
+  display: block;
+  width: 100%;
+  margin-block: 10px;
+  padding: 0;
+  line-height: 0;
+}
+.image-separator img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ==========================================================================
    Footer
    ========================================================================== */
 .footer {
