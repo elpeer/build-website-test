@@ -139,6 +139,14 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 .btn-pill.--lg .btn-pill__icon svg { width: 1.5rem; height: 1.5rem; }
 
+/* Solid blue with red icon circle (used by Why-us CTA) */
+.btn-pill.--blue {
+  background: #0038b7;
+  color: #fff;
+}
+.btn-pill.--blue .btn-pill__icon { background: #d11c1b; color: #fff; }
+.btn-pill.--blue:hover { background: #002b8e; }
+
 .btn-pill.--light {
   background: rgba(255, 255, 255, 0.18);
   color: #fff;
@@ -475,3 +483,184 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 /* ==========================================================================
    Sections — appended below as the design is built
    ========================================================================== */
+
+/* ==========================================================================
+   Why Us — 5 numbered reasons with active centerpiece card
+   Spec @ 1440 ref:
+   • Container max 1200, padding-inline 40
+   • Eyebrow 14/20 weight 500 + 8px red dot
+   • Title H1 64/77 weight 700, color #0038b7, "איתנו" in #d11c1b
+   • Card num 18/25 weight 500
+   • Card title 20/28 weight 700, color #222
+   • Card desc 16/26 weight 400, color #5a5a5a
+   • Active card 260w, radius 16, bg #f4eee7, padding 24
+   • Spacing eyebrow→title 48, title→cards 48, cards→cta 56
+   • CTA blue #0038b7 with red 40 circle, white arrow, text 18 white
+   • Mobile: horizontal scroll-snap slider
+   ========================================================================== */
+.why-us {
+  background: #fff;
+  padding-block: 6.25rem 5rem;
+}
+
+.why-us .container {
+  max-width: 75rem;
+  margin-inline: auto;
+  padding-inline: 2.5rem;
+}
+
+.why-us__head {
+  text-align: center;
+  margin-block-end: 3rem;
+}
+
+.why-us__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #222;
+  margin: 0 0 1rem;
+}
+.why-us__eyebrow-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #d11c1b;
+  display: inline-block;
+}
+
+.why-us__title {
+  font-size: 4rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #0038b7;
+  letter-spacing: 0;
+  margin: 0;
+}
+.why-us__title em {
+  color: #d11c1b;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.why-us__row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-block-end: 3.5rem;
+}
+
+.why-us__card {
+  flex: 0 0 11rem;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  border-radius: 1rem;
+  align-self: stretch;
+}
+
+.why-us__card-head {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.why-us__card-num {
+  font-size: 1.125rem;
+  line-height: 1.4;
+  font-weight: 500;
+  color: #222;
+}
+
+.why-us__card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.why-us__card-icon svg {
+  width: 3.75rem;
+  height: 3rem;
+  display: block;
+}
+
+.why-us__card-title {
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 700;
+  color: #222;
+  margin: auto 0 0;
+}
+
+.why-us__card-desc {
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 400;
+  color: #5a5a5a;
+  margin: 0.75rem 0 0;
+}
+
+.why-us__card.--active {
+  flex: 0 0 16.25rem;
+  background: #f4eee7;
+  padding: 3rem 1.5rem;
+}
+.why-us__card.--active .why-us__card-title {
+  margin-block-start: 3rem;
+}
+
+.why-us__cta {
+  display: flex;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .why-us {
+    padding-block: 3.5rem;
+  }
+  .why-us .container {
+    padding-inline: 1rem;
+  }
+  .why-us__head {
+    margin-block-end: 2rem;
+  }
+  .why-us__title {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .why-us__row {
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding-inline: 1rem;
+    margin-inline: -1rem;
+    margin-block-end: 2.5rem;
+    scrollbar-width: none;
+  }
+  .why-us__row::-webkit-scrollbar { display: none; }
+
+  .why-us__card {
+    scroll-snap-align: center;
+    flex: 0 0 14rem;
+    padding: 1.5rem;
+  }
+  .why-us__card.--active {
+    flex: 0 0 14rem;
+    padding: 2rem 1.5rem;
+  }
+  .why-us__card-title { margin-block-start: 2.5rem; }
+  .why-us__card.--active .why-us__card-title { margin-block-start: 2rem; }
+}
