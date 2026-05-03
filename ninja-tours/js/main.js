@@ -117,35 +117,53 @@
     if (typeof Swiper !== 'undefined') tripTypesSlider();
 
     // -----------------------------------------------------------------------
-    // Process timeline — red line fills as the user scrolls through it
+    // Process timeline — red line fills as the user scrolls through it,
+    // and each step fades in when it enters the viewport.
     // -----------------------------------------------------------------------
     (function initProcessTimeline() {
       var timeline = document.querySelector('.process__timeline');
       if (!timeline) return;
       var fill = timeline.querySelector('.process__line-fill');
-      if (!fill) return;
 
-      var ticking = false;
-      function update() {
-        var rect = timeline.getBoundingClientRect();
-        var winH = window.innerHeight;
-        // Start filling when timeline top reaches 85% of viewport,
-        // finish when bottom reaches 40% of viewport.
-        var start = winH * 0.85;
-        var end = winH * 0.40;
-        var scrolled = start - rect.top;
-        var range = rect.height + (start - end);
-        var progress = Math.max(0, Math.min(1, scrolled / range));
-        fill.style.height = (progress * 100) + '%';
+      // Scroll-driven line fill
+      if (fill) {
+        var ticking = false;
+        function update() {
+          var rect = timeline.getBoundingClientRect();
+          var winH = window.innerHeight;
+          var start = winH * 0.85;
+          var end = winH * 0.40;
+          var scrolled = start - rect.top;
+          var range = rect.height + (start - end);
+          var progress = Math.max(0, Math.min(1, scrolled / range));
+          fill.style.height = (progress * 100) + '%';
+        }
+        function onScroll() {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(function () { update(); ticking = false; });
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', update);
+        update();
       }
-      function onScroll() {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(function () { update(); ticking = false; });
+
+      // Per-step fade-in via IntersectionObserver
+      var steps = timeline.querySelectorAll('.process__step');
+      if ('IntersectionObserver' in window && steps.length) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('--in-view');
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.2, rootMargin: '0px 0px -10% 0px' });
+        steps.forEach(function (s) { io.observe(s); });
+      } else {
+        // Fallback: just show
+        steps.forEach(function (s) { s.classList.add('--in-view'); });
       }
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', update);
-      update();
     })();
 
     // -----------------------------------------------------------------------
