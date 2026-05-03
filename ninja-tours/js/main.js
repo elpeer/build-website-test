@@ -1,0 +1,111 @@
+/* ==========================================================================
+   Ninja Tours — main.js
+   Conventions: Elevate Digital Studio (jQuery IIFE)
+   ========================================================================== */
+
+(function ($) {
+  'use strict';
+
+  $(document).ready(function () {
+
+    // -----------------------------------------------------------------------
+    // Preloader
+    // -----------------------------------------------------------------------
+    $(window).on('load', function () {
+      $('.preloader').addClass('--hidden');
+    });
+
+    // -----------------------------------------------------------------------
+    // Sticky header
+    // -----------------------------------------------------------------------
+    function fixedHeaderActions() {
+      var $header = $('.header');
+      $(window).on('scroll', function () {
+        if ($(window).scrollTop() > 50) {
+          $header.addClass('fixed');
+        } else {
+          $header.removeClass('fixed');
+        }
+      });
+    }
+    fixedHeaderActions();
+
+    // -----------------------------------------------------------------------
+    // Mobile menu
+    // -----------------------------------------------------------------------
+    $('.burger-btn').on('click', function () {
+      var expanded = $(this).attr('aria-expanded') === 'true';
+      $(this).attr('aria-expanded', !expanded);
+      $('.main-menu').toggleClass('--open');
+      $('body').toggleClass('--menu-open');
+    });
+
+    $('.main-menu a').on('click', function () {
+      $('.burger-btn').attr('aria-expanded', 'false');
+      $('.main-menu').removeClass('--open');
+      $('body').removeClass('--menu-open');
+    });
+
+    // -----------------------------------------------------------------------
+    // Accordion init helper
+    // -----------------------------------------------------------------------
+    window.accordionInit = function (itemSelector, headSelector) {
+      $(document).on('click', headSelector, function () {
+        var $item = $(this).closest(itemSelector);
+        $item.toggleClass('--open');
+        $item.find('.accordion-item__body').first().slideToggle(300);
+      });
+    };
+
+    // -----------------------------------------------------------------------
+    // Default sliders — auto-init via data attributes on .default-slider
+    // -----------------------------------------------------------------------
+    window.defaultSliders = function () {
+      $('.default-slider').each(function (idx) {
+        var $el = $(this);
+        if ($el.data('initialized')) return;
+        $el.data('initialized', true);
+
+        var $wrap = $el.find('.swiper-wrapper').first();
+        if (!$wrap.length) {
+          // wrap children
+          $el.children().wrapAll('<div class="swiper-wrapper"></div>');
+        }
+        $el.addClass('swiper');
+
+        var prev = $el.find('.default-prev').get(0);
+        var next = $el.find('.default-next').get(0);
+
+        new Swiper($el.get(0), {
+          slidesPerView: $el.data('initial') || 1,
+          spaceBetween: $el.data('offset') || 16,
+          loop: !!$el.data('loop'),
+          speed: $el.data('speed') || 600,
+          autoplay: $el.data('autoplay') ? { delay: $el.data('duration') || 4000, disableOnInteraction: false } : false,
+          effect: $el.data('effect') || 'slide',
+          navigation: { prevEl: prev, nextEl: next },
+          a11y: { enabled: true }
+        });
+      });
+    };
+    if (typeof Swiper !== 'undefined') defaultSliders();
+
+    // -----------------------------------------------------------------------
+    // AOS init
+    // -----------------------------------------------------------------------
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+        duration: 700,
+        once: true,
+        offset: 80,
+        easing: 'ease-out-cubic'
+      });
+    }
+
+    // -----------------------------------------------------------------------
+    // Footer year
+    // -----------------------------------------------------------------------
+    $('#year').text(new Date().getFullYear());
+
+  });
+})(jQuery);
