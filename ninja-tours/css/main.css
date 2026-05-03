@@ -1003,9 +1003,10 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   display: flex;
   align-items: center;
   width: max-content;
-  /* 4 copies of the set are injected by JS, so translateX(-25%) moves
-     by exactly one set width and the next 3 stay in view → no dead space.
-     Spacing handled by margin on each logo (not gap) so the math is exact. */
+  /* The track holds N identical .partners__set children. The animation
+     translates by exactly one set's width per cycle (calc(-100% / N))
+     so the result is a truly seamless loop. JS clones the source set
+     enough times (6×) that the track is always wider than 2× viewport. */
   animation: partners-scroll 60s linear infinite;
   will-change: transform;
 }
@@ -1015,8 +1016,10 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 
 @keyframes partners-scroll {
+  /* Sliding by one set's width keeps the visual rhythm unchanged because
+     every set is identical. With 6 sets in the track that's -16.6667%. */
   from { transform: translateX(0); }
-  to   { transform: translateX(-25%); }
+  to   { transform: translateX(-16.6667%); }
 }
 
 @media (any-hover: hover) {
@@ -1026,13 +1029,21 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .partners__track { animation: none; }
 }
 
+.partners__set {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  /* No gap; spacing handled per-logo via margin so the set width is
+     deterministic and matches its clones to the pixel. */
+}
+
 .partners__logo {
   flex: 0 0 auto;
   background: #f4ebde;
   border-radius: 1rem;
   padding: 1.25rem 2rem;
-  height: 7.5rem;            /* fixed height per the brief */
-  margin-inline-end: 1.25rem; /* uniform spacing — applied to every logo so that the loop math (translate -25%) lands exactly on the start of the next clone */
+  height: 7.5rem;
+  margin-inline-end: 1.25rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
