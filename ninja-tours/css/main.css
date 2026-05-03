@@ -20,6 +20,9 @@ html {
   scroll-padding: 5.625rem 0 0 0;
   font-size: 0.83333vw;
   overflow-x: hidden;
+  /* Always reserve room for the scrollbar so opening/closing a modal
+     doesn't shift the layout horizontally */
+  scrollbar-gutter: stable;
 }
 
 @media (max-width: 768px) and (orientation: portrait) {
@@ -715,14 +718,17 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .custom-trips__nav { margin-block-start: 1.75rem; }
 
   /* Mobile modal — Booking/Airbnb style: image hero + scrollable card */
-  .fancybox__slide { padding: 0.5rem; }
+  .fancybox__slide { padding: 0; }
+  .fancybox__content { padding: 0 !important; margin: 0 !important; max-width: 100% !important; width: 100% !important; }
   .trip-modal {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
     width: 100%;
     max-width: 100%;
-    max-height: 92vh;
-    border-radius: 1rem;
+    height: 100vh;
+    max-height: 100vh;
+    margin: 0;
+    border-radius: 0;
   }
   .trip-modal__media {
     min-height: 0;
