@@ -445,7 +445,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .image-separator {
   display: block;
   width: 100%;
-  margin-block: 10px;
+  margin: 0;
   padding: 0;
   line-height: 0;
 }
