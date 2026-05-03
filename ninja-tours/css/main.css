@@ -857,3 +857,226 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   /* No hover cursor on touch */
   .trip-types__cursor { display: none; }
 }
+
+/* ==========================================================================
+   Attractions — title + tabs + 3×2 card grid (mobile: 2-cards-per-slide
+   horizontal slider with peek of next pair).
+   ========================================================================== */
+.attractions {
+  background: #fffaf5;
+  padding-block: 5rem;
+}
+.attractions .container {
+  max-width: 75rem;
+  margin-inline: auto;
+  padding-inline: 2.5rem;
+}
+
+.attractions__head {
+  text-align: center;
+  margin-block-end: 2rem;
+  max-width: 50rem;
+  margin-inline: auto;
+}
+.attractions__title {
+  font-size: 4rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #063874;
+  margin: 0;
+}
+.attractions__title em {
+  color: #d2170a;
+  font-style: normal;
+  font-weight: 700;
+}
+.attractions__lead {
+  margin: 0.875rem 0 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #000;
+}
+
+/* Tabs */
+.attractions__tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.5rem;
+  margin-block: 0 2.5rem;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+}
+/* Center the tabs row inside the section */
+.attractions .attractions__tabs {
+  display: flex;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+.attractions__tab {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.875rem;
+  background: transparent;
+  color: #063874;
+  font-size: 0.875rem;
+  line-height: 1.2;
+  font-weight: 500;
+  min-width: 5.5rem;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.attractions__tab-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.attractions__tab-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.attractions__tab.--active {
+  background: #d2170a;
+  color: #fff;
+}
+@media (any-hover: hover) {
+  .attractions__tab:not(.--active):hover { background: #fff5f3; }
+}
+
+/* Grid */
+.attractions__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-block-end: 3rem;
+}
+.attractions__pair {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.attractions__card {
+  position: relative;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  aspect-ratio: 16 / 11;
+  background: #1a1a1a;
+}
+.attractions__card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+@media (any-hover: hover) {
+  .attractions__card:hover .attractions__card-img { transform: scale(1.04); }
+}
+.attractions__card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.7) 100%);
+  pointer-events: none;
+}
+.attractions__card-arrow {
+  position: absolute;
+  inset-block-start: 1rem;
+  inset-inline-end: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: #fff;
+  color: #063874;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+.attractions__card-arrow svg { width: 1rem; height: 1rem; }
+
+.attractions__card-body {
+  position: absolute;
+  inset-inline: 1.25rem;
+  inset-block-end: 1.25rem;
+  color: #fff;
+  z-index: 2;
+  text-align: start;
+}
+.attractions__card-title {
+  font-size: 1.25rem;
+  line-height: 1.3;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+  color: #fff;
+}
+.attractions__card-desc {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0;
+  color: #fff;
+  opacity: 0.9;
+}
+
+.attractions__cta {
+  display: flex;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .attractions { padding-block: 3rem; }
+  .attractions .container { padding-inline: 1rem; }
+  .attractions__title { font-size: 2rem; }
+  .attractions__lead { font-size: 0.9375rem; }
+
+  /* Tabs scroll horizontally if they overflow */
+  .attractions__tabs {
+    width: 100%;
+    margin-block-end: 1.5rem;
+    padding: 0.375rem;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scrollbar-width: none;
+  }
+  .attractions__tabs::-webkit-scrollbar { display: none; }
+  .attractions__tab {
+    flex: 0 0 auto;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.75rem;
+    min-width: 4.5rem;
+  }
+
+  /* Grid → horizontal slider, 2 cards per slide pair, peek of next */
+  .attractions__grid {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 1rem;
+    padding-inline: 1rem;
+    margin-inline: -1rem;
+    scrollbar-width: none;
+  }
+  .attractions__grid::-webkit-scrollbar { display: none; }
+
+  .attractions__pair {
+    flex: 0 0 80%;
+    scroll-snap-align: start;
+    gap: 1rem;
+  }
+  .attractions__card { aspect-ratio: 4 / 3; border-radius: 1rem; }
+  .attractions__card-arrow { width: 2rem; height: 2rem; }
+  .attractions__card-arrow svg { width: 0.875rem; height: 0.875rem; }
+}
