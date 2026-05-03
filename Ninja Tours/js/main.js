@@ -18,7 +18,30 @@
     fixedHeaderActions();
     menuActions();
     accordionInit('.accordion-item', '.accordion-item__head');
+    attractionsFilter();
   });
+
+  /* ---------- Attractions filter tabs ---------- */
+  function attractionsFilter() {
+    var $tabs  = $('.attractions__filter');
+    var $cards = $('.attraction-card');
+    if (!$tabs.length) return;
+
+    $tabs.on('click', function () {
+      var filter = $(this).data('filter');
+      $tabs.removeClass('isActive').attr('aria-selected', 'false');
+      $(this).addClass('isActive').attr('aria-selected', 'true');
+
+      if (filter === 'all') {
+        $cards.removeClass('is-hidden');
+      } else {
+        $cards.each(function () {
+          var match = $(this).data('category') === filter;
+          $(this).toggleClass('is-hidden', !match);
+        });
+      }
+    });
+  }
 
   /* ---------- Sliders (data-driven) ---------- */
   function defaultSliders() {
