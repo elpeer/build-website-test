@@ -409,18 +409,20 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 
 /* ==========================================================================
-   Preloader
+   Preloader — auto-hides via CSS (JS removes it sooner if available)
    ========================================================================== */
 .preloader {
   position: fixed;
   inset: 0;
   background: #fff;
   z-index: 9999;
-  opacity: 1;
   pointer-events: none;
-  transition: opacity 0.4s ease;
+  animation: preloader-fade 0.6s ease 0.4s forwards;
 }
 .preloader.--hidden { opacity: 0; visibility: hidden; }
+@keyframes preloader-fade {
+  to { opacity: 0; visibility: hidden; }
+}
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {

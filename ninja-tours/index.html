@@ -139,6 +139,32 @@
     </div>
   </footer>
 
+  <script>
+    // Vanilla fallbacks — work even if external libs fail to load
+    (function () {
+      var header = document.querySelector('.header');
+      function onScroll() {
+        if (!header) return;
+        header.classList.toggle('fixed', window.scrollY > 50);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      var burger = document.querySelector('.burger-btn');
+      var menus = document.querySelectorAll('.main-menu');
+      if (burger) {
+        burger.addEventListener('click', function () {
+          var open = burger.getAttribute('aria-expanded') === 'true';
+          burger.setAttribute('aria-expanded', String(!open));
+          menus.forEach(function (m) { m.classList.toggle('--open'); });
+          document.body.classList.toggle('--menu-open');
+        });
+      }
+
+      var year = document.getElementById('year');
+      if (year) year.textContent = new Date().getFullYear();
+    })();
+  </script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
