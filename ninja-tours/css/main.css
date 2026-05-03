@@ -1008,6 +1008,13 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .partners__track {
   display: flex;
   width: max-content;
+  /* Force LTR so the flex flow + translateX math is straightforward.
+     Inside the dir=rtl page this is what makes the marquee actually loop
+     seamlessly: translateX(-50%) moves the track physically left, the
+     second list (which lives at the END of DOM order) takes the place
+     of the first → invisible reset. Without this, RTL flex put the first
+     list at the right edge and translate(-50%) pushed everything off-stage. */
+  direction: ltr;
   animation: partners-scroll 50s linear infinite;
   will-change: transform;
 }
@@ -1040,9 +1047,9 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   border-radius: 1rem;
   padding: 1.25rem 2rem;
   height: 7.5rem;
-  /* Spacing handled by margin so each logo takes a fixed slot in the list
-     (no gap → list widths stay identical and the -50% snap is pixel-perfect) */
-  margin-inline-end: 1.25rem;
+  /* Symmetric margin (both sides) so the gap before list 2's first item
+     equals the gap between items inside a list — pixel-perfect seam */
+  margin: 0 0.625rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1064,7 +1071,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
     height: 5rem;
     padding: 0.875rem 1.25rem;
     border-radius: 0.875rem;
-    margin-inline-end: 0.75rem;
+    margin: 0 0.375rem;
   }
 }
 
