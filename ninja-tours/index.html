@@ -306,7 +306,7 @@
         </header>
 
         <div class="attractions__tabs" role="tablist" aria-label="קטגוריות">
-          <button type="button" class="attractions__tab" role="tab" data-tab="guides" aria-selected="false">
+          <button type="button" class="attractions__tab --active" role="tab" data-tab="all" aria-selected="true">
             <i class="attractions__tab-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="12" y1="22" x2="12" y2="2"/>
@@ -314,7 +314,28 @@
                 <path d="M20 16 L15 12 H4 V20 H15 L20 16 Z"/>
               </svg>
             </i>
-            <span>מדריכים</span>
+            <span>הכל</span>
+          </button>
+          <button type="button" class="attractions__tab" role="tab" data-tab="destinations" aria-selected="false">
+            <i class="attractions__tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2 C7.6 2 4 5.6 4 10 C4 16.5 12 22 12 22 C12 22 20 16.5 20 10 C20 5.6 16.4 2 12 2 Z"/>
+                <circle cx="12" cy="10" r="3" fill="currentColor"/>
+              </svg>
+            </i>
+            <span>יעדים</span>
+          </button>
+          <button type="button" class="attractions__tab" role="tab" data-tab="hotels" aria-selected="false">
+            <i class="attractions__tab-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <line x1="3" y1="9" x2="21" y2="9"/>
+                <line x1="3" y1="15" x2="21" y2="15"/>
+                <line x1="9" y1="3" x2="9" y2="21"/>
+                <line x1="15" y1="3" x2="15" y2="21"/>
+              </svg>
+            </i>
+            <span>מלונות</span>
           </button>
           <button type="button" class="attractions__tab" role="tab" data-tab="transport" aria-selected="false">
             <i class="attractions__tab-icon" aria-hidden="true">
@@ -329,28 +350,7 @@
             </i>
             <span>תחבורה</span>
           </button>
-          <button type="button" class="attractions__tab" role="tab" data-tab="hotels" aria-selected="false">
-            <i class="attractions__tab-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                <line x1="3" y1="9" x2="21" y2="9"/>
-                <line x1="3" y1="15" x2="21" y2="15"/>
-                <line x1="9" y1="3" x2="9" y2="21"/>
-                <line x1="15" y1="3" x2="15" y2="21"/>
-              </svg>
-            </i>
-            <span>מלונות</span>
-          </button>
-          <button type="button" class="attractions__tab" role="tab" data-tab="destinations" aria-selected="false">
-            <i class="attractions__tab-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2 C7.6 2 4 5.6 4 10 C4 16.5 12 22 12 22 C12 22 20 16.5 20 10 C20 5.6 16.4 2 12 2 Z"/>
-                <circle cx="12" cy="10" r="3" fill="currentColor"/>
-              </svg>
-            </i>
-            <span>יעדים</span>
-          </button>
-          <button type="button" class="attractions__tab --active" role="tab" data-tab="all" aria-selected="true">
+          <button type="button" class="attractions__tab" role="tab" data-tab="guides" aria-selected="false">
             <i class="attractions__tab-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="12" y1="22" x2="12" y2="2"/>
@@ -358,7 +358,7 @@
                 <path d="M20 16 L15 12 H4 V20 H15 L20 16 Z"/>
               </svg>
             </i>
-            <span>הכל</span>
+            <span>מדריכים</span>
           </button>
         </div>
 
