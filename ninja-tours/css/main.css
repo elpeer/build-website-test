@@ -1048,11 +1048,11 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   isolation: isolate;
   /* Section height locked to the background image's height (1800px = 112.5rem
      at the 1920 reference viewport, scales with vw) so the inner composition
-     sits centered exactly like the reference. */
+     sits in the upper-middle band like the reference. */
   min-height: 112.5rem;
   display: flex;
-  align-items: center;
-  padding-block: 5rem 6rem;
+  align-items: flex-start;       /* anchor content to the top */
+  padding-block: 13rem 6rem;     /* pull title down to roughly the middle of the leaves */
   background: #fff5e9 url('../images/footer_bg.jpg') center/cover no-repeat;
   overflow: hidden;
 }
@@ -1067,11 +1067,11 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   z-index: 1;
 }
 .contact__leaf--right {
-  inset-block-start: 0;
+  inset-block-start: 1.5rem;    /* small breathing room from the section top */
   inset-inline-start: 0;        /* RTL start = right side of viewport */
 }
 .contact__leaf--left {
-  inset-block-start: 0;
+  inset-block-start: 1.5rem;
   inset-inline-end: 0;          /* RTL end = left side of viewport */
 }
 
