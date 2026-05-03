@@ -994,47 +994,50 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   color: #444;
 }
 
+/* Marquee — Ben Nadel-style: each row is a flex container with TWO
+   identical groups + a gap between them. Both groups translate together;
+   when group 1 has slid fully off the start side, the keyframe resets and
+   group 1 (which lives at the end of the DOM order) reappears in its
+   original position thanks to the identical clone. The loop is seamless.
+   Each group must be wider than the viewport so no dead space appears at
+   the end of a cycle — that's why every group hardcodes 12 logos. */
 .partners__row {
+  display: flex;
+  gap: 1.25rem;
   overflow: hidden;
   margin-block-start: 1rem;
 }
 
-.partners__track {
+.partners__group {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   align-items: center;
-  width: max-content;
-  /* The track holds N identical .partners__set children. The animation
-     translates by exactly one set's width per cycle (calc(-100% / N))
-     so the result is a truly seamless loop. JS clones the source set
-     enough times (6×) that the track is always wider than 2× viewport. */
-  animation: partners-scroll 60s linear infinite;
+  gap: 1.25rem;
+  flex-shrink: 0;
+  min-width: 100%;            /* group always at least viewport-wide → no gap */
+  animation: partners-scroll 50s linear infinite;
   will-change: transform;
 }
-.partners__track--b {
+.partners__row--reverse .partners__group {
   animation-direction: reverse;
-  animation-duration: 75s;
+  animation-duration: 60s;
 }
 
+/* Translate the group by its own width PLUS the gap between groups. After
+   one cycle, group 2 is exactly where group 1 was → the loop snaps back to
+   0% with the same content visible. */
 @keyframes partners-scroll {
-  /* Sliding by one set's width keeps the visual rhythm unchanged because
-     every set is identical. With 6 sets in the track that's -16.6667%. */
   from { transform: translateX(0); }
-  to   { transform: translateX(-16.6667%); }
+  to   { transform: translateX(calc(-100% - 1.25rem)); }
 }
 
 @media (any-hover: hover) {
-  .partners__track:hover { animation-play-state: paused; }
+  .partners__row:hover .partners__group { animation-play-state: paused; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .partners__track { animation: none; }
-}
-
-.partners__set {
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-  /* No gap; spacing handled per-logo via margin so the set width is
-     deterministic and matches its clones to the pixel. */
+  .partners__group { animation: none; }
 }
 
 .partners__logo {
@@ -1043,8 +1046,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   border-radius: 1rem;
   padding: 1.25rem 2rem;
   height: 7.5rem;
-  margin-inline-end: 1.25rem;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
@@ -1061,11 +1063,17 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .partners__head { margin-block-end: 1.5rem; padding-inline: 1rem; }
   .partners__title { font-size: 1.875rem; }
   .partners__lead { font-size: 0.9375rem; }
+  .partners__row { gap: 0.75rem; }
+  .partners__group { gap: 0.75rem; }
   .partners__logo {
     height: 5rem;
     padding: 0.875rem 1.25rem;
     border-radius: 0.875rem;
-    margin-inline-end: 0.75rem;
+  }
+  /* Match the keyframe gap on mobile so the seamless join still aligns */
+  @keyframes partners-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(calc(-100% - 0.75rem)); }
   }
 }
 
