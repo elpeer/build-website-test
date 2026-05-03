@@ -1214,27 +1214,45 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   .contact {
     min-height: 0;
     padding-block: 3rem 4rem;
+    background-image: url('../images/footer_mobile_bg.jpg');
   }
   .contact__inner { padding-inline: 1rem; }
-  .contact__head { margin-block-end: 2rem; }
+  .contact__head {
+    /* Make the head a positioning context so the leaves sit around the title
+       instead of around the whole section on mobile */
+    position: relative;
+    padding-block: 7rem 5rem;
+    margin-block-end: 1.5rem;
+  }
   .contact__title { font-size: 1.875rem; }
   .contact__lead { font-size: 0.9375rem; }
 
-  .contact__leaf {
-    width: 9rem;
+  /* Lift the section's leaves out of the way and re-render them inside the
+     head: top-right + middle-bottom-left around the title block */
+  .contact__leaf--right,
+  .contact__leaf--left { display: none; }
+  .contact__head::before,
+  .contact__head::after {
+    content: '';
+    position: absolute;
+    width: 11rem;
+    height: 11rem;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    pointer-events: none;
   }
-  /* Right leaf stays top-right (= inline-start in RTL); left leaf moves to bottom-left */
-  .contact__leaf--right {
+  .contact__head::before {
+    /* right_leaf at the top-right (inline-start in RTL) */
+    background-image: url('../images/right_leaf.png');
     inset-block-start: 0;
-    inset-inline-start: 0;
+    inset-inline-start: -1.5rem;
   }
-  .contact__leaf--left {
-    inset-block-start: auto;
+  .contact__head::after {
+    /* left_leaf at the bottom-left (inline-end in RTL) */
+    background-image: url('../images/left_leaf.png');
     inset-block-end: 0;
-    inset-inline-end: auto;
-    inset-inline-start: auto;
-    inset-block-end: 0;
-    inset-inline-end: 0;        /* end in RTL = left side */
+    inset-inline-end: -1.5rem;
   }
 
   .contact__layout {
