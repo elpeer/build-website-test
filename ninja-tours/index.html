@@ -33,6 +33,11 @@
   <a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
   <div class="preloader"></div>
 
+  <!-- ==========================================================================
+       Header — fixed, transparent over the hero, turns white on scroll
+       (.fixed class added by main.js when scrollTop > 50). Logo centered,
+       2 nav menus on the sides, search button + light pill CTA on the end.
+       ========================================================================== -->
   <header class="header">
     <div class="header-inner">
       <nav class="main-menu main-menu--start" aria-label="תפריט ראשי - יעדים">
@@ -84,6 +89,10 @@
 
   <main id="main-content">
 
+    <!-- ==========================================================================
+         Hero — full-bleed video background with title, features and CTA pill.
+         Above-the-fold; renders without external libs as a graceful fallback.
+         ========================================================================== -->
     <section class="home-hero" id="home-hero">
       <div class="home-hero__media" aria-hidden="true">
         <video class="home-hero__video" autoplay muted loop playsinline poster="images/hero-poster.jpg">
@@ -115,6 +124,11 @@
       </div>
     </section>
 
+    <!-- ==========================================================================
+         Why Us — 5 numbered reasons in a row. Each card has a subtle vertical
+         divider; on hover the description fades in below the title without
+         changing card height (grid-template-rows 0fr → 1fr trick).
+         ========================================================================== -->
     <section class="why-us" id="why-us">
       <div class="container">
         <header class="why-us__head">
@@ -228,6 +242,10 @@
       </div>
     </section>
 
+    <!-- ==========================================================================
+         Trip Types — Swiper slider, edge-to-edge, with a follower "בואו נתחיל"
+         cursor that shows on hover over cards 2..n (skips the first card).
+         ========================================================================== -->
     <section class="trip-types" id="trip-types">
       <header class="trip-types__head">
         <h2 class="trip-types__title">איזה סוג טיול <em>מתאים לכם?</em></h2>
@@ -299,6 +317,11 @@
       </div>
     </section>
 
+    <!-- ==========================================================================
+         Attractions — title + 5 tabs (הכל is first/active in RTL) + 3×2 grid
+         of image cards. Mobile collapses to a 2-cards-per-slide horizontal
+         scroll-snap slider with peek of the next pair.
+         ========================================================================== -->
     <section class="attractions" id="attractions">
       <div class="container">
         <header class="attractions__head">
@@ -470,6 +493,12 @@
       </div>
     </section>
 
+    <!-- ==========================================================================
+         Process — 3-step zigzag timeline around a central red line.
+         Steps 1 & 3 have image right + text left; step 2 reversed.
+         The line fills as the user scrolls (JS in main.js); each step
+         fades in via IntersectionObserver.
+         ========================================================================== -->
     <section class="process" id="process">
       <div class="container">
         <header class="process__head">
@@ -531,10 +560,19 @@
       </div>
     </section>
 
+    <!-- ==========================================================================
+         Image separator — decorative full-bleed image, no padding.
+         ========================================================================== -->
     <section class="image-separator" aria-hidden="true">
       <img src="images/flat-image-separator.jpg" alt="" loading="lazy">
     </section>
 
+    <!-- ==========================================================================
+         Custom Trips — slider of past customer trips. Each card has a "קרא עוד"
+         button that opens a Fancybox modal with full description, location
+         tags and a customer quote. Modal sources are wrapped in a hidden
+         .trip-modal-sources div and cloned by Fancybox on open.
+         ========================================================================== -->
     <section class="custom-trips" id="custom-trips">
       <header class="custom-trips__head">
         <h2 class="custom-trips__title">טיולים <em>מותאמים</em> שבנינו ללקוחות</h2>
@@ -906,6 +944,11 @@
       </div><!-- /.trip-modal-sources -->
     </section>
 
+    <!-- ==========================================================================
+         Testimonials — Google reviews slider with smart autoplay:
+         pauses on hover (pauseOnMouseEnter), stops permanently on the
+         first arrow click (disableOnInteraction).
+         ========================================================================== -->
     <section class="testimonials" id="testimonials">
       <header class="testimonials__head">
         <span class="testimonials__head-stars" aria-hidden="true">
@@ -1073,6 +1116,12 @@
       </div>
     </section>
 
+    <!-- ==========================================================================
+         Partners — two infinite-marquee rows of partner logos. Pure CSS
+         animation (no JS dep). Each row contains a .partners__track holding
+         TWO identical .partners__list children; translateX(0 → -50%) moves
+         the track by exactly one list width → seamless loop.
+         ========================================================================== -->
     <section class="partners" id="partners">
       <header class="partners__head">
         <h2 class="partners__title">עובדים עם מגוון הגופים <em>המובילים</em> ביפן</h2>
@@ -1152,6 +1201,11 @@
       </div>
     </section>
 
+    <!-- ==========================================================================
+         About — image left + text right (desktop). Mobile stacks
+         image-first then text. Both children pinned to grid-row: 1 to
+         defeat sparse auto-flow.
+         ========================================================================== -->
     <section class="about" id="about">
       <div class="container">
         <figure class="about__image">
@@ -1176,6 +1230,13 @@
       </div>
     </section>
 
+    <!-- ==========================================================================
+         Contact — soft background image with cherry-blossom leaves at the
+         corners, dark-blue form on one side and a flat "Let's plan"
+         image on the other. Section height locked to the bg image's height
+         (1800px desktop / 1872px mobile). Mobile stacks image above form
+         and re-positions the leaves around the title via head ::before/::after.
+         ========================================================================== -->
     <section class="contact" id="contact">
       <img class="contact__leaf contact__leaf--right" src="images/right_leaf.png" alt="" loading="lazy">
       <img class="contact__leaf contact__leaf--left" src="images/left_leaf.png" alt="" loading="lazy">
@@ -1230,6 +1291,11 @@
 
   </main>
 
+  <!-- ==========================================================================
+       Footer — dark green-black (#132221) with 6 columns: logo, categories,
+       popular destinations, about, travel info, contact. Bottom bar holds
+       copyright + design credit.
+       ========================================================================== -->
   <footer class="footer" id="footer">
     <div class="footer__inner">
       <div class="footer__col footer__col--logo">
