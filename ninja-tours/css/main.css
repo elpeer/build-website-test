@@ -1437,9 +1437,11 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   margin-inline: auto;
   padding: 4rem 2.5rem 3rem;
   display: grid;
-  /* Logo column (first DOM child) auto-sized — sits at the inline-start
-     (right in RTL); 5 nav/contact columns evenly spaced after it */
-  grid-template-columns: auto repeat(5, 1fr);
+  /* 6 equal columns. Logo column hugs its inline-start (right in RTL)
+     via justify-self below, so the logo sits flush with the right edge
+     of the section while every other column shares the remaining width
+     evenly. */
+  grid-template-columns: repeat(6, 1fr);
   align-items: start;
   gap: 2rem;
 }
@@ -1496,11 +1498,13 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 /* Logo column */
 .footer__col--logo {
   align-self: center;
+  justify-self: start;        /* start in RTL = right edge of its grid cell */
 }
 .footer__logo img {
   display: block;
   width: 7rem;
   height: auto;
+  max-width: 100%;
 }
 
 /* Bottom bar */
