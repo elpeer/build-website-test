@@ -1096,6 +1096,58 @@
       </div>
     </section>
 
+    <section class="contact" id="contact">
+      <img class="contact__leaf contact__leaf--right" src="images/right_leaf.png" alt="" loading="lazy">
+      <img class="contact__leaf contact__leaf--left" src="images/left_leaf.png" alt="" loading="lazy">
+
+      <div class="contact__inner">
+        <header class="contact__head">
+          <h2 class="contact__title">מוכנים לטיול של <em>פעם בחיים?</em></h2>
+          <p class="contact__lead">בואו נתחיל לתכנן את יפן שלכם, בדיוק כמו שחלמתם.</p>
+        </header>
+
+        <div class="contact__layout">
+          <form class="contact__form" novalidate>
+            <h3 class="contact__form-title"><span>בואו נתכנן את הטיול שלך</span></h3>
+            <div class="contact__form-grid">
+              <label class="contact__field">
+                <input type="text" name="name" placeholder="שם מלא" required>
+              </label>
+              <label class="contact__field">
+                <input type="email" name="email" placeholder="מייל" required>
+              </label>
+              <label class="contact__field">
+                <input type="tel" name="phone" placeholder="טלפון" required>
+              </label>
+              <label class="contact__field">
+                <input type="number" name="people" placeholder="מספר נפשות" min="1">
+              </label>
+              <label class="contact__field">
+                <input type="text" name="dates" placeholder="טווח ימים מועדף לטיול">
+              </label>
+              <label class="contact__field">
+                <input type="text" name="budget" placeholder="סכום תקציבי מועדף לטיול">
+              </label>
+            </div>
+            <button type="submit" class="btn-pill --primary --lg contact__submit">
+              <span class="btn-pill__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12"/>
+                  <polyline points="12 19 5 12 12 5"/>
+                </svg>
+              </span>
+              <span class="btn-pill__text">התייעצות ללא עלות</span>
+            </button>
+          </form>
+
+          <figure class="contact__image">
+            <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200&q=80" alt="">
+            <span class="contact__image-text" aria-hidden="true">LET'S PLAN<br>YOUR TRIP</span>
+          </figure>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="footer">
