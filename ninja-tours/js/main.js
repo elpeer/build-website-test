@@ -117,6 +117,15 @@
     if (typeof Swiper !== 'undefined') tripTypesSlider();
 
     // -----------------------------------------------------------------------
+    // Attractions tabs — toggle active state
+    // -----------------------------------------------------------------------
+    $('.attractions__tab').on('click', function () {
+      var $btn = $(this);
+      $('.attractions__tab').removeClass('--active').attr('aria-selected', 'false');
+      $btn.addClass('--active').attr('aria-selected', 'true');
+    });
+
+    // -----------------------------------------------------------------------
     // Trip Types — custom "בואו נתחיל" follower cursor on cards 2..n
     // -----------------------------------------------------------------------
     (function initTripTypesCursor() {
