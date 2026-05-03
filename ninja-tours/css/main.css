@@ -1039,6 +1039,210 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 }
 
 /* ==========================================================================
+   Contact — title with cherry-blossom leaves at the corners over a soft
+   background image, dark-blue form on one side, flat image on the other.
+   Mobile: image moves above the form; leaves move to top-right/bottom-left.
+   ========================================================================== */
+.contact {
+  position: relative;
+  isolation: isolate;
+  padding-block: 5rem 6rem;
+  background: #fff5e9 url('../images/footer_bg.jpg') center/cover no-repeat;
+  overflow: hidden;
+}
+
+.contact__leaf {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  width: 22rem;
+  height: auto;
+  z-index: 1;
+}
+.contact__leaf--right {
+  inset-block-start: 0;
+  inset-inline-start: 0;        /* RTL start = right side of viewport */
+}
+.contact__leaf--left {
+  inset-block-start: 0;
+  inset-inline-end: 0;          /* RTL end = left side of viewport */
+}
+
+.contact__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: 2.5rem;
+}
+
+.contact__head {
+  text-align: center;
+  margin-block-end: 3rem;
+}
+.contact__title {
+  font-size: 4rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #063874;
+  margin: 0;
+}
+.contact__title em {
+  color: #d2170a;
+  font-style: normal;
+  font-weight: 700;
+}
+.contact__lead {
+  margin: 1rem auto 0;
+  max-width: 38rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #222;
+}
+
+.contact__layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  gap: 2rem;
+}
+
+/* Form (right column in RTL = grid col 1) */
+.contact__form {
+  grid-column: 1;
+  grid-row: 1;
+  background: #063874;
+  border-radius: 1.5rem;
+  padding: 2.5rem 2.25rem 2rem;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.contact__form-title {
+  font-size: 1.625rem;
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+.contact__form-title span {
+  border-bottom: 2px solid #fff;
+  padding-block-end: 0.375rem;
+}
+.contact__form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem 2rem;
+}
+.contact__field {
+  display: block;
+  position: relative;
+}
+.contact__field input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+  padding: 0.625rem 0;
+  color: #fff;
+  font: inherit;
+  font-size: 0.9375rem;
+  text-align: start;
+  border-radius: 0;
+}
+.contact__field input::placeholder { color: rgba(255, 255, 255, 0.75); }
+.contact__field input:focus {
+  outline: none;
+  border-bottom-color: #fff;
+}
+
+.contact__submit {
+  align-self: flex-start;
+  width: fit-content;
+}
+
+/* Flat image (left column in RTL = grid col 2) */
+.contact__image {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  min-height: 100%;
+}
+.contact__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Temporary text overlay until the flat 'LET'S PLAN YOUR TRIP' image is provided */
+.contact__image-text {
+  position: absolute;
+  inset-inline-start: 1.75rem;
+  inset-block-end: 1.75rem;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 3rem;
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .contact { padding-block: 3rem 4rem; }
+  .contact__inner { padding-inline: 1rem; }
+  .contact__head { margin-block-end: 2rem; }
+  .contact__title { font-size: 1.875rem; }
+  .contact__lead { font-size: 0.9375rem; }
+
+  .contact__leaf {
+    width: 9rem;
+  }
+  /* Right leaf stays top-right (= inline-start in RTL); left leaf moves to bottom-left */
+  .contact__leaf--right {
+    inset-block-start: 0;
+    inset-inline-start: 0;
+  }
+  .contact__leaf--left {
+    inset-block-start: auto;
+    inset-block-end: 0;
+    inset-inline-end: auto;
+    inset-inline-start: auto;
+    inset-block-end: 0;
+    inset-inline-end: 0;        /* end in RTL = left side */
+  }
+
+  .contact__layout {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  /* Image first then form, on mobile */
+  .contact__image {
+    grid-column: 1;
+    grid-row: 1;
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+  }
+  .contact__form {
+    grid-column: 1;
+    grid-row: 2;
+    padding: 1.75rem 1.5rem 1.5rem;
+    gap: 1.25rem;
+  }
+  .contact__form-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .contact__form-title { font-size: 1.25rem; }
+  .contact__image-text { font-size: 2rem; inset-inline-start: 1rem; inset-block-end: 1rem; }
+}
+
+/* ==========================================================================
    Image separator — full-bleed image with a 10px gap top/bottom
    ========================================================================== */
 .image-separator {
