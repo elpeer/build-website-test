@@ -117,6 +117,37 @@
     if (typeof Swiper !== 'undefined') tripTypesSlider();
 
     // -----------------------------------------------------------------------
+    // Trip Types — custom "בואו נתחיל" follower cursor on cards 2..n
+    // -----------------------------------------------------------------------
+    (function initTripTypesCursor() {
+      var $cards = $('.trip-types__card');
+      if (!$cards.length) return;
+      // Skip touch devices
+      if (window.matchMedia('(hover: none)').matches) return;
+
+      var $cursor = $('<div class="trip-types__cursor" aria-hidden="true">בואו נתחיל</div>')
+        .appendTo('body');
+
+      var $hoverable = $cards.not(':first');
+
+      $hoverable.on('mouseenter', function () {
+        $cursor.addClass('--visible');
+      });
+      $hoverable.on('mouseleave', function () {
+        $cursor.removeClass('--visible');
+      });
+
+      // Hide when entering the first card or leaving the section
+      $cards.first().on('mouseenter', function () {
+        $cursor.removeClass('--visible');
+      });
+
+      $(document).on('mousemove', function (e) {
+        $cursor.css({ left: e.clientX + 'px', top: e.clientY + 'px' });
+      });
+    })();
+
+    // -----------------------------------------------------------------------
     // AOS init
     // -----------------------------------------------------------------------
     if (typeof AOS !== 'undefined') {
