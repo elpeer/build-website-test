@@ -140,6 +140,37 @@
     };
     if (typeof Swiper !== 'undefined') customTripsSlider();
 
+    // -----------------------------------------------------------------------
+    // Testimonials slider — autoplay that pauses on hover and stops on
+    // arrow click (disableOnInteraction).
+    // -----------------------------------------------------------------------
+    window.testimonialsSlider = function () {
+      var $slider = $('.testimonials__slider');
+      if (!$slider.length || typeof Swiper === 'undefined') return;
+      if (!$slider.find('.swiper-wrapper').length) {
+        $slider.children().wrapAll('<div class="swiper-wrapper"></div>');
+      }
+      $slider.addClass('swiper');
+
+      new Swiper($slider.get(0), {
+        slidesPerView: 'auto',
+        spaceBetween: 24,
+        speed: 700,
+        loop: true,
+        autoplay: {
+          delay: 4000,
+          disableOnInteraction: true,
+          pauseOnMouseEnter: true
+        },
+        navigation: {
+          prevEl: '.testimonials__nav-prev',
+          nextEl: '.testimonials__nav-next'
+        },
+        a11y: { enabled: true }
+      });
+    };
+    if (typeof Swiper !== 'undefined') testimonialsSlider();
+
     // Fancybox is auto-bound to [data-fancybox] elements once loaded.
     // hideScrollbar: false prevents the body padding-right shim Fancybox
     // adds on open, which was causing a few pixels of horizontal scroll
