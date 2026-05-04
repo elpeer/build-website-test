@@ -50,9 +50,12 @@
         </ul>
       </nav>
 
-      <a href="index.html" class="logo" aria-label="Ninja Tours - חזרה לדף הבית">
-        <img class="logo__mark" src="images/logo.svg" alt="Ninja Tours" width="120" height="60">
-      </a>
+      <div>
+        <a href="index.html" class="logo" aria-label="Ninja Tours - חזרה לדף הבית">
+          <img class="--default" src="images/logo.svg" alt="Ninja Tours">
+          <img class="--dark" src="images/logo-dark.svg" alt="Ninja Tours">
+        </a>
+      </div>
 
       <div class="header-end">
         <nav class="main-menu main-menu--end" aria-label="תפריט ראשי - אודות">
@@ -88,6 +91,19 @@
   </header>
 
   <main id="main-content">
+
+    <!-- ==========================================================================
+         Breadcrumbs — fixed pattern for every internal page.
+         Sits at the very top of <main> below the header.
+         ========================================================================== -->
+    <nav class="breadcrumbs" aria-label="פירורי לחם">
+      <div class="container">
+        <ol class="breadcrumbs__list">
+          <li><a href="index.html">עמוד הבית</a></li>
+          <li aria-current="page">יעדים</li>
+        </ol>
+      </div>
+    </nav>
 
     <!-- ==========================================================================
          Destinations — Intro
