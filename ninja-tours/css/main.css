@@ -2958,10 +2958,178 @@ ol {
     top: 2rem;
     transform: translateX(-50%);
   }
-
   .process__step-num {
     font-size: 1.75rem;
   }
 }
 
-SimplyCodes
+/* ==========================================================================
+   Destinations page — intro (collapsible body) + 3-col grid of place cards
+   Used on destinations.html.
+   ========================================================================== */
+
+/* Make the body class for the destinations page push content below the
+   sticky header (the header is fixed and transparent on the homepage but
+   sits above content here). */
+.page-destinations { padding-block-start: var(--header-height); }
+.page-destinations .header {
+  background: #fff;
+  color: var(--color-text);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06);
+}
+.page-destinations .header .logo { color: var(--color-accent); }
+
+/* Intro */
+.destinations-intro {
+  background: #fffaf5;
+  padding-block: 3.5rem 2.5rem;
+}
+.destinations-intro .container {
+  max-width: 75rem;
+  margin-inline: auto;
+  padding-inline: 2.5rem;
+}
+.destinations-intro__head { text-align: start; }
+.destinations-intro__title {
+  font-size: 4rem;
+  line-height: 1.15;
+  font-weight: 700;
+  color: #063874;
+  margin: 0 0 1.5rem;
+}
+
+/* Body — collapsed by default to ~5 lines with a soft fade at the bottom.
+   When .--expanded is added, the clamp is removed and the fade hidden. */
+.destinations-intro__body {
+  position: relative;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: #222;
+  max-height: 9.5em;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.destinations-intro__body p { margin: 0 0 1rem; }
+.destinations-intro__body p:last-child { margin: 0; }
+.destinations-intro__body::after {
+  content: "";
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  height: 3em;
+  background: linear-gradient(to bottom, rgba(255, 250, 245, 0), #fffaf5);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.destinations-intro__body.--expanded {
+  max-height: 200em;       /* high cap so transition still animates */
+}
+.destinations-intro__body.--expanded::after { opacity: 0; }
+
+.destinations-intro__toggle {
+  margin-block-start: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: none;
+  border: 0;
+  padding: 0.5rem 0;
+  color: #d2170a;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.destinations-intro__toggle svg {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.3s ease;
+}
+.destinations-intro__toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+/* Grid */
+.destinations {
+  background: #fffaf5;
+  padding-block: 1rem 5rem;
+}
+.destinations .container {
+  max-width: 75rem;
+  margin-inline: auto;
+  padding-inline: 2.5rem;
+}
+.destinations__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.destinations__card {
+  position: relative;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: #1a1a1a;
+}
+.destinations__card-link {
+  position: absolute;
+  inset: 0;
+  display: block;
+  text-decoration: none;
+  color: #fff;
+}
+.destinations__card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+@media (any-hover: hover) {
+  .destinations__card-link:hover .destinations__card-img { transform: scale(1.04); }
+}
+.destinations__card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.7) 100%);
+  pointer-events: none;
+}
+.destinations__card-body {
+  position: absolute;
+  inset-inline: 1.5rem;
+  inset-block-end: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  z-index: 2;
+  text-align: start;
+  color: #fff;
+}
+.destinations__card-region {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  opacity: 0.85;
+}
+.destinations__card-title {
+  font-size: 1.5rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .destinations-intro { padding-block: 2.5rem 1.5rem; }
+  .destinations-intro .container { padding-inline: 1rem; }
+  .destinations-intro__title { font-size: 2rem; margin-block-end: 1rem; }
+  .destinations-intro__body { font-size: 0.9375rem; max-height: 11em; }
+
+  .destinations { padding-block: 1rem 3rem; }
+  .destinations .container { padding-inline: 1rem; }
+  .destinations__grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .destinations__card-body { inset-inline: 1rem; inset-block-end: 1rem; }
+  .destinations__card-title { font-size: 1.0625rem; }
+  .destinations__card-region { font-size: 0.75rem; }
+}

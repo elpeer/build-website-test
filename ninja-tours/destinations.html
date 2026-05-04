@@ -1,0 +1,413 @@
+
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Ninja Tours | יעדים ביפן</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="description" content="יעדים מובילים ביפן — טוקיו, קיוטו, אוסקה, האקונה, חמשת אגמי פוג'י ועוד. כל הנקודות החשובות לטיול עצמאי ביפן." />
+
+  <meta property="og:title" content="Ninja Tours | יעדים ביפן" />
+  <meta property="og:description" content="היעדים המובילים ביפן לטיול עצמאי — תכנון, טיפים והשראה." />
+  <meta property="og:image" content="img/og-cover.jpg" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ninja-tours.co.il/destinations" />
+
+  <link rel="canonical" href="https://ninja-tours.co.il/destinations" />
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+
+<body class="page-destinations">
+  <a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
+
+  <!-- ==========================================================================
+       Header — copied 1:1 from index.html so navigation/branding stay
+       consistent across pages. Header element styling is shared via main.css.
+       On internal pages it should NOT be transparent over a hero, so
+       body.page-destinations forces the .fixed (white) variant immediately.
+       ========================================================================== -->
+  <header class="header">
+    <div class="header-inner">
+      <nav class="main-menu main-menu--start" aria-label="תפריט ראשי - יעדים">
+        <ul>
+          <li><a href="destinations.html">יעדים</a></li>
+          <li><a href="#">מלונות</a></li>
+          <li><a href="#">אטרקציות</a></li>
+          <li><a href="#">מדריכים</a></li>
+          <li><a href="#">תחבורה</a></li>
+        </ul>
+      </nav>
+
+      <a href="index.html" class="logo" aria-label="Ninja Tours - חזרה לדף הבית">
+        <img class="logo__mark" src="images/logo.svg" alt="Ninja Tours" width="120" height="60">
+      </a>
+
+      <div class="header-end">
+        <nav class="main-menu main-menu--end" aria-label="תפריט ראשי - אודות">
+          <ul>
+            <li><a href="#">קצת עלינו</a></li>
+            <li><a href="#">השירותים שלנו</a></li>
+            <li><a href="#">על התהליך</a></li>
+          </ul>
+        </nav>
+
+        <button class="search-btn" aria-label="חיפוש">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="20" y1="20" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+
+        <a href="index.html#contact" class="btn-pill --light">
+          <span class="btn-pill__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/>
+              <polyline points="12 19 5 12 12 5"/>
+            </svg>
+          </span>
+          <span class="btn-pill__text">בואו נתחיל</span>
+        </a>
+      </div>
+
+      <button class="burger-btn" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ==========================================================================
+         Destinations — Intro
+         Title + paragraph that's collapsed by default to ~5 lines, with a
+         "קרא עוד" toggle that expands to the full body. JS toggle in main.js.
+         ========================================================================== -->
+    <section class="destinations-intro" id="destinations-intro">
+      <div class="container">
+        <header class="destinations-intro__head">
+          <h1 class="destinations-intro__title">יעדים ביפן</h1>
+          <div class="destinations-intro__body" id="destinations-intro-body">
+            <p>יפן היא לא עוד יעד, היא מסע לעולם אחר ושונה מכל מה שאתם מכירים. זה המקום שבו מסורת של אלפי שנים וטכנולוגיה שמרגישה מהעתיד חיות יחד בהרמוניה מושלמת. תפגשו כאן קולינריה מהמובילות בעולם (וכן, הסושי שם באמת שונה מכל מה שפגשתם), טבע משוגע מהרים שהתכסו לבן לחופים בצבע טורקיז, ועד יערות בצבע ירוק שלא מצריך פילטר אינסטגרמי. יפן היא צבעוניות, היא עומק והיא אווירה שקשה להסביר במילים, מצד אחד מקומות מלאי שלווה ומצד שני ערים סופר אנרגטיות עם חיי לילה מטורפים.</p>
+            <p>לא משנה מי אתם, יפן תמצא את הדרך לגעת בכם.</p>
+            <p>אנחנו ב-Ninja Tours, נדאג לחבר לכם את כל הקסם הזה לשילוב מדויק, בקצב ובסטייל שמתאים לכם בול.</p>
+          </div>
+          <button type="button" class="destinations-intro__toggle"
+                  aria-expanded="false" aria-controls="destinations-intro-body">
+            <span class="destinations-intro__toggle-text">קרא עוד</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+        </header>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         Destinations — Grid
+         3 columns on desktop, 2 on mobile. Each card: image, dark-bottom
+         gradient, region label (small) + destination name (large) overlaid.
+         ========================================================================== -->
+    <section class="destinations" id="destinations">
+      <div class="container">
+        <ul class="destinations__grid" role="list">
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=900" alt="טוקיו" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">קאנטו, יפן</span>
+                <span class="destinations__card-title">טוקיו</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=900" alt="אוסקה" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">קאנסאי, יפן</span>
+                <span class="destinations__card-title">אוסקה</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900" alt="קיוטו" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">קאנסאי, יפן</span>
+                <span class="destinations__card-title">קיוטו</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=900" alt="האלפים היפנים" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">צ'ובו, יפן</span>
+                <span class="destinations__card-title">האלפים היפנים</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1554797589-7241bb691973?w=900" alt="האקונה" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">קאנגאווה, יפן</span>
+                <span class="destinations__card-title">האקונה</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=900" alt="קאנאזווה" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">איסיקאווה, יפן</span>
+                <span class="destinations__card-title">קאנאזווה</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1480796927426-f609979314bd?w=900" alt="חמשת אגמי פוג'י" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">יאמאנאשי, יפן</span>
+                <span class="destinations__card-title">חמשת אגמי פוג'י</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1547192097-c0a063b552c8?w=900" alt="הירושימה" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">צ'וגוקו, יפן</span>
+                <span class="destinations__card-title">הירושימה</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=900" alt="נארה" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">קאנסאי, יפן</span>
+                <span class="destinations__card-title">נארה</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1573089734013-58daa1f1f1d2?w=900" alt="ניקו" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">טוצ'יגי, יפן</span>
+                <span class="destinations__card-title">ניקו</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=900" alt="קמקורה" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">קאנגאווה, יפן</span>
+                <span class="destinations__card-title">קמקורה</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=900" alt="קובה" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">היוגו, יפן</span>
+                <span class="destinations__card-title">קובה</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1520003570914-6e10d05cb74e?w=900" alt="אוקאיאמה ונאושימה" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">אוקאיאמה / קאגאווה, יפן</span>
+                <span class="destinations__card-title">אוקאיאמה ונאושימה</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1538485399081-7191377e8241?w=900" alt="הוקאידו" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">צפון יפן</span>
+                <span class="destinations__card-title">הוקאידו</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900" alt="קיושו" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">דרום יפן</span>
+                <span class="destinations__card-title">קיושו</span>
+              </span>
+            </a>
+          </li>
+
+          <li class="destinations__card" role="listitem">
+            <a href="#" class="destinations__card-link">
+              <img class="destinations__card-img" src="https://images.unsplash.com/photo-1520003570914-6e10d05cb74e?w=900" alt="אוקינאווה" loading="lazy">
+              <span class="destinations__card-overlay" aria-hidden="true"></span>
+              <span class="destinations__card-body">
+                <span class="destinations__card-region">אי טרופי, יפן</span>
+                <span class="destinations__card-title">אוקינאווה</span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       Footer — copied 1:1 from index.html so navigation/branding stay
+       consistent across pages.
+       ========================================================================== -->
+  <footer class="footer" id="footer">
+    <div class="footer__inner">
+      <div class="footer__col footer__col--logo">
+        <a href="index.html" class="footer__logo" aria-label="Ninja Tours">
+          <img src="images/logo.svg" alt="Ninja Tours" width="160" height="120">
+        </a>
+      </div>
+
+      <nav class="footer__col" aria-label="קטגוריות">
+        <h4 class="footer__heading">קטגוריות</h4>
+        <ul>
+          <li><a href="#">תחבורה</a></li>
+          <li><a href="#">נופים</a></li>
+          <li><a href="#">מלונות</a></li>
+          <li><a href="#">אטרקציות</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="יעדים פופולריים">
+        <h4 class="footer__heading">יעדים פופולריים</h4>
+        <ul>
+          <li><a href="destinations.html">טוקיו</a></li>
+          <li><a href="destinations.html">אוסקה</a></li>
+          <li><a href="destinations.html">קיוטו</a></li>
+          <li><a href="destinations.html">עוד יעדים</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="עלינו">
+        <h4 class="footer__heading">עלינו</h4>
+        <ul>
+          <li><a href="#">אודות</a></li>
+          <li><a href="#">שאלות ותשובות</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="מידע למטייל">
+        <h4 class="footer__heading">מידע למטייל</h4>
+        <ul>
+          <li><a href="#">מדריכים</a></li>
+          <li><a href="#">מידע שימושי</a></li>
+          <li><a href="#">קישורים חשובים</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer__col footer__col--contact">
+        <h4 class="footer__heading">יצירת קשר</h4>
+        <a class="footer__email" href="mailto:ninjatours@gmail.com">ninjatours@gmail.com</a>
+        <ul class="footer__socials" aria-label="רשתות חברתיות">
+          <li>
+            <a class="footer__social" href="#" aria-label="פייסבוק">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.2-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8.2v3h2.5V21h2.8z"/></svg>
+            </a>
+          </li>
+          <li>
+            <a class="footer__social" href="#" aria-label="אינסטגרם">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor"/>
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bar">
+      <p class="footer__copy">Copyright &copy;Ninja Tours. All right reserved</p>
+      <p class="footer__credit">Design &amp; Code by Elevate</p>
+    </div>
+  </footer>
+
+  <script>
+    // Vanilla fallbacks — work even if external libs fail to load
+    (function () {
+      var header = document.querySelector('.header');
+      function onScroll() {
+        if (!header) return;
+        header.classList.toggle('fixed', window.scrollY > 50);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      var burger = document.querySelector('.burger-btn');
+      var menus = document.querySelectorAll('.main-menu');
+      if (burger) {
+        burger.addEventListener('click', function () {
+          var open = burger.getAttribute('aria-expanded') === 'true';
+          burger.setAttribute('aria-expanded', String(!open));
+          menus.forEach(function (m) { m.classList.toggle('--open'); });
+          document.body.classList.toggle('--menu-open');
+        });
+      }
+    })();
+  </script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
