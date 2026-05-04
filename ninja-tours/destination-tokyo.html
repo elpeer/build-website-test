@@ -329,6 +329,171 @@
     </section>
 
     <!-- ==========================================================================
+         Hotels — selected hotels for the destination, presented as an
+         edge-to-edge Swiper of hotel cards. Each card: image on top,
+         location pill + audience tag pills, 5-star row, title and a
+         clamped description. Below the slider: a centred CTA to the
+         full hotels list. Custom init lives in main.js.
+         ========================================================================== -->
+    <section class="hotels" id="hotels">
+      <header class="hotels__head">
+        <h2 class="hotels__title">מלונות נבחרים - קיוטו</h2>
+      </header>
+
+      <div class="hotels__slider">
+        <div class="swiper-wrapper">
+
+          <article class="hotels__card swiper-slide">
+            <figure class="hotels__card-media">
+              <img src="https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=900&q=80" alt="The Royal Park Hotel Iconic Kyoto" loading="lazy">
+            </figure>
+            <div class="hotels__card-body">
+              <div class="hotels__card-tags">
+                <span class="hotels__card-tag --location">מרכז קיוטו, קיוטו</span>
+              </div>
+              <div class="hotels__card-audience">
+                <span>גיל הזהב</span>
+                <span>זוגות</span>
+                <span>צעירים</span>
+              </div>
+              <div class="hotels__card-stars" aria-label="דירוג 5 כוכבים">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+              </div>
+              <h3 class="hotels__card-title">The Royal Park Hotel Iconic Kyoto</h3>
+              <p class="hotels__card-desc"><strong>מלון יוקרתי ומודרני בלב קיוטו</strong>, במרחק 15 דקות הליכה מאזור KAWARAMACHI התוסס, סמוך לשוק נישיקי, סמטאות ציוריות, איזאקיות ומסעדות מישלן, ו-12 דקות מהשדרה KIYAMACHI...</p>
+            </div>
+          </article>
+
+          <article class="hotels__card swiper-slide">
+            <figure class="hotels__card-media">
+              <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900&q=80" alt="Hyatt Regency Kyoto" loading="lazy">
+            </figure>
+            <div class="hotels__card-body">
+              <div class="hotels__card-tags">
+                <span class="hotels__card-tag --location">היגאשיאמה, קיוטו</span>
+              </div>
+              <div class="hotels__card-audience">
+                <span>זוגות</span>
+                <span>משפחות</span>
+                <span>גיל הזהב</span>
+              </div>
+              <div class="hotels__card-stars" aria-label="דירוג 5 כוכבים">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+              </div>
+              <h3 class="hotels__card-title">Hyatt Regency Kyoto</h3>
+              <p class="hotels__card-desc"><strong>מלון יוקרתי בסגנון יפני מודרני</strong>, בקרבת מקדש סנג'וסנגנדו ומוזיאון קיוטו, עם גישה נוחה לאזורי גיון ופונטוצ'ו, חוויה שמשלבת מסורת יפנית עם נוחות מערבית...</p>
+            </div>
+          </article>
+
+          <article class="hotels__card swiper-slide">
+            <figure class="hotels__card-media">
+              <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=900&q=80" alt="Hotel Granvia Kyoto" loading="lazy">
+            </figure>
+            <div class="hotels__card-body">
+              <div class="hotels__card-tags">
+                <span class="hotels__card-tag --location">תחנת קיוטו, קיוטו</span>
+              </div>
+              <div class="hotels__card-audience">
+                <span>צעירים</span>
+                <span>נוסעי עסקים</span>
+              </div>
+              <div class="hotels__card-stars" aria-label="דירוג 4 כוכבים">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg class="--empty" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+              </div>
+              <h3 class="hotels__card-title">Hotel Granvia Kyoto</h3>
+              <p class="hotels__card-desc"><strong>מלון מרשים מעל תחנת הרכבת המרכזית</strong>, גישה ישירה לכל היעדים בעיר ומחוצה לה. מומלץ לשהיות קצרות ולנוסעי עסקים, כולל מתקני כושר ומסעדות שף...</p>
+            </div>
+          </article>
+
+          <article class="hotels__card swiper-slide">
+            <figure class="hotels__card-media">
+              <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=900&q=80" alt="The Westin Miyako Kyoto" loading="lazy">
+            </figure>
+            <div class="hotels__card-body">
+              <div class="hotels__card-tags">
+                <span class="hotels__card-tag --location">הר היגאשיאמה, קיוטו</span>
+              </div>
+              <div class="hotels__card-audience">
+                <span>זוגות</span>
+                <span>גיל הזהב</span>
+              </div>
+              <div class="hotels__card-stars" aria-label="דירוג 5 כוכבים">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+              </div>
+              <h3 class="hotels__card-title">The Westin Miyako Kyoto</h3>
+              <p class="hotels__card-desc"><strong>מלון בוטיק יוקרתי על ההר</strong>, נוף פנורמי לעיר, סביבה שלווה עם גנים יפניים מסורתיים, מסעדות עם תפריט קייסקי ושירות מסור...</p>
+            </div>
+          </article>
+
+          <article class="hotels__card swiper-slide">
+            <figure class="hotels__card-media">
+              <img src="https://images.unsplash.com/photo-1538485399081-7191377e8241?w=900&q=80" alt="Hotel Ryumeikan Kyoto" loading="lazy">
+            </figure>
+            <div class="hotels__card-body">
+              <div class="hotels__card-tags">
+                <span class="hotels__card-tag --location">דרום קיוטו, קיוטו</span>
+              </div>
+              <div class="hotels__card-audience">
+                <span>זוגות</span>
+                <span>צעירים</span>
+              </div>
+              <div class="hotels__card-stars" aria-label="דירוג 4 כוכבים">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg class="--empty" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+              </div>
+              <h3 class="hotels__card-title">Hotel Ryumeikan Kyoto</h3>
+              <p class="hotels__card-desc"><strong>מלון מודרני עם עיצוב מינימליסטי</strong> ושירות אישי. במרחק הליכה ממקדש טופוקוג'י וגינות הזן המפורסמות, אווירה שקטה ופרטית...</p>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <div class="hotels__nav">
+        <button type="button" class="hotels__nav-btn hotels__nav-prev" aria-label="הקודם">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+        <a href="#" class="btn-pill --primary --lg hotels__cta">
+          <span class="btn-pill__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/>
+              <polyline points="12 19 5 12 12 5"/>
+            </svg>
+          </span>
+          <span class="btn-pill__text">לכל המלונות</span>
+        </a>
+        <button type="button" class="hotels__nav-btn hotels__nav-next" aria-label="הבא">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
          Contact — copied 1:1 from index.html for the consistent footer block
          ========================================================================== -->
     <section class="contact" id="contact">

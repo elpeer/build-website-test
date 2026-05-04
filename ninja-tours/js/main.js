@@ -174,6 +174,30 @@
     };
     if (typeof Swiper !== 'undefined') testimonialsSlider();
 
+    // -----------------------------------------------------------------------
+    // Hotels slider (destination pages) — edge-to-edge, spaceBetween: 0.
+    // -----------------------------------------------------------------------
+    window.hotelsSlider = function () {
+      var $slider = $('.hotels__slider');
+      if (!$slider.length || typeof Swiper === 'undefined') return;
+      if (!$slider.find('.swiper-wrapper').length) {
+        $slider.children().wrapAll('<div class="swiper-wrapper"></div>');
+      }
+      $slider.addClass('swiper');
+
+      new Swiper($slider.get(0), {
+        slidesPerView: 'auto',
+        spaceBetween: 0,
+        speed: 600,
+        navigation: {
+          prevEl: '.hotels__nav-prev',
+          nextEl: '.hotels__nav-next'
+        },
+        a11y: { enabled: true }
+      });
+    };
+    if (typeof Swiper !== 'undefined') hotelsSlider();
+
     // Fancybox is auto-bound to [data-fancybox] elements once loaded.
     // hideScrollbar: false prevents the body padding-right shim Fancybox
     // adds on open, which was causing a few pixels of horizontal scroll
