@@ -198,6 +198,16 @@
     };
     if (typeof Swiper !== 'undefined') hotelsSlider();
 
+    // -----------------------------------------------------------------------
+    // Generic accordion — register the global click handler so any
+    // .accordion-item__head on the page toggles its sibling
+    // .accordion-item__body via slideToggle. Used by FAQ on the
+    // destination page and any other Q&A-style block in the future.
+    // -----------------------------------------------------------------------
+    if (typeof window.accordionInit === 'function') {
+      window.accordionInit('.accordion-item', '.accordion-item__head');
+    }
+
     // Fancybox is auto-bound to [data-fancybox] elements once loaded.
     // hideScrollbar: false prevents the body padding-right shim Fancybox
     // adds on open, which was causing a few pixels of horizontal scroll
