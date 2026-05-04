@@ -239,6 +239,18 @@
     });
 
     // -----------------------------------------------------------------------
+    // Destinations intro — קרא עוד / הצג פחות toggle
+    // -----------------------------------------------------------------------
+    $('.destinations-intro__toggle').on('click', function () {
+      var $btn = $(this);
+      var $body = $('#' + $btn.attr('aria-controls'));
+      var expanded = !$body.hasClass('--expanded');
+      $body.toggleClass('--expanded', expanded);
+      $btn.attr('aria-expanded', String(expanded));
+      $btn.find('.destinations-intro__toggle-text').text(expanded ? 'הצג פחות' : 'קרא עוד');
+    });
+
+    // -----------------------------------------------------------------------
     // Trip Types — custom "בואו נתחיל" follower cursor on cards 2..n
     // -----------------------------------------------------------------------
     (function initTripTypesCursor() {
