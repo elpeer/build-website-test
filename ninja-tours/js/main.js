@@ -208,6 +208,21 @@
       window.accordionInit('.accordion-item', '.accordion-item__head');
     }
 
+    // -----------------------------------------------------------------------
+    // Destination photo grid — 'הצג עוד' toggle reveals the hidden rows
+    // beyond the first 8. Same handler swaps the label and chevron state.
+    // -----------------------------------------------------------------------
+    $('.dest-photo-grid__more').on('click', function () {
+      var $btn = $(this);
+      var $grid = $btn.closest('.dest-photo-grid').find('.dest-photo-grid__grid');
+      var expanded = !$grid.hasClass('--all');
+      $grid.toggleClass('--all', expanded);
+      $btn.toggleClass('--shown', expanded);
+      $btn.attr('aria-expanded', String(expanded));
+      $btn.find('.dest-photo-grid__more-text')
+          .text(expanded ? 'הצג פחות' : 'הצג עוד');
+    });
+
     // Fancybox is auto-bound to [data-fancybox] elements once loaded.
     // hideScrollbar: false prevents the body padding-right shim Fancybox
     // adds on open, which was causing a few pixels of horizontal scroll
