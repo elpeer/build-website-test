@@ -2968,26 +2968,73 @@ ol {
    Used on destinations.html.
    ========================================================================== */
 
-/* Make the body class for the destinations page push content below the
-   sticky header (the header is fixed and transparent on the homepage but
-   sits above content here). */
+/* Internal pages don't have a dark hero behind the header, so the white
+   --default logo would be invisible at the top. We hide it and show the
+   dark variant instead, while still letting the existing scroll handler
+   add .fixed (which shrinks + recenters the dark logo). Net effect: the
+   dark logo is large at the top of the page and shrinks on scroll, the
+   same visual rhythm the user expects from the homepage. */
 .page-destinations { padding-block-start: var(--header-height); }
-.page-destinations .header {
-  background: #fff;
-  color: var(--color-text);
-  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06);
+.page-destinations .header { background: #fff; color: var(--color-text); }
+.page-destinations .logo img.--default { opacity: 0; }
+.page-destinations .logo img.--dark {
+  opacity: 1;
+  /* Match the top-of-page positioning the homepage uses for .--default
+     so the visual hierarchy is identical at rest. */
+  width: 4.8125rem;
+  top: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
 }
-.page-destinations .header .logo { color: var(--color-accent); }
+.page-destinations .header.fixed .logo img.--dark {
+  width: 2.75rem;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Breadcrumbs — fixed pattern for every internal page */
+.breadcrumbs {
+  background: #fffaf5;
+  padding-block: 1rem 0.5rem;
+}
+.breadcrumbs .container {
+  max-width: none;
+  padding-inline: 6.25rem;
+}
+.breadcrumbs__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #5a5a5a;
+}
+.breadcrumbs__list li { display: inline-flex; align-items: center; }
+.breadcrumbs__list li:not(:last-child)::after {
+  content: "›";
+  margin-inline-start: 0.5rem;
+  color: #aaa;
+  font-size: 1rem;
+  line-height: 1;
+}
+.breadcrumbs__list a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.breadcrumbs__list a:hover { color: #063874; }
+.breadcrumbs__list li[aria-current] { color: #063874; font-weight: 600; }
 
 /* Intro */
 .destinations-intro {
   background: #fffaf5;
-  padding-block: 3.5rem 2.5rem;
+  padding-block: 3rem 2rem;
 }
 .destinations-intro .container {
-  max-width: 75rem;
-  margin-inline: auto;
-  padding-inline: 2.5rem;
+  max-width: none;
+  padding-inline: 6.25rem;     /* match header padding */
 }
 .destinations-intro__head { text-align: start; }
 .destinations-intro__title {
@@ -2995,36 +3042,28 @@ ol {
   line-height: 1.15;
   font-weight: 700;
   color: #063874;
-  margin: 0 0 1.5rem;
+  margin: 0 0 1.25rem;
 }
 
-/* Body — collapsed by default to ~5 lines with a soft fade at the bottom.
-   When .--expanded is added, the clamp is removed and the fade hidden. */
+/* Body — clamped to 2 lines by default with native ellipsis. .--expanded
+   removes the clamp and shows the full multi-paragraph text. */
 .destinations-intro__body {
-  position: relative;
   font-size: 1.0625rem;
   line-height: 1.75;
   color: #222;
-  max-height: 9.5em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  transition: max-height 0.4s ease;
 }
-.destinations-intro__body p { margin: 0 0 1rem; }
+.destinations-intro__body p { margin: 0 0 1rem; display: inline; }
 .destinations-intro__body p:last-child { margin: 0; }
-.destinations-intro__body::after {
-  content: "";
-  position: absolute;
-  inset-block-end: 0;
-  inset-inline: 0;
-  height: 3em;
-  background: linear-gradient(to bottom, rgba(255, 250, 245, 0), #fffaf5);
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
 .destinations-intro__body.--expanded {
-  max-height: 200em;       /* high cap so transition still animates */
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
 }
-.destinations-intro__body.--expanded::after { opacity: 0; }
+.destinations-intro__body.--expanded p { display: block; }
 
 .destinations-intro__toggle {
   margin-block-start: 1rem;
@@ -3053,18 +3092,26 @@ ol {
   padding-block: 1rem 5rem;
 }
 .destinations .container {
-  max-width: 75rem;
-  margin-inline: auto;
-  padding-inline: 2.5rem;
+  max-width: none;
+  padding-inline: 6.25rem;     /* match header padding */
 }
+/* Asymmetric 3-per-row grid: each row has 1 wide card (50%) + 2 narrow
+   cards (25% each). The wide card alternates ends every row, so row 1
+   has wide on the start side, row 2 has wide on the end side, and so on.
+   Implemented as a 4-col underlying grid where wide spans 2 cells.
+   nth-child(6n+1) = first card of an odd row → span 2.
+   nth-child(6n+6) = third card of an even row → span 2. */
 .destinations__grid {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
 }
+.destinations__card { grid-column: span 1; }
+.destinations__card:nth-child(6n+1),
+.destinations__card:nth-child(6n+6) { grid-column: span 2; }
 
 .destinations__card {
   position: relative;
@@ -3121,14 +3168,21 @@ ol {
 }
 
 @media (max-width: 768px) and (orientation: portrait) {
-  .destinations-intro { padding-block: 2.5rem 1.5rem; }
+  .breadcrumbs .container { padding-inline: 1rem; }
+  .breadcrumbs__list { font-size: 0.8125rem; }
+
+  .destinations-intro { padding-block: 2rem 1.25rem; }
   .destinations-intro .container { padding-inline: 1rem; }
   .destinations-intro__title { font-size: 2rem; margin-block-end: 1rem; }
-  .destinations-intro__body { font-size: 0.9375rem; max-height: 11em; }
+  .destinations-intro__body { font-size: 0.9375rem; }
 
   .destinations { padding-block: 1rem 3rem; }
   .destinations .container { padding-inline: 1rem; }
+  /* Mobile reverts to a uniform 2-up grid (no asymmetric span override) */
   .destinations__grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .destinations__card,
+  .destinations__card:nth-child(6n+1),
+  .destinations__card:nth-child(6n+6) { grid-column: span 1; }
   .destinations__card-body { inset-inline: 1rem; inset-block-end: 1rem; }
   .destinations__card-title { font-size: 1.0625rem; }
   .destinations__card-region { font-size: 0.75rem; }
