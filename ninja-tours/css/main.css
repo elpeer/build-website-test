@@ -2975,7 +2975,15 @@ ol {
      and shrunk + recentered on scroll (same rhythm as the homepage)
    - The light pill CTA is forced into its "fixed" appearance always so
      it doesn't disappear (white-on-white) when at the top of the page */
-.page-destinations { padding-block-start: var(--header-height); }
+.page-destinations {
+  padding-block-start: var(--header-height);
+  /* Match the destinations-intro background so the area BEHIND the
+     transparent header (the page-padding strip) doesn't look like a
+     white box at the top of the page. With the body painted in the
+     same cream as the first section, the transparent header truly
+     looks borderless. */
+  background: #fffaf5;
+}
 .page-destinations .header { color: var(--color-text); }
 .page-destinations .logo img.--default { opacity: 0; }
 .page-destinations .logo img.--dark {
@@ -3117,7 +3125,7 @@ ol {
   grid-template-columns: repeat(4, 1fr);
   /* Fixed row height so wide (span-2) cards are the SAME height as the
      narrow (span-1) cards in their row — only the width changes. */
-  grid-auto-rows: 19rem;
+  grid-auto-rows: 24rem;
   gap: 1.5rem;
 }
 .destinations__card { grid-column: span 1; }
@@ -3193,7 +3201,7 @@ ol {
   /* Mobile reverts to a uniform 2-up grid (no asymmetric span override) */
   .destinations__grid {
     grid-template-columns: 1fr 1fr;
-    grid-auto-rows: 12rem;
+    grid-auto-rows: 14rem;
     gap: 1rem;
   }
   .destinations__card,
