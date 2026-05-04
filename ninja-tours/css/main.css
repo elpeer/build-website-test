@@ -3585,3 +3585,156 @@ ol {
 
   .destination-info__sidebar { position: static; }
 }
+
+/* ==========================================================================
+   Hotels — edge-to-edge Swiper of hotel cards on a destination page.
+   No outer padding, no spaceBetween — cards touch each other.
+   Below the slider: 2 nav arrows + a 'לכל המלונות' CTA pill.
+   ========================================================================== */
+.hotels {
+  background: #fffaf5;
+  padding-block: 3rem 4rem;
+}
+.hotels__head {
+  text-align: center;
+  margin-block-end: 2rem;
+  padding-inline: 2.5rem;
+}
+.hotels__title {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #063874;
+  margin: 0;
+}
+
+.hotels__slider {
+  position: relative;
+  overflow: hidden;
+}
+.hotels__slider .swiper-wrapper { align-items: stretch; }
+.hotels__slider .swiper-slide { height: auto; }
+
+.hotels__card {
+  width: 24rem;
+  flex-shrink: 0;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.hotels__card-media {
+  margin: 0 1rem;
+  margin-block-start: 1rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+}
+.hotels__card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.hotels__card-body {
+  padding: 1.25rem 1.5rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  text-align: start;
+}
+.hotels__card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+.hotels__card-tag.--location {
+  display: inline-flex;
+  align-items: center;
+  background: #063874;
+  color: #fff;
+  padding: 0.375rem 0.875rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+.hotels__card-audience {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+.hotels__card-audience span {
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: #5a5a5a;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+.hotels__card-stars {
+  display: flex;
+  gap: 0.1875rem;
+  color: #fcb800;
+}
+.hotels__card-stars svg { width: 1.125rem; height: 1.125rem; }
+.hotels__card-stars svg.--empty { color: rgba(0, 0, 0, 0.15); }
+.hotels__card-title {
+  font-size: 1.125rem;
+  line-height: 1.4;
+  font-weight: 700;
+  color: #222;
+  margin: 0;
+}
+.hotels__card-desc {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: #5a5a5a;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.hotels__card-desc strong {
+  color: #222;
+  font-weight: 700;
+}
+
+/* Nav row below the slider */
+.hotels__nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-block-start: 2rem;
+  padding-inline: 2.5rem;
+}
+.hotels__nav-btn {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: #d2170a;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s ease, opacity 0.25s ease;
+}
+.hotels__nav-btn:hover { background: #a60f04; }
+.hotels__nav-btn.swiper-button-disabled { opacity: 0.4; cursor: default; }
+.hotels__nav-btn svg { width: 1.125rem; height: 1.125rem; }
+.hotels__cta { flex: 0 0 auto; }
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .hotels { padding-block: 2rem 3rem; }
+  .hotels__head { margin-block-end: 1.5rem; padding-inline: 1rem; }
+  .hotels__title { font-size: 1.625rem; }
+  .hotels__card { width: 17.5rem; }
+  .hotels__card-media { aspect-ratio: 4 / 3; margin: 0.75rem 0.75rem 0; border-radius: 0.875rem; }
+  .hotels__card-body { padding: 1rem 1rem 1.25rem; gap: 0.5rem; }
+  .hotels__card-title { font-size: 1rem; }
+  .hotels__card-desc { font-size: 0.8125rem; }
+  .hotels__nav { margin-block-start: 1.5rem; gap: 0.625rem; padding-inline: 1rem; }
+}
