@@ -3247,13 +3247,13 @@ ol {
   background: #fffaf5;
   padding-block: 1.5rem 2rem;
 }
-/* Single-destination page uses a narrower, centred container (matches the
-   homepage About section). The destinations LIST page keeps its full-width
-   layout via .page-destinations:not(.page-destination) — see below. */
+/* Single-destination page uses ~70% of the viewport width for the
+   gallery + info + breadcrumbs (centred). The destinations LIST page
+   keeps its full-width layout via .page-destinations only. */
 .destination-gallery .container {
-  max-width: 78rem;
+  max-width: 70%;
   margin-inline: auto;
-  padding-inline: 2.5rem;
+  padding-inline: 0;
 }
 .destination-gallery__grid {
   display: grid;
@@ -3331,22 +3331,22 @@ ol {
   padding-block: 1.5rem 4rem;
 }
 .destination-info__layout {
-  max-width: 78rem;
+  max-width: 70%;
   margin-inline: auto;
-  padding-inline: 2.5rem;
+  padding-inline: 0;
   display: grid;
   grid-template-columns: 1fr 22rem;
   gap: 3rem;
   align-items: start;
 }
-/* Match the breadcrumbs to the same narrower container on a single
+/* Match the breadcrumbs to the same 70% container on a single
    destination page so vertical alignment with the gallery + info columns
    is consistent. Default (.page-destinations only — list page) keeps
    the wider 6.25rem padding. */
 .page-destination .breadcrumbs .container {
-  max-width: 78rem;
+  max-width: 70%;
   margin-inline: auto;
-  padding-inline: 2.5rem;
+  padding-inline: 0;
 }
 
 .destination-info__main { min-width: 0; }
@@ -3510,8 +3510,19 @@ ol {
 .destination-form__submit svg { width: 1rem; height: 1rem; }
 
 @media (max-width: 768px) and (orientation: portrait) {
+  /* Mobile reverts to a normal padded container — 70% would be too narrow
+     on a phone, and the breadcrumbs/gallery/info should use the full
+     screen with consistent inline padding. */
+  .page-destination .breadcrumbs .container {
+    max-width: none;
+    padding-inline: 1rem;
+  }
+
   .destination-gallery { padding-block: 0.5rem 1rem; }
-  .destination-gallery .container { padding-inline: 0.5rem; }
+  .destination-gallery .container {
+    max-width: none;
+    padding-inline: 0.5rem;
+  }
   /* Mobile gallery — hero on top, 3 thumbs in a row below.
      The third thumb keeps its +N more overlay on mobile too. */
   .destination-gallery__grid {
@@ -3535,6 +3546,7 @@ ol {
 
   .destination-info { padding-block: 1rem 2.5rem; }
   .destination-info__layout {
+    max-width: none;
     padding-inline: 1rem;
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -3618,7 +3630,15 @@ ol {
 .hotels__card {
   width: 24rem;
   flex-shrink: 0;
+  /* Per-card visual frame — small inline margin acts as visual breathing
+     room between cards even though Swiper's spaceBetween is 0, plus a
+     soft shadow + rounded corners so each card reads as its own block
+     instead of one long white strip. */
+  margin-inline: 0.5rem;
   background: #fff;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -3702,14 +3722,18 @@ ol {
   font-weight: 700;
 }
 
-/* Nav row below the slider */
+/* Nav row below the slider — arrows on top, CTA pill below */
 .hotels__nav {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
   margin-block-start: 2rem;
   padding-inline: 2.5rem;
+}
+.hotels__nav-arrows {
+  display: flex;
+  gap: 0.875rem;
 }
 .hotels__nav-btn {
   width: 3rem;
@@ -3726,6 +3750,17 @@ ol {
 .hotels__nav-btn.swiper-button-disabled { opacity: 0.4; cursor: default; }
 .hotels__nav-btn svg { width: 1.125rem; height: 1.125rem; }
 .hotels__cta { flex: 0 0 auto; }
+
+/* Card body order — visually we want:
+   tags → audience → title → stars → description.
+   Use flex order (instead of changing DOM) so the structure stays
+   semantic: stars sit BETWEEN the title and the description. */
+.hotels__card-body { display: flex; flex-direction: column; gap: 0.625rem; }
+.hotels__card-tags     { order: 0; }
+.hotels__card-audience { order: 1; }
+.hotels__card-title    { order: 2; }
+.hotels__card-stars    { order: 3; }
+.hotels__card-desc     { order: 4; }
 
 @media (max-width: 768px) and (orientation: portrait) {
   .hotels { padding-block: 2rem 3rem; }
