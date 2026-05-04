@@ -242,7 +242,9 @@
     });
 
     // -----------------------------------------------------------------------
-    // Destinations intro — קרא עוד / הצג פחות toggle
+    // קרא עוד / הצג פחות toggle — used by both the destinations intro and
+    // the destination-info body. We resolve the body element by aria-controls
+    // so the same handler works for any consumer that reuses the markup.
     // -----------------------------------------------------------------------
     $('.destinations-intro__toggle').on('click', function () {
       var $btn = $(this);
