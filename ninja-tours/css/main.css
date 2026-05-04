@@ -3233,3 +3233,294 @@ ol {
   .destinations__card-title { font-size: 1.0625rem; }
   .destinations__card-region { font-size: 0.75rem; }
 }
+
+/* ==========================================================================
+   Destination page (single-destination internal page).
+   Layout: gallery (hero + 3 thumbs) → main split (info column + form sidebar)
+   → standard contact + footer (shared).
+   ========================================================================== */
+
+/* Gallery — hero on the inline-start (right in RTL) takes most of the
+   width; 3 thumbnails sit on the inline-end (left in RTL) in a 2-column,
+   2-row arrangement (1 tall + 2 short). */
+.destination-gallery {
+  background: #fffaf5;
+  padding-block: 1.5rem 2rem;
+}
+.destination-gallery .container {
+  max-width: none;
+  padding-inline: 6.25rem;
+}
+.destination-gallery__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0.875rem;
+  height: 42vh;
+  min-height: 24rem;
+}
+.destination-gallery__hero {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  display: block;
+}
+.destination-gallery__thumb {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  display: block;
+}
+.destination-gallery__thumb--tall {
+  grid-column: 2;
+  grid-row: 1 / 3;
+}
+.destination-gallery__hero img,
+.destination-gallery__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+@media (any-hover: hover) {
+  .destination-gallery__hero:hover img,
+  .destination-gallery__thumb:hover img { transform: scale(1.04); }
+}
+.destination-gallery__thumb--more::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+.destination-gallery__more {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  z-index: 2;
+}
+
+/* When only 3 thumbs (1 tall + 2 short) we revert to the more typical
+   reference layout: tall on top right, two short below */
+.destination-gallery__grid {
+  grid-template-areas:
+    "hero tall"
+    "hero short";
+  grid-template-columns: 2.2fr 1fr 1fr;
+}
+.destination-gallery__hero { grid-area: hero; }
+.destination-gallery__thumb--tall { grid-area: tall; grid-column: 2 / 4; }
+.destination-gallery__grid > a:nth-child(3) { grid-area: short; grid-column: 2 / 3; }
+.destination-gallery__grid > a:nth-child(4) { grid-area: short; grid-column: 3 / 4; }
+
+/* Main split — info column + form sidebar */
+.destination-info {
+  background: #fffaf5;
+  padding-block: 1.5rem 4rem;
+}
+.destination-info__layout {
+  max-width: none;
+  padding-inline: 6.25rem;
+  display: grid;
+  grid-template-columns: 1fr 22rem;
+  gap: 3rem;
+  align-items: start;
+}
+
+.destination-info__main { min-width: 0; }
+.destination-info__title {
+  font-size: 3.25rem;
+  line-height: 1.1;
+  font-weight: 700;
+  color: #063874;
+  margin: 0 0 2rem;
+}
+
+/* Quick-info icon row — 4 per row on desktop, 2 on mobile */
+.destination-info__facts {
+  list-style: none;
+  margin: 0 0 2rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem 2rem;
+}
+.destination-info__fact {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.destination-info__fact-icon {
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: #fff;
+  color: #063874;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(6, 56, 116, 0.08);
+}
+.destination-info__fact-icon svg { width: 1.125rem; height: 1.125rem; }
+.destination-info__fact-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+.destination-info__fact-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6e6e6e;
+}
+.destination-info__fact-value {
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: #222;
+  line-height: 1.4;
+}
+.destination-info__fact-link {
+  margin-block-start: 0.125rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #d2170a;
+  text-decoration: none;
+}
+.destination-info__fact-link:hover { text-decoration: underline; }
+
+/* Body — uses the same toggle as the destinations page intro
+   (.destinations-intro__toggle JS handler). 2-line clamp by default. */
+.destination-info__body {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #222;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.destination-info__body p { margin: 0 0 1rem; display: inline; }
+.destination-info__body p:last-child { margin: 0; }
+.destination-info__body.--expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+.destination-info__body.--expanded p { display: block; }
+
+/* Sidebar form */
+.destination-info__sidebar {
+  position: sticky;
+  inset-block-start: calc(var(--header-height) + 1rem);
+}
+.destination-form {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 1.25rem;
+  padding: 1.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+}
+.destination-form__title {
+  font-size: 1.25rem;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #063874;
+  margin: 0;
+}
+.destination-form__lead {
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
+  color: #5a5a5a;
+}
+.destination-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+.destination-form__label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #222;
+}
+.destination-form__field input {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 0.625rem;
+  padding: 0.75rem 0.875rem;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: #222;
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.destination-form__field input:focus {
+  outline: none;
+  border-color: #063874;
+  box-shadow: 0 0 0 3px rgba(6, 56, 116, 0.12);
+}
+.destination-form__submit {
+  margin-block-start: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  height: 3rem;
+  border: 0;
+  border-radius: 999px;
+  background: #d2170a;
+  color: #fff;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+.destination-form__submit:hover { background: #a60f04; }
+.destination-form__submit svg { width: 1rem; height: 1rem; }
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .destination-gallery { padding-block: 0.5rem 1rem; }
+  .destination-gallery .container { padding-inline: 0.5rem; }
+  .destination-gallery__grid {
+    grid-template-areas:
+      "hero hero"
+      "tall short";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 14rem 7rem;
+    height: auto;
+    min-height: 0;
+    gap: 0.5rem;
+  }
+  .destination-gallery__hero { grid-area: hero; }
+  .destination-gallery__thumb--tall {
+    grid-area: tall;
+    grid-column: 1 / 2;
+  }
+  .destination-gallery__grid > a:nth-child(3) { grid-area: short; grid-column: 2 / 3; }
+  .destination-gallery__grid > a:nth-child(4) { display: none; }
+
+  .destination-info { padding-block: 1rem 2.5rem; }
+  .destination-info__layout {
+    padding-inline: 1rem;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .destination-info__title { font-size: 1.875rem; margin-block-end: 1.25rem; }
+  .destination-info__facts { grid-template-columns: 1fr 1fr; gap: 1.25rem 1rem; }
+  .destination-info__fact-icon { width: 2.25rem; height: 2.25rem; }
+  .destination-info__fact-icon svg { width: 1rem; height: 1rem; }
+  .destination-info__sidebar { position: static; }
+}
