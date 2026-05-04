@@ -35,18 +35,23 @@
     // -----------------------------------------------------------------------
     // Mobile menu
     // -----------------------------------------------------------------------
-    $('.burger-btn').on('click', function () {
-      var expanded = $(this).attr('aria-expanded') === 'true';
-      $(this).attr('aria-expanded', !expanded);
-      $('.main-menu').toggleClass('--open');
+    $('.burger-btn').on('click', function (e) {
+      e.preventDefault();
+
+      const $btn = $(this);
+      const isExpanded = $btn.attr('aria-expanded') === 'true';
+
+      $btn.attr('aria-expanded', !isExpanded ? 'true' : 'false');
+
+      $('.mobile-menu').toggleClass('--open');
       $('body').toggleClass('--menu-open');
     });
 
-    $('.main-menu a').on('click', function () {
-      $('.burger-btn').attr('aria-expanded', 'false');
-      $('.main-menu').removeClass('--open');
-      $('body').removeClass('--menu-open');
-    });
+    // $('.main-menu a').on('click', function () {
+    //   $('.burger-btn').attr('aria-expanded', 'false');
+    //   $('.main-menu').removeClass('--open');
+    //   $('body').removeClass('--menu-open');
+    // });
 
     // -----------------------------------------------------------------------
     // Accordion init helper
@@ -105,7 +110,6 @@
 
       new Swiper($slider.get(0), {
         slidesPerView: 'auto',
-        spaceBetween: 24,
         speed: 600,
         navigation: {
           prevEl: '.trip-types__nav-prev',
@@ -155,12 +159,11 @@
       new Swiper($slider.get(0), {
         slidesPerView: 'auto',
         spaceBetween: 24,
-        speed: 700,
+        speed: 1000,
         loop: true,
         autoplay: {
-          delay: 4000,
+          delay: 2000,
           disableOnInteraction: true,
-          pauseOnMouseEnter: true
         },
         navigation: {
           prevEl: '.testimonials__nav-prev',
@@ -268,6 +271,24 @@
         $cursor.css({ left: e.clientX + 'px', top: e.clientY + 'px' });
       });
     })();
+
+
+    //logos marquee
+    if ($('.partners__track').length > 0) {
+      $('.partners__track').marquee({
+        allowCss3Support: true,
+        css3easing: 'linear',
+        easing: 'linear',
+        delayBeforeStart: 0,
+        direction: 'left',
+        duplicated: true,
+        duration: 50000,
+        gap: 0,
+        pauseOnCycle: false,
+        pauseOnHover: false,
+        startVisible: true
+      });
+    }
 
     // -----------------------------------------------------------------------
     // AOS init
