@@ -4087,8 +4087,9 @@ ol {
   align-items: flex-end;
   justify-content: center;
   /* No top padding so the bg image reaches under the transparent menu —
-     no white strip at the top. */
-  padding-block: 0 18vh;
+     no white strip at the top. Bottom padding lifts the title/button/
+     links up into the upper-middle band on desktop. */
+  padding-block: 0 38vh;
   color: #fff;
   overflow: hidden;
 }
