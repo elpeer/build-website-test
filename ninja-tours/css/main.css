@@ -4286,6 +4286,16 @@ ol {
   line-height: 1.75;
   color: #222;
 }
+.about-split__image {
+  margin: 1.75rem 0 0;
+  border-radius: 1.25rem;
+  overflow: hidden;
+}
+.about-split__image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 
 /* Core values accordion — separated by a thin rule, no card chrome. */
 .core-values {
