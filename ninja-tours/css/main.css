@@ -4344,19 +4344,18 @@ ol {
 }
 .core-values__icon {
   flex: 0 0 auto;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  border: 0;
-  background: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  width: 1.5rem;
+  height: 1.5rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: #063874;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
   transition: transform 0.3s ease;
 }
-.core-values__icon svg { width: 1rem; height: 1rem; }
+.core-values__icon svg { width: 1.25rem; height: 1.25rem; }
 .core-values__item.--open .core-values__icon { transform: rotate(180deg); }
 .core-values__item .accordion-item__body {
   display: none;
@@ -4400,12 +4399,16 @@ ol {
   border-radius: 0;
   aspect-ratio: auto;
   height: 100%;
-  min-height: 36rem;
+  /* Tall vision section so the image and the cards both have room. */
+  min-height: 50rem;
   /* Visually swap with the text column — image on the RTL right. */
   order: -1;
 }
 .vision__text {
-  padding: 5rem 3rem;
+  /* Match the values column inner width: 44rem max + 1.75rem inline padding. */
+  max-width: 47.5rem;
+  margin-inline: auto;
+  padding: 6rem 1.75rem;
 }
 .vision .section-title { margin-block-end: 2rem; }
 .vision__grid {
