@@ -3957,9 +3957,8 @@ ol {
 .page-contact { padding-block-start: 0; }
 .page-contact main { padding-block-start: 0; }
 .page-contact .contact--page {
-  /* Add top padding equal to the header height so the heading clears
-     the fixed transparent menu, but the bg image fills underneath. */
-  padding-block-start: 9rem;
+  /* More breathing room between the logo and the heading on desktop. */
+  padding-block-start: 14rem;
 }
 
 /* Glass-morphism contact card — full-image-width strip at the bottom */
@@ -4038,6 +4037,15 @@ ol {
 }
 
 @media (max-width: 768px) and (orientation: portrait) {
+  /* Mobile: tighten the gap from the logo to the title and from the
+     subtitle to the form so the upper area is more compact. */
+  .page-contact .contact--page {
+    padding-block-start: 5rem;
+  }
+  .page-contact .contact--page .contact__head {
+    margin-block-end: 1.5rem;
+  }
+
   /* Mobile: form on top, image (with glass info card) below it */
   .page-contact .contact--page .contact__form  { grid-row: 1; }
   .page-contact .contact--page .contact__image {
@@ -4069,10 +4077,11 @@ ol {
    ========================================================================== */
 .error-404 {
   position: relative;
-  /* Lock the hero to the full viewport so all content fits within 100vh,
-     no scrolling needed to see the title/button/links. */
-  height: 100vh;
-  min-height: 100vh;
+  /* Desktop: fixed 1663px height (the bg image's full height — never
+     compressed). Mobile media query below switches to viewport-based
+     sizing for small screens. */
+  height: 1663px;
+  min-height: 1663px;
   background: #0a0a0a url('../images/bg_desktop.jpg') center bottom/cover no-repeat;
   display: flex;
   align-items: flex-end;
@@ -4164,6 +4173,9 @@ ol {
 @media (max-width: 768px) and (orientation: portrait) {
   .error-404 {
     background-image: url('../images/bg_mobile.jpg');
+    /* Mobile: lock to the viewport (the desktop 1663px is too tall on phones). */
+    height: 100vh;
+    min-height: 100vh;
     /* Push content well above the bottom edge so on small screens the
        title + button + links all fit comfortably inside the viewport. */
     padding-block: 0 22vh;
