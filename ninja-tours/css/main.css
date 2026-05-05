@@ -4382,6 +4382,29 @@ ol {
    About → Vision — same .about grid (image + text) as the homepage,
    but the text column hosts 4 icon cards in a 2x2 grid.
    ========================================================================== */
+/* Full-bleed 50/50 split: image fills exactly half of the viewport with
+   no inset padding, and the section sits flush against the values block
+   above (no top padding). */
+.vision {
+  padding-block: 0;
+}
+.vision .container {
+  max-width: none;
+  padding-inline: 0;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  align-items: stretch;
+}
+.vision .about__image {
+  margin: 0;
+  border-radius: 0;
+  aspect-ratio: auto;
+  height: 100%;
+  min-height: 36rem;
+}
+.vision__text {
+  padding: 5rem 3rem;
+}
 .vision .section-title { margin-block-end: 2rem; }
 .vision__grid {
   display: grid;
@@ -4429,4 +4452,7 @@ ol {
 
 @media (max-width: 768px) and (orientation: portrait) {
   .vision__grid { grid-template-columns: 1fr; gap: 1rem; }
+  .vision .container { grid-template-columns: 1fr; }
+  .vision .about__image { min-height: 18rem; aspect-ratio: 4/3; }
+  .vision__text { padding: 2.5rem 1.25rem; }
 }
