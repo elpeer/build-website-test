@@ -4198,6 +4198,25 @@ ol {
 .page-about { padding-block-start: 0; }
 .page-about .breadcrumbs { display: none; }
 
+/* Restore the homepage-style transparent white header on the about page
+   (the .page-destinations rules turn it dark by default). */
+.page-about .header { color: #fff; }
+.page-about .logo img.--default { opacity: 1; }
+.page-about .logo img.--dark { opacity: 0; }
+.page-about .header .btn-pill.--light {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.page-about .header .btn-pill.--light .btn-pill__icon {
+  background: #fff;
+  color: var(--color-text);
+}
+.page-about .header.fixed { color: var(--color-text); }
+.page-about .header.fixed .logo img.--default { opacity: 0; }
+.page-about .header.fixed .logo img.--dark { opacity: 1; }
+
 /* Half-height video hero (mirror of .home-hero). */
 .about-hero {
   position: relative;
@@ -4249,56 +4268,24 @@ ol {
   grid-template-columns: 1fr 1fr;
   align-items: stretch;
 }
-.about-split__col { padding-block: 5rem; }
+.about-split__col { padding-block: 4rem; }
 .about-split__col--commit { background: #fffaf5; }
-.about-split__col--values { background: #eef2dc; }
+.about-split__col--values { background: #f7efe2; }
 .about-split__inner {
-  max-width: 36rem;
+  max-width: 44rem;
   margin-inline: auto;
-  padding-inline: 3rem;
+  padding-inline: 1.75rem;
 }
 .about-split .section-title {
-  margin: 0 0 1.75rem;
+  margin: 0 0 1.5rem;
   text-align: start;
 }
 .about-split__col--commit p {
-  margin: 0 0 1rem;
-  font-size: 1.0625rem;
+  margin: 0 0 1.25rem;
+  font-size: 1.25rem;
   line-height: 1.75;
   color: #222;
 }
-
-/* Rotating "NINJA TOURS" badge — SVG textPath with green dot in centre. */
-.about-badge {
-  position: relative;
-  width: 7.5rem;
-  height: 7.5rem;
-  margin-block: 0.5rem 1.5rem;
-}
-.about-badge__svg {
-  width: 100%;
-  height: 100%;
-  animation: about-badge-spin 16s linear infinite;
-}
-.about-badge__text {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  fill: #063874;
-  text-transform: uppercase;
-}
-.about-badge__dot {
-  position: absolute;
-  inset-inline-start: 50%;
-  inset-block-start: 50%;
-  transform: translate(-50%, -50%);
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  background: #cfe5b6;
-}
-@keyframes about-badge-spin { to { transform: rotate(-360deg); } }
 
 /* Core values accordion — separated by a thin rule, no card chrome. */
 .core-values {
@@ -4324,8 +4311,8 @@ ol {
   font: inherit;
 }
 .core-values__label {
-  font-size: 1.0625rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 700;
   color: #063874;
 }
 .core-values__num {
@@ -4334,22 +4321,23 @@ ol {
 }
 .core-values__icon {
   flex: 0 0 auto;
-  width: 2rem;
-  height: 2rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
-  border: 1px solid #c9cfb6;
+  border: 0;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: #063874;
-  background: transparent;
   transition: transform 0.3s ease;
 }
 .core-values__icon svg { width: 1rem; height: 1rem; }
 .core-values__item.--open .core-values__icon { transform: rotate(180deg); }
 .core-values__item .accordion-item__body {
   padding: 0 0 1.25rem;
-  font-size: 1rem;
+  font-size: 1.125rem;
   line-height: 1.7;
   color: #444;
 }
