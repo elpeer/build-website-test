@@ -4478,9 +4478,11 @@ ol {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 4rem 4rem 4rem 2rem;
+  padding: 4rem 6rem 4rem 2rem;
   max-width: 38rem;
-  margin-inline: auto 0;
+  /* Pin to the RTL right edge — closes the gap between the title and the
+     image on the visual left. */
+  margin-inline: 0 auto;
 }
 .blog-hero .section-title { margin: 0 0 1.5rem; text-align: start; }
 .blog-hero__lead {
@@ -4623,11 +4625,14 @@ ol {
     min-height: 0;
   }
   .blog-hero__content {
-    padding: 2.5rem 1.25rem;
+    padding: 3rem 1.25rem 2.5rem;
     max-width: none;
     margin-inline: 0;
   }
+  /* Image first, then content — image clears the fixed transparent menu
+     so the title sits comfortably below it. */
   .blog-hero__image { aspect-ratio: 16/10; height: auto; order: 0; }
+  .blog-hero__content { order: 1; }
 
   .blog-tabs { padding: 2rem 1rem 1.25rem; }
   .blog-tabs ul { flex-wrap: wrap; justify-content: center; }
