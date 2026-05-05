@@ -4077,17 +4077,15 @@ ol {
    ========================================================================== */
 .error-404 {
   position: relative;
-  /* Desktop height — reduced ~15% from the bg image's natural height
-     so the page is shorter overall. Mobile rule below uses 100vh. */
-  height: 1414px;
-  min-height: 1414px;
-  background: #0a0a0a url('../images/bg_desktop.jpg') center bottom/cover no-repeat;
+  /* Lock to the viewport so the whole 404 fits in the fold. */
+  height: 100vh;
+  min-height: 38rem;
+  background: #0a0a0a url('../images/bg_desktop.jpg') center center/cover no-repeat;
   display: flex;
-  /* Anchor content to a viewport-relative offset from the top so the
-     title/button/links are always visible in the first fold. */
-  align-items: flex-start;
+  /* Anchor content to the bottom of the fold. */
+  align-items: flex-end;
   justify-content: center;
-  padding-block: 55vh 0;
+  padding-block: 0 8vh;
   color: #fff;
   overflow: hidden;
 }
@@ -4172,12 +4170,11 @@ ol {
 @media (max-width: 768px) and (orientation: portrait) {
   .error-404 {
     background-image: url('../images/bg_mobile.jpg');
-    /* Mobile: lock to the viewport (the desktop 1663px is too tall on phones). */
     height: 100vh;
-    min-height: 100vh;
-    /* Push content well above the bottom edge so on small screens the
-       title + button + links all fit comfortably inside the viewport. */
-    padding-block: 0 22vh;
+    min-height: 32rem;
+    /* Inherit align-items: flex-end from desktop — content sits at the
+       bottom of the viewport with comfortable breathing room. */
+    padding-block: 0 6vh;
   }
   .error-404__inner {
     gap: 1rem;
