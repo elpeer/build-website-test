@@ -4756,12 +4756,11 @@ ol {
 
 /* TOC + content + related layout — 3 columns matching menu margins. */
 .post-layout {
-  max-width: 90rem;
-  margin: 3rem auto 4rem;
-  padding-inline: clamp(1.5rem, 5vw, 6.25rem);
+  margin: 3rem 0 4rem;
+  padding-inline: clamp(1rem, 2vw, 2rem);
   display: grid;
   grid-template-columns: 22rem minmax(0, 1fr) 22rem;
-  gap: 2.5rem;
+  gap: 3rem;
   align-items: start;
 }
 .post-toc {
@@ -4845,6 +4844,9 @@ ol {
 }
 .post-author__name { color: #063874; font-weight: 700; text-decoration: none; }
 .post-author__name:hover { text-decoration: underline; }
+
+/* Article content — keeps its readable width even when grid column expands. */
+.post-content { max-width: 48rem; margin-inline: auto; width: 100%; }
 
 /* Post body — typography */
 .post-content h2 {
