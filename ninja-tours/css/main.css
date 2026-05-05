@@ -4066,14 +4066,23 @@ ol {
    ========================================================================== */
 .error-404 {
   position: relative;
+  /* Lock the hero to the full viewport so all content fits within 100vh,
+     no scrolling needed to see the title/button/links. */
+  height: 100vh;
   min-height: 100vh;
-  background: #0a0a0a url('../images/bg_desktop.jpg') center/cover no-repeat;
+  background: #0a0a0a url('../images/bg_desktop.jpg') center bottom/cover no-repeat;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-block: 8rem 6rem;
+  /* No top padding so the bg image reaches under the transparent menu —
+     no white strip at the top. */
+  padding-block: 0 18vh;
   color: #fff;
+  overflow: hidden;
 }
+/* Hide breadcrumbs (none in markup) and any white body bg above the section */
+.page-404 { background: #000; }
+.page-404 .breadcrumbs { display: none; }
 
 .error-404__inner {
   width: 100%;
@@ -4124,40 +4133,44 @@ ol {
   width: 0.25rem;
   height: 0.25rem;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.85);
   display: inline-block;
+  flex: none;
 }
 
-/* Glass pill button — translucent bg, white text, white outlined icon disc */
+/* Glass pill button — translucent bg, white text, no border;
+   icon disc is solid white with a black arrow. */
 .btn-pill.--glass {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.18);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 0;
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   backdrop-filter: blur(14px) saturate(140%);
 }
 
 .btn-pill.--glass .btn-pill__icon {
-  background: transparent;
-  border: 1.5px solid #fff;
-  color: #fff;
+  background: #fff;
+  color: #111;
+  border: 0;
 }
 
 .btn-pill.--glass:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.28);
 }
 
 @media (max-width: 768px) and (orientation: portrait) {
   .error-404 {
     background-image: url('../images/bg_mobile.jpg');
-    padding-block: 6rem 3rem;
+    /* Push content well above the bottom edge so on small screens the
+       title + button + links all fit comfortably inside the viewport. */
+    padding-block: 0 22vh;
   }
   .error-404__inner {
-    gap: 1.25rem;
+    gap: 1rem;
     padding-inline: 1.25rem;
   }
   .error-404__title {
-    font-size: 2.125rem;
+    font-size: 2rem;
   }
   .error-404__links {
     font-size: 0.9375rem;
