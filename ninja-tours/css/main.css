@@ -3946,27 +3946,11 @@ ol {
    show the glass-morphism info card. The BOTTOM section keeps the
    default .contact styling so the page closes exactly like the homepage.
    ========================================================================== */
-.page-contact .contact--page {
-  min-height: 0;
-  align-items: center;
-  padding-block: 3rem 4rem;
-}
-.page-contact .contact--page .contact__leaf--right,
-.page-contact .contact--page .contact__leaf--left { width: 14rem; }
-.page-contact .contact--page .contact__head { margin-block-end: 2rem; }
-.page-contact .contact--page .contact__form {
-  min-height: 32rem;
-  gap: 1.75rem;
-  padding: 2.5rem 2rem 2rem;
-}
-.page-contact .contact--page .contact__form-grid { gap: 1.5rem 2rem; }
-.page-contact .contact--page .contact__image {
-  min-height: 32rem;
-  position: relative;
-}
-/* Hide the LET'S PLAN YOUR TRIP overlay only on the lifted section.
-   The bottom .contact section still shows it, like the homepage. */
+/* Hide the LET'S PLAN YOUR TRIP overlay on the contact page since the
+   glass info card replaces it. Section dimensions inherit from the
+   homepage .contact rules so the image renders identically. */
 .page-contact .contact--page .contact__image-text { display: none; }
+.page-contact .contact--page .contact__image { position: relative; }
 
 /* Glass-morphism contact card — full-image-width strip at the bottom */
 .contact__info-glass {
@@ -3996,7 +3980,7 @@ ol {
 }
 .contact__info-rows {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 0.875rem 1rem;
 }
 .contact__info-row {
@@ -4044,14 +4028,6 @@ ol {
 }
 
 @media (max-width: 768px) and (orientation: portrait) {
-  .page-contact .contact--page {
-    /* Top section keeps to ~60% of viewport height on mobile so it
-       feels like a focused "above-the-fold" rather than a full screen */
-    min-height: 60vh;
-    padding-block: 2rem 2.5rem;
-  }
-  .page-contact .contact--page .contact__form,
-  .page-contact .contact--page .contact__image { min-height: 0; }
   /* Mobile: form on top, image (with glass info card) below it */
   .page-contact .contact--page .contact__form  { grid-row: 1; }
   .page-contact .contact--page .contact__image { grid-row: 2; }
