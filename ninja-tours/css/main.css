@@ -5034,7 +5034,7 @@ ol {
     color: #063874;
     cursor: pointer;
     position: sticky;
-    inset-block-start: 4.5rem;
+    inset-block-start: calc(var(--header-height-mob) + 0.5rem);
     z-index: 9;
     margin-block-start: 0.875rem;
     margin-block-end: 1rem;
@@ -5051,7 +5051,7 @@ ol {
   .post-toc {
     display: none;
     position: sticky;
-    inset-block-start: 8rem;
+    inset-block-start: calc(var(--header-height-mob) + 4rem);
     z-index: 8;
     margin-block-end: 1rem;
   }
