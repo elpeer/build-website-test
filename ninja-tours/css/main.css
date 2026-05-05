@@ -23,7 +23,7 @@ html {
   scroll-behavior: smooth;
   scroll-padding: 5.625rem 0 0 0;
   font-size: 0.83333vw;
-  overflow-x: hidden;
+  overflow-x: clip; /* clip ≠ hidden: doesn't create a scroll container, so position:sticky works */
   /* Always reserve room for the scrollbar so opening/closing a modal
      doesn't shift the layout horizontally */
   scrollbar-gutter: stable;
@@ -43,7 +43,7 @@ body {
   color: var(--color-text);
   background: var(--color-bg);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip; /* clip instead of hidden so position:sticky isn't broken */
 }
 
 img,
