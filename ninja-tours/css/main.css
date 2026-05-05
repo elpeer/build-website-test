@@ -3939,3 +3939,98 @@ ol {
   .faq__btn { padding: 1.125rem 1.25rem; font-size: 1.125rem; }
   .accordion-item__body { padding: 0 1.25rem 1.125rem; font-size: 1.0625rem; }
 }
+
+/* ==========================================================================
+   Contact page — same .contact section as the homepage but lifted so the
+   form + image fit inside the viewport (the homepage uses a 112.5rem
+   min-height to match its bg image; here we strip that out).
+   Also adds a glass-morphism contact card on top of the flat image.
+   ========================================================================== */
+.page-contact .contact {
+  min-height: 0;
+  align-items: center;
+  padding-block: 3rem 5rem;
+  background: #fffaf5;
+}
+.page-contact .contact__leaf--right { width: 14rem; }
+.page-contact .contact__leaf--left { width: 14rem; }
+.page-contact .contact__head { margin-block-end: 2rem; }
+.page-contact .contact__form { min-height: 32rem; gap: 1.75rem; padding: 2.5rem 2rem 2rem; }
+.page-contact .contact__form-grid { gap: 1.5rem 2rem; }
+.page-contact .contact__image { min-height: 32rem; position: relative; }
+
+/* Glass-morphism contact card overlaid on the .contact__image */
+.contact__info-glass {
+  position: absolute;
+  inset-inline-start: 1.5rem;        /* right side in RTL */
+  inset-block-end: 1.5rem;
+  width: clamp(13rem, 22vw, 18rem);
+  background: rgba(255, 255, 255, 0.18);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 1.25rem;
+  padding: 1.125rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  z-index: 3;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+.contact__info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: #fff;
+  transition: transform 0.25s ease;
+}
+.contact__info-row:hover { transform: translateX(-3px); }
+.contact__info-icon {
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: #d2170a;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.contact__info-icon svg { width: 1.125rem; height: 1.125rem; }
+.contact__info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+.contact__info-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+.contact__info-value {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .page-contact .contact { padding-block: 2rem 3rem; }
+  .page-contact .contact__form,
+  .page-contact .contact__image { min-height: 0; }
+  .contact__info-glass {
+    inset-inline-start: 1rem;
+    inset-block-end: 1rem;
+    width: calc(100% - 2rem);
+    padding: 0.875rem 1rem;
+  }
+  .contact__info-icon { width: 2.25rem; height: 2.25rem; }
+  .contact__info-icon svg { width: 1rem; height: 1rem; }
+  .contact__info-value { font-size: 0.875rem; }
+}
