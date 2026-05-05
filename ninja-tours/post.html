@@ -1,0 +1,498 @@
+
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Ninja Tours | מדריך טוקיו 101 — המדריך השלם למטיילים</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="description" content="מדריך טוקיו 101 — המדריך השלם למטיילים שמגיעים לעיר בפעם הראשונה." />
+
+  <link rel="canonical" href="https://ninja-tours.co.il/post" />
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+
+<body class="page-destinations page-post">
+  <a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
+
+  <!-- ==========================================================================
+       Header — same shared markup, with a thin reading-progress bar at
+       the bottom edge that fills from the RTL right.
+       ========================================================================== -->
+  <header class="header">
+    <div class="header-inner">
+      <nav class="main-menu main-menu--start" aria-label="תפריט ראשי - יעדים">
+        <ul>
+          <li><a href="destinations.html">יעדים</a></li>
+          <li><a href="#">מלונות</a></li>
+          <li><a href="#">אטרקציות</a></li>
+          <li><a href="blog.html">מדריכים</a></li>
+          <li><a href="#">תחבורה</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <a href="index.html" class="logo" aria-label="Ninja Tours - חזרה לדף הבית">
+          <img class="--default" src="images/logo.svg" alt="Ninja Tours">
+          <img class="--dark" src="images/logo-dark.svg" alt="Ninja Tours">
+        </a>
+      </div>
+
+      <div class="header-end">
+        <nav class="main-menu main-menu--end" aria-label="תפריט ראשי - אודות">
+          <ul>
+            <li><a href="about.html">קצת עלינו</a></li>
+            <li><a href="#">השירותים שלנו</a></li>
+            <li><a href="#">על התהליך</a></li>
+          </ul>
+        </nav>
+
+        <button class="search-btn" aria-label="חיפוש">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="20" y1="20" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+
+        <a href="contact.html" class="btn-pill --light">
+          <span class="btn-pill__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/>
+              <polyline points="12 19 5 12 12 5"/>
+            </svg>
+          </span>
+          <span class="btn-pill__text">בואו נתחיל</span>
+        </a>
+      </div>
+
+      <button class="burger-btn" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Reading progress bar — only visible when the header is in its
+         scrolled (.fixed) state. -->
+    <div class="reading-progress" aria-hidden="true">
+      <div class="reading-progress__bar"></div>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ==========================================================================
+         Post hero — category, title, meta row (share + date + read time)
+         and a lead paragraph.
+         ========================================================================== -->
+    <section class="post-hero" aria-labelledby="post-title">
+      <div class="post-hero__inner">
+        <p class="post-hero__category">מדריכים מקיפים וטיפים</p>
+        <h1 class="post-hero__title" id="post-title">מדריך טוקיו 101 — המדריך השלם למטיילים שטסים בפעם הראשונה</h1>
+
+        <div class="post-hero__meta">
+          <button class="post-hero__share" type="button" aria-label="שתף את הפוסט">
+            <span class="post-hero__share-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"/>
+                <circle cx="6" cy="12" r="3"/>
+                <circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+            </span>
+            <span>שיתוף</span>
+          </button>
+
+          <span class="post-hero__divider" aria-hidden="true"></span>
+
+          <span class="post-hero__date">29 אוגוסט 2025</span>
+          <span class="post-hero__read">12 דקות קריאה</span>
+        </div>
+
+        <p class="post-hero__lead">
+          טוקיו היא העיר הגדולה והמרתקת ביפן — והיא יכולה להיות גם
+          קצת מציפה. במדריך הזה ריכזנו עבורכם את כל מה שצריך לדעת
+          לפני הטיסה: שכונות מומלצות, אטרקציות שלא תרצו לפספס,
+          וטיפים מקומיים שיהפכו את הביקור שלכם לחוויה אחרת לגמרי.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         Cover image
+         ========================================================================== -->
+    <figure class="post-cover">
+      <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1800&q=85" alt="" loading="eager">
+    </figure>
+
+    <!-- ==========================================================================
+         Two-column layout: sticky TOC + post body. On mobile the TOC
+         collapses into a sticky dropdown above the article.
+         ========================================================================== -->
+    <div class="post-layout">
+
+      <!-- Mobile-only TOC dropdown trigger -->
+      <button class="post-toc-trigger" type="button" aria-expanded="false" aria-controls="post-toc">
+        <span class="post-toc-trigger__label">תוכן עניינים</span>
+        <span class="post-toc-trigger__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </button>
+
+      <aside class="post-toc" id="post-toc" aria-label="תוכן עניינים">
+        <h4 class="post-toc__title">תוכן עניינים</h4>
+        <ul class="post-toc__list">
+          <li><a href="#what-is" class="--active">מה זה טוקיו, ולמה כדאי לבקר?</a></li>
+          <li><a href="#when-to-go">מתי הזמן הכי טוב לטוס?</a></li>
+          <li><a href="#neighborhoods">השכונות החשובות בעיר</a></li>
+          <li><a href="#getting-around">איך מתניידים בעיר?</a></li>
+          <li><a href="#must-see">5 אתרים שחייבים לראות</a></li>
+          <li><a href="#food">המאכלים שלא תרצו לפספס</a></li>
+          <li><a href="#tips">טיפים מקומיים שכדאי להכיר</a></li>
+        </ul>
+      </aside>
+
+      <article class="post-content">
+
+        <!-- Author card -->
+        <aside class="post-author">
+          <div class="post-author__avatar" aria-hidden="true">
+            <span>ב</span>
+          </div>
+          <div class="post-author__text">
+            <h4 class="post-author__heading">היכרות עם הכותב</h4>
+            <p>
+              <a href="about.html" class="post-author__name">בר זכאים</a>
+              הוא מומחה לטיולים ביפן ומייסד Ninja Tours, מלווה משפחות
+              וזוגות ישראלים מעל לעשר שנים בתכנון מסלולים מותאמים אישית
+              ביפן.
+            </p>
+          </div>
+        </aside>
+
+        <h2 id="what-is">מה זה טוקיו, ולמה כדאי לבקר?</h2>
+        <p>
+          טוקיו היא <strong>בירת יפן והעיר הגדולה במדינה</strong>,
+          עם כ-14 מיליון תושבים בעיר עצמה ועוד 24 מיליון באזור המטרופולין
+          הסובב אותה. זאת אחת הערים <em>הצפופות, החדשניות והמסקרנות</em>
+          בעולם — תמהיל ייחודי של מסורת בת מאות שנים לצד גורדי שחקים
+          וטכנולוגיה עתידנית.
+        </p>
+        <p>
+          אם זאת הפעם הראשונה שלכם ביפן, סביר להניח שהטיול שלכם יתחיל
+          ויסתיים בטוקיו — והעיר הזאת לבדה יכולה להעסיק אתכם בקלות
+          לשבועיים. <a href="destinations.html">בדפי היעדים שלנו</a>
+          תוכלו למצוא רעיונות נוספים למסלולים בערים אחרות.
+        </p>
+
+        <h2 id="when-to-go">מתי הזמן הכי טוב לטוס?</h2>
+        <p>
+          לכל עונה ביפן יש קסם משלה, אבל יש כמה חודשים שמתאימים יותר
+          לטיולים ראשונים. הנה הפירוט:
+        </p>
+
+        <h3>החודשים הכי מומלצים</h3>
+        <ul>
+          <li><strong>סוף מרץ עד תחילת אפריל</strong> — פריחת הסאקורה הקלאסית.</li>
+          <li><strong>מאי</strong> — מזג אוויר נעים, פחות תיירים, ירוק בכל מקום.</li>
+          <li><strong>אוקטובר ונובמבר</strong> — צבעי הסתיו ביפן הם חוויה בפני עצמה.</li>
+        </ul>
+
+        <h3>חודשים שכדאי להימנע מהם</h3>
+        <ol>
+          <li>יוני - יולי — עונת הגשמים, לחות גבוהה.</li>
+          <li>אוגוסט — חם ולח במיוחד; גם הכי יקר.</li>
+          <li>סוף דצמבר עד תחילת ינואר — חופשה לאומית, מקומות סגורים.</li>
+        </ol>
+
+        <h2 id="neighborhoods">השכונות החשובות בעיר</h2>
+        <p>
+          טוקיו היא לא עיר אחת — היא קולקציה של עשרות שכונות מובחנות,
+          כל אחת עם <em>אופי משלה</em>. הנה <strong>חמש השכונות</strong>
+          שאסור לפספס בביקור הראשון:
+        </p>
+
+        <h3>שיבויה (渋谷)</h3>
+        <p>
+          הצומת המפורסם ביותר בעולם, חנויות אופנה של מותגים יפניים,
+          ומרכז הבילוי הצעיר של העיר.
+        </p>
+
+        <h3>שינג'וקו (新宿)</h3>
+        <p>
+          תחנת הרכבת העמוסה בעולם, גורדי שחקים, ופארק שינג'וקו גיוון
+          המהמם — אחד הפארקים היפים ביפן.
+        </p>
+
+        <figure class="post-content__image">
+          <img src="https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=1400&q=85" alt="">
+          <figcaption>טוקיו בלילה — שילוב של מסורת וטכנולוגיה.</figcaption>
+        </figure>
+
+        <h2 id="getting-around">איך מתניידים בעיר?</h2>
+        <p>
+          רשת הרכבות של טוקיו היא <strong>הענפה והיעילה בעולם</strong>.
+          תוך כמה ימים תרגישו ממש בבית. כמה דברים שכדאי לדעת:
+        </p>
+
+        <h4>כרטיסי תחבורה</h4>
+        <ul>
+          <li>Suica או Pasmo — כרטיס נטען לכל אמצעי התחבורה.</li>
+          <li>JR Pass — שווה רק אם נוסעים גם מחוץ לטוקיו.</li>
+        </ul>
+
+        <h4>אפליקציות שימושיות</h4>
+        <p>
+          <em>Google Maps</em> עובד מצוין ביפן — הוא יידע גם מאיזה קרון
+          לרדת כדי להגיע למוצא מסוים. שווה גם להוריד את אפליקציית
+          <a href="#">Japan Travel</a> של חברת NAVITIME.
+        </p>
+
+        <h2 id="must-see">5 אתרים שחייבים לראות</h2>
+        <ol>
+          <li><strong>מקדש סנסו-ג'י באסאקוסה</strong> — המקדש העתיק ביותר בעיר.</li>
+          <li><strong>גן מייג'י-ג'ינגו</strong> — נווה מדבר ירוק במרכז העיר.</li>
+          <li><strong>שכונת הרג'וקו</strong> — לתרבות הנוער היפנית.</li>
+          <li><strong>אקיהאברה</strong> — גן עדן לחובבי טכנולוגיה ואנימה.</li>
+          <li><strong>שוק טויוסו</strong> — הירש של שוק צוקיג'י, מומלץ לבקר מוקדם בבוקר.</li>
+        </ol>
+
+        <h2 id="food">המאכלים שלא תרצו לפספס</h2>
+        <p>
+          אוכל יפני זה הרבה יותר מסושי. הנה כמה מאכלים שצריך לטעום
+          לפחות פעם אחת בטוקיו:
+        </p>
+        <ul>
+          <li>ראמן טוקיו (שויו ראמן) — מרק על בסיס סויה ועצמות עוף.</li>
+          <li>טמפורה — דגים וירקות בבלילה קלה ופריכה.</li>
+          <li>אונאגי — צלופח על אורז, מאכל של קיץ ביפן.</li>
+          <li>מונג'איאקי — "פיצה יפנית" ייחודית לטוקיו.</li>
+        </ul>
+
+        <h2 id="tips">טיפים מקומיים שכדאי להכיר</h2>
+        <p>
+          לסיום, כמה טיפים פרקטיים שיחסכו לכם זמן וכסף:
+        </p>
+        <ul>
+          <li><strong>שתיקה ברכבות</strong> — אל תדברו בטלפון, אל תאכלו.</li>
+          <li><strong>תשלומים</strong> — מזומן עדיין מקובל בהרבה מקומות.</li>
+          <li><strong>לוקרים</strong> — בכל תחנת רכבת מרכזית, חוסכים סחיבה.</li>
+          <li><strong>שירותים ציבוריים</strong> — נקיים בטירוף, וזמינים בכל פינה.</li>
+        </ul>
+
+        <p>
+          רוצים לקבל מסלול אישי לטיול שלכם בטוקיו?
+          <a href="contact.html">צרו איתנו קשר</a> ונשמח לתכנן עבורכם
+          חוויה בלתי נשכחת.
+        </p>
+
+      </article>
+    </div>
+
+    <!-- ==========================================================================
+         Contact section — same as the homepage closing.
+         ========================================================================== -->
+    <section class="contact" id="contact">
+      <img class="contact__leaf contact__leaf--right" src="images/right_leaf.png" alt="" loading="lazy">
+      <img class="contact__leaf contact__leaf--left" src="images/left_leaf.png" alt="" loading="lazy">
+
+      <div class="contact__inner">
+        <header class="contact__head">
+          <h2 class="section-title">מוכנים לטיול של <em>פעם בחיים?</em></h2>
+          <p class="contact__lead">בואו נתחיל לתכנן את יפן שלכם, בדיוק כמו שחלמתם.</p>
+        </header>
+
+        <div class="contact__layout">
+          <form class="contact__form" novalidate>
+            <h3 class="contact__form-title"><span>בואו נתכנן את הטיול שלך</span></h3>
+            <div class="contact__form-grid">
+              <label class="contact__field"><input type="text" name="name" placeholder="שם מלא" required></label>
+              <label class="contact__field"><input type="email" name="email" placeholder="מייל" required></label>
+              <label class="contact__field"><input type="tel" name="phone" placeholder="טלפון" required></label>
+              <label class="contact__field"><input type="number" name="people" placeholder="מספר נפשות" min="1"></label>
+              <label class="contact__field"><input type="text" name="dates" placeholder="טווח ימים מועדף לטיול"></label>
+              <label class="contact__field"><input type="text" name="budget" placeholder="סכום תקציבי מועדף לטיול"></label>
+            </div>
+            <button type="submit" class="btn-pill --primary --lg contact__submit">
+              <span class="btn-pill__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12"/>
+                  <polyline points="12 19 5 12 12 5"/>
+                </svg>
+              </span>
+              <span class="btn-pill__text">התייעצות ללא עלות</span>
+            </button>
+          </form>
+
+          <figure class="contact__image">
+            <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1600&q=85" alt="">
+            <p class="contact__image-text">LET'S<br>PLAN<br>YOUR<br>TRIP</p>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       Footer — copied 1:1 from index.html.
+       ========================================================================== -->
+  <footer class="footer" id="footer">
+    <div class="footer__inner">
+      <div class="footer__col footer__col--logo">
+        <a href="index.html" class="footer__logo" aria-label="Ninja Tours">
+          <img src="images/logo.svg" alt="Ninja Tours" width="160" height="120">
+        </a>
+      </div>
+
+      <nav class="footer__col" aria-label="קטגוריות">
+        <h4 class="footer__heading">קטגוריות</h4>
+        <ul>
+          <li><a href="#">תחבורה</a></li>
+          <li><a href="#">נופים</a></li>
+          <li><a href="#">מלונות</a></li>
+          <li><a href="#">אטרקציות</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="יעדים פופולריים">
+        <h4 class="footer__heading">יעדים פופולריים</h4>
+        <ul>
+          <li><a href="destination-tokyo.html">טוקיו</a></li>
+          <li><a href="destinations.html">אוסקה</a></li>
+          <li><a href="destinations.html">קיוטו</a></li>
+          <li><a href="destinations.html">עוד יעדים</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="עלינו">
+        <h4 class="footer__heading">עלינו</h4>
+        <ul>
+          <li><a href="about.html">אודות</a></li>
+          <li><a href="#">שאלות ותשובות</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="מידע למטייל">
+        <h4 class="footer__heading">מידע למטייל</h4>
+        <ul>
+          <li><a href="blog.html">מדריכים</a></li>
+          <li><a href="#">מידע שימושי</a></li>
+          <li><a href="#">קישורים חשובים</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer__col footer__col--contact">
+        <h4 class="footer__heading">יצירת קשר</h4>
+        <a class="footer__email" href="mailto:ninjatours@gmail.com">ninjatours@gmail.com</a>
+        <ul class="footer__socials" aria-label="רשתות חברתיות">
+          <li>
+            <a class="footer__social" href="#" aria-label="פייסבוק">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.2-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8.2v3h2.5V21h2.8z"/></svg>
+            </a>
+          </li>
+          <li>
+            <a class="footer__social" href="#" aria-label="אינסטגרם">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor"/>
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bar">
+      <p class="footer__copy">Copyright &copy;Ninja Tours. All right reserved</p>
+      <p class="footer__credit">Design &amp; Code by Elevate</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var header = document.querySelector('.header');
+      var progressBar = document.querySelector('.reading-progress__bar');
+      var article = document.querySelector('.post-content');
+
+      function onScroll() {
+        if (header) header.classList.toggle('fixed', window.scrollY > 50);
+
+        if (progressBar && article) {
+          var rect = article.getBoundingClientRect();
+          var start = window.scrollY + rect.top;
+          var end = start + rect.height - window.innerHeight;
+          var pct = (window.scrollY - start) / Math.max(1, end - start);
+          pct = Math.max(0, Math.min(1, pct));
+          progressBar.style.width = (pct * 100) + '%';
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      var burger = document.querySelector('.burger-btn');
+      var menus = document.querySelectorAll('.main-menu');
+      if (burger) {
+        burger.addEventListener('click', function () {
+          var open = burger.getAttribute('aria-expanded') === 'true';
+          burger.setAttribute('aria-expanded', String(!open));
+          menus.forEach(function (m) { m.classList.toggle('--open'); });
+          document.body.classList.toggle('--menu-open');
+        });
+      }
+
+      // Mobile TOC dropdown
+      var tocTrigger = document.querySelector('.post-toc-trigger');
+      var toc = document.getElementById('post-toc');
+      if (tocTrigger && toc) {
+        tocTrigger.addEventListener('click', function () {
+          var open = tocTrigger.getAttribute('aria-expanded') === 'true';
+          tocTrigger.setAttribute('aria-expanded', String(!open));
+          toc.classList.toggle('--open');
+        });
+        // Close after clicking a link
+        toc.querySelectorAll('a').forEach(function (a) {
+          a.addEventListener('click', function () {
+            tocTrigger.setAttribute('aria-expanded', 'false');
+            toc.classList.remove('--open');
+          });
+        });
+      }
+
+      // Active TOC link based on scroll position
+      var tocLinks = document.querySelectorAll('.post-toc__list a');
+      var headings = Array.from(tocLinks).map(function (a) {
+        return document.getElementById(a.getAttribute('href').slice(1));
+      });
+      function onScrollToc() {
+        var pos = window.scrollY + 140;
+        var idx = 0;
+        for (var i = 0; i < headings.length; i++) {
+          if (headings[i] && headings[i].offsetTop <= pos) idx = i;
+        }
+        tocLinks.forEach(function (a, i) {
+          a.classList.toggle('--active', i === idx);
+        });
+      }
+      window.addEventListener('scroll', onScrollToc, { passive: true });
+      onScrollToc();
+    })();
+  </script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
