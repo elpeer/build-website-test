@@ -4740,11 +4740,10 @@ ol {
   color: #444;
 }
 
-/* Cover image — wide, slightly inset rounded corners. */
+/* Cover image — full page width matching menu margins. */
 .post-cover {
-  margin: 1.5rem auto 0;
-  max-width: 80rem;
-  padding-inline: 1.5rem;
+  margin: 1.5rem 0 0;
+  padding-inline: clamp(1.5rem, 5vw, 6.25rem);
 }
 .post-cover img {
   width: 100%;
@@ -4755,14 +4754,13 @@ ol {
   object-fit: cover;
 }
 
-/* TOC + content layout */
+/* TOC + content + related layout — 3 columns matching menu margins. */
 .post-layout {
-  max-width: 80rem;
-  margin: 3rem auto 4rem;
-  padding-inline: 1.5rem;
+  margin: 3rem 0 4rem;
+  padding-inline: clamp(1.5rem, 5vw, 6.25rem);
   display: grid;
-  grid-template-columns: 18rem 1fr;
-  gap: 3rem;
+  grid-template-columns: 15rem minmax(0, 1fr) 17rem;
+  gap: 2.5rem;
   align-items: start;
 }
 .post-toc {
@@ -4895,7 +4893,7 @@ ol {
 }
 .post-content ul { list-style: disc outside; }
 .post-content ol { list-style: decimal outside; }
-.post-content ul li::marker { color: #d2170a; }
+.post-content ul li::marker { color: #063874; }
 .post-content ol li::marker { color: #063874; font-weight: 700; }
 .post-content li { margin: 0.375rem 0; display: list-item; }
 .post-content__image {
@@ -4914,27 +4912,24 @@ ol {
   text-align: start;
 }
 
-/* Related posts — "אולי יעניין אותך גם" */
+/* Related posts — left-column sidebar on desktop, stacked. */
 .related-posts {
-  padding: 4rem 1.5rem 5rem;
-  background: #fffaf5;
-}
-.related-posts__inner {
-  max-width: 80rem;
-  margin-inline: auto;
+  align-self: start;
+  position: sticky;
+  inset-block-start: 6.5rem;
 }
 .related-posts__title {
-  margin: 0 0 2rem;
+  margin: 0 0 1.25rem;
   font-family: 'Noto Sans Hebrew', sans-serif;
   font-weight: 800;
-  font-size: 2.25rem;
+  font-size: 1.375rem;
   color: #063874;
   text-align: start;
 }
-.related-posts__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.75rem;
+.related-posts__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 .related-card {
   background: #fff;
@@ -4997,22 +4992,24 @@ ol {
     margin-block: 1.5rem 3rem;
   }
 
-  /* Author card on mobile — centered avatar above heading + text */
+  /* Author card on mobile — RTL-start aligned (avatar on right, text on left) */
   .post-author {
-    flex-direction: column;
-    text-align: center;
+    flex-direction: row;
     align-items: center;
-    gap: 0.875rem;
-    padding: 1.75rem 1.25rem;
+    text-align: start;
+    gap: 1rem;
+    padding: 1.5rem 1.25rem;
   }
-  .post-author__avatar { width: 5rem; height: 5rem; }
-  .post-author__heading { font-size: 1.0625rem; margin-block-end: 0.5rem; }
+  .post-author__avatar { width: 4rem; height: 4rem; }
+  .post-author__heading { font-size: 1.0625rem; margin-block-end: 0.375rem; }
   .post-author__text p { font-size: 0.9375rem; }
 
-  /* Related posts — stack on mobile */
-  .related-posts { padding: 3rem 1.25rem 3.5rem; }
-  .related-posts__title { font-size: 1.625rem; margin-block-end: 1.5rem; }
-  .related-posts__grid { grid-template-columns: 1fr; gap: 1.25rem; }
+  /* Related posts — full width below content, not sticky */
+  .related-posts {
+    position: static;
+    margin-block-start: 2.5rem;
+  }
+  .related-posts__title { font-size: 1.5rem; }
 
   /* Sticky dropdown trigger above the article */
   .post-toc-trigger {
