@@ -5115,7 +5115,9 @@ ol {
 }
 .service-hero__media {
   order: 1; /* RTL: order:1 sits visually on the left */
-  padding: 2.5rem;
+  padding-block: 2.5rem;
+  padding-inline-start: 2.5rem;
+  padding-inline-end: 0;
 }
 .service-hero__media img {
   width: 100%;
