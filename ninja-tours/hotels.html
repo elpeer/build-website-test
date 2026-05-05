@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Ninja Tours | מלונות ביפן</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="description" content="מגוון מלונות ביפן — חפשו ממגוון מלונות לפי מה שנוח ומתאים לכם." />
+
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/hotels.css" />
+</head>
+
+<body class="page-hotels">
+  <a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
+
+  <header class="header">
+    <div class="header-inner">
+      <nav class="main-menu main-menu--start" aria-label="תפריט ראשי - יעדים">
+        <ul>
+          <li><a href="destinations.html">יעדים</a></li>
+          <li><a href="hotels.html">מלונות</a></li>
+          <li><a href="#">אטרקציות</a></li>
+          <li><a href="#">מדריכים</a></li>
+          <li><a href="#">תחבורה</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <a href="index.html" class="logo" aria-label="Ninja Tours - חזרה לדף הבית">
+          <img class="--default" src="images/logo.svg" alt="Ninja Tours">
+          <img class="--dark" src="images/logo-dark.svg" alt="Ninja Tours">
+        </a>
+      </div>
+
+      <div class="header-end">
+        <nav class="main-menu main-menu--end" aria-label="תפריט ראשי - אודות">
+          <ul>
+            <li><a href="#">קצת עלינו</a></li>
+            <li><a href="#">השירותים שלנו</a></li>
+            <li><a href="#">על התהליך</a></li>
+          </ul>
+        </nav>
+
+        <button class="search-btn" aria-label="חיפוש">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="20" y1="20" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+
+        <a href="index.html#contact" class="btn-pill --light">
+          <span class="btn-pill__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/>
+              <polyline points="12 19 5 12 12 5"/>
+            </svg>
+          </span>
+          <span class="btn-pill__text">בואו נתחיל</span>
+        </a>
+      </div>
+
+      <button class="burger-btn" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ==========================================================================
+         Hotels Hero — 50vh video background, title centered vertically
+         ========================================================================== -->
+    <section class="hotels-page-hero" id="hotels-hero">
+      <div class="hotels-page-hero__media" aria-hidden="true">
+        <video class="hotels-page-hero__video" autoplay muted loop playsinline poster="images/hero-poster.jpg">
+          <source src="video/hero.mp4" type="video/mp4">
+        </video>
+        <div class="hotels-page-hero__overlay"></div>
+      </div>
+      
+      <div class="hotels-page-hero__inner">
+        <h1 class="hotels-page-hero__title" data-aos="fade-up" data-aos-duration="800">מגוון מלונות ביפן</h1>
+        <p class="hotels-page-hero__lead" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">חפשו ממגוון מלונות לפי מה שנוח ומתאים לכם.</p>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         Hotels Filter — sits below the hero as a clean white bar.
+         Two custom multi-select dropdowns + compact search button.
+         ========================================================================== -->
+    <div class="hotels-filter" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
+      <div class="container">
+        <form class="hotels-filter__form" onsubmit="event.preventDefault();">
+          <div class="hotels-filter__row">
+
+            <!-- Dropdown 1 — Destination -->
+            <div class="hotels-filter__col">
+              <label class="hotels-filter__label">יעד</label>
+              <div class="custom-dropdown" id="dropdown-destination">
+                <button type="button" class="custom-dropdown__trigger" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="custom-dropdown__value">בחרו יעד...</span>
+                  <svg class="custom-dropdown__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="custom-dropdown__panel" role="listbox" aria-multiselectable="true">
+                  <label class="custom-dropdown__option">
+                    <input type="checkbox" name="destination" value="tokyo"><span>טוקיו</span>
+                  </label>
+                  <label class="custom-dropdown__option">
+                    <input type="checkbox" name="destination" value="kyoto"><span>קיוטו</span>
+                  </label>
+                  <label class="custom-dropdown__option">
+                    <input type="checkbox" name="destination" value="osaka"><span>אוסקה</span>
+                  </label>
+                  <label class="custom-dropdown__option">
+                    <input type="checkbox" name="destination" value="hakone"><span>האקונה</span>
+                  </label>
+                  <label class="custom-dropdown__option">
+                    <input type="checkbox" name="destination" value="hokkaido"><span>הוקאידו</span>
+                  </label>
+                  <label class="custom-dropdown__option">
+                    <input type="checkbox" name="destination" value="hiroshima"><span>הירושימה</span>
+                  </label>
+                  <label class="custom-dropdown__option">
+                    <input type="checkbox" name="destination" value="nara"><span>נארה</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dropdown 2 — Audience -->
+            <div class="hotels-filter__col">
+              <label class="hotels-filter__label">למי מתאים?</label>
+              <div class="custom-dropdown" id="dropdown-audience">
+                <button type="button" class="custom-dropdown__trigger" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="custom-dropdown__value">בחרו קהל יעד...</span>
+                  <svg class="custom-dropdown__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="custom-dropdown__panel" role="listbox" aria-multiselectable="true">
+                  <label class="custom-dropdown__option">
+                    <input type="checkbox" name="audience" value="golden_age"><span>גיל הזהב</span>
+                  </label>
+                  <label class="custom-dropdown__option">
+                    <input type="checkbox" name="audience" value="couples"><span>זוגות</span>
+                  </label>
+                  <label class="custom-dropdown__option">
+                    <input type="checkbox" name="audience" value="families"><span>משפחות</span>
+                  </label>
+                  <label class="custom-dropdown__option">
+                    <input type="checkbox" name="audience" value="young"><span>צעירים</span>
+                  </label>
+                  <label class="custom-dropdown__option">
+                    <input type="checkbox" name="audience" value="business"><span>נוסעי עסקים</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="hotels-filter__col hotels-filter__col--submit">
+              <button type="submit" class="hotels-filter__search-btn">
+                <span>הצג תוצאות</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="19" y1="12" x2="5" y2="12"/>
+                  <polyline points="12 19 5 12 12 5"/>
+                </svg>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Active filters display -->
+          <div class="hotels-filter__active" id="hotels-active-filters"></div>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- Results Grid -->
+    <section class="hotels-catalog" id="hotels-catalog">
+      <div class="container">
+        <div class="hotels-catalog__grid">
+          
+          <article class="hotels__card" data-aos="fade-up" data-aos-delay="100">
+            <figure class="hotels__card-media">
+              <img src="https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=900&q=80" alt="The Royal Park Hotel Iconic Kyoto" loading="lazy">
+            </figure>
+            <div class="hotels__card-body">
+              <div class="hotels__card-tags">
+                <span class="hotels__card-tag --location">מרכז קיוטו, קיוטו</span>
+              </div>
+              <div class="hotels__card-audience">
+                <span>גיל הזהב</span>
+                <span>זוגות</span>
+                <span>צעירים</span>
+              </div>
+              <div class="hotels__card-stars" aria-label="דירוג 5 כוכבים">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+              </div>
+              <h3 class="hotels__card-title">The Royal Park Hotel Iconic Kyoto</h3>
+              <p class="hotels__card-desc"><strong>מלון יוקרתי ומודרני בלב קיוטו</strong>, במרחק 15 דקות הליכה מאזור KAWARAMACHI התוסס, סמוך לשוק נישיקי, סמטאות ציוריות, איזאקיות ומסעדות מישלן...</p>
+            </div>
+          </article>
+
+          <article class="hotels__card" data-aos="fade-up" data-aos-delay="200">
+            <figure class="hotels__card-media">
+              <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900&q=80" alt="Hyatt Regency Kyoto" loading="lazy">
+            </figure>
+            <div class="hotels__card-body">
+              <div class="hotels__card-tags">
+                <span class="hotels__card-tag --location">היגאשיאמה, קיוטו</span>
+              </div>
+              <div class="hotels__card-audience">
+                <span>זוגות</span>
+                <span>משפחות</span>
+                <span>גיל הזהב</span>
+              </div>
+              <div class="hotels__card-stars" aria-label="דירוג 5 כוכבים">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+              </div>
+              <h3 class="hotels__card-title">Hyatt Regency Kyoto</h3>
+              <p class="hotels__card-desc"><strong>מלון יוקרתי בסגנון יפני מודרני</strong>, בקרבת מקדש סנג'וסנגנדו ומוזיאון קיוטו, עם גישה נוחה לאזורי גיון ופונטוצ'ו, חוויה שמשלבת מסורת יפנית...</p>
+            </div>
+          </article>
+
+          <article class="hotels__card" data-aos="fade-up" data-aos-delay="300">
+            <figure class="hotels__card-media">
+              <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=900&q=80" alt="Hotel Granvia Kyoto" loading="lazy">
+            </figure>
+            <div class="hotels__card-body">
+              <div class="hotels__card-tags">
+                <span class="hotels__card-tag --location">תחנת טוקיו, טוקיו</span>
+              </div>
+              <div class="hotels__card-audience">
+                <span>צעירים</span>
+                <span>עסקים</span>
+              </div>
+              <div class="hotels__card-stars" aria-label="דירוג 4 כוכבים">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg class="--empty" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+              </div>
+              <h3 class="hotels__card-title">Hotel Granvia Tokyo</h3>
+              <p class="hotels__card-desc"><strong>מלון מרשים מעל תחנת הרכבת המרכזית</strong>, גישה ישירה לכל היעדים בעיר ומחוצה לה. מומלץ לשהיות קצרות ולנוסעי עסקים...</p>
+            </div>
+          </article>
+          
+          <article class="hotels__card" data-aos="fade-up" data-aos-delay="100">
+            <figure class="hotels__card-media">
+              <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=900&q=80" alt="The Westin Miyako Kyoto" loading="lazy">
+            </figure>
+            <div class="hotels__card-body">
+              <div class="hotels__card-tags">
+                <span class="hotels__card-tag --location">גינזה, טוקיו</span>
+              </div>
+              <div class="hotels__card-audience">
+                <span>זוגות</span>
+                <span>גיל הזהב</span>
+              </div>
+              <div class="hotels__card-stars" aria-label="דירוג 5 כוכבים">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+              </div>
+              <h3 class="hotels__card-title">The Westin Miyako Tokyo</h3>
+              <p class="hotels__card-desc"><strong>מלון בוטיק יוקרתי</strong>, נוף פנורמי לעיר, סביבה שלווה עם גנים יפניים מסורתיים, מסעדות עם תפריט קייסקי ושירות מסור...</p>
+            </div>
+          </article>
+
+          <article class="hotels__card" data-aos="fade-up" data-aos-delay="200">
+            <figure class="hotels__card-media">
+              <img src="https://images.unsplash.com/photo-1538485399081-7191377e8241?w=900&q=80" alt="Hotel Ryumeikan Tokyo" loading="lazy">
+            </figure>
+            <div class="hotels__card-body">
+              <div class="hotels__card-tags">
+                <span class="hotels__card-tag --location">שינג'וקו, טוקיו</span>
+              </div>
+              <div class="hotels__card-audience">
+                <span>זוגות</span>
+                <span>צעירים</span>
+              </div>
+              <div class="hotels__card-stars" aria-label="דירוג 4 כוכבים">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg class="--empty" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+              </div>
+              <h3 class="hotels__card-title">Hotel Ryumeikan Tokyo</h3>
+              <p class="hotels__card-desc"><strong>מלון מודרני עם עיצוב מינימליסטי</strong> ושירות אישי. במרחק הליכה מאזור הקניות המפורסם, אווירה שקטה ופרטית...</p>
+            </div>
+          </article>
+          
+          <article class="hotels__card" data-aos="fade-up" data-aos-delay="300">
+            <figure class="hotels__card-media">
+              <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=900&q=80" alt="Osaka Marriott Miyako Hotel" loading="lazy">
+            </figure>
+            <div class="hotels__card-body">
+              <div class="hotels__card-tags">
+                <span class="hotels__card-tag --location">אוסקה</span>
+              </div>
+              <div class="hotels__card-audience">
+                <span>משפחות</span>
+                <span>גיל הזהב</span>
+              </div>
+              <div class="hotels__card-stars" aria-label="דירוג 5 כוכבים">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.6 8.6 L21.6 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.4 9.2 L9.4 8.6 Z"/></svg>
+              </div>
+              <h3 class="hotels__card-title">Osaka Marriott Miyako Hotel</h3>
+              <p class="hotels__card-desc"><strong>תצפית מדהימה על כל אוסקה</strong> מהקומות העליונות של הבניין הגבוה ביפן, חדרים מרווחים ושירות מוקפד שאין שני לו...</p>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer" id="footer">
+    <div class="footer__inner">
+      <div class="footer__col footer__col--logo">
+        <a href="index.html" class="footer__logo" aria-label="Ninja Tours">
+          <img src="images/logo.svg" alt="Ninja Tours" width="160" height="120">
+        </a>
+      </div>
+
+      <nav class="footer__col" aria-label="קטגוריות">
+        <h4 class="footer__heading">קטגוריות</h4>
+        <ul>
+          <li><a href="#">תחבורה</a></li>
+          <li><a href="#">נופים</a></li>
+          <li><a href="#">מלונות</a></li>
+          <li><a href="#">אטרקציות</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="יעדים פופולריים">
+        <h4 class="footer__heading">יעדים פופולריים</h4>
+        <ul>
+          <li><a href="destination-tokyo.html">טוקיו</a></li>
+          <li><a href="destinations.html">אוסקה</a></li>
+          <li><a href="destinations.html">קיוטו</a></li>
+          <li><a href="destinations.html">עוד יעדים</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="עלינו">
+        <h4 class="footer__heading">עלינו</h4>
+        <ul>
+          <li><a href="#">אודות</a></li>
+          <li><a href="#">שאלות ותשובות</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="מידע למטייל">
+        <h4 class="footer__heading">מידע למטייל</h4>
+        <ul>
+          <li><a href="#">מדריכים</a></li>
+          <li><a href="#">מידע שימושי</a></li>
+          <li><a href="#">קישורים חשובים</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer__col footer__col--contact">
+        <h4 class="footer__heading">יצירת קשר</h4>
+        <a class="footer__email" href="mailto:ninjatours@gmail.com">ninjatours@gmail.com</a>
+        <ul class="footer__socials" aria-label="רשתות חברתיות">
+          <li>
+            <a class="footer__social" href="#" aria-label="פייסבוק">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.2-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8.2v3h2.5V21h2.8z"/></svg>
+            </a>
+          </li>
+          <li>
+            <a class="footer__social" href="#" aria-label="אינסטגרם">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor"/>
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bar">
+      <p class="footer__copy">Copyright &copy;Ninja Tours. All right reserved</p>
+      <p class="footer__credit">Design &amp; Code by Elevate</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      /* ── Header scroll / burger ─────────────────────────────────────── */
+      var header = document.querySelector('.header');
+      function onScroll() {
+        if (!header) return;
+        header.classList.toggle('fixed', window.scrollY > 50);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      var burger = document.querySelector('.burger-btn');
+      var menus = document.querySelectorAll('.main-menu');
+      if (burger) {
+        burger.addEventListener('click', function () {
+          var open = burger.getAttribute('aria-expanded') === 'true';
+          burger.setAttribute('aria-expanded', String(!open));
+          menus.forEach(function (m) { m.classList.toggle('--open'); });
+          document.body.classList.toggle('--menu-open');
+        });
+      }
+
+      /* ── Custom Multi-Select Dropdowns ──────────────────────────────── */
+      var dropdowns = document.querySelectorAll('.custom-dropdown');
+      var activeFiltersEl = document.getElementById('hotels-active-filters');
+
+      // Label map for readable pill text
+      var labelMap = {
+        tokyo: 'טוקיו', kyoto: 'קיוטו', osaka: 'אוסקה',
+        hakone: 'האקונה', hokkaido: 'הוקאידו', hiroshima: 'הירושימה', nara: 'נארה',
+        golden_age: 'גיל הזהב', couples: 'זוגות', families: 'משפחות',
+        young: 'צעירים', business: 'נוסעי עסקים'
+      };
+
+      dropdowns.forEach(function (dd) {
+        var trigger = dd.querySelector('.custom-dropdown__trigger');
+        var panel   = dd.querySelector('.custom-dropdown__panel');
+        var valueEl = dd.querySelector('.custom-dropdown__value');
+        var checks  = dd.querySelectorAll('input[type="checkbox"]');
+        var placeholder = valueEl.textContent;
+
+        // Toggle open / close
+        trigger.addEventListener('click', function (e) {
+          e.preventDefault();
+          var wasOpen = dd.classList.contains('--open');
+          // Close all others first
+          dropdowns.forEach(function (d) { d.classList.remove('--open'); });
+          if (!wasOpen) dd.classList.add('--open');
+          trigger.setAttribute('aria-expanded', String(!wasOpen));
+        });
+
+        // Update label when checkboxes change
+        checks.forEach(function (cb) {
+          cb.addEventListener('change', function () {
+            updateDropdownLabel(dd, valueEl, checks, placeholder);
+            renderActiveFilters();
+          });
+        });
+      });
+
+      // Close dropdown on outside click
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.custom-dropdown')) {
+          dropdowns.forEach(function (d) {
+            d.classList.remove('--open');
+            var t = d.querySelector('.custom-dropdown__trigger');
+            if (t) t.setAttribute('aria-expanded', 'false');
+          });
+        }
+      });
+
+      function updateDropdownLabel(dd, valueEl, checks, placeholder) {
+        var selected = [];
+        checks.forEach(function (cb) {
+          if (cb.checked) selected.push(labelMap[cb.value] || cb.value);
+        });
+        if (selected.length === 0) {
+          valueEl.textContent = placeholder;
+          valueEl.classList.add('--placeholder');
+        } else {
+          valueEl.textContent = selected.join(', ');
+          valueEl.classList.remove('--placeholder');
+        }
+      }
+
+      function renderActiveFilters() {
+        if (!activeFiltersEl) return;
+        activeFiltersEl.innerHTML = '';
+        var allChecked = document.querySelectorAll('.hotels-filter input[type="checkbox"]:checked');
+        allChecked.forEach(function (cb) {
+          var pill = document.createElement('span');
+          pill.className = 'hotels-filter__active-pill';
+          pill.innerHTML = (labelMap[cb.value] || cb.value) +
+            ' <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+          pill.addEventListener('click', function () {
+            cb.checked = false;
+            cb.dispatchEvent(new Event('change'));
+          });
+          activeFiltersEl.appendChild(pill);
+        });
+      }
+
+    })();
+  </script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
