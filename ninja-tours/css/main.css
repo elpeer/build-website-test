@@ -3954,6 +3954,7 @@ ol {
 /* Remove the white gap above the contact section so the section background
    (footer_bg.jpg) reaches the very top, behind the transparent menu. */
 .page-contact .breadcrumbs { display: none; }
+.page-contact { padding-block-start: 0; }
 .page-contact main { padding-block-start: 0; }
 .page-contact .contact--page {
   /* Add top padding equal to the header height so the heading clears
@@ -4041,9 +4042,11 @@ ol {
   .page-contact .contact--page .contact__form  { grid-row: 1; }
   .page-contact .contact--page .contact__image {
     grid-row: 2;
-    /* Make the image area taller on mobile so more of the photo shows
-       above the glass info card (card stays at its own size). */
-    min-height: 28rem;
+    /* Drop the base aspect-ratio so the image isn't forced wider than
+       its column; just give it more height instead. */
+    aspect-ratio: auto;
+    width: 100%;
+    min-height: 24rem;
   }
 
   .contact__info-glass {
@@ -4080,8 +4083,8 @@ ol {
   color: #fff;
   overflow: hidden;
 }
-/* Hide breadcrumbs (none in markup) and any white body bg above the section */
-.page-404 { background: #000; }
+/* No top padding on body — bg image fills behind the transparent menu */
+.page-404 { padding-block-start: 0; }
 .page-404 .breadcrumbs { display: none; }
 
 .error-404__inner {
