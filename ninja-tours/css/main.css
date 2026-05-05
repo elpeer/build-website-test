@@ -4457,3 +4457,183 @@ ol {
   .vision .about__image { min-height: 18rem; aspect-ratio: 4/3; }
   .vision__text { padding: 2.5rem 1.25rem; }
 }
+
+/* ==========================================================================
+   Blog page — 80vh hero (50/50 split, image on the visual left), centered
+   category tabs, then a regular grid of post cards using the same outer
+   padding as the destinations page.
+   ========================================================================== */
+.page-blog { padding-block-start: 0; }
+.page-blog .breadcrumbs { display: none; }
+
+/* Hero — 80% of viewport height, content right (RTL), image left. */
+.blog-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 80vh;
+  min-height: 32rem;
+  background: #fffaf5;
+}
+.blog-hero__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 4rem 4rem 2rem;
+  max-width: 38rem;
+  margin-inline: auto 0;
+}
+.blog-hero .section-title { margin: 0 0 1.5rem; text-align: start; }
+.blog-hero__lead {
+  margin: 0;
+  font-size: 1.1875rem;
+  line-height: 1.75;
+  color: #444;
+}
+.blog-hero__image {
+  margin: 0;
+  height: 100%;
+  /* Visually swap: image on the RTL left. */
+  order: -1;
+}
+.blog-hero__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Category tabs — pill-style, centered. */
+.blog-tabs {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1.5rem 2rem;
+  background: #fffaf5;
+}
+.blog-tabs ul {
+  list-style: none;
+  margin: 0;
+  padding: 0.375rem;
+  display: inline-flex;
+  gap: 0.25rem;
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+.blog-tabs__btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0.625rem 1.5rem;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #063874;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.blog-tabs__btn:hover { background: #fffaf5; }
+.blog-tabs__btn.--active {
+  background: #063874;
+  color: #fff;
+}
+
+/* Cards grid — same outer padding as the destinations page. */
+.blog-list {
+  background: #fffaf5;
+  padding-block: 1rem 5rem;
+}
+.blog-list .container {
+  max-width: none;
+  padding-inline: 6.25rem;
+}
+.blog-list__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+.blog-card {
+  background: #fff;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.blog-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+}
+.blog-card__link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+.blog-card__image {
+  margin: 0;
+  aspect-ratio: 16/10;
+  overflow: hidden;
+}
+.blog-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.blog-card:hover .blog-card__image img { transform: scale(1.04); }
+.blog-card__body {
+  padding: 1.5rem 1.5rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  flex: 1;
+}
+.blog-card__category {
+  align-self: flex-start;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: #f8f1e7;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #063874;
+}
+.blog-card__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #063874;
+}
+.blog-card__excerpt {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: #555;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .blog-hero {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 0;
+  }
+  .blog-hero__content {
+    padding: 2.5rem 1.25rem;
+    max-width: none;
+    margin-inline: 0;
+  }
+  .blog-hero__image { aspect-ratio: 16/10; height: auto; order: 0; }
+
+  .blog-tabs { padding: 2rem 1rem 1.25rem; }
+  .blog-tabs ul { flex-wrap: wrap; justify-content: center; }
+  .blog-tabs__btn { padding: 0.5rem 1.125rem; font-size: 0.9375rem; }
+
+  .blog-list { padding-block: 1rem 3rem; }
+  .blog-list .container { padding-inline: 1rem; }
+  .blog-list__grid { grid-template-columns: 1fr; gap: 1.25rem; }
+}
