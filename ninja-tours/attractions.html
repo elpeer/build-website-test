@@ -333,6 +333,57 @@
       </div>
     </section>
 
+    <section class="contact" id="contact">
+      <img class="contact__leaf contact__leaf--right" src="images/right_leaf.png" alt="" loading="lazy">
+      <img class="contact__leaf contact__leaf--left" src="images/left_leaf.png" alt="" loading="lazy">
+
+      <div class="contact__inner">
+        <header class="contact__head">
+          <h2 class="section-title">מוכנים לטיול של <em>פעם בחיים?</em></h2>
+          <p class="contact__lead">בואו נתחיל לתכנן את יפן שלכם, בדיוק כמו שחלמתם.</p>
+        </header>
+
+        <div class="contact__layout">
+          <form class="contact__form" novalidate>
+            <h3 class="contact__form-title"><span>בואו נתכנן את הטיול שלך</span></h3>
+            <div class="contact__form-grid">
+              <label class="contact__field">
+                <input type="text" name="name" placeholder="שם מלא" required>
+              </label>
+              <label class="contact__field">
+                <input type="email" name="email" placeholder="מייל" required>
+              </label>
+              <label class="contact__field">
+                <input type="tel" name="phone" placeholder="טלפון" required>
+              </label>
+              <label class="contact__field">
+                <input type="number" name="people" placeholder="מספר נפשות" min="1">
+              </label>
+              <label class="contact__field">
+                <input type="text" name="dates" placeholder="טווח ימים מועדף לטיול">
+              </label>
+              <label class="contact__field">
+                <input type="text" name="budget" placeholder="סכום תקציבי מועדף לטיול">
+              </label>
+            </div>
+            <button type="submit" class="btn-pill --primary --lg contact__submit">
+              <span class="btn-pill__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12" />
+                  <polyline points="12 19 5 12 12 5" />
+                </svg>
+              </span>
+              <span class="btn-pill__text">התייעצות ללא עלות</span>
+            </button>
+          </form>
+
+          <figure class="contact__image">
+            <img src="images/contact.jpg" alt="">
+          </figure>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="footer" id="footer">
@@ -346,17 +397,17 @@
       <nav class="footer__col" aria-label="קטגוריות">
         <h4 class="footer__heading">קטגוריות</h4>
         <ul>
-          <li><a href="#">תחבורה</a></li>
+          <li><a href="service.html">תחבורה</a></li>
           <li><a href="#">נופים</a></li>
-          <li><a href="#">מלונות</a></li>
-          <li><a href="#">אטרקציות</a></li>
+          <li><a href="hotels.html">מלונות</a></li>
+          <li><a href="attractions.html">אטרקציות</a></li>
         </ul>
       </nav>
 
       <nav class="footer__col" aria-label="יעדים פופולריים">
         <h4 class="footer__heading">יעדים פופולריים</h4>
         <ul>
-          <li><a href="destination-tokyo.html">טוקיו</a></li>
+          <li><a href="destinations.html">טוקיו</a></li>
           <li><a href="destinations.html">אוסקה</a></li>
           <li><a href="destinations.html">קיוטו</a></li>
           <li><a href="destinations.html">עוד יעדים</a></li>
@@ -374,7 +425,7 @@
       <nav class="footer__col" aria-label="מידע למטייל">
         <h4 class="footer__heading">מידע למטייל</h4>
         <ul>
-          <li><a href="#">מדריכים</a></li>
+          <li><a href="blog.html">מדריכים</a></li>
           <li><a href="#">מידע שימושי</a></li>
           <li><a href="#">קישורים חשובים</a></li>
         </ul>
