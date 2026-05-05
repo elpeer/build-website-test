@@ -5115,7 +5115,9 @@ ol {
 }
 .service-hero__media {
   order: 1; /* RTL: order:1 sits visually on the left */
-  padding: 0;
+  padding-inline-end: 3.5rem; /* left padding in RTL — matches .container */
+  padding-inline-start: 0;    /* right side: flush with text column */
+  padding-block: 0;
 }
 .service-hero__media img {
   width: 100%;
@@ -5124,8 +5126,8 @@ ol {
   object-fit: cover;
   display: block;
   border-radius: 0;
-  border-start-start-radius: 1.5rem;
-  border-end-start-radius: 1.5rem;
+  border-start-end-radius: 1.5rem; /* top-left in RTL (outer, has padding) */
+  border-end-end-radius: 1.5rem;   /* bottom-left in RTL (outer, has padding) */
 }
 .service-hero__text {
   padding: 4rem clamp(2rem, 5vw, 5rem);
