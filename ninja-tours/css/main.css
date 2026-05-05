@@ -5109,15 +5109,13 @@ ol {
    top-padding; we want the hero to sit naturally below the header. */
 .service-hero {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.25fr 1fr;
   background: #fffaf5;
   align-items: stretch;
 }
 .service-hero__media {
   order: 1; /* RTL: order:1 sits visually on the left */
-  padding-block: 2.5rem;
-  padding-inline-start: 2.5rem;
-  padding-inline-end: 0;
+  padding: 0;
 }
 .service-hero__media img {
   width: 100%;
