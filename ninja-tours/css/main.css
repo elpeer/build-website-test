@@ -5098,3 +5098,198 @@ ol {
   .simple-content { padding: 2rem 1.25rem 3.5rem; }
   .simple-content__inner { max-width: 100%; }
 }
+
+/* ==========================================================================
+   Service page — train transport hero, train-type cards, info text section
+   ========================================================================== */
+.page-service { padding-block-start: 0; }
+
+/* 50/50 hero — image on the visual left (RTL: order:1 in flow puts it on
+   the visual left), text block on the right with the H1 + 3 numbered features. */
+.service-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  background: #fffaf5;
+}
+.service-hero__media {
+  order: 1; /* RTL: order:1 sits visually on the left */
+  height: 100%;
+  min-height: 32rem;
+}
+.service-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.service-hero__text {
+  padding: 9rem clamp(2rem, 5vw, 5rem) 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+.service-hero__title {
+  margin: 0;
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-weight: 800;
+  font-size: 4rem;
+  line-height: 1.05;
+  color: #063874;
+}
+.service-hero__lead {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #d2170a;
+  line-height: 1.3;
+}
+.service-hero__desc {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: #333;
+  max-width: 32rem;
+}
+.service-hero__features {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem 3rem;
+}
+.service-hero__feature {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.service-hero__feature-num {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: #d2170a;
+  line-height: 1;
+}
+.service-hero__feature-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #063874;
+}
+
+/* Train-types grid — 4 cards in a row, image with text overlaid in lower part. */
+.train-types {
+  padding: 5rem 0 4rem;
+  background: #fffaf5;
+}
+.train-types__head {
+  text-align: center;
+  margin-block-end: 3rem;
+}
+.train-types__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+.train-card {
+  position: relative;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  isolation: isolate;
+  cursor: default;
+}
+.train-card__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  transition: transform 0.4s ease;
+}
+.train-card:hover .train-card__bg { transform: scale(1.05); }
+.train-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.85) 100%);
+  z-index: 1;
+}
+.train-card__body {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 2;
+  padding: 1.5rem 1.25rem;
+  color: #fff;
+}
+.train-card__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: #fff;
+}
+.train-card__desc {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.92);
+}
+.train-types__cta {
+  display: flex;
+  width: max-content;
+  margin: 2.5rem auto 0;
+}
+
+/* Service info — long text block reusing post-content typography. */
+.service-info {
+  padding: 5rem 0 4rem;
+}
+.service-info__head {
+  text-align: center;
+  margin-block-end: 2.5rem;
+}
+.service-info__inner {
+  max-width: 56rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+.service-info__cta-wrap {
+  text-align: center;
+  margin-block-start: 2.5rem;
+}
+.service-info__cta-wrap .btn-pill { display: inline-flex; }
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .service-hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .service-hero__media {
+    order: 0;
+    height: auto;
+    min-height: 16rem;
+    aspect-ratio: 4/3;
+  }
+  .service-hero__text {
+    padding: 2rem 1.25rem 2.5rem;
+    gap: 1rem;
+  }
+  .service-hero__title { font-size: 2.25rem; }
+  .service-hero__lead { font-size: 1.125rem; }
+  .service-hero__desc { font-size: 1rem; }
+  .service-hero__features { gap: 1.25rem 2rem; }
+  .service-hero__feature-num { font-size: 1.875rem; }
+  .service-hero__feature-title { font-size: 1rem; }
+
+  .train-types { padding: 3rem 0 2.5rem; }
+  .train-types__grid { grid-template-columns: 1fr; gap: 1rem; }
+  .train-card { aspect-ratio: 4/3; }
+  .train-card__title { font-size: 1.25rem; }
+
+  .service-info { padding: 3rem 0; }
+  .service-info__inner { padding-inline: 1.25rem; }
+}
