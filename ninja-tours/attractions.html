@@ -19,7 +19,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
 
   <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/hotels.css" />
   <link rel="stylesheet" href="css/attractions.css" />
 </head>
 
@@ -80,9 +79,7 @@
 
   <main id="main-content">
 
-    <!-- ==========================================================================
-         Attractions Hero — 50vh static image background
-         ========================================================================== -->
+    <!-- Hero -->
     <section class="attract-page-hero" id="attractions-hero">
       <div class="attract-page-hero__media" aria-hidden="true">
         <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=1600&q=85" alt="">
@@ -95,12 +92,10 @@
       </div>
     </section>
 
-    <!-- ==========================================================================
-         Filter Bar — יעד + סוג יעד dropdowns
-         ========================================================================== -->
+    <!-- Filter Bar -->
     <div class="hotels-filter" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
       <div class="container">
-        <form class="hotels-filter__form" onsubmit="event.preventDefault(); filterCards();">
+        <form class="hotels-filter__form" onsubmit="event.preventDefault();">
           <div class="hotels-filter__row">
 
             <!-- Dropdown 1 — Destination -->
@@ -137,7 +132,7 @@
               </div>
             </div>
 
-            <!-- Dropdown 2 — סוג יעד -->
+            <!-- Dropdown 2 — Type -->
             <div class="hotels-filter__col">
               <label class="hotels-filter__label">סוג יעד</label>
               <div class="custom-dropdown" id="dropdown-type">
@@ -179,21 +174,20 @@
           </div>
 
           <!-- Active filters display -->
-          <div class="hotels-filter__active" id="attract-active-filters"></div>
+          <div class="hotels-filter__active" id="hotels-active-filters"></div>
 
         </form>
       </div>
     </div>
 
-    <!-- ==========================================================================
-         Attractions Catalog — 9 cards, 3-column grid
-         ========================================================================== -->
+    <!-- Attractions Catalog -->
     <section class="attract-catalog" id="attract-catalog">
       <div class="container">
         <div class="attract-catalog__grid">
 
+          <!-- Card 1 -->
           <article class="attractions__card" data-aos="fade-up" data-aos-delay="100" data-type="destinations">
-            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=900&q=85" alt="מקדשים ואתרים ביפן" loading="lazy">
+            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=900&q=85" alt="מקדשים ואתרים" loading="lazy">
             <span class="attractions__card-overlay" aria-hidden="true"></span>
             <span class="attractions__card-arrow" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -207,8 +201,9 @@
             </div>
           </article>
 
-          <article class="attractions__card" data-aos="fade-up" data-aos-delay="150" data-type="destinations">
-            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900&q=85" alt="חיי לילה ונאון ביפן" loading="lazy">
+          <!-- Card 2 -->
+          <article class="attractions__card" data-aos="fade-up" data-aos-delay="200" data-type="destinations">
+            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900&q=85" alt="חיי לילה ונאון" loading="lazy">
             <span class="attractions__card-overlay" aria-hidden="true"></span>
             <span class="attractions__card-arrow" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -222,8 +217,9 @@
             </div>
           </article>
 
-          <article class="attractions__card" data-aos="fade-up" data-aos-delay="200" data-type="guides">
-            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=900&q=85" alt="אוכל וקולינריה ביפן" loading="lazy">
+          <!-- Card 3 -->
+          <article class="attractions__card" data-aos="fade-up" data-aos-delay="300" data-type="guides">
+            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=900&q=85" alt="אוכל וקולינריה" loading="lazy">
             <span class="attractions__card-overlay" aria-hidden="true"></span>
             <span class="attractions__card-arrow" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -237,8 +233,9 @@
             </div>
           </article>
 
+          <!-- Card 4 -->
           <article class="attractions__card" data-aos="fade-up" data-aos-delay="100" data-type="destinations">
-            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?w=900&q=85" alt="טבע ונופים ביפן" loading="lazy">
+            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?w=900&q=85" alt="טבע ונופים" loading="lazy">
             <span class="attractions__card-overlay" aria-hidden="true"></span>
             <span class="attractions__card-arrow" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -252,7 +249,8 @@
             </div>
           </article>
 
-          <article class="attractions__card" data-aos="fade-up" data-aos-delay="150" data-type="hotels">
+          <!-- Card 5 -->
+          <article class="attractions__card" data-aos="fade-up" data-aos-delay="200" data-type="hotels">
             <img class="attractions__card-img" src="https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=900&q=85" alt="חוויית מלון יפנית" loading="lazy">
             <span class="attractions__card-overlay" aria-hidden="true"></span>
             <span class="attractions__card-arrow" aria-hidden="true">
@@ -267,8 +265,9 @@
             </div>
           </article>
 
-          <article class="attractions__card" data-aos="fade-up" data-aos-delay="200" data-type="transport">
-            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1474181487882-5abf3f0ba6c2?w=900&q=85" alt="רכבות השינקנסן ביפן" loading="lazy">
+          <!-- Card 6 -->
+          <article class="attractions__card" data-aos="fade-up" data-aos-delay="300" data-type="transport">
+            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1474181487882-5abf3f0ba6c2?w=900&q=85" alt="רכבות השינקנסן" loading="lazy">
             <span class="attractions__card-overlay" aria-hidden="true"></span>
             <span class="attractions__card-arrow" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -282,8 +281,9 @@
             </div>
           </article>
 
+          <!-- Card 7 -->
           <article class="attractions__card" data-aos="fade-up" data-aos-delay="100" data-type="destinations">
-            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=900&q=85" alt="שווקים ובוטיקים ביפן" loading="lazy">
+            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=900&q=85" alt="שווקים ובוטיקים" loading="lazy">
             <span class="attractions__card-overlay" aria-hidden="true"></span>
             <span class="attractions__card-arrow" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -297,8 +297,9 @@
             </div>
           </article>
 
-          <article class="attractions__card" data-aos="fade-up" data-aos-delay="150" data-type="guides">
-            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=900&q=85" alt="פסטיבלים ותרבות יפנית" loading="lazy">
+          <!-- Card 8 -->
+          <article class="attractions__card" data-aos="fade-up" data-aos-delay="200" data-type="guides">
+            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=900&q=85" alt="פסטיבלים ותרבות" loading="lazy">
             <span class="attractions__card-overlay" aria-hidden="true"></span>
             <span class="attractions__card-arrow" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -312,8 +313,9 @@
             </div>
           </article>
 
-          <article class="attractions__card" data-aos="fade-up" data-aos-delay="200" data-type="destinations">
-            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1492321936769-b49830bc1d1e?w=900&q=85" alt="פעילויות אקסטרים ביפן" loading="lazy">
+          <!-- Card 9 -->
+          <article class="attractions__card" data-aos="fade-up" data-aos-delay="300" data-type="destinations">
+            <img class="attractions__card-img" src="https://images.unsplash.com/photo-1492321936769-b49830bc1d1e?w=900&q=85" alt="פעילויות אקסטרים" loading="lazy">
             <span class="attractions__card-overlay" aria-hidden="true"></span>
             <span class="attractions__card-arrow" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -344,17 +346,17 @@
       <nav class="footer__col" aria-label="קטגוריות">
         <h4 class="footer__heading">קטגוריות</h4>
         <ul>
-          <li><a href="service.html">תחבורה</a></li>
+          <li><a href="#">תחבורה</a></li>
           <li><a href="#">נופים</a></li>
-          <li><a href="hotels.html">מלונות</a></li>
-          <li><a href="attractions.html">אטרקציות</a></li>
+          <li><a href="#">מלונות</a></li>
+          <li><a href="#">אטרקציות</a></li>
         </ul>
       </nav>
 
       <nav class="footer__col" aria-label="יעדים פופולריים">
         <h4 class="footer__heading">יעדים פופולריים</h4>
         <ul>
-          <li><a href="destinations.html">טוקיו</a></li>
+          <li><a href="destination-tokyo.html">טוקיו</a></li>
           <li><a href="destinations.html">אוסקה</a></li>
           <li><a href="destinations.html">קיוטו</a></li>
           <li><a href="destinations.html">עוד יעדים</a></li>
@@ -372,7 +374,7 @@
       <nav class="footer__col" aria-label="מידע למטייל">
         <h4 class="footer__heading">מידע למטייל</h4>
         <ul>
-          <li><a href="blog.html">מדריכים</a></li>
+          <li><a href="#">מדריכים</a></li>
           <li><a href="#">מידע שימושי</a></li>
           <li><a href="#">קישורים חשובים</a></li>
         </ul>
@@ -408,7 +410,7 @@
 
   <script>
     (function () {
-      /* ── Header scroll / burger ─────────────────────────────────────── */
+      /* Header scroll / burger */
       var header = document.querySelector('.header');
       function onScroll() {
         if (!header) return;
@@ -428,9 +430,9 @@
         });
       }
 
-      /* ── Custom Multi-Select Dropdowns ──────────────────────────────── */
+      /* Custom Multi-Select Dropdowns */
       var dropdowns = document.querySelectorAll('.custom-dropdown');
-      var activeFiltersEl = document.getElementById('attract-active-filters');
+      var activeFiltersEl = document.getElementById('hotels-active-filters');
 
       var labelMap = {
         tokyo: 'טוקיו', kyoto: 'קיוטו', osaka: 'אוסקה',
@@ -441,7 +443,6 @@
 
       dropdowns.forEach(function (dd) {
         var trigger = dd.querySelector('.custom-dropdown__trigger');
-        var panel   = dd.querySelector('.custom-dropdown__panel');
         var valueEl = dd.querySelector('.custom-dropdown__value');
         var checks  = dd.querySelectorAll('input[type="checkbox"]');
         var placeholder = valueEl.textContent;
@@ -456,15 +457,11 @@
 
         checks.forEach(function (cb) {
           cb.addEventListener('change', function () {
-            /* "הכל" clears all other type checkboxes */
-            if (cb.name === 'type' && cb.value === 'all' && cb.checked) {
-              checks.forEach(function (c) { if (c.value !== 'all') c.checked = false; });
-            } else if (cb.name === 'type' && cb.value !== 'all' && cb.checked) {
-              var allCb = dd.querySelector('input[value="all"]');
-              if (allCb) allCb.checked = false;
-            }
             updateDropdownLabel(dd, valueEl, checks, placeholder);
             renderActiveFilters();
+            if (dd.id === 'dropdown-type') {
+              filterCards();
+            }
           });
         });
       });
@@ -510,23 +507,30 @@
         });
       }
 
-      /* ── Card filtering by סוג יעד ──────────────────────────────────── */
-      window.filterCards = function () {
-        var typeChecks = document.querySelectorAll('#dropdown-type input[type="checkbox"]:checked');
-        var selectedTypes = [];
-        typeChecks.forEach(function (cb) { selectedTypes.push(cb.value); });
+      /* Card Filtering by data-type */
+      function filterCards() {
+        var typeDropdown = document.getElementById('dropdown-type');
+        if (!typeDropdown) return;
 
-        var cards = document.querySelectorAll('.attract-catalog__grid .attractions__card');
+        var typeChecks = typeDropdown.querySelectorAll('input[type="checkbox"]:checked');
+        var cards = document.querySelectorAll('#attract-catalog .attractions__card');
+
+        var selectedTypes = [];
+        typeChecks.forEach(function (cb) {
+          selectedTypes.push(cb.value);
+        });
+
         var showAll = selectedTypes.length === 0 || selectedTypes.indexOf('all') !== -1;
 
         cards.forEach(function (card) {
-          if (showAll || selectedTypes.indexOf(card.dataset.type) !== -1) {
+          if (showAll) {
             card.style.display = '';
           } else {
-            card.style.display = 'none';
+            var cardType = card.getAttribute('data-type');
+            card.style.display = selectedTypes.indexOf(cardType) !== -1 ? '' : 'none';
           }
         });
-      };
+      }
 
     })();
   </script>
