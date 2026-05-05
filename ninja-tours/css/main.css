@@ -5060,3 +5060,44 @@ ol {
   .post-content h2 { font-size: 1.5rem; }
   .post-content h3 { font-size: 1.1875rem; }
 }
+
+/* ==========================================================================
+   Simple page — hero + centered content column
+   ========================================================================== */
+.simple-hero {
+  background: #fffaf5;
+  padding: 10rem 1.5rem 3rem;
+  text-align: center;
+}
+.simple-hero__title {
+  margin: 0 0 0.875rem;
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-weight: 800;
+  font-size: 3.25rem;
+  line-height: 1.15;
+  color: #063874;
+}
+.simple-hero__sub {
+  margin: 0;
+  font-size: 1.125rem;
+  color: #555;
+  line-height: 1.65;
+}
+
+.simple-content {
+  padding: 3rem 1.5rem 5rem;
+}
+.simple-content__inner {
+  max-width: 50vw;
+  min-width: 20rem;
+  margin-inline: auto;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .simple-hero { padding: 7rem 1.25rem 2rem; }
+  .simple-hero__title { font-size: 2rem; }
+  .simple-hero__sub { font-size: 1rem; }
+
+  .simple-content { padding: 2rem 1.25rem 3.5rem; }
+  .simple-content__inner { max-width: 100%; }
+}
