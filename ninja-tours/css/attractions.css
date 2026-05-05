@@ -86,6 +86,7 @@
   .attract-page-hero {
     height: 45vh;
     min-height: 300px;
+    padding-top: var(--header-height-mob);
     padding-bottom: 3rem;
     align-items: center;
   }
