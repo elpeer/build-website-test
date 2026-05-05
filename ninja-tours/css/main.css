@@ -3941,55 +3941,79 @@ ol {
 }
 
 /* ==========================================================================
-   Contact page — same .contact section as the homepage but lifted so the
-   form + image fit inside the viewport (the homepage uses a 112.5rem
-   min-height to match its bg image; here we strip that out).
-   Also adds a glass-morphism contact card on top of the flat image.
+   Contact page — TOP section uses .contact--page so it can override the
+   homepage's tall layout (no 112.5rem min-height, tighter padding) and
+   show the glass-morphism info card. The BOTTOM section keeps the
+   default .contact styling so the page closes exactly like the homepage.
    ========================================================================== */
-.page-contact .contact {
+.page-contact .contact--page {
   min-height: 0;
   align-items: center;
-  padding-block: 3rem 5rem;
+  padding-block: 3rem 4rem;
   background: #fffaf5;
 }
-.page-contact .contact__leaf--right { width: 14rem; }
-.page-contact .contact__leaf--left { width: 14rem; }
-.page-contact .contact__head { margin-block-end: 2rem; }
-.page-contact .contact__form { min-height: 32rem; gap: 1.75rem; padding: 2.5rem 2rem 2rem; }
-.page-contact .contact__form-grid { gap: 1.5rem 2rem; }
-.page-contact .contact__image { min-height: 32rem; position: relative; }
+.page-contact .contact--page .contact__leaf--right,
+.page-contact .contact--page .contact__leaf--left { width: 14rem; }
+.page-contact .contact--page .contact__head { margin-block-end: 2rem; }
+.page-contact .contact--page .contact__form {
+  min-height: 32rem;
+  gap: 1.75rem;
+  padding: 2.5rem 2rem 2rem;
+}
+.page-contact .contact--page .contact__form-grid { gap: 1.5rem 2rem; }
+.page-contact .contact--page .contact__image {
+  min-height: 32rem;
+  position: relative;
+}
+/* Hide the LET'S PLAN YOUR TRIP overlay only on the lifted section.
+   The bottom .contact section still shows it, like the homepage. */
+.page-contact .contact--page .contact__image-text { display: none; }
 
-/* Glass-morphism contact card overlaid on the .contact__image */
+/* Glass-morphism contact card — full-image-width strip at the bottom */
 .contact__info-glass {
   position: absolute;
-  inset-inline-start: 1.5rem;        /* right side in RTL */
-  inset-block-end: 1.5rem;
-  width: clamp(13rem, 22vw, 18rem);
-  background: rgba(255, 255, 255, 0.18);
-  -webkit-backdrop-filter: blur(14px) saturate(160%);
-  backdrop-filter: blur(14px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.32);
+  inset-inline: 1.25rem;
+  inset-block-end: 1.25rem;
+  /* Subtle glass: low-opacity bg, soft border, gentle blur */
+  background: rgba(255, 255, 255, 0.10);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 1.25rem;
-  padding: 1.125rem 1.25rem;
+  padding: 1rem 1.25rem 1.125rem;
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
   z-index: 3;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+.contact__info-title {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+.contact__info-rows {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.875rem 1rem;
 }
 .contact__info-row {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.625rem;
   text-decoration: none;
   color: #fff;
+  min-width: 0;
   transition: transform 0.25s ease;
 }
-.contact__info-row:hover { transform: translateX(-3px); }
+.contact__info-row:hover { transform: translateX(-2px); }
 .contact__info-icon {
   flex: 0 0 auto;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
   background: #d2170a;
   color: #fff;
@@ -3997,7 +4021,7 @@ ol {
   align-items: center;
   justify-content: center;
 }
-.contact__info-icon svg { width: 1.125rem; height: 1.125rem; }
+.contact__info-icon svg { width: 1rem; height: 1rem; }
 .contact__info-text {
   display: flex;
   flex-direction: column;
@@ -4005,9 +4029,9 @@ ol {
   min-width: 0;
 }
 .contact__info-label {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.8);
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 .contact__info-value {
@@ -4021,16 +4045,28 @@ ol {
 }
 
 @media (max-width: 768px) and (orientation: portrait) {
-  .page-contact .contact { padding-block: 2rem 3rem; }
-  .page-contact .contact__form,
-  .page-contact .contact__image { min-height: 0; }
-  .contact__info-glass {
-    inset-inline-start: 1rem;
-    inset-block-end: 1rem;
-    width: calc(100% - 2rem);
-    padding: 0.875rem 1rem;
+  .page-contact .contact--page {
+    /* Top section keeps to ~60% of viewport height on mobile so it
+       feels like a focused "above-the-fold" rather than a full screen */
+    min-height: 60vh;
+    padding-block: 2rem 2.5rem;
   }
-  .contact__info-icon { width: 2.25rem; height: 2.25rem; }
-  .contact__info-icon svg { width: 1rem; height: 1rem; }
+  .page-contact .contact--page .contact__form,
+  .page-contact .contact--page .contact__image { min-height: 0; }
+  /* Mobile: form on top, image (with glass info card) below it */
+  .page-contact .contact--page .contact__form  { grid-row: 1; }
+  .page-contact .contact--page .contact__image { grid-row: 2; }
+
+  .contact__info-glass {
+    inset-inline: 0.875rem;
+    inset-block-end: 0.875rem;
+    padding: 0.875rem 1rem 1rem;
+  }
+  .contact__info-rows {
+    grid-template-columns: 1fr;       /* phone + email stack on mobile */
+    gap: 0.625rem;
+  }
+  .contact__info-icon { width: 2.125rem; height: 2.125rem; }
+  .contact__info-icon svg { width: 0.9375rem; height: 0.9375rem; }
   .contact__info-value { font-size: 0.875rem; }
 }
