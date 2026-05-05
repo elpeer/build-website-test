@@ -78,7 +78,7 @@
 
 /* Override aspect-ratio for catalog context — taller portrait cards */
 .attract-catalog__grid .attractions__card {
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 1 / 1;
 }
 
 /* Mobile */
@@ -102,7 +102,7 @@
   }
 
   .attract-catalog__grid .attractions__card {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 1 / 1;
   }
 }
 
