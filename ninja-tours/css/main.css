@@ -4757,16 +4757,17 @@ ol {
 /* TOC + content + related layout — 3 columns matching menu margins. */
 .post-layout {
   margin: 3rem 0 4rem;
-  padding-inline: clamp(1rem, 2vw, 2rem);
+  padding-inline: clamp(1.5rem, 5vw, 6.25rem);
   display: grid;
   grid-template-columns: 22rem minmax(0, 1fr) 22rem;
   gap: 3rem;
   align-items: start;
 }
+/* Wrapper stretches to full row height so the sticky TOC has room to scroll. */
+.post-toc-col { align-self: stretch; }
 .post-toc {
   position: sticky;
   inset-block-start: 6.5rem;
-  align-self: start;
   padding: 1.5rem 1.25rem;
   background: #fff;
   border-radius: 1rem;
@@ -5039,6 +5040,7 @@ ol {
   }
   .post-toc-trigger__icon svg { width: 1.125rem; height: 1.125rem; }
 
+  .post-toc-col { display: contents; }
   .post-toc {
     display: none;
     position: sticky;
