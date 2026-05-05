@@ -1,0 +1,367 @@
+
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Ninja Tours | בלוג</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="description" content="בלוג Ninja Tours — מדריכים, טיפים והשראה לטיולים ביפן." />
+
+  <link rel="canonical" href="https://ninja-tours.co.il/blog" />
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+
+<body class="page-destinations page-blog">
+  <a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
+
+  <!-- ==========================================================================
+       Header — same shared markup as every internal page.
+       ========================================================================== -->
+  <header class="header">
+    <div class="header-inner">
+      <nav class="main-menu main-menu--start" aria-label="תפריט ראשי - יעדים">
+        <ul>
+          <li><a href="destinations.html">יעדים</a></li>
+          <li><a href="#">מלונות</a></li>
+          <li><a href="#">אטרקציות</a></li>
+          <li><a href="blog.html">מדריכים</a></li>
+          <li><a href="#">תחבורה</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <a href="index.html" class="logo" aria-label="Ninja Tours - חזרה לדף הבית">
+          <img class="--default" src="images/logo.svg" alt="Ninja Tours">
+          <img class="--dark" src="images/logo-dark.svg" alt="Ninja Tours">
+        </a>
+      </div>
+
+      <div class="header-end">
+        <nav class="main-menu main-menu--end" aria-label="תפריט ראשי - אודות">
+          <ul>
+            <li><a href="about.html">קצת עלינו</a></li>
+            <li><a href="#">השירותים שלנו</a></li>
+            <li><a href="#">על התהליך</a></li>
+          </ul>
+        </nav>
+
+        <button class="search-btn" aria-label="חיפוש">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="20" y1="20" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+
+        <a href="contact.html" class="btn-pill --light">
+          <span class="btn-pill__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/>
+              <polyline points="12 19 5 12 12 5"/>
+            </svg>
+          </span>
+          <span class="btn-pill__text">בואו נתחיל</span>
+        </a>
+      </div>
+
+      <button class="burger-btn" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ==========================================================================
+         Hero — 80vh, 50/50 split. Title + subtitle on the right (RTL)
+         and a full-bleed image on the left.
+         ========================================================================== -->
+    <section class="blog-hero" aria-labelledby="blog-hero-title">
+      <div class="blog-hero__content">
+        <h1 class="section-title" id="blog-hero-title">
+          מדריכים וטיפים <em>לטיולים ביפן</em>
+        </h1>
+        <p class="blog-hero__lead">
+          כל מה שצריך לדעת לפני שטסים — מסלולים מומלצים, אטרקציות,
+          המלצות אוכל ופינות חבויות. הבלוג שלנו מתעדכן באופן שוטף עם
+          מדריכים שכתב הצוות שעובד ביפן.
+        </p>
+      </div>
+      <figure class="blog-hero__image">
+        <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=1400&q=85" alt="" loading="eager">
+      </figure>
+    </section>
+
+    <!-- ==========================================================================
+         Category tabs — centered above the cards grid.
+         ========================================================================== -->
+    <nav class="blog-tabs" aria-label="קטגוריות הבלוג">
+      <ul>
+        <li><button type="button" class="blog-tabs__btn --active" data-category="all">הכל</button></li>
+        <li><button type="button" class="blog-tabs__btn" data-category="tips">טיפים</button></li>
+        <li><button type="button" class="blog-tabs__btn" data-category="guides">מדריכים</button></li>
+        <li><button type="button" class="blog-tabs__btn" data-category="culinary">קולינריה</button></li>
+      </ul>
+    </nav>
+
+    <!-- ==========================================================================
+         Blog grid — same outer padding as the destinations page, regular
+         3-per-row grid of post cards.
+         ========================================================================== -->
+    <section class="blog-list" aria-label="פוסטים אחרונים">
+      <div class="container">
+        <ul class="blog-list__grid" role="list">
+
+          <li class="blog-card" data-category="tips">
+            <a href="#" class="blog-card__link">
+              <figure class="blog-card__image">
+                <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900&q=80" alt="" loading="lazy">
+              </figure>
+              <div class="blog-card__body">
+                <span class="blog-card__category">טיפים</span>
+                <h3 class="blog-card__title">איך לבחור את העונה הנכונה לטיול ביפן</h3>
+                <p class="blog-card__excerpt">סקירה של ארבע העונות ביפן — מתי לראות את פריחת הסאקורה, מתי לטייל בהרים ומתי להימנע מהעונה הגשומה.</p>
+              </div>
+            </a>
+          </li>
+
+          <li class="blog-card" data-category="guides">
+            <a href="#" class="blog-card__link">
+              <figure class="blog-card__image">
+                <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=900&q=80" alt="" loading="lazy">
+              </figure>
+              <div class="blog-card__body">
+                <span class="blog-card__category">מדריכים</span>
+                <h3 class="blog-card__title">המדריך השלם למסלול 14 ימים בטוקיו וקיוטו</h3>
+                <p class="blog-card__excerpt">מסלול יום-יום עם המלצות מלונות, מסעדות ושכונות — בנוי לזוגות ומשפחות שמטיילים לראשונה ביפן.</p>
+              </div>
+            </a>
+          </li>
+
+          <li class="blog-card" data-category="culinary">
+            <a href="#" class="blog-card__link">
+              <figure class="blog-card__image">
+                <img src="https://images.unsplash.com/photo-1526318472351-c75fcf070305?w=900&q=80" alt="" loading="lazy">
+              </figure>
+              <div class="blog-card__body">
+                <span class="blog-card__category">קולינריה</span>
+                <h3 class="blog-card__title">10 מאכלים יפניים שחייבים לטעום</h3>
+                <p class="blog-card__excerpt">מהראמן הקלאסי של פוקואוקה ועד לסאקה הביתי של אוסקה — מדריך טעימות מקיף לאוכל היפני האמיתי.</p>
+              </div>
+            </a>
+          </li>
+
+          <li class="blog-card" data-category="tips">
+            <a href="#" class="blog-card__link">
+              <figure class="blog-card__image">
+                <img src="https://images.unsplash.com/photo-1542640244-7e672d6cef4e?w=900&q=80" alt="" loading="lazy">
+              </figure>
+              <div class="blog-card__body">
+                <span class="blog-card__category">טיפים</span>
+                <h3 class="blog-card__title">JR Pass — מתי כדאי לקנות ומתי לא</h3>
+                <p class="blog-card__excerpt">החישוב המדויק שיגיד לכם אם הכרטיס של חברת הרכבות הלאומית באמת חוסך לכם כסף בטיול שלכם.</p>
+              </div>
+            </a>
+          </li>
+
+          <li class="blog-card" data-category="guides">
+            <a href="#" class="blog-card__link">
+              <figure class="blog-card__image">
+                <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=900&q=80" alt="" loading="lazy">
+              </figure>
+              <div class="blog-card__body">
+                <span class="blog-card__category">מדריכים</span>
+                <h3 class="blog-card__title">היום המושלם בהאקונה — מסלול מלא</h3>
+                <p class="blog-card__excerpt">איזו רכבת לקחת, איפה לעצור, איפה להתרחץ באונסן ואיפה לראות את הר פוג'י במלוא הדרו.</p>
+              </div>
+            </a>
+          </li>
+
+          <li class="blog-card" data-category="culinary">
+            <a href="#" class="blog-card__link">
+              <figure class="blog-card__image">
+                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=900&q=80" alt="" loading="lazy">
+              </figure>
+              <div class="blog-card__body">
+                <span class="blog-card__category">קולינריה</span>
+                <h3 class="blog-card__title">המסעדות הכי שווות בשוק צוקיג'י</h3>
+                <p class="blog-card__excerpt">המקומות האיכותיים ביותר שתמצאו בשוק הדגים הכי מפורסם בטוקיו — בהמלצת מקומיים בלבד.</p>
+              </div>
+            </a>
+          </li>
+
+          <li class="blog-card" data-category="tips">
+            <a href="#" class="blog-card__link">
+              <figure class="blog-card__image">
+                <img src="https://images.unsplash.com/photo-1531983412531-1f49a365ffed?w=900&q=80" alt="" loading="lazy">
+              </figure>
+              <div class="blog-card__body">
+                <span class="blog-card__category">טיפים</span>
+                <h3 class="blog-card__title">7 כללי נימוס ביפן שחשוב להכיר</h3>
+                <p class="blog-card__excerpt">מהשתחוות ועד לנעליים — איך לא להעליב את המארחים שלכם וליהנות מהתרבות היפנית במלואה.</p>
+              </div>
+            </a>
+          </li>
+
+          <li class="blog-card" data-category="guides">
+            <a href="#" class="blog-card__link">
+              <figure class="blog-card__image">
+                <img src="https://images.unsplash.com/photo-1480796927426-f609979314bd?w=900&q=80" alt="" loading="lazy">
+              </figure>
+              <div class="blog-card__body">
+                <span class="blog-card__category">מדריכים</span>
+                <h3 class="blog-card__title">מדריך אוקינאווה — האי הטרופי של יפן</h3>
+                <p class="blog-card__excerpt">חופים לבנים, אוכל ייחודי ותרבות שונה לחלוטין — איך לתכנן שבוע מושלם באיים הדרומיים של יפן.</p>
+              </div>
+            </a>
+          </li>
+
+          <li class="blog-card" data-category="culinary">
+            <a href="#" class="blog-card__link">
+              <figure class="blog-card__image">
+                <img src="https://images.unsplash.com/photo-1564489563601-c53cfc451e93?w=900&q=80" alt="" loading="lazy">
+              </figure>
+              <div class="blog-card__body">
+                <span class="blog-card__category">קולינריה</span>
+                <h3 class="blog-card__title">סדנת סושי בקיוטו — איפה ובכמה</h3>
+                <p class="blog-card__excerpt">חמש סדנאות מומלצות שיעבירו אתכם דרך אומנות הסושי — מהבחירה של הדגים ועד הגלגול המקצועי.</p>
+              </div>
+            </a>
+          </li>
+
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       Footer — copied 1:1 from index.html.
+       ========================================================================== -->
+  <footer class="footer" id="footer">
+    <div class="footer__inner">
+      <div class="footer__col footer__col--logo">
+        <a href="index.html" class="footer__logo" aria-label="Ninja Tours">
+          <img src="images/logo.svg" alt="Ninja Tours" width="160" height="120">
+        </a>
+      </div>
+
+      <nav class="footer__col" aria-label="קטגוריות">
+        <h4 class="footer__heading">קטגוריות</h4>
+        <ul>
+          <li><a href="#">תחבורה</a></li>
+          <li><a href="#">נופים</a></li>
+          <li><a href="#">מלונות</a></li>
+          <li><a href="#">אטרקציות</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="יעדים פופולריים">
+        <h4 class="footer__heading">יעדים פופולריים</h4>
+        <ul>
+          <li><a href="destination-tokyo.html">טוקיו</a></li>
+          <li><a href="destinations.html">אוסקה</a></li>
+          <li><a href="destinations.html">קיוטו</a></li>
+          <li><a href="destinations.html">עוד יעדים</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="עלינו">
+        <h4 class="footer__heading">עלינו</h4>
+        <ul>
+          <li><a href="about.html">אודות</a></li>
+          <li><a href="#">שאלות ותשובות</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="מידע למטייל">
+        <h4 class="footer__heading">מידע למטייל</h4>
+        <ul>
+          <li><a href="blog.html">מדריכים</a></li>
+          <li><a href="#">מידע שימושי</a></li>
+          <li><a href="#">קישורים חשובים</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer__col footer__col--contact">
+        <h4 class="footer__heading">יצירת קשר</h4>
+        <a class="footer__email" href="mailto:ninjatours@gmail.com">ninjatours@gmail.com</a>
+        <ul class="footer__socials" aria-label="רשתות חברתיות">
+          <li>
+            <a class="footer__social" href="#" aria-label="פייסבוק">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.2-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8.2v3h2.5V21h2.8z"/></svg>
+            </a>
+          </li>
+          <li>
+            <a class="footer__social" href="#" aria-label="אינסטגרם">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor"/>
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bar">
+      <p class="footer__copy">Copyright &copy;Ninja Tours. All right reserved</p>
+      <p class="footer__credit">Design &amp; Code by Elevate</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var header = document.querySelector('.header');
+      function onScroll() {
+        if (!header) return;
+        header.classList.toggle('fixed', window.scrollY > 50);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      var burger = document.querySelector('.burger-btn');
+      var menus = document.querySelectorAll('.main-menu');
+      if (burger) {
+        burger.addEventListener('click', function () {
+          var open = burger.getAttribute('aria-expanded') === 'true';
+          burger.setAttribute('aria-expanded', String(!open));
+          menus.forEach(function (m) { m.classList.toggle('--open'); });
+          document.body.classList.toggle('--menu-open');
+        });
+      }
+
+      // Tab filter — toggles which posts are shown by data-category.
+      var tabs = document.querySelectorAll('.blog-tabs__btn');
+      var cards = document.querySelectorAll('.blog-card');
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          tabs.forEach(function (t) { t.classList.remove('--active'); });
+          tab.classList.add('--active');
+          var cat = tab.dataset.category;
+          cards.forEach(function (c) {
+            c.style.display = (cat === 'all' || c.dataset.category === cat) ? '' : 'none';
+          });
+        });
+      });
+    })();
+  </script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
