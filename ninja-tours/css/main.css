@@ -5125,7 +5125,9 @@ ol {
   min-height: 28rem;
   object-fit: cover;
   display: block;
-  border-radius: 1.5rem;
+  border-radius: 0;
+  border-start-start-radius: 1.5rem; /* top-right (inner edge, facing text) in RTL */
+  border-end-start-radius: 1.5rem;   /* bottom-right (inner edge, facing text) in RTL */
 }
 .service-hero__text {
   padding: 4rem clamp(2rem, 5vw, 5rem);
