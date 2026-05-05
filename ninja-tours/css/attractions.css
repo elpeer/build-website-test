@@ -1,0 +1,114 @@
+/* ==========================================================================
+   Attractions Page — attractions.css
+   Hero + catalog layout for attractions.html
+   NOTE: .attractions__card, .hotels-filter, .custom-dropdown are defined in
+         main.css / hotels.css — do NOT redefine them here.
+   ========================================================================== */
+
+/* Hero — same visual structure as .hotels-page-hero but with a static image bg */
+.attract-page-hero {
+  position: relative;
+  height: 50vh;
+  min-height: 380px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  z-index: 1;
+  padding-bottom: 4rem;
+}
+
+.attract-page-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.attract-page-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.attract-page-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+.attract-page-hero__inner {
+  position: relative;
+  z-index: 2;
+  padding: 0 1.5rem;
+}
+
+.attract-page-hero__title {
+  font-size: 3.75rem;
+  font-weight: 800;
+  margin-bottom: 0.625rem;
+  line-height: 1.15;
+}
+
+.attract-page-hero__title em {
+  font-style: normal;
+  color: #d2170a;
+}
+
+.attract-page-hero__lead {
+  font-size: 1.25rem;
+  font-weight: 400;
+  opacity: 0.92;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+/* Catalog */
+.attract-catalog {
+  padding-block: 3rem 4rem;
+  background: #f9f9fa;
+}
+
+.attract-catalog__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+/* Override aspect-ratio for catalog context — taller portrait cards */
+.attract-catalog__grid .attractions__card {
+  aspect-ratio: 3 / 4;
+}
+
+/* Mobile */
+@media (max-width: 768px) and (orientation: portrait) {
+  .attract-page-hero {
+    height: 45vh;
+    min-height: 300px;
+    padding-bottom: 3rem;
+    align-items: center;
+  }
+
+  .attract-page-hero__title { font-size: 2.25rem; }
+
+  .attract-page-hero__lead { font-size: 1rem; }
+
+  .attract-catalog { padding-block: 2rem; }
+
+  .attract-catalog__grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .attract-catalog__grid .attractions__card {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+/* Tablet portrait */
+@media (min-width: 769px) and (max-width: 1100px) {
+  .attract-catalog__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
