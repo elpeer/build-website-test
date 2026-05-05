@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Ninja Tours | אודותינו</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="description" content="אודותינו — Ninja Tours, מומחי טיולים מותאמים אישית ליפן." />
+
+  <link rel="canonical" href="https://ninja-tours.co.il/about" />
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+
+<body class="page-destinations page-about">
+  <a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
+
+  <!-- ==========================================================================
+       Header — same shared markup as every internal page (transparent at
+       the top, scroll handler swaps in the .fixed variant).
+       ========================================================================== -->
+  <header class="header">
+    <div class="header-inner">
+      <nav class="main-menu main-menu--start" aria-label="תפריט ראשי - יעדים">
+        <ul>
+          <li><a href="destinations.html">יעדים</a></li>
+          <li><a href="#">מלונות</a></li>
+          <li><a href="#">אטרקציות</a></li>
+          <li><a href="#">מדריכים</a></li>
+          <li><a href="#">תחבורה</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <a href="index.html" class="logo" aria-label="Ninja Tours - חזרה לדף הבית">
+          <img class="--default" src="images/logo.svg" alt="Ninja Tours">
+          <img class="--dark" src="images/logo-dark.svg" alt="Ninja Tours">
+        </a>
+      </div>
+
+      <div class="header-end">
+        <nav class="main-menu main-menu--end" aria-label="תפריט ראשי - אודות">
+          <ul>
+            <li><a href="about.html">קצת עלינו</a></li>
+            <li><a href="#">השירותים שלנו</a></li>
+            <li><a href="#">על התהליך</a></li>
+          </ul>
+        </nav>
+
+        <button class="search-btn" aria-label="חיפוש">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="20" y1="20" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+
+        <a href="contact.html" class="btn-pill --light">
+          <span class="btn-pill__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/>
+              <polyline points="12 19 5 12 12 5"/>
+            </svg>
+          </span>
+          <span class="btn-pill__text">בואו נתחיל</span>
+        </a>
+      </div>
+
+      <button class="burger-btn" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ==========================================================================
+         About hero — same full-bleed video as the homepage but half-height,
+         with the page title overlaid.
+         ========================================================================== -->
+    <section class="about-hero" id="about-hero" aria-labelledby="about-hero-title">
+      <div class="about-hero__media" aria-hidden="true">
+        <video class="about-hero__video" autoplay muted loop playsinline poster="images/hero-poster.jpg">
+          <source src="video/hero.mp4" type="video/mp4">
+        </video>
+        <div class="about-hero__overlay"></div>
+      </div>
+
+      <div class="about-hero__inner">
+        <h1 class="about-hero__title" id="about-hero-title">אודותינו</h1>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         Commitment (right in RTL) + Core values accordion (left).
+         50/50 split, two background tones, RTL layout.
+         ========================================================================== -->
+    <section class="about-split" aria-labelledby="commitment-title">
+
+      <div class="about-split__col about-split__col--commit">
+        <div class="about-split__inner">
+          <h2 class="section-title" id="commitment-title">המחויבות שלנו</h2>
+
+          <div class="about-badge" aria-hidden="true">
+            <svg viewBox="0 0 120 120" class="about-badge__svg">
+              <defs>
+                <path id="about-badge-circle" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/>
+              </defs>
+              <text class="about-badge__text">
+                <textPath href="#about-badge-circle" startOffset="0">
+                  NINJA TOURS · NINJA TOURS · NINJA TOURS ·
+                </textPath>
+              </text>
+            </svg>
+            <span class="about-badge__dot"></span>
+          </div>
+
+          <p>
+            ב-Ninja Tours אנחנו מתמחים בתכנון טיולים מותאמים אישית ליפן —
+            ומלווים מטיילים ישראלים בעברית, מהרעיון הראשון ועד הנחיתה
+            חזרה בארץ. השליחות שלנו היא להפוך את החלום היפני שלכם לחוויה
+            מדויקת, חלקה ובלתי נשכחת.
+          </p>
+          <p>
+            עם למעלה מעשור של ניסיון מקומי ביפן, מאות מטיילים מרוצים וצוות
+            שחי ונושם את המקום, אנחנו מתחייבים להעניק לכם תוצאה שעולה על
+            הציפיות שלכם. בואו ניצור יחד את חוויית החיים שלכם.
+          </p>
+        </div>
+      </div>
+
+      <div class="about-split__col about-split__col--values">
+        <div class="about-split__inner">
+          <h2 class="section-title">הערכים שלנו</h2>
+
+          <ul class="core-values">
+            <li class="accordion-item core-values__item --open">
+              <button class="accordion-item__head core-values__head" type="button">
+                <span class="core-values__label"><span class="core-values__num">1.</span> יושרה בכל צעד</span>
+                <span class="core-values__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+              </button>
+              <div class="accordion-item__body" style="display:block;">
+                <p>בין אם אנחנו מתכננים את הטיול הראשון שלכם ליפן או את החלום שדחיתם שנים — אתם יכולים לסמוך עלינו על הצעות הוגנות, שיחה פתוחה והמלצות שמתחילות ונגמרות באינטרס שלכם.</p>
+              </div>
+            </li>
+
+            <li class="accordion-item core-values__item">
+              <button class="accordion-item__head core-values__head" type="button">
+                <span class="core-values__label"><span class="core-values__num">2.</span> שקיפות מתחילתה ועד סופה של הדרך</span>
+                <span class="core-values__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+              </button>
+              <div class="accordion-item__body">
+                <p>אין הפתעות בדרך. כל מחיר, כל פרט וכל סעיף במסלול נחשפים לכם מראש — בדיוק למה לצפות, מתי ולמה.</p>
+              </div>
+            </li>
+
+            <li class="accordion-item core-values__item">
+              <button class="accordion-item__head core-values__head" type="button">
+                <span class="core-values__label"><span class="core-values__num">3.</span> מקצועיות עד לפרט הקטן</span>
+                <span class="core-values__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+              </button>
+              <div class="accordion-item__body">
+                <p>החל מבחירת המלון ועד לעיתוי האידיאלי לבקר באתר היסטורי — כל פרט במסלול שלכם נבדק ומותאם בקפידה.</p>
+              </div>
+            </li>
+
+            <li class="accordion-item core-values__item">
+              <button class="accordion-item__head core-values__head" type="button">
+                <span class="core-values__label"><span class="core-values__num">4.</span> תקשורת רציפה לאורך הדרך</span>
+                <span class="core-values__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+              </button>
+              <div class="accordion-item__body">
+                <p>זמינים בוואטסאפ, במייל ובטלפון — לפני, במהלך ואחרי הטיול. אתם לא לבד באמצע יפן.</p>
+              </div>
+            </li>
+
+            <li class="accordion-item core-values__item">
+              <button class="accordion-item__head core-values__head" type="button">
+                <span class="core-values__label"><span class="core-values__num">5.</span> שירות שתסמכו עליו</span>
+                <span class="core-values__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
+              </button>
+              <div class="accordion-item__body">
+                <p>צוות מקצועי, אכפתי ודובר עברית, שמלווה אתכם מהשיחה הראשונה ועד שאתם חוזרים הביתה.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       Footer — copied 1:1 from index.html.
+       ========================================================================== -->
+  <footer class="footer" id="footer">
+    <div class="footer__inner">
+      <div class="footer__col footer__col--logo">
+        <a href="index.html" class="footer__logo" aria-label="Ninja Tours">
+          <img src="images/logo.svg" alt="Ninja Tours" width="160" height="120">
+        </a>
+      </div>
+
+      <nav class="footer__col" aria-label="קטגוריות">
+        <h4 class="footer__heading">קטגוריות</h4>
+        <ul>
+          <li><a href="#">תחבורה</a></li>
+          <li><a href="#">נופים</a></li>
+          <li><a href="#">מלונות</a></li>
+          <li><a href="#">אטרקציות</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="יעדים פופולריים">
+        <h4 class="footer__heading">יעדים פופולריים</h4>
+        <ul>
+          <li><a href="destination-tokyo.html">טוקיו</a></li>
+          <li><a href="destinations.html">אוסקה</a></li>
+          <li><a href="destinations.html">קיוטו</a></li>
+          <li><a href="destinations.html">עוד יעדים</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="עלינו">
+        <h4 class="footer__heading">עלינו</h4>
+        <ul>
+          <li><a href="about.html">אודות</a></li>
+          <li><a href="#">שאלות ותשובות</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="מידע למטייל">
+        <h4 class="footer__heading">מידע למטייל</h4>
+        <ul>
+          <li><a href="#">מדריכים</a></li>
+          <li><a href="#">מידע שימושי</a></li>
+          <li><a href="#">קישורים חשובים</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer__col footer__col--contact">
+        <h4 class="footer__heading">יצירת קשר</h4>
+        <a class="footer__email" href="mailto:ninjatours@gmail.com">ninjatours@gmail.com</a>
+        <ul class="footer__socials" aria-label="רשתות חברתיות">
+          <li>
+            <a class="footer__social" href="#" aria-label="פייסבוק">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.2-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8.2v3h2.5V21h2.8z"/></svg>
+            </a>
+          </li>
+          <li>
+            <a class="footer__social" href="#" aria-label="אינסטגרם">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor"/>
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bar">
+      <p class="footer__copy">Copyright &copy;Ninja Tours. All right reserved</p>
+      <p class="footer__credit">Design &amp; Code by Elevate</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var header = document.querySelector('.header');
+      function onScroll() {
+        if (!header) return;
+        header.classList.toggle('fixed', window.scrollY > 50);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      var burger = document.querySelector('.burger-btn');
+      var menus = document.querySelectorAll('.main-menu');
+      if (burger) {
+        burger.addEventListener('click', function () {
+          var open = burger.getAttribute('aria-expanded') === 'true';
+          burger.setAttribute('aria-expanded', String(!open));
+          menus.forEach(function (m) { m.classList.toggle('--open'); });
+          document.body.classList.toggle('--menu-open');
+        });
+      }
+    })();
+  </script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

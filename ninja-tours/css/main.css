@@ -4191,3 +4191,176 @@ ol {
     gap: 0.625rem;
   }
 }
+
+/* ==========================================================================
+   About page — half-height video hero + 50/50 commitment + values split.
+   ========================================================================== */
+.page-about { padding-block-start: 0; }
+.page-about .breadcrumbs { display: none; }
+
+/* Half-height video hero (mirror of .home-hero). */
+.about-hero {
+  position: relative;
+  height: 50vh;
+  min-height: 22rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #fff;
+  text-align: center;
+}
+.about-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: #1a1a1a;
+}
+.about-hero__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.about-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.10) 35%, rgba(0,0,0,0.55) 100%);
+  pointer-events: none;
+}
+.about-hero__inner {
+  position: relative;
+  z-index: 1;
+  padding-block-start: 4rem;
+}
+.about-hero__title {
+  margin: 0;
+  font-family: 'Noto Sans Hebrew', sans-serif;
+  font-weight: 800;
+  font-size: 4rem;
+  line-height: 1.1;
+  color: #fff;
+  text-shadow: 0 4px 22px rgba(0, 0, 0, 0.45);
+}
+
+/* 50/50 split — commitment (right in RTL, cream) | values (left, sage). */
+.about-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+}
+.about-split__col { padding-block: 5rem; }
+.about-split__col--commit { background: #fffaf5; }
+.about-split__col--values { background: #eef2dc; }
+.about-split__inner {
+  max-width: 36rem;
+  margin-inline: auto;
+  padding-inline: 3rem;
+}
+.about-split .section-title {
+  margin: 0 0 1.75rem;
+  text-align: start;
+}
+.about-split__col--commit p {
+  margin: 0 0 1rem;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: #222;
+}
+
+/* Rotating "NINJA TOURS" badge — SVG textPath with green dot in centre. */
+.about-badge {
+  position: relative;
+  width: 7.5rem;
+  height: 7.5rem;
+  margin-block: 0.5rem 1.5rem;
+}
+.about-badge__svg {
+  width: 100%;
+  height: 100%;
+  animation: about-badge-spin 16s linear infinite;
+}
+.about-badge__text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  fill: #063874;
+  text-transform: uppercase;
+}
+.about-badge__dot {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
+  transform: translate(-50%, -50%);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: #cfe5b6;
+}
+@keyframes about-badge-spin { to { transform: rotate(-360deg); } }
+
+/* Core values accordion — separated by a thin rule, no card chrome. */
+.core-values {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.core-values__item {
+  border-block-end: 1px solid rgba(0, 0, 0, 0.12);
+}
+.core-values__item:first-child { border-block-start: 1px solid rgba(0, 0, 0, 0.12); }
+.core-values__head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-align: start;
+  font: inherit;
+}
+.core-values__label {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #063874;
+}
+.core-values__num {
+  font-weight: 700;
+  margin-inline-end: 0.25rem;
+}
+.core-values__icon {
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid #c9cfb6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #063874;
+  background: transparent;
+  transition: transform 0.3s ease;
+}
+.core-values__icon svg { width: 1rem; height: 1rem; }
+.core-values__item.--open .core-values__icon { transform: rotate(180deg); }
+.core-values__item .accordion-item__body {
+  padding: 0 0 1.25rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #444;
+}
+.core-values__item .accordion-item__body p { margin: 0; }
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .about-hero { height: 50vh; min-height: 18rem; }
+  .about-hero__title { font-size: 2.5rem; }
+
+  .about-split { grid-template-columns: 1fr; }
+  .about-split__col { padding-block: 3rem; }
+  .about-split__inner { padding-inline: 1.5rem; max-width: none; }
+  .about-badge { width: 6rem; height: 6rem; }
+}
