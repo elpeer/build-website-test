@@ -3947,10 +3947,19 @@ ol {
    default .contact styling so the page closes exactly like the homepage.
    ========================================================================== */
 /* Hide the LET'S PLAN YOUR TRIP overlay on the contact page since the
-   glass info card replaces it. Section dimensions inherit from the
-   homepage .contact rules so the image renders identically. */
+   glass info card replaces it. */
 .page-contact .contact--page .contact__image-text { display: none; }
 .page-contact .contact--page .contact__image { position: relative; }
+
+/* Remove the white gap above the contact section so the section background
+   (footer_bg.jpg) reaches the very top, behind the transparent menu. */
+.page-contact .breadcrumbs { display: none; }
+.page-contact main { padding-block-start: 0; }
+.page-contact .contact--page {
+  /* Add top padding equal to the header height so the heading clears
+     the fixed transparent menu, but the bg image fills underneath. */
+  padding-block-start: 9rem;
+}
 
 /* Glass-morphism contact card — full-image-width strip at the bottom */
 .contact__info-glass {
@@ -4030,7 +4039,12 @@ ol {
 @media (max-width: 768px) and (orientation: portrait) {
   /* Mobile: form on top, image (with glass info card) below it */
   .page-contact .contact--page .contact__form  { grid-row: 1; }
-  .page-contact .contact--page .contact__image { grid-row: 2; }
+  .page-contact .contact--page .contact__image {
+    grid-row: 2;
+    /* Make the image area taller on mobile so more of the photo shows
+       above the glass info card (card stays at its own size). */
+    min-height: 28rem;
+  }
 
   .contact__info-glass {
     inset-inline: 0.875rem;
