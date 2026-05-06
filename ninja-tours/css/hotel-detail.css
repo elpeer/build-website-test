@@ -612,10 +612,14 @@
   padding-block: 3rem 0;
 }
 
+.hotel-location .container {
+  max-width: 1200px;
+}
+
 .hotel-location__title {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #063874;
+  color: #1a1a1a;
   margin-block-end: 1.5rem;
 }
 
