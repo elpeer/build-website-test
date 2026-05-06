@@ -5,7 +5,7 @@
 /* ── Gallery Hero ─────────────────────────────────────────────────────────── */
 .hotel-hero {
   padding-top: 6.5rem; /* clear fixed header */
-  background: #fff;
+  background: #fffaf5;
 }
 
 .hotel-hero .container {
@@ -207,7 +207,7 @@
 /* ── Description Split ────────────────────────────────────────────────────── */
 .hotel-detail {
   padding-block: 2.5rem;
-  background: #fff;
+  background: #fffaf5;
 }
 
 .hotel-detail .container {
@@ -237,7 +237,7 @@
 
 /* Sidebar */
 .hotel-detail__sidebar-card {
-  background: #f9f9fa;
+  background: #fff;
   border-radius: 1rem;
   padding: 1.5rem;
   border: 1px solid #eee;
@@ -299,7 +299,7 @@
 /* ── Amenities Checklist ──────────────────────────────────────────────────── */
 .hotel-amenities {
   padding-block: 2.5rem;
-  background: #f9f9fa;
+  background: #fffaf5;
 }
 
 .hotel-amenities .container {
@@ -348,7 +348,7 @@
 /* ── Room Listings ────────────────────────────────────────────────────────── */
 .hotel-rooms {
   padding-block: 2.5rem 3rem;
-  background: #fff;
+  background: #fffaf5;
 }
 
 .hotel-rooms .container {
@@ -610,6 +610,7 @@
 /* ── Location Map ─────────────────────────────────────────────────────────── */
 .hotel-location {
   padding-block: 3rem 0;
+  background: #fffaf5;
 }
 
 .hotel-location .container {
