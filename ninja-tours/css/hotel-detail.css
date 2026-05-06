@@ -606,3 +606,34 @@
     grid-template-columns: 250px 1fr auto;
   }
 }
+
+/* ── Location Map ─────────────────────────────────────────────────────────── */
+.hotel-location {
+  padding-block: 3rem 0;
+}
+
+.hotel-location__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #063874;
+  margin-block-end: 1.5rem;
+}
+
+.hotel-location__map {
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  height: 420px;
+}
+
+.hotel-location__map iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .hotel-location { padding-block: 2rem 0; }
+  .hotel-location__map { height: 260px; border-radius: 0.875rem; }
+}
