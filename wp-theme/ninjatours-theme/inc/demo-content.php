@@ -22,19 +22,104 @@ function nt_install_demo_content(): void {
   // Defer until ACF + CPTs are registered
   add_action('init', function () {
     if (get_option('nt_demo_installed')) return;
-    if (!function_exists('update_field')) return;   // requires ACF Pro
-
-    $page_ids = nt_demo_create_pages();
-    $cpt_ids  = nt_demo_create_cpt_posts();
-    nt_demo_seed_taxonomy_terms($cpt_ids);
-    nt_demo_seed_cpt_fields($cpt_ids);
-    nt_demo_seed_general_settings();
-    nt_demo_seed_pages_flexible_content($page_ids);
-    nt_demo_seed_travel_type_flexible_content($cpt_ids);
-    nt_demo_create_menus($page_ids);
-
-    update_option('nt_demo_installed', current_time('mysql'));
+    nt_run_demo_install(false);
   }, 100);
+}
+
+/**
+ * Run the installer programmatically. Idempotent — safe to call repeatedly.
+ *
+ * @param bool $force  When true, ignores existing posts/pages and re-creates
+ *                     anything missing. Doesn't delete content the editor
+ *                     already wrote — only fills gaps.
+ * @return array  Summary of what was created/skipped
+ */
+function nt_run_demo_install(bool $force = false): array {
+  if (!function_exists('update_field')) {
+    return ['error' => 'ACF Pro is not active. Activate it before running the installer.'];
+  }
+
+  $page_ids = nt_demo_create_pages();
+  $cpt_ids  = nt_demo_create_cpt_posts();
+
+  nt_demo_seed_taxonomy_terms($cpt_ids);
+  nt_demo_seed_cpt_fields($cpt_ids);
+  nt_demo_seed_general_settings();
+  nt_demo_seed_pages_flexible_content($page_ids);
+  nt_demo_seed_travel_type_flexible_content($cpt_ids);
+  nt_demo_create_menus($page_ids);
+
+  update_option('nt_demo_installed', current_time('mysql'));
+
+  return [
+    'pages' => array_keys($page_ids),
+    'posts' => array_map('count', $cpt_ids),
+    'time'  => current_time('mysql'),
+  ];
+}
+
+// ─── Admin button: General Settings → "Reinstall demo content" ─────────────
+add_action('admin_post_nt_reinstall_demo', function () {
+  if (!current_user_can('manage_options')) wp_die('Forbidden');
+  check_admin_referer('nt_reinstall_demo');
+
+  delete_option('nt_demo_installed');
+  $result = nt_run_demo_install(true);
+
+  $msg = isset($result['error'])
+    ? 'error=' . urlencode($result['error'])
+    : 'installed=1';
+
+  wp_safe_redirect(admin_url('admin.php?page=theme-general-settings&' . $msg));
+  exit;
+});
+
+add_action('acf/options_page/submitbox_before_major_actions', function () {
+  $screen = get_current_screen();
+  if (!$screen || strpos($screen->id, 'theme-general-settings') === false) return;
+
+  $url = wp_nonce_url(admin_url('admin-post.php?action=nt_reinstall_demo'), 'nt_reinstall_demo');
+  $confirm = esc_attr__('פעולה זו תאכלס את כל העמודים והפוסטים החסרים. תוכן קיים לא יימחק. להמשיך?', 'ninjatours');
+  echo '<div style="margin: 1rem 0; padding: 0.75rem; background: #fff8e1; border: 1px solid #ffe082; border-radius: 4px;">';
+  echo '<strong>' . esc_html__('תוכן דמו', 'ninjatours') . '</strong><br>';
+  echo '<a href="' . esc_url($url) . '" class="button" onclick="return confirm(\'' . $confirm . '\')">';
+  echo esc_html__('התקן/החלף תוכן דמו', 'ninjatours');
+  echo '</a></div>';
+});
+
+add_action('admin_notices', function () {
+  if (!isset($_GET['page']) || $_GET['page'] !== 'theme-general-settings') return;
+  if (!empty($_GET['installed'])) {
+    echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('תוכן דמו הותקן בהצלחה.', 'ninjatours') . '</p></div>';
+  }
+  if (!empty($_GET['error'])) {
+    echo '<div class="notice notice-error is-dismissible"><p>' . esc_html(wp_unslash($_GET['error'])) . '</p></div>';
+  }
+});
+
+// ─── WP-CLI: `wp ninjatours install-demo` ──────────────────────────────────
+if (defined('WP_CLI') && WP_CLI) {
+  WP_CLI::add_command('ninjatours install-demo', function ($args, $assoc) {
+    $force = !empty($assoc['force']);
+    if ($force) delete_option('nt_demo_installed');
+
+    if (!$force && get_option('nt_demo_installed')) {
+      WP_CLI::warning('Demo already installed at ' . get_option('nt_demo_installed') . '. Use --force to re-run.');
+      return;
+    }
+
+    $result = nt_run_demo_install($force);
+
+    if (isset($result['error'])) {
+      WP_CLI::error($result['error']);
+    }
+
+    WP_CLI::success(sprintf(
+      'Demo content installed: %d pages, %s posts.',
+      count($result['pages']),
+      json_encode($result['posts'])
+    ));
+  });
 }
 
 /* ──────────────────────────────────────────────────────────────────────

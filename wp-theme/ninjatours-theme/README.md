@@ -17,9 +17,49 @@ PHP 8.0+ and WP 6.0+.
 
 ## Installation
 
+### First-time installation (auto)
+
 1. Drop this folder at `/wp-content/themes/ninjatours-theme/`.
 2. Activate **Advanced Custom Fields PRO** + (optionally) **ACF Medium Editor Field** + **Contact Form 7**.
-3. Activate the **Ninja Tours** theme. On first activation, the demo installer runs automatically and creates:
+3. Activate the **Ninja Tours** theme.
+
+On first activation the demo installer runs automatically — see "What gets seeded" below.
+
+### Importing demo content into an already-active theme
+
+If you've already activated the theme but want to (re)import the demo content, three options:
+
+**Option A — Admin button (easiest, no CLI):**
+1. Go to **Custom Fields → הגדרות כלליות** in the admin.
+2. Scroll down on the right side; you'll see a **"התקן/החלף תוכן דמו"** button.
+3. Click it. The installer runs in the background and you'll get a success notice.
+
+**Option B — WP-CLI (one command):**
+
+```bash
+wp ninjatours install-demo
+```
+
+If the installer has already run, you'll get a warning. To force a re-run:
+
+```bash
+wp ninjatours install-demo --force
+```
+
+This re-runs the installer but **does not delete content the editor already wrote** — it only adds whatever is missing.
+
+**Option C — Reset via the database (if neither of the above is available):**
+
+```sql
+DELETE FROM wp_options WHERE option_name = 'nt_demo_installed';
+```
+
+Then go to **Appearance → Themes**, switch to a different theme, and switch back to **Ninja Tours**. The `after_switch_theme` hook fires the installer.
+
+### What gets seeded
+
+The installer creates the following content:
+
    - **6 pages** with full Flexible Content already populated:
      - Home — hero, why-us, trip-types, attractions, content+media, use-cases, testimonials, partners, contact
      - אודות — story, values, process, testimonials, contact
