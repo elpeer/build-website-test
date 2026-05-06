@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Ninja Tours | טיול טבע ונופים ביפן</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="description" content="גלו את יפן מצד הטבע — הר פוג'י, יערות הבמבו, גנים עתיקים וכפרים שקטים. Ninja Tours מתכנן לכם טיול טבע ונופים מושלם ביפן." />
+
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/hotels.css" />
+  <link rel="stylesheet" href="css/hotel-detail.css" />
+
+  <style>
+    /* ── Travel Type — page-specific ──────────────────────────────────────── */
+
+    /* HERO */
+    .tt-hero {
+      position: relative;
+      height: 100vh;
+      min-height: 38rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+      color: #fff;
+    }
+    .tt-hero__media {
+      position: absolute;
+      inset: 0;
+    }
+    .tt-hero__media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .tt-hero__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.18) 55%, rgba(0,0,0,0.28) 100%);
+    }
+    .tt-hero__ghost {
+      position: absolute;
+      bottom: -1rem;
+      inset-inline-start: -1rem;
+      font-size: clamp(6rem, 18vw, 22rem);
+      font-weight: 900;
+      line-height: 0.82;
+      letter-spacing: -0.04em;
+      color: rgba(255,255,255,0.055);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .tt-hero__breadcrumb {
+      position: absolute;
+      top: calc(var(--header-height, 5rem) + 1.5rem);
+      inset-inline: 0;
+      padding-inline: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.72);
+      z-index: 3;
+    }
+    .tt-hero__breadcrumb a {
+      color: rgba(255,255,255,0.72);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .tt-hero__breadcrumb a:hover { color: #fff; }
+    .tt-hero__breadcrumb-sep { opacity: 0.45; }
+    .tt-hero__content {
+      position: relative;
+      z-index: 3;
+      padding: 0 2rem 4rem;
+      max-width: 52rem;
+    }
+    .tt-hero__tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 99px;
+      padding: 0.35rem 1rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: #fff;
+      margin-bottom: 1.1rem;
+    }
+    .tt-hero__tag-dot {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 50%;
+      background: #d2170a;
+      flex-shrink: 0;
+    }
+    .tt-hero__title {
+      font-size: clamp(2.75rem, 7vw, 6rem);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.1rem;
+    }
+    .tt-hero__title em {
+      font-style: normal;
+      color: #d2170a;
+    }
+    .tt-hero__desc {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.82);
+      max-width: 34rem;
+      line-height: 1.65;
+      margin-bottom: 2.25rem;
+    }
+
+    /* FEATURES */
+    .tt-features {
+      padding-block: 5rem;
+      background: #fff;
+    }
+    .tt-features__head {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .tt-features__head h2 {
+      font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+      font-weight: 800;
+      color: #1a1a1a;
+      margin-bottom: 0.5rem;
+    }
+    .tt-features__head h2 em {
+      font-style: normal;
+      color: #d2170a;
+    }
+    .tt-features__head p {
+      color: #666;
+      font-size: 1rem;
+      max-width: 36rem;
+      margin-inline: auto;
+    }
+    .tt-features__grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+    .tt-feature-card {
+      border: 1px solid #eee;
+      border-radius: 1.25rem;
+      padding: 1.75rem 1.5rem;
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.25s, transform 0.3s;
+    }
+    .tt-feature-card:hover {
+      border-color: #063874;
+      box-shadow: 0 8px 32px rgba(6,56,116,0.08);
+      transform: translateY(-0.25rem);
+    }
+    .tt-feature-card__icon {
+      width: 3rem;
+      height: 3rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fffaf5;
+      border-radius: 0.875rem;
+      padding: 0.55rem;
+    }
+    .tt-feature-card__icon svg {
+      width: 100%;
+      height: 100%;
+    }
+    .tt-feature-card__title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 0.5rem;
+    }
+    .tt-feature-card__desc {
+      font-size: 0.9rem;
+      color: #666;
+      line-height: 1.65;
+    }
+
+    /* RECOMMENDED DESTINATIONS */
+    .tt-destinations {
+      padding-block: 5rem;
+      background: #fffaf5;
+    }
+    .tt-destinations .container { display: flex; flex-direction: column; }
+    .tt-destinations__head {
+      margin-bottom: 2.5rem;
+    }
+    .tt-destinations__head h2 {
+      font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+      font-weight: 800;
+      color: #1a1a1a;
+      margin-bottom: 0.4rem;
+    }
+    .tt-destinations__head h2 em {
+      font-style: normal;
+      color: #d2170a;
+    }
+    .tt-destinations__head p {
+      color: #666;
+      font-size: 1rem;
+    }
+    .tt-destinations__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .tt-dest-card {
+      display: block;
+      text-decoration: none;
+      border-radius: 1.25rem;
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 4 / 3;
+      background: #eee;
+    }
+    .tt-dest-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .tt-dest-card:hover img { transform: scale(1.05); }
+    .tt-dest-card__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 55%);
+    }
+    .tt-dest-card__body {
+      position: absolute;
+      bottom: 0;
+      inset-inline: 0;
+      padding: 1.25rem 1.5rem;
+      color: #fff;
+    }
+    .tt-dest-card__name {
+      font-size: 1.3rem;
+      font-weight: 800;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+    .tt-dest-card__tag {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.75);
+      display: block;
+    }
+    .tt-dest-card__arrow {
+      position: absolute;
+      bottom: 1.25rem;
+      inset-inline-start: 1.5rem;
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 50%;
+      background: #d2170a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      opacity: 0;
+      transform: translateY(0.4rem);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .tt-dest-card__arrow svg { width: 1rem; height: 1rem; }
+    .tt-dest-card:hover .tt-dest-card__arrow {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ITINERARY */
+    .tt-itinerary {
+      padding-block: 5rem;
+      background: #fff;
+    }
+    .tt-itinerary__head {
+      margin-bottom: 3rem;
+    }
+    .tt-itinerary__head h2 {
+      font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+      font-weight: 800;
+      color: #1a1a1a;
+      margin-bottom: 0.4rem;
+    }
+    .tt-itinerary__head h2 em {
+      font-style: normal;
+      color: #d2170a;
+    }
+    .tt-itinerary__head p {
+      color: #666;
+      font-size: 1rem;
+      max-width: 40rem;
+    }
+    .tt-itinerary__note {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #fff8f0;
+      border: 1px solid #f0dfc7;
+      border-radius: 0.5rem;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.8rem;
+      color: #7a5b3a;
+      margin-top: 0.85rem;
+    }
+    .tt-itinerary__timeline {
+      display: flex;
+      flex-direction: column;
+    }
+    .tt-day {
+      display: grid;
+      grid-template-columns: 5rem 1fr;
+      gap: 1.75rem;
+      padding-block: 2rem;
+    }
+    .tt-day:not(:last-child) {
+      border-bottom: 1px solid #f0f0f2;
+    }
+    .tt-day__marker {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .tt-day__num {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: #063874;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .tt-day__label {
+      font-size: 0.7rem;
+      color: #aaa;
+      text-align: center;
+    }
+    .tt-day__content { padding-block-start: 0.3rem; }
+    .tt-day__location {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #d2170a;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .tt-day__title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 0.55rem;
+    }
+    .tt-day__desc {
+      font-size: 0.925rem;
+      color: #555;
+      line-height: 1.7;
+    }
+    .tt-day__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 1rem;
+    }
+    .tt-day__tag {
+      background: #f5f5f7;
+      border-radius: 99px;
+      padding: 0.2rem 0.75rem;
+      font-size: 0.75rem;
+      color: #555;
+    }
+
+    /* TIPS */
+    .tt-tips {
+      padding-block: 5rem;
+      background: #063874;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .tt-tips__ghost {
+      position: absolute;
+      inset-inline-end: -2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: clamp(7rem, 18vw, 20rem);
+      font-weight: 900;
+      line-height: 0.85;
+      letter-spacing: -0.04em;
+      color: rgba(255,255,255,0.04);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .tt-tips .container { position: relative; z-index: 1; }
+    .tt-tips__head { margin-bottom: 2.5rem; }
+    .tt-tips__head h2 {
+      font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+    .tt-tips__head h2 em {
+      font-style: normal;
+      color: #ff8070;
+    }
+    .tt-tips__head p {
+      color: rgba(255,255,255,0.65);
+      font-size: 1rem;
+    }
+    .tt-tips__grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+    }
+    .tt-tip {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.11);
+      border-radius: 1.25rem;
+      padding: 1.75rem;
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+    .tt-tip__num {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #d2170a;
+      line-height: 1;
+      flex-shrink: 0;
+      min-width: 2.5rem;
+    }
+    .tt-tip__title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+    .tt-tip__desc {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.65;
+    }
+
+    /* RELATED ATTRACTIONS SLIDER */
+    .related-attractions {
+      padding-block: 4.5rem;
+      background: #fffaf5;
+    }
+    .related-attractions__header {
+      max-width: 1200px;
+      margin-inline: auto;
+      padding-inline: 1.5rem;
+      text-align: right;
+      margin-bottom: 2.5rem;
+    }
+    .related-attractions__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 0.4rem;
+    }
+    .related-attractions__title em {
+      font-style: normal;
+      color: #d2170a;
+    }
+    .related-attractions__lead {
+      font-size: 1rem;
+      color: #555;
+    }
+    .related-attractions__slider {
+      max-width: 1200px;
+      margin-inline: auto;
+      padding-inline: 1.5rem;
+      overflow: hidden;
+    }
+    .related-attractions__slider .swiper-wrapper { align-items: stretch; }
+    .related-attractions__slider .swiper-slide { height: auto; }
+    .related-attractions .attractions__card {
+      aspect-ratio: 4 / 3;
+      border-radius: 1.5rem;
+      display: block;
+      width: 100%;
+      text-decoration: none;
+    }
+    .related-attractions__nav {
+      max-width: 1200px;
+      margin: 1.75rem auto 0;
+      padding-inline: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .related-attractions__nav-arrows { display: flex; gap: 0.75rem; }
+    .related-attractions__nav-btn {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      border: none;
+      background: #d2170a;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.25s ease, opacity 0.25s ease;
+    }
+    .related-attractions__nav-btn:hover { background: #a60f04; }
+    .related-attractions__nav-btn.swiper-button-disabled { opacity: 0.4; pointer-events: none; }
+    .related-attractions__nav-btn svg { width: 1.125rem; height: 1.125rem; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) and (orientation: portrait) {
+      .tt-hero__content { padding-inline: 1.25rem; padding-block-end: 2.75rem; }
+      .tt-hero__ghost { font-size: 5rem; bottom: 0; }
+      .tt-features__grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .tt-destinations__grid { grid-template-columns: 1fr; }
+      .tt-day { grid-template-columns: 4rem 1fr; gap: 1rem; }
+      .tt-tips__grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body class="page-destinations">
+  <main id="main-content">
+
+    <!-- ══════════════════════════════════════════════════════════════
+         1. HERO — full-bleed photo, title bottom-anchored, ghost text
+         ══════════════════════════════════════════════════════════════ -->
+    <section class="tt-hero" id="tt-hero">
+      <div class="tt-hero__media">
+        <picture>
+          <source srcset="https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=800&q=80" media="(max-width: 768px) and (orientation: portrait)">
+          <img src="https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=1600&q=80" alt="הר פוג'י ואגמות הרשת — יפן">
+        </picture>
+      </div>
+      <div class="tt-hero__overlay" aria-hidden="true"></div>
+      <span class="tt-hero__ghost" aria-hidden="true">טבע</span>
+
+      <nav class="tt-hero__breadcrumb" aria-label="ניווט ראשי">
+        <a href="index.html">עמוד הבית</a>
+        <span class="tt-hero__breadcrumb-sep" aria-hidden="true">›</span>
+        <a href="index.html#trip-types">סוגי טיולים</a>
+        <span class="tt-hero__breadcrumb-sep" aria-hidden="true">›</span>
+        <span aria-current="page">טבע ונופים</span>
+      </nav>
+
+      <div class="tt-hero__content">
+        <p class="tt-hero__tag">
+          <span class="tt-hero__tag-dot" aria-hidden="true"></span>
+          סוג טיול
+        </p>
+        <h1 class="tt-hero__title">טבע <em>ונופים</em><br>ביפן</h1>
+        <p class="tt-hero__desc">נופים עוצרי נשימה שנראים כמו חלום — מהר פוג'י המושלג ועד יערות הבמבו של קיוטו. טיול שבו הטבע הוא הכוכב הראשי.</p>
+        <a href="#contact" class="btn-pill --primary --lg">
+          <span class="btn-pill__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+            </svg>
+          </span>
+          <span class="btn-pill__text">בואו נתכנן יחד</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         2. FEATURES — מה כולל סוג הטיול הזה (4 cards)
+         ══════════════════════════════════════════════════════════════ -->
+    <section class="tt-features" id="tt-features">
+      <div class="container">
+        <header class="tt-features__head" data-aos="fade-up" data-aos-anchor="#tt-features">
+          <h2>מה <em>כולל</em> סוג הטיול הזה?</h2>
+          <p>טיול טבע ביפן הוא הרבה יותר מסתם נוף — זו חוויה שמגעת לנשמה</p>
+        </header>
+
+        <div class="tt-features__grid">
+          <article class="tt-feature-card" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#tt-features">
+            <div class="tt-feature-card__icon">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24 6 C24 6 10 21 10 30 C10 37.7 16.3 44 24 44 C31.7 44 38 37.7 38 30 C38 21 24 6 24 6 Z" fill="#063874" opacity="0.12"/>
+                <path d="M24 6 C24 6 10 21 10 30 C10 37.7 16.3 44 24 44" stroke="#063874" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                <path d="M24 44 C31.7 44 38 37.7 38 30 C38 21 24 6 24 6" stroke="#063874" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.4"/>
+                <line x1="24" y1="30" x2="24" y2="44" stroke="#d2170a" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="33" cy="14" r="4" fill="#d2170a" opacity="0.75"/>
+              </svg>
+            </div>
+            <h3 class="tt-feature-card__title">הר פוג'י ואגמי הרשת</h3>
+            <p class="tt-feature-card__desc">החוויה האיקונית ביותר של יפן — הר פוג'י המושלג עם השתקפויותיו האגדיות באגמי הצ'וקובוגו.</p>
+          </article>
+
+          <article class="tt-feature-card" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#tt-features">
+            <div class="tt-feature-card__icon">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="3" width="4" height="36" rx="2" fill="#063874" opacity="0.25"/>
+                <rect x="20" y="7" width="4" height="34" rx="2" fill="#063874"/>
+                <rect x="30" y="3" width="4" height="38" rx="2" fill="#063874" opacity="0.5"/>
+                <rect x="8" y="18" width="8" height="2.5" rx="1.25" fill="#d2170a"/>
+                <rect x="18" y="22" width="8" height="2.5" rx="1.25" fill="#d2170a"/>
+                <rect x="28" y="16" width="8" height="2.5" rx="1.25" fill="#d2170a"/>
+              </svg>
+            </div>
+            <h3 class="tt-feature-card__title">יערות במבו קסומים</h3>
+            <p class="tt-feature-card__desc">ההליכה ביער הבמבו של ארשייאמה בקיוטו — חוויה מדיטטיבית שאי אפשר לשחזר בשום מקום אחר בעולם.</p>
+          </article>
+
+          <article class="tt-feature-card" data-aos="fade-up" data-aos-delay="300" data-aos-anchor="#tt-features">
+            <div class="tt-feature-card__icon">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="24" cy="34" rx="16" ry="5" fill="#063874" opacity="0.12"/>
+                <path d="M8 36 C8 36 12 22 24 22 C36 22 40 36 40 36" stroke="#063874" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <circle cx="24" cy="16" r="7" stroke="#063874" stroke-width="2.5" fill="none"/>
+                <circle cx="24" cy="16" r="3" fill="#d2170a"/>
+                <line x1="8" y1="38" x2="40" y2="38" stroke="#063874" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="tt-feature-card__title">גנים יפניים מסורתיים</h3>
+            <p class="tt-feature-card__desc">גני ריוקאן-ג'י, קינקאקו-ג'י ועוד — עיצוב שמשקף הרמוניה מושלמת בין האדם לטבע.</p>
+          </article>
+
+          <article class="tt-feature-card" data-aos="fade-up" data-aos-delay="400" data-aos-anchor="#tt-features">
+            <div class="tt-feature-card__icon">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 38 L14 38 L14 24 L10 20 L6 24 Z" stroke="#063874" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18 38 L30 38 L30 22 L24 14 L18 22 Z" fill="#063874" opacity="0.12"/>
+                <path d="M18 38 L30 38 L30 22 L24 14 L18 22 Z" stroke="#063874" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M34 38 L42 38 L42 26 L38 22 L34 26 Z" stroke="#063874" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="4" y1="38" x2="44" y2="38" stroke="#063874" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="38" cy="13" r="3.5" fill="#d2170a"/>
+              </svg>
+            </div>
+            <h3 class="tt-feature-card__title">כפרים עתיקים ושקטים</h3>
+            <p class="tt-feature-card__desc">שירקאווה-גו, מגה וכפרי אינה — מחוץ לעיר, בלב יפן האמיתית שהזמן שכח אותה.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         3. RECOMMENDED DESTINATIONS — 3 cards
+         ══════════════════════════════════════════════════════════════ -->
+    <section class="tt-destinations" id="tt-destinations">
+      <div class="container">
+        <header class="tt-destinations__head" data-aos="fade-up" data-aos-anchor="#tt-destinations">
+          <h2>יעדים <em>מומלצים</em> לסוג הטיול הזה</h2>
+          <p>שלושת היעדים שמציעים את חוויות הטבע הטובות ביותר ביפן</p>
+        </header>
+
+        <div class="tt-destinations__grid">
+          <a href="destination-tokyo.html" class="tt-dest-card" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#tt-destinations">
+            <img src="https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=800&q=80" alt="הר פוג'י ואגמי הרשת" loading="lazy">
+            <div class="tt-dest-card__overlay" aria-hidden="true"></div>
+            <div class="tt-dest-card__body">
+              <span class="tt-dest-card__name">אזור הר פוג'י</span>
+              <span class="tt-dest-card__tag">פריפקטורת יאמנאשי ושיזוקה</span>
+            </div>
+            <div class="tt-dest-card__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            </div>
+          </a>
+
+          <a href="destination-tokyo.html" class="tt-dest-card" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#tt-destinations">
+            <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&q=80" alt="קיוטו — ארשייאמה ויער הבמבו" loading="lazy">
+            <div class="tt-dest-card__overlay" aria-hidden="true"></div>
+            <div class="tt-dest-card__body">
+              <span class="tt-dest-card__name">קיוטו</span>
+              <span class="tt-dest-card__tag">ארשייאמה, גן רוקואן, ה-Philosopher's Path</span>
+            </div>
+            <div class="tt-dest-card__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            </div>
+          </a>
+
+          <a href="destination-tokyo.html" class="tt-dest-card" data-aos="fade-up" data-aos-delay="300" data-aos-anchor="#tt-destinations">
+            <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&q=80" alt="שירקאווה-גו — כפר עתיק" loading="lazy">
+            <div class="tt-dest-card__overlay" aria-hidden="true"></div>
+            <div class="tt-dest-card__body">
+              <span class="tt-dest-card__name">שירקאווה-גו</span>
+              <span class="tt-dest-card__tag">אתר מורשת עולמי, כפרי גאשו-זוקורי</span>
+            </div>
+            <div class="tt-dest-card__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         4. ITINERARY — 8-day sample timeline
+         ══════════════════════════════════════════════════════════════ -->
+    <section class="tt-itinerary" id="tt-itinerary">
+      <div class="container">
+        <header class="tt-itinerary__head" data-aos="fade-up" data-aos-anchor="#tt-itinerary">
+          <h2>מסלול לדוגמה — <em>8 ימים</em></h2>
+          <p>נקודת פתיחה שמותאמת אישית לכל לקוח — ניתן לשנות, לקצר ולהרחיב לפי הצרכים שלכם</p>
+          <p class="tt-itinerary__note">
+            <svg viewBox="0 0 16 16" fill="none" width="14" height="14">
+              <circle cx="8" cy="8" r="7" stroke="#d2170a" stroke-width="1.5"/>
+              <line x1="8" y1="7" x2="8" y2="12" stroke="#d2170a" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="8" cy="4.5" r="0.9" fill="#d2170a"/>
+            </svg>
+            מסלול זה הוא השראה בלבד — כל טיול מותאם אישית ללקוח
+          </p>
+        </header>
+
+        <div class="tt-itinerary__timeline" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#tt-itinerary">
+          <div class="tt-day">
+            <div class="tt-day__marker">
+              <span class="tt-day__num">1–2</span>
+              <span class="tt-day__label">טוקיו</span>
+            </div>
+            <div class="tt-day__content">
+              <p class="tt-day__location">טוקיו</p>
+              <h3 class="tt-day__title">הגעה והתאקלמות — גנים ואגמות בלב העיר</h3>
+              <p class="tt-day__desc">אחרי הנחיתה, גן שינג'וקו-גיואן ואגמות ינאקה — שני כיסי טבע שקטים בלב עיר הענק. ביום השני — פארק אאויאמה ושכונת הגנים של מגורו.</p>
+              <div class="tt-day__tags">
+                <span class="tt-day__tag">גנים עירוניים</span>
+                <span class="tt-day__tag">אגמות</span>
+                <span class="tt-day__tag">טיול רגלי</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tt-day">
+            <div class="tt-day__marker">
+              <span class="tt-day__num">3–4</span>
+              <span class="tt-day__label">פוג'י</span>
+            </div>
+            <div class="tt-day__content">
+              <p class="tt-day__location">אזור הר פוג'י</p>
+              <h3 class="tt-day__title">הר פוג'י ואגמי הרשת — הלב של הטיול</h3>
+              <p class="tt-day__desc">יום שלישי: ביקור באגמות קאוואגוצ'יקו וסאיקו לצילומי השתקפות פוג'י המושלמים. יום רביעי: עלייה לתחנת 5 (עונת קיץ) או טיול חוף האגם. לינה ב-Ryokan עם נוף ישיר לפוג'י.</p>
+              <div class="tt-day__tags">
+                <span class="tt-day__tag">הר פוג'י</span>
+                <span class="tt-day__tag">אגמות</span>
+                <span class="tt-day__tag">ריוקאן</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tt-day">
+            <div class="tt-day__marker">
+              <span class="tt-day__num">5</span>
+              <span class="tt-day__label">מעבר</span>
+            </div>
+            <div class="tt-day__content">
+              <p class="tt-day__location">שינקאנסן</p>
+              <h3 class="tt-day__title">רכבת ענן — נסיעה לקיוטו דרך נאגויה</h3>
+              <p class="tt-day__desc">יום של נסיעה קסומה בשינקאנסן עם נוף חובק ארץ. עצירה אפשרית בנאגויה לצהריים ומפגש עם טירת נאגויה ההיסטורית.</p>
+              <div class="tt-day__tags">
+                <span class="tt-day__tag">שינקאנסן</span>
+                <span class="tt-day__tag">נוף פנורמי</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tt-day">
+            <div class="tt-day__marker">
+              <span class="tt-day__num">6–8</span>
+              <span class="tt-day__label">קיוטו</span>
+            </div>
+            <div class="tt-day__content">
+              <p class="tt-day__location">קיוטו</p>
+              <h3 class="tt-day__title">ארשייאמה, יערות במבו וגנים עתיקים</h3>
+              <p class="tt-day__desc">שלושה ימים בקיוטו: ארשייאמה ויער הבמבו, גן קינקאקו-ג'י, גן הסלעים ריוקאן-ג'י, ומסלול ה-Philosopher's Path. ביום האחרון — קניות ואוכל ברחוב ניישיקי לפני הטיסה חזרה.</p>
+              <div class="tt-day__tags">
+                <span class="tt-day__tag">יער במבו</span>
+                <span class="tt-day__tag">גנים יפניים</span>
+                <span class="tt-day__tag">מסלולי טבע</span>
+                <span class="tt-day__tag">מקדשים</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         5. TIPS — dark blue bg, ghost text, 2×2 grid
+         ══════════════════════════════════════════════════════════════ -->
+    <section class="tt-tips" id="tt-tips">
+      <div class="tt-tips__ghost" aria-hidden="true">טיפים</div>
+      <div class="container">
+        <header class="tt-tips__head" data-aos="fade-up" data-aos-anchor="#tt-tips">
+          <h2>טיפים <em>שיעשו את ההבדל</em></h2>
+          <p>מה שחשוב לדעת לפני שיוצאים לטיול טבע ביפן</p>
+        </header>
+
+        <div class="tt-tips__grid">
+          <div class="tt-tip" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#tt-tips">
+            <span class="tt-tip__num">01</span>
+            <div>
+              <h3 class="tt-tip__title">הגיעו בשעות הבוקר המוקדמות</h3>
+              <p class="tt-tip__desc">יער הבמבו ואגמות פוג'י נראים שונה לחלוטין בין 6:00–8:00 לפני שמגיעים ההמונים. זה גם הזמן שבו האור הכי יפה ותמונות הכי טובות.</p>
+            </div>
+          </div>
+
+          <div class="tt-tip" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#tt-tips">
+            <span class="tt-tip__num">02</span>
+            <div>
+              <h3 class="tt-tip__title">אביב ואוקטובר — העונות הכי טובות</h3>
+              <p class="tt-tip__desc">פריחת הדובדבן באפריל ועלי הסתיו של נובמבר הם שיאי הטיול. ספטמבר–אוקטובר גם נהדרים. הימנעו מיולי-אוגוסט שחמים ולחים.</p>
+            </div>
+          </div>
+
+          <div class="tt-tip" data-aos="fade-up" data-aos-delay="300" data-aos-anchor="#tt-tips">
+            <span class="tt-tip__num">03</span>
+            <div>
+              <h3 class="tt-tip__title">לינה ברייוקאן — לפחות לילה אחד</h3>
+              <p class="tt-tip__desc">חוויית הלינה ברייוקאן יפני מסורתי עם יוקאטה, אמבט אונסן וארוחה קייסקי מושלמת — חלק בלתי נפרד מטיול טבע אמיתי ביפן.</p>
+            </div>
+          </div>
+
+          <div class="tt-tip" data-aos="fade-up" data-aos-delay="400" data-aos-anchor="#tt-tips">
+            <span class="tt-tip__num">04</span>
+            <div>
+              <h3 class="tt-tip__title">הזמינו מראש — הר פוג'י מתמלא מהר</h3>
+              <p class="tt-tip__desc">כניסה לנתיב העלייה של הר פוג'י (עונת קיץ) דורשת הרשמה מראש. ריוקאנים עם נוף לפוג'י נסגרים חודשים מראש בעונות שיא.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         6. RELATED ATTRACTIONS SLIDER
+         ══════════════════════════════════════════════════════════════ -->
+    <section class="related-attractions" id="related-attractions">
+      <div class="related-attractions__header">
+        <h2 class="related-attractions__title">אטרקציות <em>טבע</em> מומלצות</h2>
+        <p class="related-attractions__lead">מקומות שכדאי לשלב בטיול הטבע שלכם ביפן</p>
+      </div>
+
+      <div class="related-attractions__slider swiper" id="related-attractions-slider">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <a href="attraction-detail.html" class="attractions__card">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=800" alt="הר פוג'י" loading="lazy">
+              <span class="attractions__card-overlay" aria-hidden="true"></span>
+              <div class="attractions__card-body">
+                <h3 class="attractions__card-title">הר פוג'י</h3>
+                <p class="attractions__card-loc">פריפקטורת שיזוקה</p>
+              </div>
+              <span class="attractions__card-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              </span>
+            </a>
+          </div>
+          <div class="swiper-slide">
+            <a href="attraction-detail.html" class="attractions__card">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="יער הבמבו ארשייאמה" loading="lazy">
+              <span class="attractions__card-overlay" aria-hidden="true"></span>
+              <div class="attractions__card-body">
+                <h3 class="attractions__card-title">יער הבמבו — ארשייאמה</h3>
+                <p class="attractions__card-loc">קיוטו</p>
+              </div>
+              <span class="attractions__card-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              </span>
+            </a>
+          </div>
+          <div class="swiper-slide">
+            <a href="attraction-detail.html" class="attractions__card">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800" alt="שירקאווה-גו" loading="lazy">
+              <span class="attractions__card-overlay" aria-hidden="true"></span>
+              <div class="attractions__card-body">
+                <h3 class="attractions__card-title">שירקאווה-גו</h3>
+                <p class="attractions__card-loc">פריפקטורת גיפו</p>
+              </div>
+              <span class="attractions__card-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              </span>
+            </a>
+          </div>
+          <div class="swiper-slide">
+            <a href="attraction-detail.html" class="attractions__card">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=800" alt="גן קינקאקו-ג'י" loading="lazy">
+              <span class="attractions__card-overlay" aria-hidden="true"></span>
+              <div class="attractions__card-body">
+                <h3 class="attractions__card-title">גן קינקאקו-ג'י</h3>
+                <p class="attractions__card-loc">קיוטו</p>
+              </div>
+              <span class="attractions__card-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="related-attractions__nav">
+        <div class="related-attractions__nav-arrows">
+          <button type="button" class="related-attractions__nav-btn related-attractions__prev" aria-label="הקודם">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+          <button type="button" class="related-attractions__nav-btn related-attractions__next" aria-label="הבא">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         7. WHY US — identical to homepage
+         ══════════════════════════════════════════════════════════════ -->
+    <section class="why-us" id="why-us">
+      <div class="container">
+        <header class="why-us__head">
+          <p class="why-us__eyebrow">
+            <span class="why-us__eyebrow-dot" aria-hidden="true"></span>
+            <span>למה אנחנו</span>
+          </p>
+          <h2 class="section-title">למה לתכנן <em>איתנו</em> את הטיול ליפן?</h2>
+        </header>
+
+        <div class="why-us__row" role="list">
+          <article class="why-us__card" role="listitem">
+            <div class="why-us__card-head">
+              <span class="why-us__card-num">01</span>
+              <span class="why-us__card-icon" aria-hidden="true">
+                <svg viewBox="0 0 60 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="42" cy="18" r="9" fill="#d2170a" />
+                  <path d="M3 44 L24 14 L36 28 L44 20 L57 44 Z" fill="#063874" />
+                  <path d="M22 19 L18 24 L21 24 L24 21 L26 24 L30 24 L24 16 Z" fill="#fff" />
+                </svg>
+              </span>
+            </div>
+            <div class="why-us__card-body">
+              <h3 class="why-us__card-title">צוות שחי ביפן</h3>
+              <p class="why-us__card-desc"><span>הצוות שלנו חי ונושם יפן ומכיר כל פינה ופינה במדינה.</span></p>
+            </div>
+          </article>
+
+          <article class="why-us__card" role="listitem">
+            <div class="why-us__card-head">
+              <span class="why-us__card-num">02</span>
+              <span class="why-us__card-icon" aria-hidden="true">
+                <svg viewBox="0 0 60 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="28" y="6" width="4" height="40" fill="#063874" />
+                  <path d="M48 18 L42 12 L14 12 L14 22 L42 22 Z" fill="#d2170a" />
+                  <path d="M12 28 L18 22 L46 22 L46 32 L18 32 Z" fill="#063874" />
+                </svg>
+              </span>
+            </div>
+            <div class="why-us__card-body">
+              <h3 class="why-us__card-title">חוסכים טעויות וכסף בחינם</h3>
+              <p class="why-us__card-desc"><span>המומחיות שלנו תחסוך לכם זמן יקר וטעויות מיותרות בדרך.</span></p>
+            </div>
+          </article>
+
+          <article class="why-us__card" role="listitem">
+            <div class="why-us__card-head">
+              <span class="why-us__card-num">03</span>
+              <span class="why-us__card-icon" aria-hidden="true">
+                <svg viewBox="0 0 60 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M30 4 L18 10 L42 10 Z" fill="#d2170a" />
+                  <rect x="22" y="11" width="16" height="6" fill="#063874" />
+                  <path d="M14 22 L46 22 L42 18 L18 18 Z" fill="#d2170a" />
+                  <rect x="22" y="22" width="16" height="3" fill="#063874" />
+                  <rect x="22" y="26" width="16" height="22" fill="#063874" />
+                  <rect x="28" y="32" width="4" height="16" fill="#d2170a" />
+                </svg>
+              </span>
+            </div>
+            <div class="why-us__card-body">
+              <h3 class="why-us__card-title">ליווי מלא בעברית</h3>
+              <p class="why-us__card-desc"><span>אנחנו מלווים אתכם לאורך כל הטיול שלכם מרחוק.</span></p>
+            </div>
+          </article>
+
+          <article class="why-us__card" role="listitem">
+            <div class="why-us__card-head">
+              <span class="why-us__card-num">04</span>
+              <span class="why-us__card-icon" aria-hidden="true">
+                <svg viewBox="0 0 60 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M30 2 C20 2 12 10 12 20 C12 32 30 46 30 46 C30 46 48 32 48 20 C48 10 40 2 30 2 Z" fill="#063874" />
+                  <circle cx="30" cy="20" r="7" fill="#d2170a" />
+                </svg>
+              </span>
+            </div>
+            <div class="why-us__card-body">
+              <h3 class="why-us__card-title">מומחים רק ליפן</h3>
+              <p class="why-us__card-desc"><span>אנחנו מתמחים אך ורק ביפן וזה מה שעושה את ההבדל.</span></p>
+            </div>
+          </article>
+
+          <article class="why-us__card" role="listitem">
+            <div class="why-us__card-head">
+              <span class="why-us__card-num">05</span>
+              <span class="why-us__card-icon" aria-hidden="true">
+                <svg viewBox="0 0 60 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22 8 L22 4 L38 4 L38 8" stroke="#063874" stroke-width="2.5" fill="none" stroke-linecap="round" />
+                  <rect x="8" y="10" width="44" height="34" fill="#d2170a" rx="3" />
+                  <line x1="30" y1="10" x2="30" y2="44" stroke="#063874" stroke-width="2.5" />
+                </svg>
+              </span>
+            </div>
+            <div class="why-us__card-body">
+              <h3 class="why-us__card-title">סוגרים הכל במקום אחד</h3>
+              <p class="why-us__card-desc"><span>טיסות, מלונות, רכבות ואטרקציות - הכל מסודר במקום אחד.</span></p>
+            </div>
+          </article>
+        </div>
+
+        <a href="#contact" class="btn-pill --blue --lg why-us__cta">
+          <span class="btn-pill__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+            </svg>
+          </span>
+          <span class="btn-pill__text">בואו נתחיל</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         8. CONTACT — identical to homepage
+         ══════════════════════════════════════════════════════════════ -->
+    <section class="contact" id="contact">
+      <img class="contact__leaf contact__leaf--right" src="images/right_leaf.png" alt="" loading="lazy">
+      <img class="contact__leaf contact__leaf--left" src="images/left_leaf.png" alt="" loading="lazy">
+
+      <div class="contact__inner">
+        <header class="contact__head">
+          <h2 class="section-title">מוכנים לטיול של <em>פעם בחיים?</em></h2>
+          <p class="contact__lead">בואו נתחיל לתכנן את יפן שלכם, בדיוק כמו שחלמתם.</p>
+        </header>
+
+        <div class="contact__layout">
+          <form class="contact__form" novalidate>
+            <h3 class="contact__form-title"><span>בואו נתכנן את הטיול שלך</span></h3>
+            <div class="contact__form-grid">
+              <label class="contact__field"><input type="text" name="name" placeholder="שם מלא" required></label>
+              <label class="contact__field"><input type="email" name="email" placeholder="מייל" required></label>
+              <label class="contact__field"><input type="tel" name="phone" placeholder="טלפון" required></label>
+              <label class="contact__field"><input type="number" name="people" placeholder="מספר נפשות" min="1"></label>
+              <label class="contact__field"><input type="text" name="dates" placeholder="טווח ימים מועדף לטיול"></label>
+              <label class="contact__field"><input type="text" name="budget" placeholder="סכום תקציבי מועדף לטיול"></label>
+            </div>
+            <button type="submit" class="btn-pill --primary --lg contact__submit">
+              <span class="btn-pill__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                </svg>
+              </span>
+              <span class="btn-pill__text">התייעצות ללא עלות</span>
+            </button>
+          </form>
+
+          <figure class="contact__image">
+            <img src="images/contact.jpg" alt="">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="footer">
+    <div class="footer__inner">
+      <div class="footer__col footer__col--logo">
+        <a href="/" class="footer__logo" aria-label="Ninja Tours">
+          <img src="images/logo.svg" alt="Ninja Tours" width="160" height="120">
+        </a>
+      </div>
+      <nav class="footer__col" aria-label="קטגוריות">
+        <h4 class="footer__heading">קטגוריות</h4>
+        <ul>
+          <li><a href="#">תחבורה</a></li>
+          <li><a href="#">נופים</a></li>
+          <li><a href="#">מלונות</a></li>
+          <li><a href="#">אטרקציות</a></li>
+        </ul>
+      </nav>
+      <nav class="footer__col" aria-label="יעדים פופולריים">
+        <h4 class="footer__heading">יעדים פופולריים</h4>
+        <ul>
+          <li><a href="#">טוקיו</a></li>
+          <li><a href="#">אוסקה</a></li>
+          <li><a href="#">קיוטו</a></li>
+          <li><a href="#">עוד יעדים</a></li>
+        </ul>
+      </nav>
+      <nav class="footer__col" aria-label="עלינו">
+        <h4 class="footer__heading">עלינו</h4>
+        <ul>
+          <li><a href="#">אודות</a></li>
+          <li><a href="#">שאלות ותשובות</a></li>
+        </ul>
+      </nav>
+      <nav class="footer__col" aria-label="מידע למטייל">
+        <h4 class="footer__heading">מידע למטייל</h4>
+        <ul>
+          <li><a href="#">מדריכים</a></li>
+          <li><a href="#">מידע שימושי</a></li>
+          <li><a href="#">קישורים חשובים</a></li>
+        </ul>
+      </nav>
+      <div class="footer__col footer__col--contact">
+        <h4 class="footer__heading">יצירת קשר</h4>
+        <a class="footer__email" href="mailto:ninjatours@gmail.com">ninjatours@gmail.com</a>
+        <ul class="footer__socials" aria-label="רשתות חברתיות">
+          <li>
+            <a class="footer__social" href="#" aria-label="פייסבוק">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.2-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8.2v3h2.5V21h2.8z"/>
+              </svg>
+            </a>
+          </li>
+          <li>
+            <a class="footer__social" href="#" aria-label="אינסטגרם">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor"/>
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <p class="footer__copy">Copyright &copy;Ninja Tours. All right reserved</p>
+      <p class="footer__credit">Design &amp; Code by Elevate</p>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery.Marquee/1.6.1/jquery.marquee.min.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    AOS.init({ once: true, duration: 700, easing: 'ease-out-quad' });
+
+    new Swiper('#related-attractions-slider', {
+      slidesPerView: 1,
+      spaceBetween: 20,
+      navigation: {
+        prevEl: '.related-attractions__prev',
+        nextEl: '.related-attractions__next',
+      },
+      breakpoints: {
+        769: { slidesPerView: 2, spaceBetween: 24 },
+        1024: { slidesPerView: 3, spaceBetween: 28 }
+      }
+    });
+  </script>
+</body>
+
+</html>
