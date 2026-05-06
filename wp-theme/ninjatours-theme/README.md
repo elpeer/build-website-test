@@ -20,11 +20,25 @@ PHP 8.0+ and WP 6.0+.
 1. Drop this folder at `/wp-content/themes/ninjatours-theme/`.
 2. Activate **Advanced Custom Fields PRO** + (optionally) **ACF Medium Editor Field** + **Contact Form 7**.
 3. Activate the **Ninja Tours** theme. On first activation, the demo installer runs automatically and creates:
-   - 4 default pages: Home (set as front page), אודות, יצירת קשר, בלוג (set as posts page)
-   - 3 destinations, 4 attractions, 3 hotels, 3 use cases, 4 travel types, 3 client reviews
-   - 3 nav menus (Header 1, Header 2, Footer) wired to their menu locations
-4. Navigate to **Pages → Home** to start composing the homepage with the **Flexible Content** field.
-5. Settings → Reading should already show "Home" as the static front page; verify or set it.
+   - **6 pages** with full Flexible Content already populated:
+     - Home — hero, why-us, trip-types, attractions, content+media, use-cases, testimonials, partners, contact
+     - אודות — story, values, process, testimonials, contact
+     - יצירת קשר — hero, contact form, tips
+     - למה אנחנו — focused why-us + process + testimonials
+     - יעדים פופולריים — destinations grid + attractions
+     - בלוג — set as the posts page
+   - **CPT posts** with their fields filled:
+     - 4 destinations (with taglines + region taxonomy)
+     - 6 attractions (with info-chips, tips, and category taxonomy)
+     - 4 hotels (with rating, tagline, city + audience taxonomy)
+     - 4 use cases (with duration, capacity, modal content, quote, audience + tag taxonomy)
+     - 4 travel types — first one ("טבע ונופים") with full FC layout
+     - 4 client reviews (with text + name + 5★ rating)
+   - **Taxonomy terms** — categories ready for filter tabs/dropdowns
+   - **3 nav menus** (Header 1, Header 2, Footer) wired to locations
+   - **General Settings** — header CTA, email, footer copyright defaults
+4. Visit any page — sections render with real content from the start.
+5. Upload your own logo + featured images via Media Library; the theme references attachments by ID, so editors just upload and pick.
 
 > **The installer runs once.** It writes a flag (`nt_demo_installed`) to options. Delete that option if you want it to re-run on next activation.
 
