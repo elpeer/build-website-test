@@ -61,53 +61,66 @@
     }
     .attraction-tips li + li { margin-top: 0.25rem; }
 
-    /* Related attractions slider */
+    /* Related attractions slider — matches homepage attractions card style */
     .related-attractions {
-      padding-block: 2.5rem 3rem;
+      padding-block: 3rem 3.5rem;
       background: #fffaf5;
     }
-    .related-attractions .container {
+    .related-attractions__head {
       max-width: 1200px;
+      margin-inline: auto;
+      padding-inline: 1.5rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
     }
     .related-attractions__title {
-      font-size: 1.5rem;
-      font-weight: 700;
+      font-size: 2.25rem;
+      font-weight: 800;
       color: #1a1a1a;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+    .related-attractions__title em {
+      font-style: normal;
+      color: #d2170a;
     }
     .related-attractions__lead {
-      font-size: 0.9375rem;
-      color: #666;
-      margin-bottom: 2rem;
+      font-size: 1rem;
+      color: #555;
+      max-width: 38rem;
+      margin-inline: auto;
     }
 
-    /* Slide wrapper for attractions__card inside swiper */
-    .related-attractions .swiper-slide {
-      width: 18rem;
-      height: auto;
-      flex-shrink: 0;
+    /* Swiper container — constrained to the same max-width as content */
+    .related-attractions__slider {
+      max-width: 1200px;
+      margin-inline: auto;
+      padding-inline: 1.5rem;
+      overflow: hidden;
     }
-    .related-attractions .attractions__card {
-      aspect-ratio: 3 / 4;
-      border-radius: 1.25rem;
-    }
-    .related-attractions .swiper-wrapper {
-      display: flex;
+    .related-attractions__slider .swiper-wrapper {
       align-items: stretch;
     }
-
-    .related-attractions__slider {
-      overflow: hidden;
-      padding-inline: 1.5rem;
-      padding-block-end: 0.25rem;
+    .related-attractions__slider .swiper-slide {
+      height: auto;
+    }
+    /* Card matches homepage: 4:3 aspect, 1.5rem radius */
+    .related-attractions .attractions__card {
+      aspect-ratio: 4 / 3;
+      border-radius: 1.5rem;
+      display: block;
+      width: 100%;
+      text-decoration: none;
     }
 
     .related-attractions__nav {
+      max-width: 1200px;
+      margin: 1.75rem auto 0;
+      padding-inline: 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 1.5rem;
-      padding-inline: 1.5rem;
+      gap: 1rem;
     }
     .related-attractions__nav-arrows {
       display: flex;
@@ -140,10 +153,17 @@
       height: 1.125rem;
     }
 
+    /* Tablet — 2 per view */
+    @media (min-width: 769px) and (max-width: 1100px) {
+      .related-attractions__title { font-size: 1.875rem; }
+    }
+
+    /* Mobile — 1 per view */
     @media (max-width: 768px) and (orientation: portrait) {
+      .related-attractions { padding-block: 2rem 2.5rem; }
+      .related-attractions__title { font-size: 1.625rem; }
+      .related-attractions__lead { font-size: 0.9375rem; }
       .attraction-info { gap: 0.5rem; }
-      .related-attractions__slider { padding-inline: 1rem; }
-      .related-attractions .swiper-slide { width: 14rem; }
     }
   </style>
 </head>
@@ -382,20 +402,21 @@
     </section>
 
     <!-- ==========================================================================
-         Related Attractions Slider
+         Related Attractions — same card style as homepage attractions section,
+         3 cards per row in a Swiper slider (no filter tabs)
          ========================================================================== -->
     <section class="related-attractions">
-      <div class="container">
-        <h2 class="related-attractions__title" data-aos="fade-up" data-aos-duration="500">אטרקציות נוספות שאולי יעניינו אתכם</h2>
-        <p class="related-attractions__lead" data-aos="fade-up" data-aos-duration="500" data-aos-delay="80">עוד מקומות מומלצים לביקור בקיוטו ובסביבה</p>
-      </div>
+      <header class="related-attractions__head" data-aos="fade-up" data-aos-duration="500">
+        <h2 class="related-attractions__title">אטרקציות <em>נוספות</em> שאולי יעניינו אתכם</h2>
+        <p class="related-attractions__lead">עוד מקומות מומלצים לביקור בקיוטו ובסביבה</p>
+      </header>
 
       <div class="related-attractions__slider swiper" id="related-attractions-slider">
         <div class="swiper-wrapper">
 
           <div class="swiper-slide">
-            <a href="attraction-detail.html" class="attractions__card" style="border-radius:1.25rem">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&q=80" alt="מקדש קינקאקו-ג׳י" loading="lazy">
+            <a href="attraction-detail.html" class="attractions__card">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900&q=80" alt="מקדש קינקאקו-ג׳י" loading="lazy">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <span class="attractions__card-arrow" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -411,8 +432,8 @@
           </div>
 
           <div class="swiper-slide">
-            <a href="attraction-detail.html" class="attractions__card" style="border-radius:1.25rem">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=800&q=80" alt="אזור גיון" loading="lazy">
+            <a href="attraction-detail.html" class="attractions__card">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=900&q=80" alt="אזור גיון" loading="lazy">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <span class="attractions__card-arrow" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -428,8 +449,8 @@
           </div>
 
           <div class="swiper-slide">
-            <a href="attraction-detail.html" class="attractions__card" style="border-radius:1.25rem">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=800&q=80" alt="מקדש קיומיזו-דרה" loading="lazy">
+            <a href="attraction-detail.html" class="attractions__card">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=900&q=80" alt="מקדש קיומיזו-דרה" loading="lazy">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <span class="attractions__card-arrow" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -445,8 +466,8 @@
           </div>
 
           <div class="swiper-slide">
-            <a href="attraction-detail.html" class="attractions__card" style="border-radius:1.25rem">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800&q=80" alt="יער הבמבוק ארשיאמה" loading="lazy">
+            <a href="attraction-detail.html" class="attractions__card">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=900&q=80" alt="יער הבמבוק ארשיאמה" loading="lazy">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <span class="attractions__card-arrow" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -455,15 +476,15 @@
                 </svg>
               </span>
               <div class="attractions__card-body">
-                <h3 class="attractions__card-title">יער הבמבוק — ארשיאמה</h3>
+                <h3 class="attractions__card-title">יער הבמבוק ארשיאמה</h3>
                 <p class="attractions__card-desc">שביל אגדי בין ענקי במבוק ירוקים</p>
               </div>
             </a>
           </div>
 
           <div class="swiper-slide">
-            <a href="attraction-detail.html" class="attractions__card" style="border-radius:1.25rem">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1538485399081-7191377e8241?w=800&q=80" alt="שוק נישיקי" loading="lazy">
+            <a href="attraction-detail.html" class="attractions__card">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1538485399081-7191377e8241?w=900&q=80" alt="שוק נישיקי" loading="lazy">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <span class="attractions__card-arrow" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -479,8 +500,8 @@
           </div>
 
           <div class="swiper-slide">
-            <a href="attraction-detail.html" class="attractions__card" style="border-radius:1.25rem">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?w=800&q=80" alt="מקדש רייאן-ג׳י" loading="lazy">
+            <a href="attraction-detail.html" class="attractions__card">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1478436127897-769e1b3f0f36?w=900&q=80" alt="מקדש רייאן-ג׳י" loading="lazy">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <span class="attractions__card-arrow" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -796,17 +817,18 @@
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
   <script src="js/main.js"></script>
   <script>
-    /* Related attractions slider */
+    /* Related attractions slider — 3 per view on desktop, 2 tablet, 1 mobile */
     if (typeof Swiper !== 'undefined') {
       new Swiper('#related-attractions-slider', {
-        slidesPerView: 'auto',
+        slidesPerView: 1,
         spaceBetween: 20,
         navigation: {
           prevEl: '.related-attractions__prev',
           nextEl: '.related-attractions__next',
         },
         breakpoints: {
-          769: { spaceBetween: 24 }
+          769: { slidesPerView: 2, spaceBetween: 24 },
+          1024: { slidesPerView: 3, spaceBetween: 28 }
         }
       });
     }
