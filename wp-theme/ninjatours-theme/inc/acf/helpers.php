@@ -50,23 +50,17 @@ function nt_layout_subfields(string $layout_name, array $content_fields, string 
       'instructions' => 'עוגן מותאם (אם ריק — נוצר אוטומטית).',
       'wrapper'      => ['width' => '34'],
     ],
+    // Single content group named after the layout — simpler structure that
+    // round-trips reliably through update_field() and matches the options
+    // page's sections_content[<layout>] shape.
     [
-      'key'        => $prefix . 'group',
+      'key'        => $prefix . 'content',
       'label'      => $group_label,
-      'name'       => 'group',
+      'name'       => $layout_name,
       'type'       => 'group',
       'layout'     => 'block',
-      'sub_fields' => [
-        [
-          'key'        => $prefix . 'group_inner',
-          'label'      => '',
-          'name'       => $layout_name,
-          'type'       => 'group',
-          'layout'     => 'block',
-          'sub_fields' => $content_fields,
-        ],
-      ],
-      // Hide this group when "use general" is on — clearer UX
+      'sub_fields' => $content_fields,
+      // Hide content group when "use general" is on
       'conditional_logic' => [[[
         'field'    => $prefix . 'use_general',
         'operator' => '!=',

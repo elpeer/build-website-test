@@ -19,6 +19,8 @@ $body_classes = [];
 if (!is_front_page() && !is_home()) {
   $body_classes[] = 'page-destinations';   // forces dark-on-light header on inner pages
 }
+if (is_404())   $body_classes[] = 'page-404';
+if (is_search()) $body_classes[] = 'page-search';
 ?>
 
 <body <?php body_class(implode(' ', $body_classes)); ?>>

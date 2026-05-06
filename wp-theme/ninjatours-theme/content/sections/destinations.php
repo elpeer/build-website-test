@@ -6,8 +6,7 @@ $slug       = 'destinations';
 $section_id = nt_section_id($data, $slug, $index);
 
 if (!empty($data['hide_section'])) return;
-$group = nt_get_section_group($data, $layout);
-if (!$group) return;
+$group = nt_get_section_group($data, $layout) ?? [];
 
 $title    = $group['title']    ?? '';
 $lead     = $group['lead']     ?? '';
@@ -25,20 +24,24 @@ if (empty($items)) return;
 
 <section class="destinations" id="<?php echo esc_attr($section_id); ?>">
   <div class="container">
-    <header class="destinations__head">
-      <?php if ($title): ?>
-        <h2 class="section-title"><?php echo wp_kses_post(nt_render_title($title)); ?></h2>
-      <?php endif; ?>
-      <?php if ($lead): ?>
-        <p class="destinations__lead"><?php echo esc_html($lead); ?></p>
-      <?php endif; ?>
-    </header>
+    <?php if ($title || $lead): ?>
+      <header class="destinations__head">
+        <?php if ($title): ?>
+          <h2 class="section-title"><?php echo wp_kses_post(nt_render_title($title)); ?></h2>
+        <?php endif; ?>
+        <?php if ($lead): ?>
+          <p class="destinations__lead"><?php echo esc_html($lead); ?></p>
+        <?php endif; ?>
+      </header>
+    <?php endif; ?>
 
-    <div class="destinations__grid">
+    <ul class="destinations__grid" role="list">
       <?php foreach ($items as $item): ?>
-        <?php get_template_part('parts/destination-card', null, ['id' => $item->ID]); ?>
+        <li class="destinations__card" role="listitem">
+          <?php get_template_part('parts/destination-card', null, ['id' => $item->ID]); ?>
+        </li>
       <?php endforeach; ?>
-    </div>
+    </ul>
 
     <?php nt_render_cta($cta, '--blue --lg', 'destinations__cta'); ?>
   </div>

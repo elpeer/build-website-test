@@ -20,8 +20,8 @@ function nt_register_post_types(): void {
     'menu_position' => 21,
     'menu_icon'     => 'dashicons-location-alt',
     'supports'      => ['title', 'editor', 'thumbnail', 'excerpt', 'page-attributes'],
-    'has_archive'   => 'destinations',
-    'rewrite'       => ['slug' => 'destinations', 'with_front' => false],
+    'has_archive'   => false,    // Use the regular "destinations" Page instead — editors edit it
+    'rewrite'       => ['slug' => 'destination', 'with_front' => false],
     'show_in_rest'  => false,
     'hierarchical'  => false,
   ]);
@@ -35,8 +35,8 @@ function nt_register_post_types(): void {
     'menu_position' => 22,
     'menu_icon'     => 'dashicons-building',
     'supports'      => ['title', 'editor', 'thumbnail', 'excerpt', 'page-attributes'],
-    'has_archive'   => 'hotels',
-    'rewrite'       => ['slug' => 'hotels', 'with_front' => false],
+    'has_archive'   => false,
+    'rewrite'       => ['slug' => 'hotel', 'with_front' => false],
     'show_in_rest'  => false,
   ]);
 
@@ -49,8 +49,8 @@ function nt_register_post_types(): void {
     'menu_position' => 23,
     'menu_icon'     => 'dashicons-palmtree',
     'supports'      => ['title', 'editor', 'thumbnail', 'excerpt', 'page-attributes'],
-    'has_archive'   => 'attractions',
-    'rewrite'       => ['slug' => 'attractions', 'with_front' => false],
+    'has_archive'   => false,
+    'rewrite'       => ['slug' => 'attraction', 'with_front' => false],
     'show_in_rest'  => false,
   ]);
 
@@ -63,8 +63,8 @@ function nt_register_post_types(): void {
     'menu_position' => 24,
     'menu_icon'     => 'dashicons-portfolio',
     'supports'      => ['title', 'editor', 'thumbnail', 'excerpt', 'page-attributes'],
-    'has_archive'   => 'use-cases',
-    'rewrite'       => ['slug' => 'use-cases', 'with_front' => false],
+    'has_archive'   => false,
+    'rewrite'       => ['slug' => 'use-case', 'with_front' => false],
     'show_in_rest'  => false,
   ]);
 
@@ -77,8 +77,8 @@ function nt_register_post_types(): void {
     'menu_position' => 25,
     'menu_icon'     => 'dashicons-tag',
     'supports'      => ['title', 'editor', 'thumbnail', 'excerpt', 'page-attributes'],
-    'has_archive'   => 'travel-types',
-    'rewrite'       => ['slug' => 'travel-types', 'with_front' => false],
+    'has_archive'   => false,
+    'rewrite'       => ['slug' => 'travel-type', 'with_front' => false],
     'show_in_rest'  => false,
   ]);
 

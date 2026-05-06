@@ -163,11 +163,8 @@ function nt_get_section_group(array $data, string $layout_name): ?array {
     $sections = get_field('sections_content', 'options');
     $group    = $sections[$layout_name] ?? null;
   } else {
-    $group = $data['group'] ?? null;
-    // Fallback: ACF sometimes nests by layout name when fields are auto-generated
-    if (is_array($group) && isset($group[$layout_name])) {
-      $group = $group[$layout_name];
-    }
+    // Content lives under a group field named after the layout
+    $group = $data[$layout_name] ?? null;
   }
 
   return is_array($group) && !empty($group) ? $group : null;

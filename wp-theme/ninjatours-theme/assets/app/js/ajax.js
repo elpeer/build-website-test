@@ -72,4 +72,75 @@
     }).fail(function () { $grid.css('opacity', 1); });
   }
 
+  // ─── Custom multi-select dropdowns (used in hotels/attractions/use-cases filters)
+  function initCustomDropdowns () {
+    document.querySelectorAll('.custom-dropdown').forEach(function (dd) {
+      if (dd.dataset.initialized) return;
+      dd.dataset.initialized = '1';
+
+      const trigger = dd.querySelector('.custom-dropdown__trigger');
+      const valueEl = dd.querySelector('.custom-dropdown__value');
+      const checks  = dd.querySelectorAll('input[type="checkbox"]');
+      if (!trigger || !valueEl) return;
+      const placeholder = valueEl.textContent;
+
+      trigger.addEventListener('click', function (e) {
+        e.preventDefault();
+        const wasOpen = dd.classList.contains('--open');
+        document.querySelectorAll('.custom-dropdown').forEach(function (d) {
+          d.classList.remove('--open');
+        });
+        if (!wasOpen) dd.classList.add('--open');
+        trigger.setAttribute('aria-expanded', String(!wasOpen));
+      });
+
+      checks.forEach(function (cb) {
+        cb.addEventListener('change', function () {
+          const selected = [];
+          checks.forEach(function (c) {
+            if (c.checked) selected.push(c.parentNode.querySelector('span').textContent);
+          });
+          if (selected.length === 0) {
+            valueEl.textContent = placeholder;
+            valueEl.classList.add('--placeholder');
+          } else {
+            valueEl.textContent = selected.join(', ');
+            valueEl.classList.remove('--placeholder');
+          }
+          renderActiveFilters();
+        });
+      });
+    });
+  }
+
+  function renderActiveFilters () {
+    document.querySelectorAll('.hotels-filter__active').forEach(function (host) {
+      host.innerHTML = '';
+      const checks = host.closest('.hotels-filter').querySelectorAll('input[type="checkbox"]:checked');
+      checks.forEach(function (cb) {
+        const label = cb.parentNode.querySelector('span').textContent;
+        const pill = document.createElement('span');
+        pill.className = 'hotels-filter__active-pill';
+        pill.innerHTML = label + ' <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+        pill.addEventListener('click', function () {
+          cb.checked = false;
+          cb.dispatchEvent(new Event('change'));
+        });
+        host.appendChild(pill);
+      });
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.custom-dropdown')) {
+      document.querySelectorAll('.custom-dropdown').forEach(function (d) {
+        d.classList.remove('--open');
+        const t = d.querySelector('.custom-dropdown__trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      });
+    }
+  });
+
+  $(document).ready(initCustomDropdowns);
+
 })(jQuery);

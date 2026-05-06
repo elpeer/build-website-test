@@ -41,11 +41,12 @@ function nt_run_demo_install(bool $force = false): array {
 
   $page_ids = nt_demo_create_pages();
   $cpt_ids  = nt_demo_create_cpt_posts();
+  $cf7_id   = nt_demo_create_cf7_form();
 
   nt_demo_seed_taxonomy_terms($cpt_ids);
   nt_demo_seed_cpt_fields($cpt_ids);
   nt_demo_seed_general_settings();
-  nt_demo_seed_pages_flexible_content($page_ids);
+  nt_demo_seed_pages_flexible_content($page_ids, $cf7_id);
   nt_demo_seed_travel_type_flexible_content($cpt_ids);
   nt_demo_create_menus($page_ids);
 
@@ -132,15 +133,15 @@ if (defined('WP_CLI') && WP_CLI) {
  * nt_layout_subfields() in inc/acf/helpers.php.
  */
 function nt_demo_section(string $layout, array $fields, array $wrapper = []): array {
+  // Content goes under a group field named after the layout (matches the
+  // simplified structure in nt_layout_subfields()).
   return array_merge([
     'acf_fc_layout'        => $layout,
     'use_general_settings' => 0,
     'hide_section'         => 0,
     'section_id'           => '',
   ], $wrapper, [
-    'group' => [
-      $layout => $fields,
-    ],
+    $layout => $fields,
   ]);
 }
 
@@ -158,13 +159,20 @@ function nt_demo_link(string $url, string $title, string $target = ''): array {
 function nt_demo_create_pages(): array {
   $template = 'views/page-flexible-content.php';
 
+  // Slug → Title. Slugs match the URLs the static HTML uses, so old links work.
   $pages = [
-    'home'        => 'Home',
-    'about'       => 'אודות',
-    'contact'     => 'יצירת קשר',
-    'blog'        => 'בלוג',
-    'why-us'      => 'למה אנחנו',
-    'destinations-page' => 'יעדים פופולריים',
+    'home'         => 'Home',
+    'about'        => 'אודות',
+    'contact'      => 'יצירת קשר',
+    'blog'         => 'בלוג',
+    'why-us'       => 'למה אנחנו',
+    'destinations' => 'יעדים',
+    'hotels'       => 'מלונות',
+    'attractions'  => 'אטרקציות',
+    'use-cases'    => 'טיולים שבנינו',
+    'travel-types' => 'סוגי טיולים',
+    'service'      => 'תחבורה ורכבות',
+    'car-rental'   => 'השכרת רכבים',
   ];
 
   $ids = [];
@@ -380,18 +388,24 @@ function nt_demo_seed_cpt_fields(array $cpt_ids): void {
  * Pages → Flexible Content seed
  * ────────────────────────────────────────────────────────────────────── */
 
-function nt_demo_seed_pages_flexible_content(array $page_ids): void {
+function nt_demo_seed_pages_flexible_content(array $page_ids, int $cf7_id = 0): void {
   // Use field key (not name) for reliable persistence with nested ACF structures
   $key = 'field_flexible_content';
-  if (!empty($page_ids['home']))              update_field($key, nt_demo_fc_home(),         $page_ids['home']);
-  if (!empty($page_ids['about']))             update_field($key, nt_demo_fc_about(),        $page_ids['about']);
-  if (!empty($page_ids['contact']))           update_field($key, nt_demo_fc_contact(),      $page_ids['contact']);
-  if (!empty($page_ids['why-us']))            update_field($key, nt_demo_fc_why_us(),       $page_ids['why-us']);
-  if (!empty($page_ids['destinations-page'])) update_field($key, nt_demo_fc_destinations(), $page_ids['destinations-page']);
+  if (!empty($page_ids['home']))         update_field($key, nt_demo_fc_home($cf7_id),         $page_ids['home']);
+  if (!empty($page_ids['about']))        update_field($key, nt_demo_fc_about($cf7_id),        $page_ids['about']);
+  if (!empty($page_ids['contact']))      update_field($key, nt_demo_fc_contact($cf7_id),      $page_ids['contact']);
+  if (!empty($page_ids['why-us']))       update_field($key, nt_demo_fc_why_us($cf7_id),       $page_ids['why-us']);
+  if (!empty($page_ids['destinations'])) update_field($key, nt_demo_fc_destinations(),        $page_ids['destinations']);
+  if (!empty($page_ids['hotels']))       update_field($key, nt_demo_fc_hotels_archive(),      $page_ids['hotels']);
+  if (!empty($page_ids['attractions']))  update_field($key, nt_demo_fc_attractions_archive(), $page_ids['attractions']);
+  if (!empty($page_ids['use-cases']))    update_field($key, nt_demo_fc_use_cases_archive(),   $page_ids['use-cases']);
+  if (!empty($page_ids['travel-types'])) update_field($key, nt_demo_fc_travel_types_archive(),$page_ids['travel-types']);
+  if (!empty($page_ids['service']))      update_field($key, nt_demo_fc_service($cf7_id),      $page_ids['service']);
+  if (!empty($page_ids['car-rental']))   update_field($key, nt_demo_fc_car_rental($cf7_id),   $page_ids['car-rental']);
 }
 
 // ─── HOME ─────────────────────────────────────────────────────────────
-function nt_demo_fc_home(): array {
+function nt_demo_fc_home(int $cf7_id = 0): array {
   return [
     nt_demo_section('home_hero', [
       'title'    => 'מתכננים לכם טיול עצמאי |ליפן|',
@@ -466,14 +480,14 @@ function nt_demo_fc_home(): array {
     nt_demo_section('contact', [
       'title' => 'מוכנים לטיול של |פעם בחיים?|',
       'lead'  => 'בואו נתחיל לתכנן את יפן שלכם, בדיוק כמו שחלמתם.',
-      'form'  => 0,
+      'form'  => $cf7_id,
       'image' => 0,
     ]),
   ];
 }
 
 // ─── ABOUT ────────────────────────────────────────────────────────────
-function nt_demo_fc_about(): array {
+function nt_demo_fc_about(int $cf7_id = 0): array {
   return [
     nt_demo_section('home_hero', [
       'title'    => 'הסיפור |שלנו| ביפן',
@@ -533,7 +547,7 @@ function nt_demo_fc_about(): array {
 }
 
 // ─── CONTACT ──────────────────────────────────────────────────────────
-function nt_demo_fc_contact(): array {
+function nt_demo_fc_contact(int $cf7_id = 0): array {
   return [
     nt_demo_section('home_hero', [
       'title'    => 'נשמח |לשמוע מכם|',
@@ -566,7 +580,7 @@ function nt_demo_fc_contact(): array {
 }
 
 // ─── WHY US (focused page) ────────────────────────────────────────────
-function nt_demo_fc_why_us(): array {
+function nt_demo_fc_why_us(int $cf7_id = 0): array {
   return [
     nt_demo_section('home_hero', [
       'title'    => 'למה |Ninja Tours?|',
@@ -621,36 +635,198 @@ function nt_demo_fc_why_us(): array {
 // ─── DESTINATIONS overview page ───────────────────────────────────────
 function nt_demo_fc_destinations(): array {
   return [
-    nt_demo_section('home_hero', [
-      'title'    => 'יעדים |פופולריים| ביפן',
-      'lead'     => 'מהערים הגדולות ועד הכפרים הנסתרים — בחרו לאן לטוס',
-      'features' => [],
-      'video'    => '',
-      'poster'   => 0,
-      'cta'      => null,
+    nt_demo_section('page_hero', [
+      'title' => 'יעדים |פופולריים| ביפן',
+      'lead'  => 'מהערים הגדולות ועד הכפרים הנסתרים — בחרו לאן לטוס',
+      'video' => '',
+      'image' => 0,
     ]),
-
     nt_demo_section('destinations', [
-      'title'    => 'כל ה|יעדים|',
-      'lead'     => 'בחרו את היעד הראשון שלכם — או שלבו כמה יחד.',
+      'title'    => '',
+      'lead'     => '',
       'show_all' => 1,
       'items'    => [],
       'cta'      => null,
     ]),
+  ];
+}
 
-    nt_demo_section('attractions', [
-      'title'        => 'אטרקציות |מומלצות| בכל יעד',
-      'lead'         => 'בכל יעד יש את האייקונים — אנחנו דואגים לשלב אותם נכון',
-      'show_all'     => 1,
-      'show_filters' => 1,
-      'items'        => [],
-      'cta'          => nt_demo_link('/attractions/', 'לכל האטרקציות'),
+// ─── HOTELS overview page ─────────────────────────────────────────────
+function nt_demo_fc_hotels_archive(): array {
+  return [
+    nt_demo_section('page_hero', [
+      'title' => 'מגוון |מלונות| ביפן',
+      'lead'  => 'חפשו ממגוון מלונות לפי מה שנוח ומתאים לכם.',
+      'video' => '',
+      'image' => 0,
     ]),
+    nt_demo_section('hotels_listing', [
+      'show_filters' => 1,
+      'show_all'     => 1,
+      'items'        => [],
+    ]),
+  ];
+}
 
+// ─── ATTRACTIONS overview page ────────────────────────────────────────
+function nt_demo_fc_attractions_archive(): array {
+  return [
+    nt_demo_section('page_hero', [
+      'title' => 'מגוון |אטרקציות| ביפן',
+      'lead'  => 'חוו את יפן מכל ההיבטים — מקדשים עתיקים, קולינריה מדהימה, טבע ועוד',
+      'video' => '',
+      'image' => 0,
+    ]),
+    nt_demo_section('attractions_listing', [
+      'show_filters' => 1,
+      'show_all'     => 1,
+      'items'        => [],
+    ]),
+  ];
+}
+
+// ─── USE-CASES overview page ──────────────────────────────────────────
+function nt_demo_fc_use_cases_archive(): array {
+  return [
+    nt_demo_section('page_hero', [
+      'title' => 'טיולים |שבנינו| ללקוחות',
+      'lead'  => 'דוגמאות מהטיולים שתכננו — סיננו לפי קהל יעד, תגיות ואורך.',
+      'video' => '',
+      'image' => 0,
+    ]),
+    nt_demo_section('use_cases_listing', [
+      'show_filters' => 1,
+      'show_all'     => 1,
+      'items'        => [],
+    ]),
+  ];
+}
+
+// ─── TRAVEL TYPES overview page ───────────────────────────────────────
+function nt_demo_fc_travel_types_archive(): array {
+  return [
+    nt_demo_section('page_hero', [
+      'title' => 'איזה |סוג טיול| מתאים לכם?',
+      'lead'  => 'מטבע ונופים ועד תרבות עתיקה — מצאו את הטיול שלכם.',
+      'video' => '',
+      'image' => 0,
+    ]),
+    nt_demo_section('trip_types', [
+      'title'    => '',
+      'lead'     => '',
+      'show_all' => 1,
+      'items'    => [],
+    ]),
+  ];
+}
+
+// ─── SERVICE (Trains / Rail) page ─────────────────────────────────────
+function nt_demo_fc_service(int $cf7_id = 0): array {
+  return [
+    nt_demo_section('service_hero', [
+      'eyebrow' => 'תחבורה ביפן',
+      'title'   => 'רכבות |וכרטיסים| ביפן',
+      'lead'    => 'מ-JR Pass ועד שינקאנסן — הכל מסודר עבורכם מראש.',
+      'image'   => 0,
+      'cta'     => nt_demo_link('#contact', 'לפרטים נוספים'),
+    ]),
+    nt_demo_section('service_types', [
+      'title' => 'סוגי |כרטיסי רכבת|',
+      'lead'  => 'התאמנו לכם את הכרטיס שעובד הכי טוב לטיול שלכם.',
+      'items' => [
+        ['image' => 0, 'title' => 'JR Pass שבועי',     'description' => 'נסיעות בלתי מוגבלות בכל רשת JR למשך 7 ימים. החבילה הפופולרית ביותר.', 'price' => '₪1,100', 'cta' => nt_demo_link('#contact', 'הזמן')],
+        ['image' => 0, 'title' => 'JR Pass דו-שבועי',  'description' => 'נסיעות בלתי מוגבלות למשך 14 ימים — מתאים לטיול ארוך.', 'price' => '₪1,800', 'cta' => nt_demo_link('#contact', 'הזמן')],
+        ['image' => 0, 'title' => 'JR Pass חודשי',     'description' => 'נסיעות בלתי מוגבלות למשך 21 ימים — לאלה שטסים לטיול מורכב.', 'price' => '₪2,300', 'cta' => nt_demo_link('#contact', 'הזמן')],
+      ],
+    ]),
+    nt_demo_section('service_info', [
+      'title' => 'מה |חשוב לדעת|?',
+      'items' => [
+        ['icon' => 0, 'title' => 'הזמנה מראש',       'description' => 'את הכרטיסים מזמינים לפני הטיסה — שולחים לכתובת בארץ.'],
+        ['icon' => 0, 'title' => 'הפעלה בנמל התעופה', 'description' => 'מקבלים את הכרטיס הפיזי בעמדת JR ב-Narita / Haneda / KIX.'],
+        ['icon' => 0, 'title' => 'תקף 90 יום',        'description' => 'את הכרטיס יש להפעיל תוך 90 יום מיום ההזמנה.'],
+      ],
+    ]),
+    nt_demo_section('process', [
+      'title' => 'איך |מזמינים?|',
+      'lead'  => '4 שלבים פשוטים מהזמנה ועד נסיעה.',
+      'steps' => [
+        ['title' => 'בחירת חבילה',     'description' => 'בוחרים את הכרטיס שמתאים לטיול.', 'image' => 0],
+        ['title' => 'הזמנה ותשלום',    'description' => 'מבצעים הזמנה ותשלום אונליין.',     'image' => 0],
+        ['title' => 'משלוח',            'description' => 'מקבלים את שובר ההחלפה לכתובת בארץ.', 'image' => 0],
+        ['title' => 'איסוף ביפן',      'description' => 'מחליפים את השובר לכרטיס פיזי בנמל.', 'image' => 0],
+      ],
+      'cta' => nt_demo_link('#contact', 'לפרטים נוספים'),
+    ]),
+    nt_demo_section('faq', [
+      'title' => 'שאלות |נפוצות|',
+      'lead'  => '',
+      'items' => [
+        ['question' => 'האם ה-JR Pass מתאים לכל הטיולים?',     'answer' => '<p>ה-JR Pass כדאי כשנוסעים בין 2 ערים מרוחקות לפחות. לטיולים בעיר אחת ייתכן שעדיף לקנות כרטיסים בודדים.</p>'],
+        ['question' => 'מתי כדאי להזמין את הכרטיסים?',         'answer' => '<p>אנחנו ממליצים להזמין כ-3 שבועות לפני הטיסה כדי לקבל בזמן.</p>'],
+        ['question' => 'האם הכרטיס כולל את הנסיעה מהנמל לעיר?', 'answer' => '<p>כן, ה-JR Pass כולל את ה-Narita Express ו-Haneda Monorail בנסיעה מהנמל.</p>'],
+        ['question' => 'מה אם איבדנו את הכרטיס בטיול?',          'answer' => '<p>צרו קשר איתנו מיד — נדאג להוצאת כרטיס חלופי.</p>'],
+      ],
+    ]),
+    nt_demo_section('why_us', [
+      'eyebrow' => 'למה אנחנו',
+      'title'   => 'למה |להזמין דרכנו?|',
+      'cards'   => [
+        ['title' => 'מחירים ללא הפתעות', 'description' => 'מחירים סופיים, ללא עמלות מוסתרות.'],
+        ['title' => 'משלוח לבית',         'description' => 'הכרטיסים מגיעים אליכם לפני הטיסה.'],
+        ['title' => 'תמיכה 24/7',         'description' => 'אם משהו קורה ביפן — אנחנו זמינים בעברית.'],
+      ],
+      'cta' => nt_demo_link('#contact', 'לתחילת התכנון'),
+    ]),
     nt_demo_section('contact', [
-      'title' => 'איזה יעד |מתאים לכם?|',
-      'lead'  => 'בואו נדבר ונבחר ביחד.',
-      'form'  => 0,
+      'title' => 'יש לכם |שאלות?|',
+      'lead'  => 'נשמח לעזור עם כל מה שצריך.',
+      'form'  => $cf7_id,
+      'image' => 0,
+    ]),
+  ];
+}
+
+// ─── CAR RENTAL page ──────────────────────────────────────────────────
+function nt_demo_fc_car_rental(int $cf7_id = 0): array {
+  return [
+    nt_demo_section('service_hero', [
+      'eyebrow' => 'השכרת רכב',
+      'title'   => 'השכרת |רכב| ביפן',
+      'lead'    => 'הדרך הטובה ביותר לחקור את יפן מחוץ לערים הגדולות.',
+      'image'   => 0,
+      'cta'     => nt_demo_link('#contact', 'לפרטים נוספים'),
+    ]),
+    nt_demo_section('service_types', [
+      'title' => 'סוגי |רכבים|',
+      'lead'  => 'בחרו את הרכב שמתאים בדיוק לצרכים שלכם.',
+      'items' => [
+        ['image' => 0, 'title' => 'קומפקטי',  'description' => 'רכב קטן וחסכוני, מושלם לזוג.', 'price' => '₪200/יום', 'cta' => nt_demo_link('#contact', 'הזמן')],
+        ['image' => 0, 'title' => 'משפחתי',  'description' => 'רכב מרווח עד 5 נוסעים עם תא מטען גדול.',  'price' => '₪320/יום', 'cta' => nt_demo_link('#contact', 'הזמן')],
+        ['image' => 0, 'title' => 'מיניוואן', 'description' => 'רכב 7 נוסעים — מושלם למשפחות גדולות.',    'price' => '₪450/יום', 'cta' => nt_demo_link('#contact', 'הזמן')],
+      ],
+    ]),
+    nt_demo_section('service_info', [
+      'title' => 'מה |חשוב לדעת?|',
+      'items' => [
+        ['icon' => 0, 'title' => 'רישיון בינלאומי', 'description' => 'נדרש רישיון נהיגה בינלאומי בנוסף לרישיון הישראלי.'],
+        ['icon' => 0, 'title' => 'נסיעה משמאל',     'description' => 'ביפן נוסעים בצד שמאל של הכביש.'],
+        ['icon' => 0, 'title' => 'GPS בעברית',      'description' => 'כל הרכבים שלנו מגיעים עם ניווט בעברית.'],
+      ],
+    ]),
+    nt_demo_section('faq', [
+      'title' => 'שאלות |נפוצות|',
+      'lead'  => '',
+      'items' => [
+        ['question' => 'האם נסיעה ביפן מסובכת?',           'answer' => '<p>אחרי כמה שעות מתרגלים. הכבישים מסומנים גם באנגלית, יש GPS בעברית, ויפן זו מהמקומות הבטוחים בעולם לנהוג בהם.</p>'],
+        ['question' => 'האם אפשר לאסוף בעיר אחת ולהחזיר באחרת?', 'answer' => '<p>כן — יש תוספת תשלום בהתאם למרחק.</p>'],
+        ['question' => 'מה לגבי ביטוח?',                     'answer' => '<p>כל ההזמנות שלנו כוללות ביטוח מקיף ללא השתתפות עצמית.</p>'],
+      ],
+    ]),
+    nt_demo_section('contact', [
+      'title' => 'מוכנים |להזמין?|',
+      'lead'  => 'נדבר ונתאים לכם את הרכב המושלם.',
+      'form'  => $cf7_id,
       'image' => 0,
     ]),
   ];
@@ -792,7 +968,7 @@ function nt_demo_fc_travel_type_nature(): array {
     nt_demo_section('contact', [
       'title' => 'מוכנים לטיול של |פעם בחיים?|',
       'lead'  => 'בואו נתחיל לתכנן את יפן שלכם, בדיוק כמו שחלמתם.',
-      'form'  => 0,
+      'form'  => $cf7_id,
       'image' => 0,
     ]),
   ];
@@ -895,6 +1071,60 @@ function nt_demo_seed_taxonomy_terms(array $cpt_ids): void {
 }
 
 /* ──────────────────────────────────────────────────────────────────────
+ * Contact Form 7 — create the default trip-planning form on first install
+ * ────────────────────────────────────────────────────────────────────── */
+
+function nt_demo_create_cf7_form(): int {
+  if (!post_type_exists('wpcf7_contact_form')) return 0;
+
+  $existing = get_page_by_path('ninjatours-trip-form', OBJECT, 'wpcf7_contact_form');
+  if ($existing) return (int) $existing->ID;
+
+  $form_html = '<div class="contact__form-grid">
+  <label class="contact__field">[text* name placeholder "שם מלא"]</label>
+  <label class="contact__field">[email* email placeholder "מייל"]</label>
+  <label class="contact__field">[tel* phone placeholder "טלפון"]</label>
+  <label class="contact__field">[number people min:1 placeholder "מספר נפשות"]</label>
+  <label class="contact__field">[text dates placeholder "טווח ימים מועדף לטיול"]</label>
+  <label class="contact__field">[text budget placeholder "סכום תקציבי מועדף לטיול"]</label>
+</div>
+[submit class:btn-pill class:--primary class:--lg class:contact__submit "התייעצות ללא עלות"]';
+
+  $admin_email = get_option('admin_email');
+  $site_name   = get_bloginfo('name');
+
+  $mail = [
+    'subject'      => sprintf('[%s] פנייה חדשה מ-[name]', $site_name),
+    'sender'       => sprintf('%s <%s>', $site_name, $admin_email),
+    'body'         => "פנייה חדשה מהאתר:\n\nשם: [name]\nמייל: [email]\nטלפון: [phone]\nמספר נפשות: [people]\nטווח ימים: [dates]\nתקציב: [budget]\n\n-- \n[_site_title] · [_site_url]",
+    'recipient'    => $admin_email,
+    'additional_headers' => "Reply-To: [email]",
+    'attachments'  => '',
+    'use_html'     => 0,
+    'exclude_blank'=> 0,
+  ];
+
+  $form_id = wp_insert_post([
+    'post_type'    => 'wpcf7_contact_form',
+    'post_title'   => 'Ninja Tours — Trip Planning',
+    'post_name'    => 'ninjatours-trip-form',
+    'post_status'  => 'publish',
+    'post_content' => '',
+  ]);
+
+  if (is_wp_error($form_id) || !$form_id) return 0;
+
+  // Store CF7 form data in post meta — CF7 reads from these on render
+  update_post_meta($form_id, '_form',                $form_html);
+  update_post_meta($form_id, '_mail',                $mail);
+  update_post_meta($form_id, '_mail_2',              ['active' => false]);
+  update_post_meta($form_id, '_messages',            []);
+  update_post_meta($form_id, '_additional_settings', '');
+
+  return (int) $form_id;
+}
+
+/* ──────────────────────────────────────────────────────────────────────
  * General Settings — site-wide defaults
  * ────────────────────────────────────────────────────────────────────── */
 
@@ -921,41 +1151,53 @@ function nt_demo_seed_general_settings(): void {
 function nt_demo_create_menus(array $page_ids = []): void {
   $locations = get_theme_mod('nav_menu_locations', []);
 
-  // Header Menu 1 — start side (CPT archives)
+  $add_page = function (int $menu_id, string $page_slug, string $title) use ($page_ids) {
+    if (empty($page_ids[$page_slug])) return;
+    wp_update_nav_menu_item($menu_id, 0, [
+      'menu-item-title'     => $title,
+      'menu-item-object-id' => $page_ids[$page_slug],
+      'menu-item-object'    => 'page',
+      'menu-item-type'      => 'post_type',
+      'menu-item-status'    => 'publish',
+    ]);
+  };
+
+  // Header Menu 1 — main navigation (CPT main pages)
   if (!wp_get_nav_menu_object('Header Menu 1')) {
     $id = wp_create_nav_menu('Header Menu 1');
-    wp_update_nav_menu_item($id, 0, ['menu-item-title' => 'יעדים',     'menu-item-url' => get_post_type_archive_link('destination'), 'menu-item-status' => 'publish']);
-    wp_update_nav_menu_item($id, 0, ['menu-item-title' => 'מלונות',    'menu-item-url' => get_post_type_archive_link('hotel'),       'menu-item-status' => 'publish']);
-    wp_update_nav_menu_item($id, 0, ['menu-item-title' => 'אטרקציות',  'menu-item-url' => get_post_type_archive_link('attraction'),  'menu-item-status' => 'publish']);
-    wp_update_nav_menu_item($id, 0, ['menu-item-title' => 'סוגי טיולים','menu-item-url' => get_post_type_archive_link('travel-type'),'menu-item-status' => 'publish']);
+    $add_page($id, 'destinations', 'יעדים');
+    $add_page($id, 'hotels',       'מלונות');
+    $add_page($id, 'attractions',  'אטרקציות');
+    $add_page($id, 'travel-types', 'סוגי טיולים');
+    $add_page($id, 'service',      'תחבורה');
+    $add_page($id, 'car-rental',   'השכרת רכב');
     $locations['header_menu_1'] = $id;
   }
 
-  // Header Menu 2 — end side (story / contact)
+  // Header Menu 2 — story / contact
   if (!wp_get_nav_menu_object('Header Menu 2')) {
     $id = wp_create_nav_menu('Header Menu 2');
-    if (!empty($page_ids['about'])) {
-      wp_update_nav_menu_item($id, 0, ['menu-item-title' => 'אודות',     'menu-item-object-id' => $page_ids['about'],   'menu-item-object' => 'page', 'menu-item-type' => 'post_type', 'menu-item-status' => 'publish']);
-    }
-    if (!empty($page_ids['why-us'])) {
-      wp_update_nav_menu_item($id, 0, ['menu-item-title' => 'למה אנחנו', 'menu-item-object-id' => $page_ids['why-us'],  'menu-item-object' => 'page', 'menu-item-type' => 'post_type', 'menu-item-status' => 'publish']);
-    }
-    if (!empty($page_ids['contact'])) {
-      wp_update_nav_menu_item($id, 0, ['menu-item-title' => 'יצירת קשר', 'menu-item-object-id' => $page_ids['contact'], 'menu-item-object' => 'page', 'menu-item-type' => 'post_type', 'menu-item-status' => 'publish']);
-    }
+    $add_page($id, 'about',   'אודות');
+    $add_page($id, 'why-us',  'למה אנחנו');
+    $add_page($id, 'blog',    'בלוג');
+    $add_page($id, 'contact', 'יצירת קשר');
     $locations['header_menu_2'] = $id;
   }
 
   // Footer
   if (!wp_get_nav_menu_object('Footer Menu')) {
     $id = wp_create_nav_menu('Footer Menu');
-    wp_update_nav_menu_item($id, 0, ['menu-item-title' => 'יעדים',    'menu-item-url' => get_post_type_archive_link('destination'), 'menu-item-status' => 'publish']);
-    wp_update_nav_menu_item($id, 0, ['menu-item-title' => 'מלונות',   'menu-item-url' => get_post_type_archive_link('hotel'),       'menu-item-status' => 'publish']);
-    wp_update_nav_menu_item($id, 0, ['menu-item-title' => 'אטרקציות', 'menu-item-url' => get_post_type_archive_link('attraction'),  'menu-item-status' => 'publish']);
-    if (!empty($page_ids['about']))   wp_update_nav_menu_item($id, 0, ['menu-item-title' => 'אודות',     'menu-item-object-id' => $page_ids['about'],   'menu-item-object' => 'page', 'menu-item-type' => 'post_type', 'menu-item-status' => 'publish']);
-    if (!empty($page_ids['contact'])) wp_update_nav_menu_item($id, 0, ['menu-item-title' => 'יצירת קשר', 'menu-item-object-id' => $page_ids['contact'], 'menu-item-object' => 'page', 'menu-item-type' => 'post_type', 'menu-item-status' => 'publish']);
+    $add_page($id, 'destinations', 'יעדים');
+    $add_page($id, 'hotels',       'מלונות');
+    $add_page($id, 'attractions',  'אטרקציות');
+    $add_page($id, 'use-cases',    'טיולים שבנינו');
+    $add_page($id, 'about',        'אודות');
+    $add_page($id, 'contact',      'יצירת קשר');
     $locations['footer_menu'] = $id;
   }
 
   set_theme_mod('nav_menu_locations', $locations);
+
+  // Flush rewrites so new CPT slugs (without -archive) take effect
+  flush_rewrite_rules();
 }
