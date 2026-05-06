@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="he">
+<html lang="he">
 <head>
   <meta charset="utf-8">
   <title>Ninja Tours — Sitemap (Developer)</title>
@@ -16,6 +16,36 @@
       color: #1a1a1a;
       line-height: 1.55;
     }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex;
+      gap: 0.375rem;
+      margin-bottom: 1.75rem;
+    }
+    .tab-btn {
+      padding: 0.45rem 1.1rem;
+      border: 1px solid #d0d0d4;
+      border-radius: 0.375rem;
+      background: #fff;
+      color: #555;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .tab-btn.active {
+      background: #063874;
+      color: #fff;
+      border-color: #063874;
+    }
+
+    /* ── Panels ── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .panel[dir="rtl"] { text-align: right; }
+    .panel[dir="ltr"] { text-align: left; }
+
     h1 {
       font-size: 1.75rem;
       margin: 0 0 0.25rem;
@@ -23,7 +53,7 @@
     .subtitle {
       color: #666;
       font-size: 0.95rem;
-      margin: 0 0 2rem;
+      margin: 0 0 1.25rem;
       padding-bottom: 1rem;
       border-bottom: 1px solid #e0e0e0;
     }
@@ -85,92 +115,200 @@
 </head>
 <body>
 
-  <h1>Ninja Tours — מפת אתר</h1>
-  <p class="subtitle">עמוד פנימי למפתח. רשימת כל העמודים הקיימים באתר עם תיאור קצר.</p>
-
-  <div class="note">
-    הערה: עמוד זה אינו חלק מהאתר הציבורי — הוא נועד לתיעוד פנימי בלבד.
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('he')">עברית</button>
+    <button class="tab-btn" onclick="switchTab('en')">English</button>
   </div>
 
-  <h2>עמודי ליבה</h2>
-  <ul>
-    <li>
-      <a href="index.html">עמוד הבית</a><span class="file">index.html</span>
-      <span class="desc">דף הנחיתה הראשי — Hero, יעדים פופולריים, סוגי טיולים, סקשן "למה אנחנו", המלצות, טופס יצירת קשר.</span>
-    </li>
-    <li>
-      <a href="about.html">אודות</a><span class="file">about.html</span>
-      <span class="desc">סיפור החברה, הצוות והערכים — מי אנחנו ולמה התמחותנו ביפן.</span>
-    </li>
-    <li>
-      <a href="contact.html">יצירת קשר</a><span class="file">contact.html</span>
-      <span class="desc">עמוד יצירת קשר ייעודי עם טופס מלא ופרטי התקשרות.</span>
-    </li>
-  </ul>
+  <!-- ── Hebrew Panel ── -->
+  <div id="panel-he" class="panel active" dir="rtl">
+    <h1>Ninja Tours — מפת אתר</h1>
+    <p class="subtitle">עמוד פנימי למפתח. רשימת כל העמודים הקיימים באתר עם תיאור קצר.</p>
 
-  <h2>יעדים</h2>
-  <ul>
-    <li>
-      <a href="destinations.html">יעדים</a><span class="file">destinations.html</span>
-      <span class="desc">קטלוג כל יעדי הטיולים ביפן עם כרטיסיות לכל ערים מרכזיים.</span>
-    </li>
-    <li>
-      <a href="destination-tokyo.html">יעד — טוקיו</a><span class="file">destination-tokyo.html</span>
-      <span class="desc">עמוד יעד פרטני (טוקיו) — תיאור מורחב, אטרקציות מומלצות, מלונות נבחרים והמלצות מקומיות.</span>
-    </li>
-  </ul>
+    <div class="note">
+      הערה: עמוד זה אינו חלק מהאתר הציבורי — הוא נועד לתיעוד פנימי בלבד.
+    </div>
 
-  <h2>מלונות</h2>
-  <ul>
-    <li>
-      <a href="hotels.html">מלונות</a><span class="file">hotels.html</span>
-      <span class="desc">קטלוג מלונות עם פילטרים (עיר, דירוג, קהל יעד) ורשת כרטיסיות.</span>
-    </li>
-    <li>
-      <a href="hotel-detail.html">מלון פרטני</a><span class="file">hotel-detail.html</span>
-      <span class="desc">עמוד מלון בודד — גלריית תמונות, תיאור, רשימת חדרים, מתקנים, מפת מיקום וסליידר מלונות נוספים.</span>
-    </li>
-  </ul>
+    <h2>עמודי ליבה</h2>
+    <ul>
+      <li>
+        <a href="index.html">עמוד הבית</a><span class="file">index.html</span>
+        <span class="desc">דף הנחיתה הראשי — Hero, יעדים פופולריים, סוגי טיולים, סקשן "למה אנחנו", המלצות, טופס יצירת קשר.</span>
+      </li>
+      <li>
+        <a href="about.html">אודות</a><span class="file">about.html</span>
+        <span class="desc">סיפור החברה, הצוות והערכים — מי אנחנו ולמה התמחותנו ביפן.</span>
+      </li>
+      <li>
+        <a href="contact.html">יצירת קשר</a><span class="file">contact.html</span>
+        <span class="desc">עמוד יצירת קשר ייעודי עם טופס מלא ופרטי התקשרות.</span>
+      </li>
+    </ul>
 
-  <h2>שירותים</h2>
-  <ul>
-    <li>
-      <a href="service.html">שירות בודד (תחבורה / רכבות)</a><span class="file">service.html</span>
-      <span class="desc">עמוד שירות גנרי — מציג סוגי כרטיסי רכבת ביפן, תהליך הזמנה ו-FAQ.</span>
-    </li>
-    <li>
-      <a href="car-rental.html">השכרת רכבים</a><span class="file">car-rental.html</span>
-      <span class="desc">סוגי רכבים, חברות השכרה מובילות, תהליך הזמנה ושאלות נפוצות בנושא נהיגה ביפן.</span>
-    </li>
-    <li>
-      <a href="attractions.html">אטרקציות</a><span class="file">attractions.html</span>
-      <span class="desc">קטלוג אטרקציות עם פילטרים — מקדשים, פארקים, חוויות תרבות וכו'.</span>
-    </li>
-  </ul>
+    <h2>יעדים</h2>
+    <ul>
+      <li>
+        <a href="destinations.html">יעדים</a><span class="file">destinations.html</span>
+        <span class="desc">קטלוג כל יעדי הטיולים ביפן עם כרטיסיות לכל ערים מרכזיים.</span>
+      </li>
+      <li>
+        <a href="destination-tokyo.html">יעד — טוקיו</a><span class="file">destination-tokyo.html</span>
+        <span class="desc">עמוד יעד פרטני (טוקיו) — תיאור מורחב, אטרקציות מומלצות, מלונות נבחרים והמלצות מקומיות.</span>
+      </li>
+    </ul>
 
-  <h2>בלוג</h2>
-  <ul>
-    <li>
-      <a href="blog.html">בלוג — ראשי</a><span class="file">blog.html</span>
-      <span class="desc">רשימת פוסטים בבלוג עם פילטרים לפי קטגוריה.</span>
-    </li>
-    <li>
-      <a href="post.html">פוסט בודד</a><span class="file">post.html</span>
-      <span class="desc">עמוד פוסט בלוג מלא עם תוכן, תמונת ראשית, מחבר, ופוסטים קשורים.</span>
-    </li>
-  </ul>
+    <h2>מלונות</h2>
+    <ul>
+      <li>
+        <a href="hotels.html">מלונות</a><span class="file">hotels.html</span>
+        <span class="desc">קטלוג מלונות עם פילטרים (עיר, דירוג, קהל יעד) ורשת כרטיסיות.</span>
+      </li>
+      <li>
+        <a href="hotel-detail.html">מלון פרטני</a><span class="file">hotel-detail.html</span>
+        <span class="desc">עמוד מלון בודד — גלריית תמונות, תיאור, רשימת חדרים, מתקנים, מפת מיקום וסליידר מלונות נוספים.</span>
+      </li>
+    </ul>
 
-  <h2>עמודי מערכת</h2>
-  <ul>
-    <li>
-      <a href="404.html">404 — דף לא נמצא</a><span class="file">404.html</span>
-      <span class="desc">עמוד שגיאה ידידותי כשהמשתמש מגיע לכתובת לא קיימת.</span>
-    </li>
-    <li>
-      <a href="simple.html">Simple — בסיס</a><span class="file">simple.html</span>
-      <span class="desc">תבנית בסיס פשוטה לעמודי תוכן סטטיים (תקנון, מדיניות פרטיות וכד').</span>
-    </li>
-  </ul>
+    <h2>שירותים</h2>
+    <ul>
+      <li>
+        <a href="service.html">שירות בודד (תחבורה / רכבות)</a><span class="file">service.html</span>
+        <span class="desc">עמוד שירות גנרי — מציג סוגי כרטיסי רכבת ביפן, תהליך הזמנה ו-FAQ.</span>
+      </li>
+      <li>
+        <a href="car-rental.html">השכרת רכבים</a><span class="file">car-rental.html</span>
+        <span class="desc">סוגי רכבים, חברות השכרה מובילות, תהליך הזמנה ושאלות נפוצות בנושא נהיגה ביפן.</span>
+      </li>
+      <li>
+        <a href="attractions.html">אטרקציות</a><span class="file">attractions.html</span>
+        <span class="desc">קטלוג אטרקציות עם פילטרים — מקדשים, פארקים, חוויות תרבות וכו'.</span>
+      </li>
+    </ul>
+
+    <h2>בלוג</h2>
+    <ul>
+      <li>
+        <a href="blog.html">בלוג — ראשי</a><span class="file">blog.html</span>
+        <span class="desc">רשימת פוסטים בבלוג עם פילטרים לפי קטגוריה.</span>
+      </li>
+      <li>
+        <a href="post.html">פוסט בודד</a><span class="file">post.html</span>
+        <span class="desc">עמוד פוסט בלוג מלא עם תוכן, תמונת ראשית, מחבר, ופוסטים קשורים.</span>
+      </li>
+    </ul>
+
+    <h2>עמודי מערכת</h2>
+    <ul>
+      <li>
+        <a href="404.html">404 — דף לא נמצא</a><span class="file">404.html</span>
+        <span class="desc">עמוד שגיאה ידידותי כשהמשתמש מגיע לכתובת לא קיימת.</span>
+      </li>
+      <li>
+        <a href="simple.html">Simple — בסיס</a><span class="file">simple.html</span>
+        <span class="desc">תבנית בסיס פשוטה לעמודי תוכן סטטיים (תקנון, מדיניות פרטיות וכד').</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ── English Panel ── -->
+  <div id="panel-en" class="panel" dir="ltr">
+    <h1>Ninja Tours — Site Map</h1>
+    <p class="subtitle">Internal developer reference. A list of all existing pages with a short description of each.</p>
+
+    <div class="note">
+      Note: This page is not part of the public website — it is for internal documentation only.
+    </div>
+
+    <h2>Core Pages</h2>
+    <ul>
+      <li>
+        <a href="index.html">Home</a><span class="file">index.html</span>
+        <span class="desc">Main landing page — Hero section, popular destinations, trip types, "Why Us" section, testimonials, and contact form.</span>
+      </li>
+      <li>
+        <a href="about.html">About</a><span class="file">about.html</span>
+        <span class="desc">Company story, team, and values — who we are and why we specialize exclusively in Japan.</span>
+      </li>
+      <li>
+        <a href="contact.html">Contact</a><span class="file">contact.html</span>
+        <span class="desc">Dedicated contact page with a full form and contact details.</span>
+      </li>
+    </ul>
+
+    <h2>Destinations</h2>
+    <ul>
+      <li>
+        <a href="destinations.html">Destinations</a><span class="file">destinations.html</span>
+        <span class="desc">Catalog of all Japan travel destinations, with cards for each major city.</span>
+      </li>
+      <li>
+        <a href="destination-tokyo.html">Destination — Tokyo</a><span class="file">destination-tokyo.html</span>
+        <span class="desc">Single destination page (Tokyo) — extended description, recommended attractions, selected hotels, and local tips.</span>
+      </li>
+    </ul>
+
+    <h2>Hotels</h2>
+    <ul>
+      <li>
+        <a href="hotels.html">Hotels</a><span class="file">hotels.html</span>
+        <span class="desc">Hotel catalog with filters (city, rating, audience type) and a card grid.</span>
+      </li>
+      <li>
+        <a href="hotel-detail.html">Hotel Detail</a><span class="file">hotel-detail.html</span>
+        <span class="desc">Single hotel page — photo gallery, description, room listings, amenities, location map, and a related hotels slider.</span>
+      </li>
+    </ul>
+
+    <h2>Services</h2>
+    <ul>
+      <li>
+        <a href="service.html">Service Page (Transport / Rail)</a><span class="file">service.html</span>
+        <span class="desc">Generic service page — showcases Japan rail pass types, booking process, and FAQ.</span>
+      </li>
+      <li>
+        <a href="car-rental.html">Car Rental</a><span class="file">car-rental.html</span>
+        <span class="desc">Vehicle types, top rental companies, booking process, and frequently asked questions about driving in Japan.</span>
+      </li>
+      <li>
+        <a href="attractions.html">Attractions</a><span class="file">attractions.html</span>
+        <span class="desc">Attractions catalog with filters — temples, parks, cultural experiences, and more.</span>
+      </li>
+    </ul>
+
+    <h2>Blog</h2>
+    <ul>
+      <li>
+        <a href="blog.html">Blog — Index</a><span class="file">blog.html</span>
+        <span class="desc">Blog post listing page with category filters.</span>
+      </li>
+      <li>
+        <a href="post.html">Blog Post</a><span class="file">post.html</span>
+        <span class="desc">Full single blog post with content, hero image, author info, and related posts.</span>
+      </li>
+    </ul>
+
+    <h2>System Pages</h2>
+    <ul>
+      <li>
+        <a href="404.html">404 — Not Found</a><span class="file">404.html</span>
+        <span class="desc">Friendly error page shown when the user reaches a non-existent URL.</span>
+      </li>
+      <li>
+        <a href="simple.html">Simple — Base Template</a><span class="file">simple.html</span>
+        <span class="desc">Minimal base template for static content pages (terms, privacy policy, etc.).</span>
+      </li>
+    </ul>
+  </div>
+
+  <script>
+    function switchTab(lang) {
+      document.querySelectorAll('.tab-btn').forEach(function(btn, i) {
+        btn.classList.toggle('active', (i === 0 && lang === 'he') || (i === 1 && lang === 'en'));
+      });
+      document.getElementById('panel-he').classList.toggle('active', lang === 'he');
+      document.getElementById('panel-en').classList.toggle('active', lang === 'en');
+    }
+  </script>
 
 </body>
 </html>
