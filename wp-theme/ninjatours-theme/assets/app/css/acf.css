@@ -1,0 +1,61 @@
+/**
+ * Admin styles — preview thumbnails on the ACF flexible-content
+ * "+ Add Row" chooser. Each layout shows its own preview JPG on hover.
+ *
+ * To add a new layout: drop a screenshot at /assets/app/previews/<name>.jpg
+ * (~550×300px) and add a rule below.
+ */
+
+.acf-fc-popup ul li a {
+  position: relative;
+  overflow: unset;
+}
+
+.acf-fc-popup ul li a::after {
+  position: absolute;
+  content: '';
+  z-index: 10;
+  right: calc(100% + 0.5rem);
+  top: 0;
+  width: 34.375rem;
+  height: 18.75rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.5625rem 0.25rem rgba(0, 0, 0, 0.25);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-color: #fffaf5;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (any-hover: hover) {
+  .acf-fc-popup ul li a:hover::after {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+  }
+}
+
+/* One rule per layout — uncomment + drop the JPG to enable previews */
+/*
+.acf-fc-popup ul li a[data-layout="home_hero"]::after          { background-image: url("../previews/home_hero.jpg"); }
+.acf-fc-popup ul li a[data-layout="why_us"]::after             { background-image: url("../previews/why_us.jpg"); }
+.acf-fc-popup ul li a[data-layout="trip_types"]::after         { background-image: url("../previews/trip_types.jpg"); }
+.acf-fc-popup ul li a[data-layout="attractions"]::after        { background-image: url("../previews/attractions.jpg"); }
+.acf-fc-popup ul li a[data-layout="destinations"]::after       { background-image: url("../previews/destinations.jpg"); }
+.acf-fc-popup ul li a[data-layout="hotels"]::after             { background-image: url("../previews/hotels.jpg"); }
+.acf-fc-popup ul li a[data-layout="use_cases"]::after          { background-image: url("../previews/use_cases.jpg"); }
+.acf-fc-popup ul li a[data-layout="testimonials"]::after       { background-image: url("../previews/testimonials.jpg"); }
+.acf-fc-popup ul li a[data-layout="process"]::after            { background-image: url("../previews/process.jpg"); }
+.acf-fc-popup ul li a[data-layout="partners"]::after           { background-image: url("../previews/partners.jpg"); }
+.acf-fc-popup ul li a[data-layout="contact"]::after            { background-image: url("../previews/contact.jpg"); }
+.acf-fc-popup ul li a[data-layout="content_media"]::after      { background-image: url("../previews/content_media.jpg"); }
+.acf-fc-popup ul li a[data-layout="image_separator"]::after    { background-image: url("../previews/image_separator.jpg"); }
+.acf-fc-popup ul li a[data-layout="travel_type_hero"]::after   { background-image: url("../previews/travel_type_hero.jpg"); }
+.acf-fc-popup ul li a[data-layout="meta_strip"]::after         { background-image: url("../previews/meta_strip.jpg"); }
+.acf-fc-popup ul li a[data-layout="about_with_sidebar"]::after { background-image: url("../previews/about_with_sidebar.jpg"); }
+.acf-fc-popup ul li a[data-layout="itinerary"]::after          { background-image: url("../previews/itinerary.jpg"); }
+.acf-fc-popup ul li a[data-layout="tips"]::after               { background-image: url("../previews/tips.jpg"); }
+*/
