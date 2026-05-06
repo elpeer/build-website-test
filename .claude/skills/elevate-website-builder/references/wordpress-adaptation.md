@@ -13,6 +13,45 @@ This file documents how to convert a static HTML page (built per the rest of thi
 
 ---
 
+## The editor experience — what we're building toward
+
+This is the foundational mental model for every theme we build. Internalize it before anything else.
+
+**What the editor sees on every page:**
+
+The page edit screen has **one** meta box: **"Flexible Content"**. Inside it is an ordered list of section rows the editor has added — Home Hero, Why Us, Trip Types, etc. Each row is collapsible and shows the layout label + index number. Below the list is an **"+ Add Row"** button; clicking it opens a popup listing **all available section layouts** the theme supports (Home Hero, Why Us, Trip Types, Attractions, Process, Image Separator, Use Cases, Testimonials, Partners, Content Media, Contact, …). Hovering each entry shows a real screenshot of that section so the editor knows what they're picking.
+
+The editor can:
+- **Add any section to any page** — the same Hero can live on the homepage and a landing page; the same Contact section can be added to ten pages without copying content.
+- **Reorder sections** by drag-and-drop within the meta box.
+- **Toggle sections on/off** without deleting (`hide_section` true/false on every layout).
+- **Override the anchor id** per instance (`section_id` text field).
+- **Pull content from a global default** instead of filling it inline (`use_general_settings` toggle reads from the ACF Options Page).
+
+**What produces this experience:**
+
+| Editor concept                         | ACF / theme implementation                                                                        |
+|----------------------------------------|----------------------------------------------------------------------------------------------------|
+| "Flexible Content" meta box on a page  | Single ACF **Flexible Content** field named `flexible_content`, attached to pages with the "Flexible Content" page template |
+| Each entry in "+ Add Row"              | One **layout** inside that flexible-content field, named in snake_case (`home_hero`, `why_us`, …)  |
+| Hover preview thumbnail on each entry  | `assets/app/previews/<layout>.jpg` + a CSS rule in `assets/app/css/acf.css`                        |
+| The fields visible inside an open row  | Subfields on that layout — always starting with `use_general_settings`, `hide_section`, `section_id`, then a group field named after the layout |
+| One row = one rendered `<section>`     | `content/flexible-content.php` iterates `get_field('flexible_content')` and dispatches each row to `content/sections/<layout>.php` |
+| The global default of each section     | A field group on the ACF Options Page named `sections_content`, mirroring every layout's content   |
+
+**The implication for theme code:** every section is a *self-contained, drop-anywhere component*. A section file in `content/sections/` cannot assume which page it's on or what came before it. It receives its data via `$args['item']` and renders its own markup. The only cross-section connection is the optional pull from global defaults.
+
+**The implication for ACF setup:** when adding a new section to the theme, you add it in three places:
+1. A new **layout** inside the `flexible_content` field group (with the standard four wrapper fields + the layout's content group).
+2. A mirror group inside `sections_content` on the Options Page (same content fields, no wrapper toggles).
+3. A preview screenshot at `assets/app/previews/<layout>.jpg` + a CSS rule in `acf.css`.
+
+Plus the PHP file at `content/sections/<layout>.php` that follows the standard boilerplate.
+
+The same library of layouts is available on every page. There is no per-page restriction, no template-specific layouts. If a section should only appear on landing pages, that's a content rule (the editor doesn't add it elsewhere), not a code rule.
+
+---
+
 ## Theme file structure (canonical)
 
 ```
@@ -650,18 +689,66 @@ Every layout in the flexible-content field gets a thumbnail in the admin chooser
 
 ---
 
+## Adding a new section — the four-place checklist
+
+Every new section is added in four places. Skip any one and the editor experience breaks.
+
+### 1. ACF: add a layout to the `flexible_content` field group
+
+The field group "Page — Flexible Content" is attached to pages with the Flexible Content template. Inside it is one **Flexible Content** field named `flexible_content`. Add a new **layout** to that field with:
+
+```
+Layout name (slug): <layout_name>            // e.g. home_hero — snake_case
+Layout label:        Home Hero               // human-readable, shown in the chooser
+
+Subfields (in this order):
+  use_general_settings    True/False         // first
+  hide_section            True/False         // second
+  section_id              Text               // third (custom anchor id, optional)
+  <layout_name>           Group              // fourth — wraps all the layout's actual content
+    title                 Text or Medium Editor Field
+    text                  Textarea or WYSIWYG
+    image                 Image (return ID)
+    cta                   Link
+    cards                 Repeater
+      …
+    items                 Post Object (multi) — if the section can show CPT posts
+    show_all              True/False — toggle CPT-mode on, items-mode off
+```
+
+The fourth field (the group) **must be named identically to the layout** — that's how `$data['group'][<layout>]` and `get_field('sections_content', 'options')[<layout>]` read the same shape from both sources.
+
+### 2. ACF: mirror the content into `sections_content` on the Options Page
+
+The Options Page "General Settings" has a field group named `sections_content`. Inside it, add a **group** named `<layout_name>` with the **same content subfields** as the inline group above (no need to repeat the wrapper toggles — the global version is always shown when chosen).
+
+This is what makes "Use General Settings" work: when the editor checks that toggle on a page row, the section reads its content from the Options Page instead of the inline group, but the field-key shape is identical so the same `$group['title']` etc. reads work.
+
+### 3. PHP: the section file at `content/sections/<layout_name>.php`
+
+Always start with the boilerplate (see "Section file boilerplate" above). Then extract the specific fields and render the markup. The filename **must match** the layout slug exactly.
+
+### 4. Admin preview
+
+- Add a screenshot at `assets/app/previews/<layout_name>.jpg` (~550 × 300 px is the size the CSS expects).
+- Add a CSS rule in `assets/app/css/acf.css`:
+
+```css
+.acf-fc-popup ul li a[data-layout="<layout_name>"]::after {
+  background-image: url("../previews/<layout_name>.jpg");
+}
+```
+
+Now the section appears in the "+ Add Row" chooser with a hover preview, and the editor can drop it onto any page.
+
+---
+
 ## Mapping static HTML → ACF fields
 
-When converting a static section to ACF:
+When converting a static section to ACF, after deciding which layout slug to use:
 
 1. **Scan the section markup.** List every editable string, image, link, and repeating group.
-2. **Wrap them in a layout group** named `<layout_name>` (matches the section file name).
-3. **The first three fields are always:**
-   - `use_general_settings` (true/false)
-   - `hide_section` (true/false)
-   - `section_id` (text)
-4. **Then the layout's content lives inside a `group` field** named `<layout_name>` (a literal group field, not a wrapper concept) — so reads from both inline and options page work the same way.
-5. **Pick the right field type per element:**
+2. **Pick the right field type per element:**
    - Single short text → text
    - Title with one accent word → text + `render_title($title, 'em')`
    - Title with rich inline formatting → ACF Medium Editor Field, output with `wp_kses_post()`
@@ -672,8 +759,8 @@ When converting a static section to ACF:
    - Selection from posts → post-object (single) or relationship (multi)
    - List of icon+text cards → repeater
    - Toggle for "show all" (auto-pull from a CPT) → true/false next to the items field
-6. **Field name = snake_case.** Field label = Hebrew (or whatever the editor's language is).
-7. **Mirror the same group at `options › sections_content[<layout>]`** so the "use general settings" toggle has somewhere to read from.
+3. **Field name = snake_case.** Field label = Hebrew (or whatever the editor's language is).
+4. **Don't expose anything that's never editable.** Decorative SVGs, fixed icons, structural class names — those stay hard-coded in the section PHP, not as fields. The editor's interface should only show what genuinely varies between pages.
 
 ---
 
@@ -759,9 +846,9 @@ The structure above is the default. Deviate only when the brief calls for it:
 - [ ] ACF Pro is active; ACF Medium Editor Field is active
 - [ ] CPTs are registered in a *separate* plugin (not the theme)
 - [ ] Options Page "General Settings" exists with `general` + `sections_content` field groups
-- [ ] Each layout's PHP file in `content/sections/` follows the boilerplate exactly
+- [ ] **Page edit screen shows only the "Flexible Content" meta box** — confirm by opening any page in the admin
+- [ ] **Every section appears in the "+ Add Row" chooser** with a hover-preview thumbnail
+- [ ] **For every layout**: ACF inline layout exists, mirror group on Options Page exists, PHP file in `content/sections/` follows the boilerplate, preview JPG in `assets/app/previews/`, CSS rule in `acf.css`
 - [ ] `parts/<entity>-card.php` exists for every reused card; receives `['id' => …]` via `args`
-- [ ] `assets/app/previews/<layout>.jpg` exists for every flexible-content layout
-- [ ] `acf.css` has a rule for every layout
 - [ ] AJAX handlers verify nonces and use `sanitize_*` on all `$_POST` reads
 - [ ] SVG upload restricted to administrators only
