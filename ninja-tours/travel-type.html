@@ -11,7 +11,7 @@
   <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
@@ -22,23 +22,15 @@
   <link rel="stylesheet" href="css/hotel-detail.css" />
 
   <style>
-    /* ── Travel Type — page-specific ──────────────────────────────────────── */
-
-    /* Common — inner wrapper used across all sections */
-    .tt-wrap {
-      max-width: 1200px;
-      margin-inline: auto;
-    }
-
-    /* ═════════════════ HERO ═════════════════ */
+    /* ═════════════════ HERO (half-height, centered) ═════════════════ */
     .tt-hero {
       position: relative;
-      height: 100vh;
-      min-height: 42rem;
-      max-height: 56rem;
+      height: 60vh;
+      min-height: 28rem;
+      max-height: 38rem;
       display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
+      align-items: center;
+      justify-content: center;
       overflow: hidden;
       color: #fff;
       isolation: isolate;
@@ -48,81 +40,38 @@
     .tt-hero__overlay {
       position: absolute;
       inset: 0;
-      background:
-        linear-gradient(to top, rgba(7,17,31,0.92) 0%, rgba(7,17,31,0.35) 45%, rgba(7,17,31,0.55) 100%),
-        linear-gradient(to left, rgba(7,17,31,0.55) 0%, transparent 60%);
+      background: linear-gradient(to bottom, rgba(7,17,31,0.4) 0%, rgba(7,17,31,0.55) 60%, rgba(7,17,31,0.7) 100%);
       z-index: 1;
     }
-    /* Decorative kanji "nature" — broken element */
-    .tt-hero__kanji {
-      position: absolute;
-      bottom: 6rem;
-      inset-inline-start: -2rem;
-      font-family: 'Noto Serif JP', serif;
-      font-size: clamp(14rem, 28vw, 32rem);
-      font-weight: 200;
-      line-height: 0.85;
-      color: rgba(255,255,255,0.05);
-      letter-spacing: -0.05em;
-      pointer-events: none;
-      z-index: 1;
-      user-select: none;
-    }
-    /* Vertical side-eyebrow — signature touch */
-    .tt-hero__side {
-      position: absolute;
-      top: 50%;
-      inset-inline-end: 2.25rem;
-      transform: translateY(-50%) rotate(180deg);
-      writing-mode: vertical-rl;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.55em;
-      color: rgba(255,255,255,0.6);
-      text-transform: uppercase;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .tt-hero__side::before {
-      content: '';
-      width: 1px;
-      height: 4rem;
-      background: rgba(255,255,255,0.4);
-    }
+
     .tt-hero__breadcrumb {
       position: absolute;
-      top: calc(var(--header-height, 5rem) + 1.5rem);
+      top: calc(var(--header-height, 5rem) + 1.25rem);
       inset-inline: 0;
+      max-width: 1200px;
+      margin-inline: auto;
       padding-inline: 3.5rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
       font-size: 0.825rem;
-      color: rgba(255,255,255,0.65);
+      color: rgba(255,255,255,0.7);
       z-index: 3;
     }
     .tt-hero__breadcrumb a {
-      color: rgba(255,255,255,0.65);
+      color: rgba(255,255,255,0.7);
       text-decoration: none;
       transition: color 0.2s;
     }
     .tt-hero__breadcrumb a:hover { color: #fff; }
-    .tt-hero__breadcrumb-sep { opacity: 0.45; }
+    .tt-hero__breadcrumb-sep { opacity: 0.5; }
 
-    .tt-hero__content {
-      position: relative;
-      z-index: 3;
-      padding: 0 3.5rem 0;
-      max-width: 1200px;
-      margin-inline: auto;
-      width: 100%;
-      align-self: center;
-    }
     .tt-hero__inner {
-      max-width: 44rem;
-      padding-block-end: 3rem;
+      position: relative;
+      z-index: 2;
+      max-width: 50rem;
+      padding-inline: 1.5rem;
+      text-align: center;
     }
     .tt-hero__tag {
       display: inline-flex;
@@ -135,7 +84,7 @@
       padding: 0.4rem 1.05rem;
       font-size: 0.78rem;
       font-weight: 700;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       color: #fff;
       margin-bottom: 1.25rem;
     }
@@ -145,421 +94,80 @@
       border-radius: 50%;
       background: #ff5447;
       box-shadow: 0 0 0 4px rgba(255,84,71,0.25);
-      flex-shrink: 0;
     }
     .tt-hero__title {
-      font-size: clamp(2.75rem, 6.5vw, 5.5rem);
+      font-size: clamp(2.5rem, 5.5vw, 4.5rem);
       font-weight: 900;
-      line-height: 0.98;
-      letter-spacing: -0.035em;
-      margin-bottom: 1.25rem;
-      text-shadow: 0 4px 32px rgba(0,0,0,0.35);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin: 0 0 1rem;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.3);
     }
     .tt-hero__title em {
       font-style: normal;
       color: #ff5447;
     }
     .tt-hero__desc {
-      font-size: 1.05rem;
-      color: rgba(255,255,255,0.85);
-      max-width: 32rem;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.88);
+      max-width: 36rem;
+      margin: 0 auto 1.75rem;
       line-height: 1.65;
-      margin-bottom: 2rem;
     }
 
-    /* Hero meta strip — quick facts pinned to the bottom */
-    .tt-hero__meta {
-      position: relative;
-      z-index: 3;
-      background: rgba(7,17,31,0.85);
-      backdrop-filter: blur(14px);
-      border-top: 1px solid rgba(255,255,255,0.08);
+    /* ═════════════════ META STRIP (white, below hero) ═════════════════ */
+    .tt-meta {
+      background: #fff;
+      border-bottom: 1px solid #eee;
     }
-    .tt-hero__meta-inner {
+    .tt-meta__inner {
       max-width: 1200px;
       margin-inline: auto;
-      padding: 1.4rem 3.5rem;
+      padding: 1.5rem 3.5rem;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
+      gap: 1.25rem;
     }
-    .tt-hero__meta-item {
+    .tt-meta__item {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
-      color: #fff;
+      gap: 0.95rem;
     }
-    .tt-hero__meta-item:not(:last-child) {
-      border-inline-end: 1px solid rgba(255,255,255,0.1);
-      padding-inline-end: 1rem;
+    .tt-meta__item:not(:last-child) {
+      border-inline-end: 1px solid #f0f0f0;
+      padding-inline-end: 1.25rem;
     }
-    .tt-hero__meta-icon {
-      width: 2.25rem;
-      height: 2.25rem;
-      border-radius: 0.625rem;
-      background: rgba(210,23,10,0.18);
+    .tt-meta__icon {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 0.75rem;
+      background: #fff5f3;
+      color: #d2170a;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
-    .tt-hero__meta-icon svg { width: 1.1rem; height: 1.1rem; color: #ff5447; }
-    .tt-hero__meta-label {
-      font-size: 0.7rem;
-      color: rgba(255,255,255,0.55);
-      letter-spacing: 0.05em;
+    .tt-meta__icon svg { width: 1.2rem; height: 1.2rem; }
+    .tt-meta__label {
+      font-size: 0.72rem;
+      color: #888;
+      letter-spacing: 0.04em;
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+    .tt-meta__value {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #0a1828;
       display: block;
     }
-    .tt-hero__meta-value {
-      font-size: 1rem;
-      font-weight: 700;
-      display: block;
-      margin-top: 0.1rem;
-    }
 
-    /* ═════════════════ INTRO QUOTE ═════════════════ */
-    .tt-intro {
-      padding-block: 5rem 3rem;
-      background: #fffaf5;
-      position: relative;
-      overflow: hidden;
-    }
-    .tt-intro__kanji {
-      position: absolute;
-      top: 50%;
-      inset-inline-end: -3rem;
-      transform: translateY(-50%);
-      font-family: 'Noto Serif JP', serif;
-      font-size: clamp(10rem, 22vw, 22rem);
-      font-weight: 200;
-      line-height: 1;
-      color: rgba(6,56,116,0.04);
-      pointer-events: none;
-      user-select: none;
-    }
-    .tt-intro__inner {
-      max-width: 1200px;
-      margin-inline: auto;
-      padding-inline: 3.5rem;
-      display: grid;
-      grid-template-columns: 1fr 1.5fr;
-      gap: 4rem;
-      align-items: end;
-      position: relative;
-      z-index: 1;
-    }
-    .tt-intro__eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      color: #d2170a;
-      text-transform: uppercase;
-      margin-bottom: 0.75rem;
-    }
-    .tt-intro__eyebrow::before {
-      content: '';
-      width: 1.5rem;
-      height: 2px;
-      background: #d2170a;
-    }
-    .tt-intro__title {
-      font-size: clamp(1.5rem, 2.4vw, 2rem);
-      font-weight: 800;
-      line-height: 1.2;
-      color: #0a1828;
-      letter-spacing: -0.02em;
-    }
-    .tt-intro__text p {
-      font-size: 1rem;
-      line-height: 1.85;
-      color: #4a4a52;
-      margin: 0 0 1rem;
-    }
-    .tt-intro__text p:last-child { margin: 0; }
+    /* ═════════════════ ABOUT (reuses .hotel-detail layout) ═════════════════ */
+    .tt-about { padding-block: 4rem 5rem; background: #fff; }
+    .tt-about .hotel-detail__body h2:first-child { margin-top: 0; }
 
-    /* ═════════════════ FEATURES ═════════════════ */
-    .tt-features {
-      padding-block: 4rem 6rem;
-      background: #fffaf5;
-    }
-    .tt-features__inner {
-      max-width: 1200px;
-      margin-inline: auto;
-      padding-inline: 3.5rem;
-    }
-    .tt-features__head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 2rem;
-      margin-bottom: 2.5rem;
-      flex-wrap: wrap;
-    }
-    .tt-features__head h2 {
-      font-size: clamp(1.75rem, 3vw, 2.5rem);
-      font-weight: 800;
-      color: #0a1828;
-      margin: 0 0 0.4rem;
-      letter-spacing: -0.02em;
-      line-height: 1.15;
-    }
-    .tt-features__head h2 em {
-      font-style: normal;
-      color: #d2170a;
-    }
-    .tt-features__head p {
-      color: #6a6a72;
-      font-size: 1rem;
-      max-width: 28rem;
-      margin: 0;
-    }
-    .tt-features__count {
-      display: inline-flex;
-      align-items: baseline;
-      gap: 0.4rem;
-      color: #d2170a;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      font-size: 0.8rem;
-    }
-    .tt-features__count strong { font-size: 1.5rem; font-family: 'Montserrat', sans-serif; }
-
-    /* Asymmetric 2-row grid: row 1 = 1.4fr 1fr, row 2 = 1fr 1.4fr */
-    .tt-features__grid {
-      display: grid;
-      grid-template-columns: 1.35fr 1fr;
-      gap: 1.25rem;
-    }
-    .tt-features__row {
-      display: contents;
-    }
-    .tt-features__grid > :nth-child(3) { grid-column: 1; }
-    .tt-features__grid > :nth-child(4) { grid-column: 2; }
-    .tt-features__grid > :nth-child(1) { grid-column: 1; grid-row: 1; }
-    .tt-features__grid > :nth-child(2) { grid-column: 2; grid-row: 1; }
-    .tt-features__grid > :nth-child(3) { grid-column: 1; grid-row: 2; }
-    .tt-features__grid > :nth-child(4) { grid-column: 2; grid-row: 2; }
-    .tt-features__grid > :nth-child(2),
-    .tt-features__grid > :nth-child(3) { /* swap order in row 2 */ }
-    /* simpler asymmetric: use nth-child to vary aspect */
-
-    .tt-feature {
-      position: relative;
-      border-radius: 1.5rem;
-      overflow: hidden;
-      background: #07111f;
-      color: #fff;
-      aspect-ratio: 16 / 10;
-      display: flex;
-      align-items: flex-end;
-      isolation: isolate;
-      transition: transform 0.4s ease;
-    }
-    .tt-feature:hover { transform: translateY(-0.4rem); }
-    .tt-feature__img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.7s ease;
-    }
-    .tt-feature:hover .tt-feature__img { transform: scale(1.05); }
-    .tt-feature__overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(7,17,31,0.92) 0%, rgba(7,17,31,0.4) 50%, rgba(7,17,31,0.1) 100%);
-      z-index: 1;
-    }
-    .tt-feature__num {
-      position: absolute;
-      top: 1.25rem;
-      inset-inline-start: 1.5rem;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      color: rgba(255,255,255,0.55);
-      z-index: 2;
-    }
-    .tt-feature__num::before {
-      content: '— ';
-      color: #ff5447;
-    }
-    .tt-feature__body {
-      position: relative;
-      z-index: 2;
-      padding: 1.75rem;
-      width: 100%;
-    }
-    .tt-feature__title {
-      font-size: 1.4rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin: 0 0 0.5rem;
-      line-height: 1.2;
-    }
-    .tt-feature__desc {
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.78);
-      line-height: 1.6;
-      margin: 0;
-      max-width: 30rem;
-    }
-
-    /* ═════════════════ DESTINATIONS ═════════════════ */
-    .tt-destinations {
-      padding-block: 5rem;
-      background: #fff;
-      position: relative;
-    }
-    .tt-destinations__inner {
-      max-width: 1200px;
-      margin-inline: auto;
-      padding-inline: 3.5rem;
-    }
-    .tt-destinations__head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 2rem;
-      margin-bottom: 2.5rem;
-      flex-wrap: wrap;
-    }
-    .tt-destinations__head h2 {
-      font-size: clamp(1.75rem, 3vw, 2.5rem);
-      font-weight: 800;
-      color: #0a1828;
-      margin: 0 0 0.4rem;
-      letter-spacing: -0.02em;
-      line-height: 1.15;
-    }
-    .tt-destinations__head h2 em {
-      font-style: normal;
-      color: #d2170a;
-    }
-    .tt-destinations__head p {
-      color: #6a6a72;
-      font-size: 1rem;
-      max-width: 26rem;
-      margin: 0;
-    }
-    .tt-destinations__link {
-      color: #063874;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 0.9rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      border-bottom: 1px solid #063874;
-      padding-block-end: 0.2rem;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .tt-destinations__link:hover { color: #d2170a; border-color: #d2170a; }
-    .tt-destinations__link svg { width: 0.9rem; height: 0.9rem; }
-
-    /* Asymmetric: 1 large + 2 stacked smaller (40/60 split) */
-    .tt-destinations__grid {
-      display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      gap: 1.25rem;
-    }
-    .tt-destinations__col-stack {
-      display: grid;
-      grid-template-rows: 1fr 1fr;
-      gap: 1.25rem;
-    }
-    .tt-dest-card {
-      display: block;
-      text-decoration: none;
-      border-radius: 1.5rem;
-      overflow: hidden;
-      position: relative;
-      background: #ddd;
-      isolation: isolate;
-    }
-    .tt-dest-card.--hero { aspect-ratio: 4 / 5; }
-    .tt-dest-card.--small { aspect-ratio: 16 / 10; }
-    .tt-dest-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.7s ease;
-    }
-    .tt-dest-card:hover img { transform: scale(1.05); }
-    .tt-dest-card__overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(7,17,31,0.85) 0%, rgba(7,17,31,0.15) 60%, transparent 100%);
-      z-index: 1;
-    }
-    .tt-dest-card__body {
-      position: absolute;
-      bottom: 0;
-      inset-inline: 0;
-      padding: 1.5rem 1.75rem;
-      color: #fff;
-      z-index: 2;
-    }
-    .tt-dest-card.--hero .tt-dest-card__body { padding: 2rem 2.25rem; }
-    .tt-dest-card__meta {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      color: #ff5447;
-      text-transform: uppercase;
-      margin-bottom: 0.45rem;
-    }
-    .tt-dest-card__meta::before {
-      content: '';
-      width: 1rem;
-      height: 1px;
-      background: #ff5447;
-    }
-    .tt-dest-card__name {
-      font-size: 1.4rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin: 0 0 0.3rem;
-      line-height: 1.15;
-    }
-    .tt-dest-card.--hero .tt-dest-card__name { font-size: 1.85rem; }
-    .tt-dest-card__tag {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.78);
-      margin: 0;
-    }
-    .tt-dest-card__arrow {
-      position: absolute;
-      top: 1.25rem;
-      inset-inline-end: 1.25rem;
-      width: 2.5rem;
-      height: 2.5rem;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.95);
-      color: #d2170a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transform: translate(0, -0.3rem);
-      transition: opacity 0.3s, transform 0.3s;
-      z-index: 3;
-    }
-    .tt-dest-card:hover .tt-dest-card__arrow {
-      opacity: 1;
-      transform: translate(0,0);
-    }
-    .tt-dest-card__arrow svg { width: 1rem; height: 1rem; }
-
-    /* ═════════════════ ITINERARY ═════════════════ */
+    /* ═════════════════ ITINERARY (unchanged from prior) ═════════════════ */
     .tt-itinerary {
       padding-block: 5rem;
       background: #f6f3ee;
@@ -587,10 +195,7 @@
       letter-spacing: -0.02em;
       line-height: 1.15;
     }
-    .tt-itinerary__head h2 em {
-      font-style: normal;
-      color: #d2170a;
-    }
+    .tt-itinerary__head h2 em { font-style: normal; color: #d2170a; }
     .tt-itinerary__head > div:first-child > p {
       color: #6a6a72;
       font-size: 1rem;
@@ -611,15 +216,10 @@
     }
     .tt-itinerary__note svg { flex-shrink: 0; margin-top: 0.15rem; }
 
-    .tt-itinerary__timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
+    .tt-itinerary__timeline { display: flex; flex-direction: column; gap: 1rem; }
     .tt-day {
       display: grid;
       grid-template-columns: 14rem 1fr;
-      gap: 0;
       background: #fff;
       border-radius: 1.25rem;
       overflow: hidden;
@@ -700,11 +300,7 @@
       line-height: 1.7;
       margin: 0 0 0.9rem;
     }
-    .tt-day__tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
+    .tt-day__tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
     .tt-day__tag {
       background: #f6f3ee;
       border-radius: 99px;
@@ -714,39 +310,22 @@
       font-weight: 500;
     }
 
-    /* ═════════════════ TIPS ═════════════════ */
+    /* ═════════════════ TIPS (light background) ═════════════════ */
     .tt-tips {
       padding-block: 5rem;
-      background: linear-gradient(135deg, #07111f 0%, #0d1d33 100%);
-      color: #fff;
+      background: #fffaf5;
       position: relative;
-      overflow: hidden;
-    }
-    .tt-tips__kanji {
-      position: absolute;
-      bottom: -3rem;
-      inset-inline-end: -2rem;
-      font-family: 'Noto Serif JP', serif;
-      font-size: clamp(10rem, 22vw, 24rem);
-      font-weight: 200;
-      line-height: 0.85;
-      color: rgba(255,255,255,0.03);
-      letter-spacing: -0.05em;
-      pointer-events: none;
-      user-select: none;
     }
     .tt-tips__inner {
       max-width: 1200px;
       margin-inline: auto;
       padding-inline: 3.5rem;
-      position: relative;
-      z-index: 1;
     }
     .tt-tips__head {
       display: grid;
       grid-template-columns: 1.3fr 1fr;
       gap: 3rem;
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
       align-items: end;
     }
     .tt-tips__eyebrow {
@@ -755,8 +334,8 @@
       gap: 0.5rem;
       font-size: 0.72rem;
       font-weight: 700;
-      letter-spacing: 0.2em;
-      color: #ff5447;
+      letter-spacing: 0.18em;
+      color: #d2170a;
       text-transform: uppercase;
       margin-bottom: 0.85rem;
     }
@@ -764,22 +343,19 @@
       content: '';
       width: 1.5rem;
       height: 2px;
-      background: #ff5447;
+      background: #d2170a;
     }
     .tt-tips__head h2 {
       font-size: clamp(1.75rem, 3vw, 2.5rem);
       font-weight: 800;
-      color: #fff;
+      color: #0a1828;
       margin: 0;
       letter-spacing: -0.02em;
       line-height: 1.15;
     }
-    .tt-tips__head h2 em {
-      font-style: normal;
-      color: #ff5447;
-    }
+    .tt-tips__head h2 em { font-style: normal; color: #d2170a; }
     .tt-tips__head > div:last-child > p {
-      color: rgba(255,255,255,0.65);
+      color: #6a6a72;
       font-size: 1rem;
       margin: 0;
       line-height: 1.7;
@@ -790,16 +366,16 @@
       gap: 1.25rem;
     }
     .tt-tip {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: #fff;
+      border: 1px solid #ece5dc;
       border-radius: 1.25rem;
       padding: 1.85rem 2rem;
-      position: relative;
-      transition: background 0.3s, border-color 0.3s;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
     }
     .tt-tip:hover {
-      background: rgba(255,255,255,0.06);
-      border-color: rgba(255,84,71,0.35);
+      border-color: #d2170a;
+      box-shadow: 0 8px 32px rgba(210,23,10,0.08);
+      transform: translateY(-0.2rem);
     }
     .tt-tip__head {
       display: flex;
@@ -811,51 +387,51 @@
       font-family: 'Montserrat', sans-serif;
       font-size: 1rem;
       font-weight: 700;
-      color: #ff5447;
+      color: #d2170a;
       letter-spacing: 0.1em;
       flex-shrink: 0;
     }
     .tt-tip__divider {
       flex: 1;
       height: 1px;
-      background: rgba(255,255,255,0.1);
+      background: #ece5dc;
     }
     .tt-tip__icon {
       width: 2.25rem;
       height: 2.25rem;
       border-radius: 0.625rem;
-      background: rgba(255,84,71,0.15);
+      background: #fff5f3;
+      color: #d2170a;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #ff5447;
       flex-shrink: 0;
     }
     .tt-tip__icon svg { width: 1.1rem; height: 1.1rem; }
     .tt-tip__title {
       font-size: 1.05rem;
       font-weight: 700;
-      color: #fff;
+      color: #0a1828;
       margin: 0 0 0.45rem;
       letter-spacing: -0.01em;
     }
     .tt-tip__desc {
       font-size: 0.92rem;
-      color: rgba(255,255,255,0.7);
+      color: #555;
       line-height: 1.7;
       margin: 0;
     }
 
-    /* ═════════════════ RELATED ATTRACTIONS ═════════════════ */
+    /* ═════════════════ RELATED ATTRACTIONS (edge-to-edge) ═════════════════ */
     .related-attractions {
       padding-block: 5rem;
-      background: #fffaf5;
+      background: #fff;
+      overflow: hidden;
     }
     .related-attractions__header {
       max-width: 1200px;
       margin-inline: auto;
       padding-inline: 3.5rem;
-      text-align: right;
       margin-bottom: 2.5rem;
     }
     .related-attractions__title {
@@ -866,23 +442,23 @@
       letter-spacing: -0.02em;
       line-height: 1.15;
     }
-    .related-attractions__title em {
-      font-style: normal;
-      color: #d2170a;
-    }
+    .related-attractions__title em { font-style: normal; color: #d2170a; }
     .related-attractions__lead {
       font-size: 1rem;
       color: #6a6a72;
       margin: 0;
     }
+    /* Edge-to-edge slider — slidesPerView: 'auto' with fixed slide width */
     .related-attractions__slider {
-      max-width: 1200px;
-      margin-inline: auto;
+      width: 100%;
       padding-inline: 3.5rem;
-      overflow: hidden;
+      overflow: visible;
     }
     .related-attractions__slider .swiper-wrapper { align-items: stretch; }
-    .related-attractions__slider .swiper-slide { height: auto; }
+    .related-attractions__slider .swiper-slide {
+      width: 18rem;
+      height: auto;
+    }
     .related-attractions .attractions__card {
       aspect-ratio: 4 / 3;
       border-radius: 1.5rem;
@@ -892,7 +468,7 @@
     }
     .related-attractions__nav {
       max-width: 1200px;
-      margin: 1.75rem auto 0;
+      margin: 2rem auto 0;
       padding-inline: 3.5rem;
       display: flex;
       align-items: center;
@@ -919,53 +495,35 @@
 
     /* ═════════════════ RESPONSIVE ═════════════════ */
     @media (max-width: 1024px) {
-      .tt-features__grid,
-      .tt-destinations__grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      .tt-destinations__col-stack { grid-template-rows: auto auto; }
+      .tt-meta__inner { grid-template-columns: 1fr 1fr; gap: 1rem 1.25rem; }
+      .tt-meta__item:nth-child(2) { border-inline-end: 0; padding-inline-end: 0; }
       .tt-day { grid-template-columns: 11rem 1fr; }
+      .tt-tips__head { grid-template-columns: 1fr; gap: 1rem; }
     }
     @media (max-width: 768px) and (orientation: portrait) {
-      .tt-hero { min-height: 36rem; }
+      .tt-hero { height: 55vh; min-height: 24rem; }
       .tt-hero__breadcrumb { padding-inline: 1.25rem; font-size: 0.75rem; }
-      .tt-hero__content { padding: 0 1.25rem; }
-      .tt-hero__inner { padding-block-end: 2rem; }
-      .tt-hero__side { display: none; }
-      .tt-hero__kanji { font-size: 12rem; }
-      .tt-hero__meta-inner {
-        grid-template-columns: 1fr 1fr;
+      .tt-meta__inner {
+        grid-template-columns: 1fr;
         padding: 1rem 1.25rem;
         gap: 0.75rem;
       }
-      .tt-hero__meta-item:nth-child(2) { border-inline-end: 0; padding-inline-end: 0; }
-      .tt-hero__meta-item { padding-inline-end: 0.5rem; gap: 0.5rem; }
-      .tt-hero__meta-icon { width: 1.85rem; height: 1.85rem; }
-
-      .tt-intro__inner { grid-template-columns: 1fr; gap: 1.5rem; padding-inline: 1.25rem; }
-      .tt-intro__kanji { font-size: 10rem; }
-
-      .tt-features__inner,
-      .tt-destinations__inner,
+      .tt-meta__item { border-inline-end: 0; padding-inline-end: 0; padding-block: 0.4rem; }
+      .tt-meta__item:not(:last-child) {
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 0.85rem;
+      }
       .tt-itinerary__inner,
       .tt-tips__inner { padding-inline: 1.25rem; }
-
-      .tt-features__grid,
-      .tt-destinations__grid { grid-template-columns: 1fr; }
-      .tt-destinations__col-stack { grid-template-rows: 1fr 1fr; }
-      .tt-dest-card.--hero { aspect-ratio: 16 / 11; }
-
       .tt-itinerary__head { grid-template-columns: 1fr; gap: 1.5rem; }
       .tt-day { grid-template-columns: 1fr; }
       .tt-day__image { aspect-ratio: 16 / 9; min-height: 0; }
       .tt-day__num { font-size: 2.75rem; }
-
-      .tt-tips__head { grid-template-columns: 1fr; gap: 1.25rem; }
       .tt-tips__grid { grid-template-columns: 1fr; }
-
       .related-attractions__header,
       .related-attractions__slider,
       .related-attractions__nav { padding-inline: 1.25rem; }
+      .related-attractions__slider .swiper-slide { width: 16rem; }
     }
   </style>
 </head>
@@ -1025,7 +583,7 @@
 
   <main id="main-content">
 
-    <!-- ════════════════════ 1. HERO ════════════════════ -->
+    <!-- ════════════════════ 1. HERO (half-height, centered) ════════════════════ -->
     <section class="tt-hero" id="tt-hero">
       <div class="tt-hero__media">
         <picture>
@@ -1034,9 +592,6 @@
         </picture>
       </div>
       <div class="tt-hero__overlay" aria-hidden="true"></div>
-      <span class="tt-hero__kanji" aria-hidden="true">自然</span>
-
-      <span class="tt-hero__side" aria-hidden="true">TRIP TYPE · 自然 · NATURE</span>
 
       <nav class="tt-hero__breadcrumb" aria-label="פירורי לחם">
         <a href="index.html">עמוד הבית</a>
@@ -1046,205 +601,154 @@
         <span aria-current="page">טבע ונופים</span>
       </nav>
 
-      <div class="tt-hero__content">
-        <div class="tt-hero__inner">
-          <span class="tt-hero__tag">
-            <span class="tt-hero__tag-dot" aria-hidden="true"></span>
-            סוג טיול
+      <div class="tt-hero__inner">
+        <span class="tt-hero__tag">
+          <span class="tt-hero__tag-dot" aria-hidden="true"></span>
+          סוג טיול
+        </span>
+        <h1 class="tt-hero__title">טבע <em>ונופים</em> של יפן</h1>
+        <p class="tt-hero__desc">נופים עוצרי נשימה שנראים כמו חלום — מהר פוג'י המושלג ועד יערות הבמבו של קיוטו. טיול שבו הטבע הוא הכוכב הראשי.</p>
+        <a href="#contact" class="btn-pill --primary --lg">
+          <span class="btn-pill__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+            </svg>
           </span>
-          <h1 class="tt-hero__title">טבע <em>ונופים</em><br>של יפן</h1>
-          <p class="tt-hero__desc">נופים עוצרי נשימה שנראים כמו חלום — מהר פוג'י המושלג ועד יערות הבמבו של קיוטו. טיול שבו הטבע הוא הכוכב הראשי.</p>
-          <a href="#contact" class="btn-pill --primary --lg">
-            <span class="btn-pill__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
-              </svg>
-            </span>
-            <span class="btn-pill__text">בואו נתכנן יחד</span>
-          </a>
-        </div>
+          <span class="btn-pill__text">בואו נתכנן יחד</span>
+        </a>
       </div>
+    </section>
 
-      <div class="tt-hero__meta">
-        <div class="tt-hero__meta-inner">
-          <div class="tt-hero__meta-item">
-            <span class="tt-hero__meta-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-              </svg>
-            </span>
-            <span>
-              <span class="tt-hero__meta-label">משך מומלץ</span>
-              <span class="tt-hero__meta-value">8–12 ימים</span>
-            </span>
-          </div>
-          <div class="tt-hero__meta-item">
-            <span class="tt-hero__meta-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-              </svg>
-            </span>
-            <span>
-              <span class="tt-hero__meta-label">יעדים מרכזיים</span>
-              <span class="tt-hero__meta-value">3 אזורים</span>
-            </span>
-          </div>
-          <div class="tt-hero__meta-item">
-            <span class="tt-hero__meta-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-              </svg>
-            </span>
-            <span>
-              <span class="tt-hero__meta-label">עונה אופטימלית</span>
-              <span class="tt-hero__meta-value">אפריל / אוקטובר</span>
-            </span>
-          </div>
-          <div class="tt-hero__meta-item">
-            <span class="tt-hero__meta-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2 a15 15 0 0 1 0 20 a15 15 0 0 1 0-20 z"/>
-              </svg>
-            </span>
-            <span>
-              <span class="tt-hero__meta-label">רמת קושי</span>
-              <span class="tt-hero__meta-value">קל עד בינוני</span>
-            </span>
-          </div>
+    <!-- ════════════════════ 2. META STRIP (white) ════════════════════ -->
+    <section class="tt-meta" aria-label="פרטי הטיול">
+      <div class="tt-meta__inner">
+        <div class="tt-meta__item">
+          <span class="tt-meta__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </span>
+          <span>
+            <span class="tt-meta__label">משך מומלץ</span>
+            <span class="tt-meta__value">8–12 ימים</span>
+          </span>
+        </div>
+        <div class="tt-meta__item">
+          <span class="tt-meta__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+          </span>
+          <span>
+            <span class="tt-meta__label">יעדים מרכזיים</span>
+            <span class="tt-meta__value">3 אזורים</span>
+          </span>
+        </div>
+        <div class="tt-meta__item">
+          <span class="tt-meta__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </span>
+          <span>
+            <span class="tt-meta__label">עונה אופטימלית</span>
+            <span class="tt-meta__value">אפריל / אוקטובר</span>
+          </span>
+        </div>
+        <div class="tt-meta__item">
+          <span class="tt-meta__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 22 L10 8 L14 14 L18 10 L22 22 Z"/><circle cx="17" cy="6" r="2"/>
+            </svg>
+          </span>
+          <span>
+            <span class="tt-meta__label">רמת קושי</span>
+            <span class="tt-meta__value">קל עד בינוני</span>
+          </span>
         </div>
       </div>
     </section>
 
-    <!-- ════════════════════ 2. INTRO ════════════════════ -->
-    <section class="tt-intro" id="tt-intro">
-      <div class="tt-intro__kanji" aria-hidden="true">山</div>
-      <div class="tt-intro__inner">
-        <div data-aos="fade-up" data-aos-anchor="#tt-intro">
-          <span class="tt-intro__eyebrow">על סוג הטיול</span>
-          <h2 class="tt-intro__title">יפן — מקום בו הטבע הוא דת</h2>
-        </div>
-        <div class="tt-intro__text" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#tt-intro">
-          <p>טיול טבע ביפן הוא הרבה יותר מתמונות יפות. זה שילוב של הרים מקודשים, יערות עתיקים שטופחו במשך מאות שנים, אגמי קריסטל המשקפים את פוג'י, וכפרים שעדיין חיים בקצב של עונת השנה.</p>
-          <p>המסלול שלנו לוקח אתכם מהעיר אל הטבע ובחזרה — שילוב מושלם בין נוחות לאותנטיות, בין צילומים אגדיים למקומות שלא תמצאו במדריכי תיירות.</p>
-        </div>
-      </div>
-    </section>
+    <!-- ════════════════════ 3. ABOUT (2-col with sidebar) ════════════════════ -->
+    <section class="tt-about hotel-detail">
+      <div class="container">
+        <div class="hotel-detail__layout">
 
-    <!-- ════════════════════ 3. FEATURES ════════════════════ -->
-    <section class="tt-features" id="tt-features">
-      <div class="tt-features__inner">
-        <header class="tt-features__head" data-aos="fade-up" data-aos-anchor="#tt-features">
-          <div>
-            <h2>החוויות <em>שיגדירו</em> את הטיול</h2>
-            <p>ארבעת המוקדים שעושים את הטיול הזה לבלתי נשכח</p>
+          <div class="hotel-detail__body" data-aos="fade-up" data-aos-duration="600">
+            <h2>על סוג הטיול</h2>
+            <p>טיול טבע ונופים ביפן הוא הרבה יותר מתמונות יפות. זו חוויה שמשלבת הרים מקודשים, יערות עתיקים שטופחו במשך מאות שנים, אגמי קריסטל המשקפים את פוג'י, וכפרים שעדיין חיים בקצב של עונת השנה.</p>
+            <p>המסלול שלנו לוקח אתכם מהעיר אל הטבע ובחזרה — שילוב מושלם בין נוחות לאותנטיות, בין צילומים אגדיים למקומות שלא תמצאו במדריכי תיירות. כל פינה ביפן מציעה משהו אחר, ואנחנו נדאג שתחוו את הטוב ביותר.</p>
+
+            <h2>מה כולל סוג הטיול</h2>
+            <ul class="attraction-tips">
+              <li><strong>הר פוג'י ואגמי הרשת</strong> — החוויה האיקונית של יפן עם השתקפויותיו האגדיות באגמים</li>
+              <li><strong>יערות במבו קסומים</strong> — ההליכה בין הבמבו של ארשייאמה היא חוויה מדיטטיבית בלתי נשכחת</li>
+              <li><strong>גנים יפניים מסורתיים</strong> — קינקאקו-ג'י, ריוקאן-ג'י וריאן-ג'י כדוגמאות מובהקות לעיצוב יפני</li>
+              <li><strong>כפרים עתיקים</strong> — שירקאווה-גו ומגה, אתרי מורשת עולמית של יוניסקו</li>
+              <li><strong>מקדשים בלב הטבע</strong> — מקדשי הר וקאמי יוטוקו עם מסלולי הליכה מרהיבים</li>
+              <li><strong>לינה ברייוקאן</strong> — מלונות מסורתיים עם אונסן ונוף לפוג'י</li>
+            </ul>
+
+            <h2>למי הטיול הזה מתאים?</h2>
+            <p>הטיול מתאים למטיילים שאוהבים שילוב של נופים מרהיבים, חוויות תרבותיות ועיר קצובה במידה. הוא לא דורש כושר גבוה — רוב המסלולים נגישים — אך כן דורש פתיחות לחוויות חדשות, נכונות לקום בבוקר מוקדם לתפוס את הצילומים הטובים ביותר, ולהאט את הקצב כדי באמת להבחין בפרטים הקטנים שעושים את ההבדל.</p>
           </div>
-          <span class="tt-features__count"><strong>04</strong> / חוויות</span>
-        </header>
 
-        <div class="tt-features__grid">
-          <article class="tt-feature" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#tt-features">
-            <img class="tt-feature__img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=900&q=80" alt="הר פוג'י ואגמות" loading="lazy">
-            <div class="tt-feature__overlay" aria-hidden="true"></div>
-            <span class="tt-feature__num">01</span>
-            <div class="tt-feature__body">
-              <h3 class="tt-feature__title">הר פוג'י ואגמי הרשת</h3>
-              <p class="tt-feature__desc">החוויה האיקונית ביותר של יפן — הר פוג'י המושלג עם השתקפויותיו האגדיות באגמי קאוואגוצ'יקו וסאיקו.</p>
-            </div>
-          </article>
+          <aside data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
+            <div class="hotel-detail__sidebar-card">
+              <h3>מידע על הטיול</h3>
 
-          <article class="tt-feature" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#tt-features">
-            <img class="tt-feature__img" src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=900&q=80" alt="יער הבמבו ארשייאמה" loading="lazy">
-            <div class="tt-feature__overlay" aria-hidden="true"></div>
-            <span class="tt-feature__num">02</span>
-            <div class="tt-feature__body">
-              <h3 class="tt-feature__title">יערות במבו קסומים</h3>
-              <p class="tt-feature__desc">ההליכה בין הבמבו של ארשייאמה — חוויה מדיטטיבית שאי אפשר לשחזר.</p>
-            </div>
-          </article>
-
-          <article class="tt-feature" data-aos="fade-up" data-aos-delay="300" data-aos-anchor="#tt-features">
-            <img class="tt-feature__img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900&q=80" alt="גנים יפניים" loading="lazy">
-            <div class="tt-feature__overlay" aria-hidden="true"></div>
-            <span class="tt-feature__num">03</span>
-            <div class="tt-feature__body">
-              <h3 class="tt-feature__title">גנים יפניים מסורתיים</h3>
-              <p class="tt-feature__desc">הרמוניה מושלמת בין האדם לטבע — קינקאקו-ג'י, ריוקאן-ג'י וריאן-ג'י.</p>
-            </div>
-          </article>
-
-          <article class="tt-feature" data-aos="fade-up" data-aos-delay="400" data-aos-anchor="#tt-features">
-            <img class="tt-feature__img" src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=900&q=80" alt="כפר עתיק שירקאווה-גו" loading="lazy">
-            <div class="tt-feature__overlay" aria-hidden="true"></div>
-            <span class="tt-feature__num">04</span>
-            <div class="tt-feature__body">
-              <h3 class="tt-feature__title">כפרים עתיקים ושקטים</h3>
-              <p class="tt-feature__desc">שירקאווה-גו ומגה — בלב יפן האמיתית שהזמן שכח אותה.</p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ════════════════════ 4. DESTINATIONS ════════════════════ -->
-    <section class="tt-destinations" id="tt-destinations">
-      <div class="tt-destinations__inner">
-        <header class="tt-destinations__head" data-aos="fade-up" data-aos-anchor="#tt-destinations">
-          <div>
-            <h2>יעדים <em>מומלצים</em> לטיול הזה</h2>
-            <p>שלושת היעדים שמציעים את חוויות הטבע הטובות ביותר ביפן</p>
-          </div>
-          <a href="destinations.html" class="tt-destinations__link">
-            <span>לכל היעדים</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-          </a>
-        </header>
-
-        <div class="tt-destinations__grid">
-          <a href="destination-tokyo.html" class="tt-dest-card --hero" data-aos="fade-up" data-aos-delay="100" data-aos-anchor="#tt-destinations">
-            <img src="https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=900&q=80" alt="אזור הר פוג'י" loading="lazy">
-            <div class="tt-dest-card__overlay" aria-hidden="true"></div>
-            <span class="tt-dest-card__arrow" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-            </span>
-            <div class="tt-dest-card__body">
-              <span class="tt-dest-card__meta">יעד מרכזי</span>
-              <h3 class="tt-dest-card__name">אזור הר פוג'י</h3>
-              <p class="tt-dest-card__tag">פריפקטורת יאמנאשי ושיזוקה · 3–4 ימים</p>
-            </div>
-          </a>
-
-          <div class="tt-destinations__col-stack">
-            <a href="destination-tokyo.html" class="tt-dest-card --small" data-aos="fade-up" data-aos-delay="200" data-aos-anchor="#tt-destinations">
-              <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=900&q=80" alt="קיוטו" loading="lazy">
-              <div class="tt-dest-card__overlay" aria-hidden="true"></div>
-              <span class="tt-dest-card__arrow" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-              </span>
-              <div class="tt-dest-card__body">
-                <span class="tt-dest-card__meta">יעד מרכזי</span>
-                <h3 class="tt-dest-card__name">קיוטו</h3>
-                <p class="tt-dest-card__tag">ארשייאמה ויערות הבמבו</p>
+              <div class="hotel-detail__sidebar-highlight">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span><strong>משך מומלץ:</strong> 8–12 ימים, מותאם לפי קצב</span>
               </div>
-            </a>
 
-            <a href="destination-tokyo.html" class="tt-dest-card --small" data-aos="fade-up" data-aos-delay="300" data-aos-anchor="#tt-destinations">
-              <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=900&q=80" alt="שירקאווה-גו" loading="lazy">
-              <div class="tt-dest-card__overlay" aria-hidden="true"></div>
-              <span class="tt-dest-card__arrow" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-              </span>
-              <div class="tt-dest-card__body">
-                <span class="tt-dest-card__meta">יעד מרכזי</span>
-                <h3 class="tt-dest-card__name">שירקאווה-גו</h3>
-                <p class="tt-dest-card__tag">אתר מורשת עולמי · כפרי גאשו</p>
+              <div class="hotel-detail__sidebar-highlight">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <span><strong>יעדים מרכזיים:</strong> פוג'י, קיוטו, שירקאווה-גו</span>
               </div>
-            </a>
-          </div>
+
+              <div class="hotel-detail__sidebar-highlight">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="18" rx="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                <span><strong>עונה אופטימלית:</strong> אפריל (פריחת דובדבן) ואוקטובר–נובמבר (סתיו)</span>
+              </div>
+
+              <div class="hotel-detail__sidebar-highlight">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M2 22 L10 8 L14 14 L18 10 L22 22 Z"/>
+                  <circle cx="17" cy="6" r="2"/>
+                </svg>
+                <span><strong>רמת קושי:</strong> קל עד בינוני, נגיש לרוב המטיילים</span>
+              </div>
+
+              <div class="hotel-detail__sidebar-highlight">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="2" y1="12" x2="22" y2="12"/>
+                  <path d="M12 2 a15 15 0 0 1 0 20 a15 15 0 0 1 0-20 z"/>
+                </svg>
+                <span><strong>קהל יעד:</strong> זוגות, משפחות, חובבי טבע וצילום</span>
+              </div>
+
+              <a class="hotel-detail__sidebar-cta" href="#contact">להתאמת טיול אישי</a>
+            </div>
+          </aside>
+
         </div>
       </div>
     </section>
 
-    <!-- ════════════════════ 5. ITINERARY ════════════════════ -->
+    <!-- ════════════════════ 4. ITINERARY (unchanged) ════════════════════ -->
     <section class="tt-itinerary" id="tt-itinerary">
       <div class="tt-itinerary__inner">
         <header class="tt-itinerary__head" data-aos="fade-up" data-aos-anchor="#tt-itinerary">
@@ -1354,14 +858,13 @@
       </div>
     </section>
 
-    <!-- ════════════════════ 6. TIPS ════════════════════ -->
+    <!-- ════════════════════ 5. TIPS (light bg) ════════════════════ -->
     <section class="tt-tips" id="tt-tips">
-      <div class="tt-tips__kanji" aria-hidden="true">心</div>
       <div class="tt-tips__inner">
         <header class="tt-tips__head" data-aos="fade-up" data-aos-anchor="#tt-tips">
           <div>
-            <span class="tt-tips__eyebrow">TIPS · 心配り</span>
-            <h2>טיפים <em>שיעשו את ההבדל</em></h2>
+            <span class="tt-tips__eyebrow">טיפים</span>
+            <h2>מה <em>שיעשה את ההבדל</em> בטיול</h2>
           </div>
           <div>
             <p>מה שחשוב לדעת לפני שיוצאים לטיול טבע ביפן — מהזמנים הנכונים ועד הטיפים הקטנים שהופכים את החוויה למיוחדת.</p>
@@ -1428,7 +931,7 @@
       </div>
     </section>
 
-    <!-- ════════════════════ 7. RELATED ATTRACTIONS ════════════════════ -->
+    <!-- ════════════════════ 6. RELATED ATTRACTIONS (edge-to-edge slider) ════════════════════ -->
     <section class="related-attractions" id="related-attractions">
       <div class="related-attractions__header">
         <h2 class="related-attractions__title">אטרקציות <em>טבע</em> מומלצות</h2>
@@ -1439,7 +942,7 @@
         <div class="swiper-wrapper">
           <div class="swiper-slide">
             <a href="attraction-detail.html" class="attractions__card">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=800" alt="הר פוג'י" loading="lazy">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=700" alt="הר פוג'י" loading="lazy">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <div class="attractions__card-body">
                 <h3 class="attractions__card-title">הר פוג'י</h3>
@@ -1452,7 +955,7 @@
           </div>
           <div class="swiper-slide">
             <a href="attraction-detail.html" class="attractions__card">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="יער הבמבו ארשייאמה" loading="lazy">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=700" alt="יער הבמבו ארשייאמה" loading="lazy">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <div class="attractions__card-body">
                 <h3 class="attractions__card-title">יער הבמבו — ארשייאמה</h3>
@@ -1465,7 +968,7 @@
           </div>
           <div class="swiper-slide">
             <a href="attraction-detail.html" class="attractions__card">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800" alt="שירקאווה-גו" loading="lazy">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=700" alt="שירקאווה-גו" loading="lazy">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <div class="attractions__card-body">
                 <h3 class="attractions__card-title">שירקאווה-גו</h3>
@@ -1478,11 +981,63 @@
           </div>
           <div class="swiper-slide">
             <a href="attraction-detail.html" class="attractions__card">
-              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=800" alt="גן קינקאקו-ג'י" loading="lazy">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=700" alt="גן קינקאקו-ג'י" loading="lazy">
               <span class="attractions__card-overlay" aria-hidden="true"></span>
               <div class="attractions__card-body">
                 <h3 class="attractions__card-title">גן קינקאקו-ג'י</h3>
                 <p class="attractions__card-loc">קיוטו</p>
+              </div>
+              <span class="attractions__card-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              </span>
+            </a>
+          </div>
+          <div class="swiper-slide">
+            <a href="attraction-detail.html" class="attractions__card">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=700" alt="פושימי אינארי" loading="lazy">
+              <span class="attractions__card-overlay" aria-hidden="true"></span>
+              <div class="attractions__card-body">
+                <h3 class="attractions__card-title">מקדש פושימי אינארי</h3>
+                <p class="attractions__card-loc">קיוטו</p>
+              </div>
+              <span class="attractions__card-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              </span>
+            </a>
+          </div>
+          <div class="swiper-slide">
+            <a href="attraction-detail.html" class="attractions__card">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=700" alt="פנס אבן בגן" loading="lazy">
+              <span class="attractions__card-overlay" aria-hidden="true"></span>
+              <div class="attractions__card-body">
+                <h3 class="attractions__card-title">גני קוראקואן</h3>
+                <p class="attractions__card-loc">אוקאיאמה</p>
+              </div>
+              <span class="attractions__card-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              </span>
+            </a>
+          </div>
+          <div class="swiper-slide">
+            <a href="attraction-detail.html" class="attractions__card">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=700" alt="טבע יפני" loading="lazy">
+              <span class="attractions__card-overlay" aria-hidden="true"></span>
+              <div class="attractions__card-body">
+                <h3 class="attractions__card-title">חצי האי איזו</h3>
+                <p class="attractions__card-loc">פריפקטורת שיזוקה</p>
+              </div>
+              <span class="attractions__card-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              </span>
+            </a>
+          </div>
+          <div class="swiper-slide">
+            <a href="attraction-detail.html" class="attractions__card">
+              <img class="attractions__card-img" src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=700" alt="עצי אורן ביפן" loading="lazy">
+              <span class="attractions__card-overlay" aria-hidden="true"></span>
+              <div class="attractions__card-body">
+                <h3 class="attractions__card-title">פארק לאומי ניקו</h3>
+                <p class="attractions__card-loc">פריפקטורת טוצ'יגי</p>
               </div>
               <span class="attractions__card-arrow" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -1504,7 +1059,7 @@
       </div>
     </section>
 
-    <!-- ════════════════════ 8. WHY US ════════════════════ -->
+    <!-- ════════════════════ 7. WHY US ════════════════════ -->
     <section class="why-us" id="why-us">
       <div class="container">
         <header class="why-us__head">
@@ -1615,7 +1170,7 @@
       </div>
     </section>
 
-    <!-- ════════════════════ 9. CONTACT ════════════════════ -->
+    <!-- ════════════════════ 8. CONTACT ════════════════════ -->
     <section class="contact" id="contact">
       <img class="contact__leaf contact__leaf--right" src="images/right_leaf.png" alt="" loading="lazy">
       <img class="contact__leaf contact__leaf--left" src="images/left_leaf.png" alt="" loading="lazy">
@@ -1735,16 +1290,12 @@
     AOS.init({ once: true, duration: 700, easing: 'ease-out-quad' });
 
     new Swiper('#related-attractions-slider', {
-      slidesPerView: 1,
-      spaceBetween: 20,
+      slidesPerView: 'auto',
+      spaceBetween: 16,
       navigation: {
         prevEl: '.related-attractions__prev',
         nextEl: '.related-attractions__next',
       },
-      breakpoints: {
-        769: { slidesPerView: 2, spaceBetween: 24 },
-        1024: { slidesPerView: 3, spaceBetween: 28 }
-      }
     });
   </script>
 </body>
