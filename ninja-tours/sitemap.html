@@ -34,6 +34,14 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
+    body.lang-en {
+      font-family: 'Montserrat', 'Noto Sans Hebrew', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* ───── i18n VISIBILITY ───── */
+    .lang-he [data-i18n="en"] { display: none !important; }
+    .lang-en [data-i18n="he"] { display: none !important; }
+
     .container { max-width: 1280px; margin-inline: auto; padding-inline: 2rem; }
     @media (max-width: 768px) { .container { padding-inline: 1.25rem; } }
 
@@ -47,11 +55,6 @@
       padding: 4rem 0 3.5rem;
       position: relative;
       overflow: hidden;
-    }
-    .hero::after {
-      content: '';
-      position: absolute; bottom: -1px; left: 0; right: 0; height: 1.5rem;
-      background: linear-gradient(to bottom, transparent, var(--c-cream));
     }
 
     .hero__top {
@@ -93,7 +96,7 @@
     .hero__eyebrow::before { content: ''; width: 1.5rem; height: 2px; background: var(--c-red); }
     .hero h1 {
       font-size: clamp(2.25rem, 5vw, 3.75rem);
-      font-weight: 900; line-height: 1.05; letter-spacing: -0.025em;
+      font-weight: 900; line-height: 1.1; letter-spacing: -0.025em;
       margin-bottom: 1rem;
     }
     .hero h1 em { font-style: normal; color: #ff8070; }
@@ -101,6 +104,87 @@
       font-size: 1.05rem;
       color: rgba(255,250,245,0.78);
       max-width: 42rem; line-height: 1.7;
+    }
+
+    /* ───── LANG TOGGLE ───── */
+    .lang-toggle {
+      position: absolute;
+      top: 1.5rem;
+      inset-inline-end: 1.5rem;
+      z-index: 20;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: var(--c-cream);
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s, border-color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .lang-toggle:hover {
+      background: rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.4);
+    }
+    .lang-toggle svg { width: 0.85rem; height: 0.85rem; }
+    @media (max-width: 768px) {
+      .lang-toggle { padding: 0.35rem 0.75rem; font-size: 0.68rem; }
+    }
+
+    /* ───── SIDE NAV (TOC) ───── */
+    .side-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      inset-inline-end: 1.5rem;
+      z-index: 50;
+      background: var(--c-white);
+      border: 1px solid var(--c-line);
+      border-radius: 0.875rem;
+      padding: 0.6rem 0.5rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+    .side-nav__list { list-style: none; display: flex; flex-direction: column; gap: 0.1rem; }
+    .side-nav__item a {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 0.85rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--c-mid);
+      text-decoration: none;
+      border-radius: 0.45rem;
+      transition: color 0.2s, background 0.2s;
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+    }
+    .side-nav__item a:hover {
+      color: var(--c-blue);
+      background: var(--c-cream-deep);
+    }
+    .side-nav__item a.--active {
+      color: var(--c-white);
+      background: var(--c-blue);
+    }
+    .side-nav__item a::before {
+      content: '';
+      width: 0.4rem; height: 0.4rem;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.4;
+      flex-shrink: 0;
+    }
+    .side-nav__item a.--active::before { opacity: 1; }
+
+    @media (max-width: 1180px) {
+      .side-nav { display: none; }
     }
 
     /* ───── STATS ───── */
@@ -156,6 +240,9 @@
       font-size: 0.85rem; font-weight: 600; color: var(--c-blue);
       font-family: 'Montserrat', sans-serif;
     }
+    .section-head__lead {
+      color: var(--c-mid); margin-top: 0.5rem; font-size: 0.95rem;
+    }
 
     /* ───── PALETTE ───── */
     .palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
@@ -184,8 +271,8 @@
       font-family: 'Montserrat', sans-serif;
       font-size: 0.72rem; color: var(--c-mid); letter-spacing: 0.05em;
     }
-    .type-card__sample-hebrew { font-family: 'Noto Sans Hebrew', sans-serif; }
-    .type-card__sample-latin  { font-family: 'Montserrat', sans-serif; }
+    .type-card__sample-hebrew { font-family: 'Noto Sans Hebrew', sans-serif; direction: rtl; text-align: right; }
+    .type-card__sample-latin  { font-family: 'Montserrat', sans-serif; direction: ltr; text-align: left; }
     .type-card .h-sample { font-size: 1.5rem; font-weight: 800; color: var(--c-blue); margin-bottom: 0.5rem; line-height: 1.2; }
     .type-card .b-sample { font-size: 0.95rem; color: var(--c-ink); }
 
@@ -243,6 +330,13 @@
       font-size: 0.72rem; color: var(--c-blue-dark);
     }
     .page-card__desc { font-size: 0.85rem; color: var(--c-mid); line-height: 1.6; flex-grow: 1; }
+    .page-card__desc code {
+      background: var(--c-cream-deep);
+      padding: 0.1rem 0.35rem;
+      border-radius: 0.25rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.78rem; color: var(--c-blue-dark);
+    }
 
     /* ───── CPT WRAP ───── */
     .cpt-wrap {
@@ -324,11 +418,31 @@
       font-size: 0.72rem; color: rgba(255,255,255,0.7);
     }
 
-    section[id] { scroll-margin-top: 2rem; }
+    section[id] { scroll-margin-top: 1rem; }
   </style>
 </head>
 
-<body>
+<body class="lang-he">
+
+  <!-- ═════════ LANG TOGGLE ═════════ -->
+  <button class="lang-toggle" type="button" aria-label="Switch language">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+      <path d="M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10z"/>
+    </svg>
+    <span data-i18n="he">EN</span>
+    <span data-i18n="en">עברית</span>
+  </button>
+
+  <!-- ═════════ SIDE NAV (TOC) ═════════ -->
+  <nav class="side-nav" aria-label="Sections">
+    <ul class="side-nav__list">
+      <li class="side-nav__item"><a href="#brand">Brand</a></li>
+      <li class="side-nav__item"><a href="#pages">Pages</a></li>
+      <li class="side-nav__item"><a href="#cpts">Post Types</a></li>
+      <li class="side-nav__item"><a href="#system">System</a></li>
+    </ul>
+  </nav>
 
   <!-- ═════════ HERO ═════════ -->
   <header class="hero">
@@ -353,9 +467,13 @@
 
       <div class="hero__title-block">
         <p class="hero__eyebrow">Project Overview · Design System</p>
-        <h1>סקירת <em>הפרויקט</em> — מפת תוכן וזהות חזותית</h1>
+        <h1>
+          <span data-i18n="he">סקירת <em>הפרויקט</em> — מפת תוכן וזהות חזותית</span>
+          <span data-i18n="en">Project <em>Overview</em> — Content Map &amp; Visual Identity</span>
+        </h1>
         <p class="hero__lead">
-          מסמך פנימי שמרכז את כל עמודי ה-WordPress וה-CPTs של אתר Ninja Tours, לצד הזהות החזותית של המותג. משמש כנקודת מוצא לכל מי שמצטרף לפרויקט — מפתחים, מנהלי תוכן, או הלקוח עצמו.
+          <span data-i18n="he">מסמך פנימי שמרכז את כל עמודי ה-WordPress וה-CPTs של אתר Ninja Tours, לצד הזהות החזותית של המותג. משמש כנקודת מוצא לכל מי שמצטרף לפרויקט — מפתחים, מנהלי תוכן, או הלקוח עצמו.</span>
+          <span data-i18n="en">An internal reference doc consolidating every WordPress page and CPT in the Ninja Tours site, alongside the brand's visual identity. A starting point for anyone joining the project — developers, content managers, or the client.</span>
         </p>
       </div>
     </div>
@@ -391,7 +509,10 @@
       <div class="section-head">
         <div class="section-head__left">
           <p class="section-head__eyebrow">Brand</p>
-          <h2>זהות חזותית · <em>Design Tokens</em></h2>
+          <h2>
+            <span data-i18n="he">זהות חזותית · <em>Design Tokens</em></span>
+            <span data-i18n="en">Visual <em>Identity</em> · Design Tokens</span>
+          </h2>
         </div>
       </div>
 
@@ -464,8 +585,14 @@
       <div class="section-head">
         <div class="section-head__left">
           <p class="section-head__eyebrow">Pages</p>
-          <h2>עמודי <em>תוכן רגילים</em></h2>
-          <p style="color: var(--c-mid); margin-top: 0.5rem; font-size: 0.95rem;">עמודי WordPress רגילים תחת Pages — כל אחד עם ACF Flexible Content מאוכלס.</p>
+          <h2>
+            <span data-i18n="he">עמודי <em>תוכן רגילים</em></span>
+            <span data-i18n="en">Standard <em>Content Pages</em></span>
+          </h2>
+          <p class="section-head__lead">
+            <span data-i18n="he">עמודי WordPress רגילים תחת Pages — כל אחד עם ACF Flexible Content מאוכלס.</span>
+            <span data-i18n="en">Regular WordPress pages under Pages — each pre-populated with ACF Flexible Content.</span>
+          </p>
         </div>
         <span class="section-head__count">12 Pages</span>
       </div>
@@ -477,9 +604,15 @@
             <span class="page-card__type --page">Page</span>
             <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2 7-7 7 7 2 2v9a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg>
           </div>
-          <h3>Home · עמוד הבית</h3>
+          <h3>
+            <span data-i18n="he">Home · עמוד הבית</span>
+            <span data-i18n="en">Home</span>
+          </h3>
           <p class="page-card__path"><code>/</code></p>
-          <p class="page-card__desc">Hero, Why Us, Trip Types, Attractions, Use Cases, Testimonials, Contact.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">Hero, Why Us, Trip Types, Attractions, Use Cases, Testimonials, Contact.</span>
+            <span data-i18n="en">Hero, Why Us, Trip Types, Attractions, Use Cases, Testimonials, Contact.</span>
+          </p>
         </article>
 
         <article class="page-card">
@@ -487,9 +620,15 @@
             <span class="page-card__type --page">Page</span>
             <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
           </div>
-          <h3>אודות</h3>
+          <h3>
+            <span data-i18n="he">אודות</span>
+            <span data-i18n="en">About</span>
+          </h3>
           <p class="page-card__path"><code>/about/</code></p>
-          <p class="page-card__desc">סיפור החברה — story, values, process, testimonials, contact.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">סיפור החברה — story, values, process, testimonials, contact.</span>
+            <span data-i18n="en">Company story, values, process, testimonials, and contact.</span>
+          </p>
         </article>
 
         <article class="page-card">
@@ -497,9 +636,15 @@
             <span class="page-card__type --page">Page</span>
             <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           </div>
-          <h3>יצירת קשר</h3>
+          <h3>
+            <span data-i18n="he">יצירת קשר</span>
+            <span data-i18n="en">Contact</span>
+          </h3>
           <p class="page-card__path"><code>/contact/</code></p>
-          <p class="page-card__desc">עמוד יצירת קשר עם טופס CF7, טיפים לתכנון ומשפכי מידע.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">עמוד יצירת קשר עם טופס CF7, טיפים לתכנון ומשפכי מידע.</span>
+            <span data-i18n="en">Contact page with CF7 form, planning tips, and info funnels.</span>
+          </p>
         </article>
 
         <article class="page-card">
@@ -507,9 +652,15 @@
             <span class="page-card__type --page">Page</span>
             <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </div>
-          <h3>למה אנחנו</h3>
+          <h3>
+            <span data-i18n="he">למה אנחנו</span>
+            <span data-i18n="en">Why Us</span>
+          </h3>
           <p class="page-card__path"><code>/why-us/</code></p>
-          <p class="page-card__desc">עמוד ייעודי — Why Us + Process + Testimonials + Contact.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">עמוד ייעודי — Why Us + Process + Testimonials + Contact.</span>
+            <span data-i18n="en">Dedicated landing — Why Us + Process + Testimonials + Contact.</span>
+          </p>
         </article>
 
         <article class="page-card">
@@ -517,9 +668,15 @@
             <span class="page-card__type --page">Posts Page</span>
             <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
           </div>
-          <h3>בלוג</h3>
+          <h3>
+            <span data-i18n="he">בלוג</span>
+            <span data-i18n="en">Blog</span>
+          </h3>
           <p class="page-card__path"><code>/blog/</code> · <code>home.php</code></p>
-          <p class="page-card__desc">עמוד הפוסטים — אינדקס פוסטים עם פילטר קטגוריות.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">עמוד הפוסטים — אינדקס פוסטים עם פילטר קטגוריות.</span>
+            <span data-i18n="en">Posts page — blog index with category filter tabs.</span>
+          </p>
         </article>
 
         <article class="page-card">
@@ -527,9 +684,15 @@
             <span class="page-card__type --archive">Archive Page</span>
             <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           </div>
-          <h3>יעדים</h3>
+          <h3>
+            <span data-i18n="he">יעדים</span>
+            <span data-i18n="en">Destinations</span>
+          </h3>
           <p class="page-card__path"><code>/destinations/</code></p>
-          <p class="page-card__desc">העמוד הראשי של היעדים — Page Hero (עריכה אישית) + Destinations grid אוטומטי.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">העמוד הראשי של היעדים — Page Hero (עריכה אישית) + Destinations grid אוטומטי.</span>
+            <span data-i18n="en">Destinations main page — editable Page Hero + auto-loading Destinations grid.</span>
+          </p>
         </article>
 
         <article class="page-card">
@@ -537,9 +700,15 @@
             <span class="page-card__type --archive">Archive Page</span>
             <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16"/><path d="M9 7h6M9 11h6M9 15h2"/></svg>
           </div>
-          <h3>מלונות</h3>
+          <h3>
+            <span data-i18n="he">מלונות</span>
+            <span data-i18n="en">Hotels</span>
+          </h3>
           <p class="page-card__path"><code>/hotels/</code></p>
-          <p class="page-card__desc">Page Hero + Custom Dropdowns (עיר/קהל יעד) + Hotels Catalog.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">Page Hero + Custom Dropdowns (עיר/קהל יעד) + Hotels Catalog.</span>
+            <span data-i18n="en">Page Hero + Custom Dropdowns (city / audience) + Hotels Catalog.</span>
+          </p>
         </article>
 
         <article class="page-card">
@@ -547,9 +716,15 @@
             <span class="page-card__type --archive">Archive Page</span>
             <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22h20M5 22V8l7-5 7 5v14M9 22v-8h6v8"/></svg>
           </div>
-          <h3>אטרקציות</h3>
+          <h3>
+            <span data-i18n="he">אטרקציות</span>
+            <span data-i18n="en">Attractions</span>
+          </h3>
           <p class="page-card__path"><code>/attractions/</code></p>
-          <p class="page-card__desc">Page Hero + סינון לפי קטגוריה + Attractions Catalog.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">Page Hero + סינון לפי קטגוריה + Attractions Catalog.</span>
+            <span data-i18n="en">Page Hero + category filter + Attractions Catalog.</span>
+          </p>
         </article>
 
         <article class="page-card">
@@ -557,9 +732,15 @@
             <span class="page-card__type --archive">Archive Page</span>
             <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
           </div>
-          <h3>טיולים שבנינו</h3>
+          <h3>
+            <span data-i18n="he">טיולים שבנינו</span>
+            <span data-i18n="en">Use Cases</span>
+          </h3>
           <p class="page-card__path"><code>/use-cases/</code></p>
-          <p class="page-card__desc">סינון 3-מימדי + פופ-אפ עם פרטי מסלול מלאים והמלצת לקוח.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">סינון 3-מימדי + פופ-אפ עם פרטי מסלול מלאים והמלצת לקוח.</span>
+            <span data-i18n="en">3-axis filter + popup with full itinerary and customer testimonial.</span>
+          </p>
         </article>
 
         <article class="page-card">
@@ -567,9 +748,15 @@
             <span class="page-card__type --archive">Archive Page</span>
             <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
           </div>
-          <h3>סוגי טיולים</h3>
+          <h3>
+            <span data-i18n="he">סוגי טיולים</span>
+            <span data-i18n="en">Travel Types</span>
+          </h3>
           <p class="page-card__path"><code>/travel-types/</code></p>
-          <p class="page-card__desc">תצוגה של כל סוגי הטיולים — לחיצה פותחת עמוד פנימי לסוג.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">תצוגה של כל סוגי הטיולים — לחיצה פותחת עמוד פנימי לסוג.</span>
+            <span data-i18n="en">Display of all travel types — click opens the detail page for each.</span>
+          </p>
         </article>
 
         <article class="page-card">
@@ -577,9 +764,15 @@
             <span class="page-card__type --page">Service Page</span>
             <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="3" y1="14" x2="21" y2="14"/><circle cx="8" cy="18" r="2"/><circle cx="16" cy="18" r="2"/><line x1="3" y1="11" x2="21" y2="11"/></svg>
           </div>
-          <h3>תחבורה ורכבות</h3>
+          <h3>
+            <span data-i18n="he">תחבורה ורכבות</span>
+            <span data-i18n="en">Transportation &amp; Rail</span>
+          </h3>
           <p class="page-card__path"><code>/service/</code></p>
-          <p class="page-card__desc">JR Pass · Service Hero + Train Types + Service Info + Process + FAQ + Contact.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">JR Pass · Service Hero + Train Types + Service Info + Process + FAQ + Contact.</span>
+            <span data-i18n="en">JR Pass · Service Hero + Train Types + Service Info + Process + FAQ + Contact.</span>
+          </p>
         </article>
 
         <article class="page-card">
@@ -587,9 +780,15 @@
             <span class="page-card__type --page">Service Page</span>
             <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M14 10l7-7M8 21H3v-5M10 14l-7 7"/></svg>
           </div>
-          <h3>השכרת רכבים</h3>
+          <h3>
+            <span data-i18n="he">השכרת רכבים</span>
+            <span data-i18n="en">Car Rental</span>
+          </h3>
           <p class="page-card__path"><code>/car-rental/</code></p>
-          <p class="page-card__desc">Service Hero + Car Types + Service Info + FAQ + Contact.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">Service Hero + Car Types + Service Info + FAQ + Contact.</span>
+            <span data-i18n="en">Service Hero + Car Types + Service Info + FAQ + Contact.</span>
+          </p>
         </article>
 
       </div>
@@ -602,8 +801,14 @@
       <div class="section-head">
         <div class="section-head__left">
           <p class="section-head__eyebrow">Custom Post Types</p>
-          <h2>פוסט <em>טייפים</em></h2>
-          <p style="color: var(--c-mid); margin-top: 0.5rem; font-size: 0.95rem;">6 סוגי תוכן דינמיים — לכל אחד עמוד ראשי ועמוד פנימי.</p>
+          <h2>
+            <span data-i18n="he">פוסט <em>טייפים</em></span>
+            <span data-i18n="en">Custom <em>Post Types</em></span>
+          </h2>
+          <p class="section-head__lead">
+            <span data-i18n="he">6 סוגי תוכן דינמיים — לכל אחד עמוד ראשי ועמוד פנימי.</span>
+            <span data-i18n="en">6 dynamic content types — each with a main Page and a single template.</span>
+          </p>
         </div>
         <span class="section-head__count">6 CPTs · 7 Taxonomies</span>
       </div>
@@ -616,8 +821,12 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             </div>
             <div>
-              <h3>Destinations · יעדים</h3>
-              <p>ערים ואזורים ביפן · <code>destination</code></p>
+              <h3>Destinations<span data-i18n="he"> · יעדים</span></h3>
+              <p>
+                <span data-i18n="he">ערים ואזורים ביפן · </span>
+                <span data-i18n="en">Cities and regions in Japan · </span>
+                <code>destination</code>
+              </p>
             </div>
           </div>
           <div class="cpt-wrap__taxonomies">
@@ -628,15 +837,27 @@
         <div class="page-grid">
           <article class="page-card">
             <div class="page-card__top"><span class="page-card__type --archive">Main Page</span></div>
-            <h3>קטלוג יעדים</h3>
+            <h3>
+              <span data-i18n="he">קטלוג יעדים</span>
+              <span data-i18n="en">Destinations Catalog</span>
+            </h3>
             <p class="page-card__path"><code>/destinations/</code></p>
-            <p class="page-card__desc">ניתן לעריכה תחת Pages → יעדים. רק ה-Hero ניתן לעריכה — הקטלוג נטען אוטומטית מה-CPT.</p>
+            <p class="page-card__desc">
+              <span data-i18n="he">ניתן לעריכה תחת Pages → יעדים. רק ה-Hero ניתן לעריכה — הקטלוג נטען אוטומטית מה-CPT.</span>
+              <span data-i18n="en">Editable under Pages → Destinations. Only the Hero is editable — the catalog auto-loads from the CPT.</span>
+            </p>
           </article>
           <article class="page-card">
             <div class="page-card__top"><span class="page-card__type --single">Single Template</span></div>
-            <h3>יעד פנימי</h3>
+            <h3>
+              <span data-i18n="he">יעד פנימי</span>
+              <span data-i18n="en">Destination Single</span>
+            </h3>
             <p class="page-card__path"><code>/destination/{slug}/</code></p>
-            <p class="page-card__desc">תיאור מורחב, אטרקציות מומלצות, מלונות נבחרים והמלצות מקומיות.</p>
+            <p class="page-card__desc">
+              <span data-i18n="he">תיאור מורחב, אטרקציות מומלצות, מלונות נבחרים והמלצות מקומיות.</span>
+              <span data-i18n="en">Extended description, recommended attractions, selected hotels, and local tips.</span>
+            </p>
           </article>
         </div>
       </div>
@@ -649,8 +870,12 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16"/><path d="M9 7h6M9 11h6M9 15h6"/></svg>
             </div>
             <div>
-              <h3>Hotels · מלונות</h3>
-              <p>מלונות ביפן · <code>hotel</code></p>
+              <h3>Hotels<span data-i18n="he"> · מלונות</span></h3>
+              <p>
+                <span data-i18n="he">מלונות ביפן · </span>
+                <span data-i18n="en">Hotels in Japan · </span>
+                <code>hotel</code>
+              </p>
             </div>
           </div>
           <div class="cpt-wrap__taxonomies">
@@ -662,15 +887,27 @@
         <div class="page-grid">
           <article class="page-card">
             <div class="page-card__top"><span class="page-card__type --archive">Main Page</span></div>
-            <h3>קטלוג מלונות</h3>
+            <h3>
+              <span data-i18n="he">קטלוג מלונות</span>
+              <span data-i18n="en">Hotels Catalog</span>
+            </h3>
             <p class="page-card__path"><code>/hotels/</code></p>
-            <p class="page-card__desc">סינון Custom Dropdowns לפי עיר וקהל יעד + רשת כרטיסיות מלונות.</p>
+            <p class="page-card__desc">
+              <span data-i18n="he">סינון Custom Dropdowns לפי עיר וקהל יעד + רשת כרטיסיות מלונות.</span>
+              <span data-i18n="en">Custom Dropdowns filtering by city and audience + hotel cards grid.</span>
+            </p>
           </article>
           <article class="page-card">
             <div class="page-card__top"><span class="page-card__type --single">Single Template</span></div>
-            <h3>מלון פנימי</h3>
+            <h3>
+              <span data-i18n="he">מלון פנימי</span>
+              <span data-i18n="en">Hotel Single</span>
+            </h3>
             <p class="page-card__path"><code>/hotel/{slug}/</code></p>
-            <p class="page-card__desc">גלריה, תיאור, חדרים, מתקנים, מפת מיקום, וסליידר מלונות נוספים.</p>
+            <p class="page-card__desc">
+              <span data-i18n="he">גלריה, תיאור, חדרים, מתקנים, מפת מיקום, וסליידר מלונות נוספים.</span>
+              <span data-i18n="en">Gallery, description, rooms, amenities, map, and related hotels slider.</span>
+            </p>
           </article>
         </div>
       </div>
@@ -683,8 +920,12 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22h20M5 22V8l7-5 7 5v14M9 22v-8h6v8"/></svg>
             </div>
             <div>
-              <h3>Attractions · אטרקציות</h3>
-              <p>אתרים, פעילויות וחוויות · <code>attraction</code></p>
+              <h3>Attractions<span data-i18n="he"> · אטרקציות</span></h3>
+              <p>
+                <span data-i18n="he">אתרים, פעילויות וחוויות · </span>
+                <span data-i18n="en">Sites, activities, and experiences · </span>
+                <code>attraction</code>
+              </p>
             </div>
           </div>
           <div class="cpt-wrap__taxonomies">
@@ -695,15 +936,27 @@
         <div class="page-grid">
           <article class="page-card">
             <div class="page-card__top"><span class="page-card__type --archive">Main Page</span></div>
-            <h3>קטלוג אטרקציות</h3>
+            <h3>
+              <span data-i18n="he">קטלוג אטרקציות</span>
+              <span data-i18n="en">Attractions Catalog</span>
+            </h3>
             <p class="page-card__path"><code>/attractions/</code></p>
-            <p class="page-card__desc">סינון לפי קטגוריה + רשת כרטיסיות אטרקציות עם hover effects.</p>
+            <p class="page-card__desc">
+              <span data-i18n="he">סינון לפי קטגוריה + רשת כרטיסיות אטרקציות עם hover effects.</span>
+              <span data-i18n="en">Category filter + attraction cards grid with hover effects.</span>
+            </p>
           </article>
           <article class="page-card">
             <div class="page-card__top"><span class="page-card__type --single">Single Template</span></div>
-            <h3>אטרקציה פנימית</h3>
+            <h3>
+              <span data-i18n="he">אטרקציה פנימית</span>
+              <span data-i18n="en">Attraction Single</span>
+            </h3>
             <p class="page-card__path"><code>/attraction/{slug}/</code></p>
-            <p class="page-card__desc">גלריה, פרטי מידע (שעות/מחיר/הגעה), תיאור, טיפים, מפה, סליידר אטרקציות קשורות.</p>
+            <p class="page-card__desc">
+              <span data-i18n="he">גלריה, פרטי מידע (שעות/מחיר/הגעה), תיאור, טיפים, מפה, סליידר אטרקציות קשורות.</span>
+              <span data-i18n="en">Gallery, info chips (hours / price / getting there), description, tips, map, and related attractions slider.</span>
+            </p>
           </article>
         </div>
       </div>
@@ -716,8 +969,12 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
             </div>
             <div>
-              <h3>Use Cases · טיולים שבנינו</h3>
-              <p>מסלולי טיול מותאמים שביצענו · <code>use-case</code></p>
+              <h3>Use Cases<span data-i18n="he"> · טיולים שבנינו</span></h3>
+              <p>
+                <span data-i18n="he">מסלולי טיול מותאמים שביצענו · </span>
+                <span data-i18n="en">Custom trip itineraries we've built · </span>
+                <code>use-case</code>
+              </p>
             </div>
           </div>
           <div class="cpt-wrap__taxonomies">
@@ -730,15 +987,27 @@
         <div class="page-grid">
           <article class="page-card">
             <div class="page-card__top"><span class="page-card__type --archive">Main Page</span></div>
-            <h3>קטלוג Use Cases</h3>
+            <h3>
+              <span data-i18n="he">קטלוג Use Cases</span>
+              <span data-i18n="en">Use Cases Catalog</span>
+            </h3>
             <p class="page-card__path"><code>/use-cases/</code></p>
-            <p class="page-card__desc">סינון 3-מימדי + כרטיסיות שפותחות פופ-אפ עם המלצת לקוח.</p>
+            <p class="page-card__desc">
+              <span data-i18n="he">סינון 3-מימדי + כרטיסיות שפותחות פופ-אפ עם המלצת לקוח.</span>
+              <span data-i18n="en">3-axis filter + cards opening a popup with the customer testimonial.</span>
+            </p>
           </article>
           <article class="page-card">
             <div class="page-card__top"><span class="page-card__type --single">Single Template</span></div>
-            <h3>Use Case פנימי</h3>
+            <h3>
+              <span data-i18n="he">Use Case פנימי</span>
+              <span data-i18n="en">Use Case Single</span>
+            </h3>
             <p class="page-card__path"><code>/use-case/{slug}/</code></p>
-            <p class="page-card__desc">תיאור מלא, תאריכים, נפשות, ציטוט מהלקוח.</p>
+            <p class="page-card__desc">
+              <span data-i18n="he">תיאור מלא, תאריכים, נפשות, ציטוט מהלקוח.</span>
+              <span data-i18n="en">Full description, dates, party size, and customer quote.</span>
+            </p>
           </article>
         </div>
       </div>
@@ -751,8 +1020,12 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
             </div>
             <div>
-              <h3>Travel Types · סוגי טיולים</h3>
-              <p>קטגוריות שמופיעות בסליידר בעמוד הבית · <code>travel-type</code></p>
+              <h3>Travel Types<span data-i18n="he"> · סוגי טיולים</span></h3>
+              <p>
+                <span data-i18n="he">קטגוריות שמופיעות בסליידר בעמוד הבית · </span>
+                <span data-i18n="en">Categories shown in the homepage trip-types slider · </span>
+                <code>travel-type</code>
+              </p>
             </div>
           </div>
           <div class="cpt-wrap__taxonomies">
@@ -763,15 +1036,27 @@
         <div class="page-grid">
           <article class="page-card">
             <div class="page-card__top"><span class="page-card__type --archive">Main Page</span></div>
-            <h3>סוגי טיולים</h3>
+            <h3>
+              <span data-i18n="he">סוגי טיולים</span>
+              <span data-i18n="en">Travel Types</span>
+            </h3>
             <p class="page-card__path"><code>/travel-types/</code></p>
-            <p class="page-card__desc">תצוגה של כל הקונספטים: טבע ונופים, תרבות ומסורת, ערים תוססות, שילוב מושלם.</p>
+            <p class="page-card__desc">
+              <span data-i18n="he">תצוגה של כל הקונספטים: טבע ונופים, תרבות ומסורת, ערים תוססות, שילוב מושלם.</span>
+              <span data-i18n="en">Display of all concepts: Nature, Culture, Cities, and Mixed.</span>
+            </p>
           </article>
           <article class="page-card">
             <div class="page-card__top"><span class="page-card__type --single">Single Template</span></div>
-            <h3>סוג טיול פנימי</h3>
+            <h3>
+              <span data-i18n="he">סוג טיול פנימי</span>
+              <span data-i18n="en">Travel Type Single</span>
+            </h3>
             <p class="page-card__path"><code>/travel-type/{slug}/</code></p>
-            <p class="page-card__desc">Hero · Meta Strip · About+Sidebar · Itinerary · Tips · Attractions · Why Us · Contact.</p>
+            <p class="page-card__desc">
+              <span data-i18n="he">Hero · Meta Strip · About+Sidebar · Itinerary · Tips · Attractions · Why Us · Contact.</span>
+              <span data-i18n="en">Hero · Meta Strip · About + Sidebar · Itinerary · Tips · Attractions · Why Us · Contact.</span>
+            </p>
           </article>
         </div>
       </div>
@@ -784,8 +1069,12 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L14.5 8.5 L21.5 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.5 9.2 L9.5 8.5 Z"/></svg>
             </div>
             <div>
-              <h3>Client Reviews · המלצות לקוחות</h3>
-              <p>המלצות בסליידר, ללא עמוד פומבי · <code>client-review</code></p>
+              <h3>Client Reviews<span data-i18n="he"> · המלצות לקוחות</span></h3>
+              <p>
+                <span data-i18n="he">המלצות בסליידר, ללא עמוד פומבי · </span>
+                <span data-i18n="en">Slider testimonials, no public page · </span>
+                <code>client-review</code>
+              </p>
             </div>
           </div>
           <div class="cpt-wrap__taxonomies">
@@ -796,9 +1085,20 @@
         <div class="page-grid">
           <article class="page-card" style="grid-column: span 2;">
             <div class="page-card__top"><span class="page-card__type --system">Slider Only</span></div>
-            <h3>אין עמוד פומבי</h3>
-            <p class="page-card__path">משמש רק בסקשן <code>testimonials</code></p>
-            <p class="page-card__desc">המלצות לקוחות נכנסות לאתר רק דרך סקשן ייעודי — ללא עמוד ארכיון או עמוד פנימי. ניתן לבחירה ידנית או לטעינה אוטומטית של 10 ההמלצות האחרונות.</p>
+            <h3>
+              <span data-i18n="he">אין עמוד פומבי</span>
+              <span data-i18n="en">No Public Page</span>
+            </h3>
+            <p class="page-card__path">
+              <span data-i18n="he">משמש רק בסקשן </span>
+              <span data-i18n="en">Used only by the </span>
+              <code>testimonials</code>
+              <span data-i18n="en"> section</span>
+            </p>
+            <p class="page-card__desc">
+              <span data-i18n="he">המלצות לקוחות נכנסות לאתר רק דרך סקשן ייעודי — ללא עמוד ארכיון או עמוד פנימי. ניתן לבחירה ידנית או לטעינה אוטומטית של 10 ההמלצות האחרונות.</span>
+              <span data-i18n="en">Client reviews enter the site only through a dedicated section — no archive or single page. Manual curation or automatic loading of the latest 10 reviews.</span>
+            </p>
           </article>
         </div>
       </div>
@@ -812,8 +1112,14 @@
       <div class="section-head">
         <div class="section-head__left">
           <p class="section-head__eyebrow">System</p>
-          <h2>עמודי <em>מערכת</em> ותבניות</h2>
-          <p style="color: var(--c-mid); margin-top: 0.5rem; font-size: 0.95rem;">קבצי תבנית של ה-WordPress שמטפלים במצבים ייעודיים.</p>
+          <h2>
+            <span data-i18n="he">עמודי <em>מערכת</em> ותבניות</span>
+            <span data-i18n="en">System <em>Pages</em> &amp; Templates</span>
+          </h2>
+          <p class="section-head__lead">
+            <span data-i18n="he">קבצי תבנית של ה-WordPress שמטפלים במצבים ייעודיים.</span>
+            <span data-i18n="en">WordPress template files handling specialized states.</span>
+          </p>
         </div>
       </div>
 
@@ -823,42 +1129,60 @@
           <div class="page-card__top"><span class="page-card__type --system">System</span></div>
           <h3>404</h3>
           <p class="page-card__path"><code>404.php</code></p>
-          <p class="page-card__desc">דף שגיאה ידידותי כשהמשתמש מגיע לכתובת לא קיימת.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">דף שגיאה ידידותי כשהמשתמש מגיע לכתובת לא קיימת.</span>
+            <span data-i18n="en">Friendly error page shown when the user reaches a non-existent URL.</span>
+          </p>
         </article>
 
         <article class="page-card">
           <div class="page-card__top"><span class="page-card__type --system">System</span></div>
           <h3>Search Results</h3>
           <p class="page-card__path"><code>search.php</code></p>
-          <p class="page-card__desc">דף תוצאות חיפוש כללי באתר.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">דף תוצאות חיפוש כללי באתר.</span>
+            <span data-i18n="en">Site-wide search results page.</span>
+          </p>
         </article>
 
         <article class="page-card">
           <div class="page-card__top"><span class="page-card__type --template">Template</span></div>
           <h3>Flexible Content Page</h3>
           <p class="page-card__path"><code>views/page-flexible-content.php</code></p>
-          <p class="page-card__desc">תבנית עמוד יחידה שמשמשת כל עמודי ה-Pages הציבוריים.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">תבנית עמוד יחידה שמשמשת כל עמודי ה-Pages הציבוריים.</span>
+            <span data-i18n="en">The single page template used by every public-facing Page.</span>
+          </p>
         </article>
 
         <article class="page-card">
           <div class="page-card__top"><span class="page-card__type --template">Template</span></div>
           <h3>Header / Footer</h3>
           <p class="page-card__path"><code>header.php · footer.php</code></p>
-          <p class="page-card__desc">2 תפריטים בהדר, לוגו דואלי + CTA. Footer עם תפריט נוסף ופרטי קשר.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">2 תפריטים בהדר, לוגו דואלי + CTA. Footer עם תפריט נוסף ופרטי קשר.</span>
+            <span data-i18n="en">2 menus in the header, dual logo + CTA. Footer with an additional menu and contact details.</span>
+          </p>
         </article>
 
         <article class="page-card">
           <div class="page-card__top"><span class="page-card__type --template">Template</span></div>
           <h3>Single Post</h3>
           <p class="page-card__path"><code>single.php</code></p>
-          <p class="page-card__desc">תבנית פוסט בלוג מלא — Hero, Cover, Layout, מחבר, פוסטים קשורים.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">תבנית פוסט בלוג מלא — Hero, Cover, Layout, מחבר, פוסטים קשורים.</span>
+            <span data-i18n="en">Full blog post template — Hero, Cover, Layout, author block, related posts.</span>
+          </p>
         </article>
 
         <article class="page-card">
           <div class="page-card__top"><span class="page-card__type --template">Template</span></div>
           <h3>Section Dispatcher</h3>
           <p class="page-card__path"><code>content/flexible-content.php</code></p>
-          <p class="page-card__desc">לולאה שמפעילה את הקובץ המתאים מ-<code>content/sections/</code>.</p>
+          <p class="page-card__desc">
+            <span data-i18n="he">לולאה שמפעילה את הקובץ המתאים מ-<code>content/sections/</code>.</span>
+            <span data-i18n="en">Loop that fires the matching file from <code>content/sections/</code>.</span>
+          </p>
         </article>
 
       </div>
@@ -875,22 +1199,76 @@
           </div>
           <div class="footer__brand-text">
             <strong>Ninja Tours</strong>
-            <span>Client Project · Hebrew RTL · 2026</span>
+            <span>
+              <span data-i18n="he">פרויקט לקוח · עברית RTL · 2026</span>
+              <span data-i18n="en">Client Project · Hebrew RTL · 2026</span>
+            </span>
           </div>
         </div>
 
         <div class="footer__credit">
-          <div class="footer__credit-label">Designed &amp; Developed by</div>
+          <div class="footer__credit-label">
+            <span data-i18n="he">עוצב ופותח על ידי</span>
+            <span data-i18n="en">Designed &amp; Developed by</span>
+          </div>
           <div class="footer__credit-name"><em>Elevate</em> Digital Studio</div>
         </div>
       </div>
 
       <div class="footer__bottom">
-        <p>Internal project documentation · Not part of the public website</p>
+        <p>
+          <span data-i18n="he">תיעוד פנימי לפרויקט · אינו חלק מהאתר הציבורי</span>
+          <span data-i18n="en">Internal project documentation · Not part of the public website</span>
+        </p>
         <p><code>ninja-tours/sitemap.html</code></p>
       </div>
     </div>
   </footer>
 
+  <script>
+    (function () {
+      'use strict';
+
+      // ─── Language toggle ─────────────────────────────────────────────
+      function setLang(lang) {
+        document.body.classList.remove('lang-he', 'lang-en');
+        document.body.classList.add('lang-' + lang);
+        document.documentElement.lang = lang;
+        document.documentElement.dir  = lang === 'he' ? 'rtl' : 'ltr';
+        try { localStorage.setItem('sitemap-lang', lang); } catch (e) {}
+      }
+
+      var saved = 'he';
+      try { saved = localStorage.getItem('sitemap-lang') || 'he'; } catch (e) {}
+      setLang(saved);
+
+      var toggle = document.querySelector('.lang-toggle');
+      if (toggle) {
+        toggle.addEventListener('click', function () {
+          var current = document.body.classList.contains('lang-en') ? 'en' : 'he';
+          setLang(current === 'he' ? 'en' : 'he');
+        });
+      }
+
+      // ─── Side nav active section highlighting ───────────────────────
+      var sections = document.querySelectorAll('section[id]');
+      var navLinks = document.querySelectorAll('.side-nav__item a');
+
+      if ('IntersectionObserver' in window && sections.length && navLinks.length) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              var id = entry.target.id;
+              navLinks.forEach(function (link) {
+                link.classList.toggle('--active', link.getAttribute('href') === '#' + id);
+              });
+            }
+          });
+        }, { rootMargin: '-30% 0px -55% 0px' });
+
+        sections.forEach(function (s) { observer.observe(s); });
+      }
+    })();
+  </script>
 </body>
 </html>
