@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ChevronLeft, Calendar, User, Globe, Smartphone, Database, Image as ImageIcon, Users } from 'lucide-react';
+import { ChevronLeft, Calendar, User, Globe, Smartphone, Database, Image as ImageIcon, Users, Activity } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { formatDateHe } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageTree } from '@/components/projects/page-tree';
+import { ActivityFeed } from '@/components/activity/activity-feed';
 import type { PageStatus, PageType } from '@/lib/supabase/database.types';
 
 interface Props {
@@ -73,6 +74,31 @@ export default async function ProjectPage({ params }: Props) {
     .order('order', { ascending: true });
 
   const cpts = (cptsData ?? []) as { id: string; slug: string; name_he: string | null; name_en: string | null }[];
+
+  // Recent activity
+  const { data: activitiesData } = await supabase
+    .from('activity_log')
+    .select('id, project_id, actor_id, actor_label, kind, entity_type, entity_id, summary, created_at')
+    .eq('project_id', project.id)
+    .order('created_at', { ascending: false })
+    .limit(10);
+
+  const activities = (activitiesData ?? []) as Array<{
+    id: string; project_id: string; actor_id: string | null; actor_label: string | null;
+    kind: string; entity_type: string; entity_id: string | null; summary: string | null; created_at: string;
+  }>;
+  const actorIds = Array.from(new Set(activities.map(a => a.actor_id).filter(Boolean) as string[]));
+
+  const profilesById: Record<string, { id: string; email: string; full_name: string | null }> = {};
+  if (actorIds.length > 0) {
+    const { data: profilesData } = await supabase
+      .from('profiles')
+      .select('id, email, full_name')
+      .in('id', actorIds);
+    for (const p of (profilesData ?? []) as { id: string; email: string; full_name: string | null }[]) {
+      profilesById[p.id] = p;
+    }
+  }
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -179,6 +205,13 @@ export default async function ProjectPage({ params }: Props) {
           <Users className="h-4 w-4" />
           צוות ({members?.length ?? 0})
         </Link>
+        <Link
+          href={`/projects/${project.slug}/activity`}
+          className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-4 py-2 text-sm font-medium transition-colors hover:border-brand hover:bg-brand/5"
+        >
+          <Activity className="h-4 w-4" />
+          פעילות מלאה
+        </Link>
       </div>
 
       <Card>
@@ -194,6 +227,21 @@ export default async function ProjectPage({ params }: Props) {
             projectSlug={project.slug as string}
             pages={pages}
             cpts={cpts}
+          />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>פעילות אחרונה</CardTitle>
+          <CardDescription>10 הפעולות האחרונות (מתעדכן בזמן אמת)</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ActivityFeed
+            projectId={project.id}
+            initialActivities={activities}
+            profiles={profilesById}
+            limit={10}
           />
         </CardContent>
       </Card>
