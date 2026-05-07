@@ -20,7 +20,25 @@ function timeAgo(iso: string): string {
 }
 
 export async function GithubActivity({ repo }: Props) {
-  if (!repo) return null;
+  if (!repo) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Github className="h-5 w-5" />
+            פעילות בריפו
+          </CardTitle>
+          <CardDescription>לא הוגדר GitHub repo לפרויקט.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-start gap-2 rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900">
+            <Info className="mt-0.5 h-4 w-4 shrink-0" />
+            <p>הוסיפו <code dir="ltr">owner/repo</code> בקוביית GitHub שמעל כדי לראות פה את ה-commits.</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
   const { commits, error, hasToken } = await listRecentCommits(repo, 15);
 
   return (
