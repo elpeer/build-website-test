@@ -10,7 +10,7 @@ type Result = { ok: true } | { ok: false; error: string };
 export async function updateProjectBrand(
   projectId: string,
   projectSlug: string,
-  patch: { brand_tokens?: BrandTokens; vercel_url?: string | null }
+  patch: { brand_tokens?: BrandTokens; vercel_url?: string | null; description?: string | null }
 ): Promise<Result> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -19,6 +19,7 @@ export async function updateProjectBrand(
   const update: Record<string, unknown> = {};
   if (patch.brand_tokens !== undefined) update.design_tokens = patch.brand_tokens as unknown as Json;
   if (patch.vercel_url   !== undefined) update.vercel_url    = patch.vercel_url?.trim() || null;
+  if (patch.description  !== undefined) update.description   = patch.description?.trim() || null;
 
   const { error } = await supabase.from('projects').update(update).eq('id', projectId);
   if (error) return { ok: false, error: error.message };

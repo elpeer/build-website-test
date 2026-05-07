@@ -6,20 +6,25 @@ import { updateProjectBrand } from '@/app/actions/project-settings';
 import type { BrandTokens } from '@/lib/brand-tokens';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Save, AlertCircle, CheckCircle2, Globe } from 'lucide-react';
+import { Save, AlertCircle, CheckCircle2, Globe, FileText } from 'lucide-react';
 
 interface Props {
   projectId: string;
   projectSlug: string;
   initialBrand: BrandTokens;
   initialVercelUrl: string | null;
+  initialDescription: string | null;
 }
 
-export function ProjectBrandForm({ projectId, projectSlug, initialBrand, initialVercelUrl }: Props) {
+export function ProjectBrandForm({
+  projectId, projectSlug, initialBrand, initialVercelUrl, initialDescription,
+}: Props) {
   const router = useRouter();
   const [tokens, setTokens] = useState<BrandTokens>(initialBrand);
   const [vercelUrl, setVercelUrl] = useState(initialVercelUrl ?? '');
+  const [description, setDescription] = useState(initialDescription ?? '');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -37,7 +42,9 @@ export function ProjectBrandForm({ projectId, projectSlug, initialBrand, initial
     setError(null); setSuccess(false);
     startTransition(async () => {
       const result = await updateProjectBrand(projectId, projectSlug, {
-        brand_tokens: tokens, vercel_url: vercelUrl || null,
+        brand_tokens: tokens,
+        vercel_url: vercelUrl || null,
+        description: description || null,
       });
       if (result.ok) { setSuccess(true); router.refresh(); }
       else setError(result.error);
@@ -46,6 +53,16 @@ export function ProjectBrandForm({ projectId, projectSlug, initialBrand, initial
 
   return (
     <div className="space-y-5">
+      <section>
+        <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-muted-fg">
+          <FileText className="h-4 w-4" />
+          תיאור הפרויקט
+        </h3>
+        <Textarea rows={3} value={description}
+                  onChange={e => { setDescription(e.target.value); setSuccess(false); }}
+                  placeholder="משפט קצר שמתאר את הפרויקט (יוצג בכותרת הדאשבורד)" />
+      </section>
+
       <section>
         <h3 className="mb-3 text-sm font-semibold text-muted-fg">צבעים</h3>
         <div className="grid gap-3 md:grid-cols-2">

@@ -21,10 +21,10 @@ export default async function ProjectSettingsPage({ params }: Props) {
 
   const { data: project } = await supabase
     .from('projects')
-    .select('id, slug, name, design_tokens, vercel_url, github_repo')
+    .select('id, slug, name, description, design_tokens, vercel_url, github_repo')
     .eq('slug', slug)
     .single<{
-      id: string; slug: string; name: string;
+      id: string; slug: string; name: string; description: string | null;
       design_tokens: unknown; vercel_url: string | null; github_repo: string | null;
     }>();
   if (!project) notFound();
@@ -80,6 +80,7 @@ export default async function ProjectSettingsPage({ params }: Props) {
             projectSlug={project.slug}
             initialBrand={tokens}
             initialVercelUrl={project.vercel_url}
+            initialDescription={project.description}
           />
         </CardContent>
       </Card>
