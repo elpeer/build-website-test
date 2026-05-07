@@ -7,6 +7,7 @@ import { AddSectionPicker } from '@/components/sections/add-section-picker';
 import { SectionRow } from '@/components/sections/section-row';
 import { DesignUploader } from '@/components/designs/design-uploader';
 import { PageStructureSuggester } from '@/components/pages/page-structure-suggester';
+import { DeletePageButton } from '@/components/pages/delete-page-button';
 import type { DesignViewport, PageStatus, PageType, SectionStatus } from '@/lib/supabase/database.types';
 
 interface Props {
@@ -128,6 +129,12 @@ export default async function PageDetailPage({ params }: Props) {
 
   const designs: DesignThumb[] = (designsData ?? []) as DesignThumb[];
 
+  // Children pages — for the delete confirmation summary
+  const { count: childrenCount } = await supabase
+    .from('pages')
+    .select('id', { count: 'exact', head: true })
+    .eq('parent_id', page.id);
+
   const TypeIcon = PAGE_TYPE_ICONS[page.type];
   const ctx = {
     pageId:      page.id,
@@ -164,6 +171,15 @@ export default async function PageDetailPage({ params }: Props) {
             {PAGE_TYPE_LABELS[page.type]}
           </p>
         </div>
+        <DeletePageButton
+          pageId={page.id}
+          pageSlug={page.slug}
+          pageName={page.name_he ?? page.slug}
+          projectSlug={project.slug}
+          sectionsCount={sections.length}
+          designsCount={designs.length}
+          childrenCount={childrenCount ?? 0}
+        />
       </header>
 
       {page.notes && (

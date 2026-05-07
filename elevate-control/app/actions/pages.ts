@@ -89,6 +89,49 @@ export async function createPage(formData: FormData): Promise<CreatePageResult> 
   return { ok: true, pageId: page.id, slug: page.slug };
 }
 
+type DeletePageResult =
+  | { ok: true }
+  | { ok: false; error: string };
+
+/**
+ * Delete a page. Cascades to its sections (FK cascade); designs that pointed
+ * at it become unattached (page_id → null). Children pages (parent_id) are
+ * orphaned to top-level rather than deleted.
+ */
+export async function deletePage(
+  pageId: string,
+  projectSlug: string
+): Promise<DeletePageResult> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+
+  const { data: page } = await supabase
+    .from('pages')
+    .select('id, project_id, name_he, slug')
+    .eq('id', pageId)
+    .single<{ id: string; project_id: string; name_he: string | null; slug: string }>();
+  if (!page) return { ok: false, error: 'העמוד לא נמצא' };
+
+  // Promote children to top-level (parent_id = null) so the tree stays sane
+  await supabase.from('pages').update({ parent_id: null }).eq('parent_id', pageId);
+
+  const { error } = await supabase.from('pages').delete().eq('id', pageId);
+  if (error) return { ok: false, error: error.message };
+
+  await supabase.from('activity_log').insert({
+    project_id:  page.project_id,
+    actor_id:    user.id,
+    kind:        'deleted',
+    entity_type: 'page',
+    entity_id:   page.id,
+    summary:     `נמחק עמוד: ${page.name_he ?? page.slug}`,
+  });
+
+  revalidatePath(`/projects/${projectSlug}`);
+  return { ok: true };
+}
+
 type UpdatePageStatusResult = { ok: boolean; error?: string };
 
 /**
