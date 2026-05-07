@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft, Lock } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
@@ -6,7 +6,8 @@ import {
   WORKSPACE_BY_SLUG, isWorkspaceUnlocked,
   type WorkspaceSlug, type ProjectStage,
 } from '@/lib/client-workspaces';
-import { WorkspaceStub } from '@/components/client/workspace-stub';
+import { WorkspaceContent } from '@/components/client/workspace-content';
+import type { Json } from '@/lib/supabase/database.types';
 
 interface Props {
   params: Promise<{ projectSlug: string; workspace: string }>;
@@ -24,21 +25,35 @@ export default async function ClientWorkspacePage({ params }: Props) {
   if (!meta) notFound();
 
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect('/sign-in');
+
   const { data: project } = await supabase
     .from('projects')
-    .select('id, slug, name, current_stage')
+    .select('id, slug, name, current_stage, workspace_settings')
     .eq('slug', projectSlug)
-    .single<{ id: string; slug: string; name: string; current_stage: ProjectStage }>();
+    .single<{
+      id: string; slug: string; name: string;
+      current_stage: ProjectStage;
+      workspace_settings: Json | null;
+    }>();
   if (!project) notFound();
+
+  const { data: profile } = await supabase
+    .from('profiles').select('studio_admin, role').eq('id', user.id)
+    .single<{ studio_admin: boolean; role: string }>();
+  const isStudio = !!profile?.studio_admin || (profile?.role !== 'client' && profile?.role !== undefined);
 
   const { data: override } = await supabase
     .from('client_workspace_overrides')
     .select('unlocked, message')
-    .eq('project_id', project.id)
-    .eq('workspace', workspace)
+    .eq('project_id', project.id).eq('workspace', workspace)
     .maybeSingle<{ unlocked: boolean; message: string | null }>();
 
   const unlocked = isWorkspaceUnlocked(meta, project.current_stage, override);
+
+  const settingsAll = (project.workspace_settings as Record<string, Record<string, string | null>>) ?? {};
+  const workspaceSettings = settingsAll[meta.slug] ?? {};
 
   return (
     <div className="space-y-6">
@@ -63,7 +78,14 @@ export default async function ClientWorkspacePage({ params }: Props) {
           <p className="mt-2 text-sm text-muted-fg">{override?.message ?? meta.lockedMsg}</p>
         </div>
       ) : (
-        <WorkspaceStub workspace={meta} projectSlug={project.slug} />
+        <WorkspaceContent
+          projectId={project.id}
+          projectSlug={project.slug}
+          workspace={meta}
+          workspaceSettings={workspaceSettings}
+          currentUserId={user.id}
+          isStudio={isStudio}
+        />
       )}
     </div>
   );
