@@ -10,14 +10,18 @@
 
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import type { Database } from './database.types';
+
+// NB: not using the <Database> generic until we run `pnpm db:types` against
+// the live schema. The hand-written placeholder types break supabase-js'
+// Insert/Update inference (Partial<Row> + recursive Json collapses to never).
+// Loose typing here means individual queries cast the result to local types.
 
 type CookieToSet = { name: string; value: string; options?: CookieOptions };
 
 export async function createClient() {
   const cookieStore = await cookies();
 
-  return createServerClient<Database>(
+  return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
@@ -49,7 +53,7 @@ export function createServiceClient() {
     throw new Error('SUPABASE_SECRET_KEY is not set');
   }
 
-  return createServerClient<Database>(
+  return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SECRET_KEY,
     {
