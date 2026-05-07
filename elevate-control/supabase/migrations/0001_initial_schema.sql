@@ -538,12 +538,14 @@ create policy "studio admins manage memberships"
   using (is_studio_admin())
   with check (is_studio_admin());
 
--- ─── PAGES / SECTIONS / CPTs / TAXONOMIES / DESIGNS — same pattern ───
+-- ─── PAGES / CPTs / TAXONOMIES / DESIGNS / ACTIVITY_LOG — same pattern ─
+-- (sections is handled separately below — it joins through pages because
+--  it has no project_id column of its own)
 do $$
 declare
   t text;
 begin
-  foreach t in array array['cpts','taxonomies','pages','sections','designs','activity_log']
+  foreach t in array array['cpts','taxonomies','pages','designs','activity_log']
   loop
     execute format($f$
       create policy "members read %1$s"
@@ -571,10 +573,7 @@ begin
   end loop;
 end $$;
 
--- Sections is special — it has no project_id, only page_id
-drop policy if exists "members read sections" on sections;
-drop policy if exists "members write sections" on sections;
-
+-- Sections — joins through pages, since it has no project_id of its own
 create policy "members read sections via page"
   on sections for select
   to authenticated
