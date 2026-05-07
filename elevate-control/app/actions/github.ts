@@ -153,6 +153,41 @@ export async function listRecentCommits(repo: string, limit = 20): Promise<Commi
  * rate limits); otherwise falls back to anonymous access (public repos
  * only, ~60 reqs/hour).
  */
+/**
+ * Read the file paths inside the project's html_path folder. Returns an
+ * array of relative paths (relative to html_path), only files (not dirs).
+ * Empty array if the repo or branch can't be read.
+ */
+export async function listProjectHtmlFiles(projectId: string): Promise<{
+  files: string[];
+  htmlPath: string;
+  vercelUrl: string | null;
+  error: string | null;
+}> {
+  const supabase = await createClient();
+  const { data: project } = await supabase
+    .from('projects')
+    .select('github_repo, github_html_path, vercel_url')
+    .eq('id', projectId)
+    .single<{ github_repo: string | null; github_html_path: string | null; vercel_url: string | null }>();
+
+  if (!project?.github_repo) {
+    return { files: [], htmlPath: '', vercelUrl: null, error: 'לא הוגדר GitHub repo' };
+  }
+  const htmlPath = (project.github_html_path ?? 'frontend').replace(/\/+$/, '');
+
+  for (const ref of ['main', 'master']) {
+    try {
+      const tree = await ghListTree(project.github_repo, ref, htmlPath);
+      const files = tree.filter(e => e.type === 'blob').map(e => e.path);
+      return { files, htmlPath, vercelUrl: project.vercel_url, error: null };
+    } catch (e) {
+      console.warn(`[listProjectHtmlFiles] ${ref} read failed:`, (e as Error).message);
+    }
+  }
+  return { files: [], htmlPath, vercelUrl: project.vercel_url, error: 'לא הצלחנו לקרוא את ה-repo' };
+}
+
 async function ghListTree(
   repo: string,
   ref: string,

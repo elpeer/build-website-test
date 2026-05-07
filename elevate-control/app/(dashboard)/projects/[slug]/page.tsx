@@ -8,6 +8,7 @@ import { PageTree } from '@/components/projects/page-tree';
 import { ActivityFeed } from '@/components/activity/activity-feed';
 import { GithubPanel } from '@/components/projects/github-panel';
 import { GithubActivity } from '@/components/projects/github-activity';
+import { PagesPreviewBoard } from '@/components/projects/pages-preview-board';
 import { StageControl } from '@/components/projects/stage-control';
 import { ClientCommentsFeed } from '@/components/projects/client-comments-feed';
 import { WorkspaceNavigator } from '@/components/projects/workspace-navigator';
@@ -254,6 +255,11 @@ export default async function ProjectPage({ params }: Props) {
       />
 
       <GithubActivity repo={(project.github_repo as string | null) ?? null} />
+
+      <PagesPreviewBoard
+        projectId={project.id as string}
+        projectSlug={project.slug as string}
+      />
 
       <Card>
         <CardHeader>
