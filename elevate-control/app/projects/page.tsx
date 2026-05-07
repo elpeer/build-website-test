@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
+import { acceptPendingInvitations } from '@/app/actions/team';
 import { Button } from '@/components/ui/button';
 import { ProjectCard } from '@/components/projects/project-card';
 import { Plus, FolderOpen } from 'lucide-react';
@@ -32,6 +33,11 @@ const STATUS_LABELS: Record<ProjectStatus, string> = {
 
 export default async function ProjectsPage() {
   const supabase = await createClient();
+
+  // Auto-attach any pending email invitations matching this user — idempotent,
+  // and the RPC is cheap. Runs before the project query so newly attached
+  // projects show up immediately.
+  await acceptPendingInvitations();
 
   const { data, error } = await supabase
     .from('projects')
