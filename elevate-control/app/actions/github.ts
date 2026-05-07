@@ -73,27 +73,48 @@ export interface GhCommit {
   files_changed: number;
 }
 
+export interface CommitsResult {
+  commits: GhCommit[];
+  error: string | null;
+  hasToken: boolean;
+}
+
 /**
  * Fetch recent commits across `main` and `master` branches. Returns the
  * most recent N (default 20). Auth: GITHUB_TOKEN if set, anon otherwise.
- * Returns [] if the repo can't be read at all.
+ * Always returns a CommitsResult so the caller can show helpful diagnostics
+ * (rate limit, 404, no token, etc.) instead of silently rendering empty.
  */
-export async function listRecentCommits(repo: string, limit = 20): Promise<GhCommit[]> {
+export async function listRecentCommits(repo: string, limit = 20): Promise<CommitsResult> {
   const token = process.env.GITHUB_TOKEN;
+  const hasToken = !!token;
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github+json',
     'X-GitHub-Api-Version': '2022-11-28',
   };
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  // Try main first, then master. We use `?per_page=N&sha=<branch>`.
+  let lastError: string | null = null;
+
   for (const branch of ['main', 'master']) {
     try {
       const res = await fetch(
         `https://api.github.com/repos/${repo}/commits?sha=${branch}&per_page=${limit}`,
         { headers, next: { revalidate: 60 } },
       );
-      if (!res.ok) continue;
+
+      if (res.status === 404) { lastError = `404 — branch ${branch} לא נמצא`; continue; }
+      if (res.status === 401) { return { commits: [], error: '401 — GITHUB_TOKEN לא תקין', hasToken }; }
+      if (res.status === 403) {
+        const remaining = res.headers.get('x-ratelimit-remaining');
+        return {
+          commits: [], hasToken,
+          error: remaining === '0'
+            ? `rate limit הגיע לסוף${hasToken ? '' : ' — תוסיפו GITHUB_TOKEN ב-Vercel להעלאת המגבלה'}`
+            : `403 — אין הרשאה ל-${repo}${hasToken ? '' : ' (ריפו פרטי? צריך GITHUB_TOKEN)'}`,
+        };
+      }
+      if (!res.ok) { lastError = `${res.status} ${res.statusText}`; continue; }
 
       type CommitItem = {
         sha: string;
@@ -103,10 +124,9 @@ export async function listRecentCommits(repo: string, limit = 20): Promise<GhCom
           author: { name: string; email: string; date: string };
         };
         author: { login: string; avatar_url: string } | null;
-        // We don't ask for files in the list endpoint — leave files_changed=0
       };
       const data = await res.json() as CommitItem[];
-      return data.map(c => ({
+      const commits: GhCommit[] = data.map(c => ({
         sha:               c.sha.slice(0, 7),
         message:           (c.commit.message ?? '').split('\n')[0],
         author_name:       c.commit.author?.name ?? 'Unknown',
@@ -117,11 +137,14 @@ export async function listRecentCommits(repo: string, limit = 20): Promise<GhCom
         url:               c.html_url,
         files_changed:     0,
       }));
+      return { commits, error: null, hasToken };
     } catch (e) {
-      console.warn(`[listRecentCommits] ${branch} fetch failed:`, (e as Error).message);
+      lastError = (e as Error).message;
+      console.warn(`[listRecentCommits] ${branch} fetch failed:`, lastError);
     }
   }
-  return [];
+
+  return { commits: [], error: lastError ?? 'לא הצלחנו לקרוא את ה-repo', hasToken };
 }
 
 /**

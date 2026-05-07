@@ -133,8 +133,8 @@ async function buildDigestHtml(
         .eq('project_id', project.id).gte('updated_at', since)
         .neq('status', 'resolved').order('updated_at', { ascending: false }).limit(5),
       project.github_repo
-        ? listRecentCommits(project.github_repo, 50).then(rs =>
-            rs.filter(c => c.date >= since))
+        ? listRecentCommits(project.github_repo, 50).then(r =>
+            r.commits.filter(c => c.date >= since))
         : Promise.resolve([] as GhCommit[]),
     ]);
 
