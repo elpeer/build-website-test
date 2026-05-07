@@ -155,7 +155,7 @@ export default async function ProjectPage({ params }: Props) {
 
           {/* Stats */}
           <section id="stats" className="scroll-mt-6">
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
               <StatCard
                 icon={<Calendar className="h-4 w-4" />} label="תאריך עליה לאוויר"
                 value={targetDate ? formatDateHe(targetDate) : 'לא נקבע'}

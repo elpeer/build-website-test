@@ -201,7 +201,7 @@ export default async function ProjectsPage() {
 
       {/* Top KPI strip */}
       {projects.length > 0 && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           <KpiCard icon={<FolderOpen className="h-5 w-5" />} bg="brand" label="פרויקטים פעילים" value={projects.length.toString()} />
           <KpiCard icon={<FileText className="h-5 w-5" />} bg="blue" label="סה״כ עמודים" value={totalPages.toString()} />
           <KpiCard icon={<Hammer className="h-5 w-5" />} bg="amber" label="בפיתוח/בנייה" value={buildingPages.toString()} />
@@ -335,11 +335,11 @@ function KpiCard({ icon, bg, label, value }: {
   }[bg];
   return (
     <Card>
-      <CardContent className="flex items-center gap-3 pt-6">
-        <div className={`flex h-10 w-10 items-center justify-center rounded-md ${cls}`}>{icon}</div>
-        <div>
-          <p className="text-xs text-muted-fg">{label}</p>
-          <p className="text-xl font-bold">{value}</p>
+      <CardContent className="flex items-center gap-2 p-3 sm:gap-3 sm:p-4">
+        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md sm:h-10 sm:w-10 ${cls}`}>{icon}</div>
+        <div className="min-w-0">
+          <p className="truncate text-xs text-muted-fg">{label}</p>
+          <p className="text-lg font-bold sm:text-xl">{value}</p>
         </div>
       </CardContent>
     </Card>
