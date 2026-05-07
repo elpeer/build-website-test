@@ -61,7 +61,7 @@ export default async function ProjectsPage() {
           <FolderOpen className="h-12 w-12 text-muted-fg" />
           <h2 className="mt-4 text-lg font-semibold">אין עדיין פרויקטים</h2>
           <p className="mt-1 max-w-sm text-center text-sm text-muted-fg">
-            התחילו ביצירת פרויקט ראשון. לחצו על "פרויקט חדש" למעלה כדי להגדיר לקוח, צוות, ומבנה ראשוני.
+            התחילו ביצירת פרויקט ראשון. לחצו על <span className="font-semibold text-foreground">פרויקט חדש</span> למעלה כדי להגדיר לקוח, צוות, ומבנה ראשוני.
           </p>
           <Button asChild className="mt-4" variant="accent">
             <Link href="/projects/new">

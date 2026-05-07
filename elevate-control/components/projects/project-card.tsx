@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { formatRelativeHe } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -40,9 +41,11 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
           <div className="flex items-start justify-between gap-2">
             <div className="flex min-w-0 items-center gap-3">
               {project.logo_url ? (
-                <img
+                <Image
                   src={project.logo_url}
                   alt=""
+                  width={40}
+                  height={40}
                   className="h-10 w-10 shrink-0 rounded-md border border-border object-cover"
                 />
               ) : (

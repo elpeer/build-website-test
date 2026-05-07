@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { signOut } from '@/app/actions/auth';
 import { Button } from '@/components/ui/button';
 import { LogOut, User as UserIcon } from 'lucide-react';
@@ -19,7 +20,13 @@ export function Topbar({ user }: { user: Profile }) {
 
         <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand text-sm font-semibold text-white">
           {user.avatar_url ? (
-            <img src={user.avatar_url} alt={user.full_name ?? ''} className="h-full w-full rounded-full object-cover" />
+            <Image
+              src={user.avatar_url}
+              alt={user.full_name ?? ''}
+              width={36}
+              height={36}
+              className="h-full w-full rounded-full object-cover"
+            />
           ) : (
             initials || <UserIcon className="h-4 w-4" />
           )}
