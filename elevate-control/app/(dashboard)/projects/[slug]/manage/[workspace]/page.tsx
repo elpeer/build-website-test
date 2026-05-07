@@ -1,8 +1,8 @@
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ChevronLeft, ExternalLink, Lock } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { WorkspaceContent } from '@/components/client/workspace-content';
+import { WorkspaceSideMenu } from '@/components/projects/workspace-side-menu';
 import {
   WORKSPACE_BY_SLUG, isWorkspaceUnlocked,
   type WorkspaceSlug, type ProjectStage,
@@ -51,43 +51,42 @@ export default async function StudioWorkspaceManagePage({ params }: Props) {
   const workspaceSettings = settingsAll[meta.slug] ?? {};
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-3">
-        <Link href={`/projects/${project.slug}`}
-              className="inline-flex items-center gap-1 text-sm text-muted-fg hover:text-brand">
-          <ChevronLeft className="h-4 w-4 rtl:rotate-180" />
-          חזרה ל-{project.name}
-        </Link>
-        <Link href={`/client/${project.slug}/${meta.slug}?as=client`}
-              target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 rounded-md bg-blue-100 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-200">
-          <ExternalLink className="h-3 w-3" />
-          תצוגת לקוח
-        </Link>
-      </div>
+    <div className="mx-auto max-w-7xl">
+      <div className="grid gap-8 xl:grid-cols-[1fr_220px]">
+        <div className="min-w-0 space-y-6">
 
-      <header className="flex items-center gap-4">
-        <span className="text-4xl">{meta.emoji}</span>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">{meta.label}</h1>
-          <p className="mt-1 text-sm text-muted-fg">{meta.blurb}</p>
-          {!unlockedForClient && (
-            <p className="mt-1 inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs text-amber-800">
-              <Lock className="h-3 w-3" />
-              נעול ללקוח כרגע · {override?.message ?? meta.lockedMsg}
-            </p>
-          )}
+          <header className="flex items-start gap-4">
+            <span className="text-4xl">{meta.emoji}</span>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">{meta.label}</h1>
+              <p className="mt-1 text-sm text-muted-fg">{meta.blurb}</p>
+              {!unlockedForClient && (
+                <p className="mt-2 inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs text-amber-800">
+                  <Lock className="h-3 w-3" />
+                  נעול ללקוח כרגע · {override?.message ?? meta.lockedMsg}
+                </p>
+              )}
+            </div>
+          </header>
+
+          <WorkspaceContent
+            projectId={project.id}
+            projectSlug={project.slug}
+            workspace={meta}
+            workspaceSettings={workspaceSettings}
+            currentUserId={user.id}
+            isStudio
+          />
         </div>
-      </header>
 
-      <WorkspaceContent
-        projectId={project.id}
-        projectSlug={project.slug}
-        workspace={meta}
-        workspaceSettings={workspaceSettings}
-        currentUserId={user.id}
-        isStudio
-      />
+        <WorkspaceSideMenu
+          projectId={project.id}
+          projectSlug={project.slug}
+          projectName={project.name}
+          currentSlug={meta.slug}
+          currentStage={project.current_stage}
+        />
+      </div>
     </div>
   );
 }
