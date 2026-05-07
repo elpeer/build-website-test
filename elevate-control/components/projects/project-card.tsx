@@ -13,6 +13,8 @@ type ProjectSummary = {
   logo_url: string | null;
   target_at: string | null;
   updated_at: string;
+  pages_total?: number;
+  pages_live?: number;
 };
 
 const STATUS_PILLS: Record<string, string> = {
@@ -70,7 +72,24 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
           </div>
         </CardHeader>
 
-        <CardContent className="pt-0">
+        <CardContent className="space-y-3 pt-0">
+          {typeof project.pages_total === 'number' && project.pages_total > 0 && (
+            <div>
+              <div className="mb-1 flex items-center justify-between text-xs">
+                <span className="text-muted-fg">התקדמות עמודים</span>
+                <span className="font-medium">
+                  {project.pages_live ?? 0} / {project.pages_total}
+                </span>
+              </div>
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full bg-brand transition-all"
+                  style={{ width: `${Math.round(((project.pages_live ?? 0) / project.pages_total) * 100)}%` }}
+                />
+              </div>
+            </div>
+          )}
+
           <div className="flex items-center justify-between text-xs text-muted-fg">
             <span className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />

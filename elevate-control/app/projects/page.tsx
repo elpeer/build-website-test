@@ -2,9 +2,10 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { acceptPendingInvitations } from '@/app/actions/team';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { ProjectCard } from '@/components/projects/project-card';
-import { Plus, FolderOpen } from 'lucide-react';
-import type { ProjectStatus } from '@/lib/supabase/database.types';
+import { Plus, FolderOpen, FileText, Rocket, Hammer } from 'lucide-react';
+import type { ProjectStatus, PageStatus } from '@/lib/supabase/database.types';
 
 export const metadata = { title: 'פרויקטים' };
 
@@ -51,9 +52,38 @@ export default async function ProjectsPage() {
 
   const projects: ProjectRow[] = (data ?? []) as ProjectRow[];
 
+  // Page-level stats: count per (project_id, status) for progress bars + aggregate
+  const projectIds = projects.map(p => p.id);
+  const { data: pageStatsData } = projectIds.length
+    ? await supabase
+        .from('pages')
+        .select('project_id, status')
+        .in('project_id', projectIds)
+    : { data: [] as { project_id: string; status: PageStatus }[] };
+
+  const pageStats = (pageStatsData ?? []) as { project_id: string; status: PageStatus }[];
+  const pagesByProject = new Map<string, { total: number; live: number; in_dev: number }>();
+  for (const row of pageStats) {
+    const cur = pagesByProject.get(row.project_id) ?? { total: 0, live: 0, in_dev: 0 };
+    cur.total += 1;
+    if (row.status === 'live') cur.live += 1;
+    if (['in_dev', 'built', 'reviewed'].includes(row.status)) cur.in_dev += 1;
+    pagesByProject.set(row.project_id, cur);
+  }
+
+  const enrichedProjects = projects.map(p => {
+    const s = pagesByProject.get(p.id) ?? { total: 0, live: 0, in_dev: 0 };
+    return { ...p, pages_total: s.total, pages_live: s.live };
+  });
+
+  // Aggregate stats
+  const totalPages = pageStats.length;
+  const livePages  = pageStats.filter(r => r.status === 'live').length;
+  const buildingPages = pageStats.filter(r => ['in_dev', 'built', 'reviewed'].includes(r.status)).length;
+
   // Group by status for the dashboard view
-  const grouped: Partial<Record<ProjectStatus, ProjectRow[]>> = {};
-  for (const p of projects) {
+  const grouped: Partial<Record<ProjectStatus, typeof enrichedProjects>> = {};
+  for (const p of enrichedProjects) {
     (grouped[p.status] ??= []).push(p);
   }
 
@@ -78,6 +108,55 @@ export default async function ProjectsPage() {
           </Link>
         </Button>
       </header>
+
+      {projects.length > 0 && (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardContent className="flex items-center gap-3 pt-6">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-brand/10 text-brand">
+                <FolderOpen className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-fg">פרויקטים פעילים</p>
+                <p className="text-xl font-bold">{projects.length}</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="flex items-center gap-3 pt-6">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-blue-50 text-blue-700">
+                <FileText className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-fg">סה״כ עמודים</p>
+                <p className="text-xl font-bold">{totalPages}</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="flex items-center gap-3 pt-6">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-amber-50 text-amber-700">
+                <Hammer className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-fg">בפיתוח / בנייה</p>
+                <p className="text-xl font-bold">{buildingPages}</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="flex items-center gap-3 pt-6">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-green-50 text-green-700">
+                <Rocket className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-fg">בייצור (live)</p>
+                <p className="text-xl font-bold">{livePages}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {projects.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-card py-16">
