@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createPage } from '@/app/actions/pages';
 import { slugify } from '@/lib/utils';
@@ -107,7 +108,10 @@ export function PageTree({ projectId, projectSlug, pages }: Props) {
             const Icon = TYPE_ICONS[page.type];
             return (
               <li key={page.id}>
-                <div className="flex items-center justify-between gap-3 rounded-md border border-border bg-background px-4 py-3 transition-colors hover:border-brand">
+                <Link
+                  href={`/projects/${projectSlug}/${page.slug}`}
+                  className="flex items-center justify-between gap-3 rounded-md border border-border bg-background px-4 py-3 transition-colors hover:border-brand hover:bg-brand/5"
+                >
                   <div className="flex min-w-0 items-center gap-3">
                     <Icon className="h-4 w-4 shrink-0 text-muted-fg" />
                     <div className="min-w-0">
@@ -123,9 +127,9 @@ export function PageTree({ projectId, projectSlug, pages }: Props) {
                     <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_PILLS[page.status]}`}>
                       {STATUS_LABELS[page.status]}
                     </span>
-                    <ChevronLeft className="h-4 w-4 text-muted-fg" />
+                    <ChevronLeft className="h-4 w-4 text-muted-fg rtl:rotate-180" />
                   </div>
-                </div>
+                </Link>
               </li>
             );
           })}
