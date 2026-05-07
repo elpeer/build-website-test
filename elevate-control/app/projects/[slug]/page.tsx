@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ChevronLeft, Calendar, User, Globe, Smartphone, Database } from 'lucide-react';
+import { ChevronLeft, Calendar, User, Globe, Smartphone, Database, Image as ImageIcon } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { formatDateHe } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -164,6 +164,13 @@ export default async function ProjectPage({ params }: Props) {
         >
           <Database className="h-4 w-4" />
           ניהול CPTs ({cpts.length})
+        </Link>
+        <Link
+          href={`/projects/${project.slug}/designs`}
+          className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-4 py-2 text-sm font-medium transition-colors hover:border-brand hover:bg-brand/5"
+        >
+          <ImageIcon className="h-4 w-4" />
+          גלריית עיצובים
         </Link>
       </div>
 
