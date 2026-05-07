@@ -4,6 +4,8 @@ import { ChevronLeft, Calendar, User, Globe, Smartphone } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { formatDateHe } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageTree } from '@/components/projects/page-tree';
+import type { PageStatus, PageType } from '@/lib/supabase/database.types';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -13,6 +15,15 @@ const STATUS_LABELS: Record<string, string> = {
   draft: 'בהכנה', active: 'פעיל', on_hold: 'בהמתנה',
   review: 'בסקירה', completed: 'הושלם', archived: 'בארכיון',
 };
+
+interface PageRow {
+  id: string;
+  slug: string;
+  name_he: string | null;
+  type: PageType;
+  status: PageStatus;
+  order: number;
+}
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
@@ -44,6 +55,15 @@ export default async function ProjectPage({ params }: Props) {
     .from('project_members')
     .select('role, profiles(email, full_name)')
     .eq('project_id', project.id);
+
+  // Project's pages (page tree)
+  const { data: pagesData } = await supabase
+    .from('pages')
+    .select('id, slug, name_he, type, status, order')
+    .eq('project_id', project.id)
+    .order('order', { ascending: true });
+
+  const pages: PageRow[] = (pagesData ?? []) as PageRow[];
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -131,14 +151,16 @@ export default async function ProjectPage({ params }: Props) {
       <Card>
         <CardHeader>
           <CardTitle>עץ עמודים</CardTitle>
-          <CardDescription>הגדירו את עמודי האתר וה-CPTs</CardDescription>
+          <CardDescription>
+            הגדירו את עמודי האתר וה-CPTs ({pages.length} עמודים)
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="rounded-md border-2 border-dashed border-border bg-muted/30 p-8 text-center">
-            <p className="text-sm text-muted-fg">
-              עורך העמודים יתווסף בעדכון הבא. בינתיים תוכלו להגדיר עמודים ידנית דרך SQL.
-            </p>
-          </div>
+          <PageTree
+            projectId={project.id as string}
+            projectSlug={project.slug as string}
+            pages={pages}
+          />
         </CardContent>
       </Card>
 

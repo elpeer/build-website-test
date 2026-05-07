@@ -1,0 +1,108 @@
+'use server';
+
+import { revalidatePath } from 'next/cache';
+import { createClient } from '@/lib/supabase/server';
+import { slugify } from '@/lib/utils';
+import type { PageType } from '@/lib/supabase/database.types';
+
+type CreatePageResult =
+  | { ok: true; pageId: string; slug: string }
+  | { ok: false; error: string };
+
+const ALLOWED_TYPES: PageType[] = ['page', 'archive', 'single', 'system', 'service'];
+
+/**
+ * Create a new page inside a project. The current user must be a member.
+ */
+export async function createPage(formData: FormData): Promise<CreatePageResult> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+
+  const projectId  = formData.get('project_id')   as string | null;
+  const projectSlug = formData.get('project_slug') as string | null;
+  const nameHe     = (formData.get('name_he')     as string | null)?.trim() ?? '';
+  const slugInput  = (formData.get('slug')        as string | null)?.trim() ?? '';
+  const typeInput  =  formData.get('type')        as string | null;
+
+  if (!projectId)  return { ok: false, error: 'project_id חסר' };
+  if (!nameHe)     return { ok: false, error: 'שם העמוד הוא שדה חובה' };
+
+  const type = (ALLOWED_TYPES.includes(typeInput as PageType) ? typeInput : 'page') as PageType;
+  const slug = slugify(slugInput || nameHe);
+  if (!slug) return { ok: false, error: 'לא הצלחנו ליצור slug תקין מהשם' };
+
+  // Compute next order — last + 1
+  const { data: lastPage } = await supabase
+    .from('pages')
+    .select('order')
+    .eq('project_id', projectId)
+    .order('order', { ascending: false })
+    .limit(1)
+    .single<{ order: number }>();
+
+  const nextOrder = (lastPage?.order ?? 0) + 10;
+
+  const { data: page, error: insertError } = await supabase
+    .from('pages')
+    .insert({
+      project_id: projectId,
+      name_he: nameHe,
+      slug,
+      type,
+      order: nextOrder,
+      status: 'planned',
+      created_by: user.id,
+    })
+    .select('id, slug')
+    .single<{ id: string; slug: string }>();
+
+  if (insertError) {
+    if (insertError.code === '23505') {
+      return { ok: false, error: `Slug "${slug}" כבר קיים בפרויקט. בחר שם או slug אחר.` };
+    }
+    console.error('createPage insert error:', insertError);
+    return { ok: false, error: insertError.message };
+  }
+  if (!page) return { ok: false, error: 'העמוד נוצר אבל ה-DB לא החזיר תוצאה' };
+
+  // Activity log
+  await supabase.from('activity_log').insert({
+    project_id: projectId,
+    actor_id: user.id,
+    kind: 'created',
+    entity_type: 'page',
+    entity_id: page.id,
+    summary: `נוסף עמוד: ${nameHe}`,
+  });
+
+  // Revalidate the project page so the new page shows immediately
+  if (projectSlug) revalidatePath(`/projects/${projectSlug}`);
+
+  return { ok: true, pageId: page.id, slug: page.slug };
+}
+
+type UpdatePageStatusResult = { ok: boolean; error?: string };
+
+/**
+ * Quick status flip for a page from the project detail view.
+ */
+export async function updatePageStatus(
+  pageId: string,
+  projectSlug: string,
+  newStatus: string
+): Promise<UpdatePageStatusResult> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+
+  const { error } = await supabase
+    .from('pages')
+    .update({ status: newStatus })
+    .eq('id', pageId);
+
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath(`/projects/${projectSlug}`);
+  return { ok: true };
+}
