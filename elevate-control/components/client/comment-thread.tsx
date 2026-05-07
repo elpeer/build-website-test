@@ -215,8 +215,8 @@ export function CommentThread({
                         {a.mime.startsWith('image/') && (
                           <button type="button"
                                   onClick={(e) => { e.preventDefault(); setAnnotating({ url: a.url, name: a.name }); }}
-                                  className="absolute end-1 top-1 z-10 hidden items-center gap-1 rounded-full bg-brand/95 px-2 py-1 text-[10px] font-medium text-white shadow group-hover:flex"
-                                  title="סמן על התמונה">
+                                  className="absolute end-1 top-1 z-10 inline-flex items-center gap-1 rounded-full bg-brand/95 px-2 py-1 text-[11px] font-medium text-white shadow-md ring-1 ring-white/20 hover:bg-brand"
+                                  title="סמן על התמונה — צייר על המסך וסמן בעיגולים/חצים מה לתקן">
                             <Pencil className="h-3 w-3" />
                             סמן
                           </button>
