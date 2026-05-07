@@ -89,6 +89,51 @@ export async function deleteApproval(
   return { ok: true };
 }
 
+// ─── Support tickets (use comment_threads with context_type='ticket') ─
+
+export async function createTicket(input: {
+  projectId: string; projectSlug: string;
+  title: string; firstMessage: string;
+  priority: 'low' | 'normal' | 'high' | 'urgent';
+  attachments?: { url: string; name: string; mime: string; size_bytes: number }[];
+}): Promise<Result<{ threadId: string }>> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+  if (!input.title.trim()) return { ok: false, error: 'נושא חובה' };
+
+  const { data: profile } = await supabase
+    .from('profiles').select('full_name, email').eq('id', user.id)
+    .single<{ full_name: string | null; email: string }>();
+  const label = profile?.full_name ?? profile?.email ?? null;
+
+  const { data: thread, error } = await supabase
+    .from('comment_threads')
+    .insert({
+      project_id:   input.projectId,
+      context_type: 'ticket',
+      workspace:    'support',
+      title:        input.title.trim(),
+      priority:     input.priority,
+      status:       'open',
+      created_by:   user.id,
+    })
+    .select('id').single<{ id: string }>();
+  if (error || !thread) return { ok: false, error: error?.message ?? 'נכשל' };
+
+  await supabase.from('comment_messages').insert({
+    thread_id:    thread.id,
+    author_id:    user.id,
+    author_label: label,
+    body:         input.firstMessage,
+    attachments:  (input.attachments ?? []) as unknown as Json,
+  });
+
+  revalidatePath(`/client/${input.projectSlug}/support`);
+  revalidatePath(`/projects/${input.projectSlug}`);
+  return { ok: true, data: { threadId: thread.id } };
+}
+
 // ─── Comments ──────────────────────────────────────────────────────────
 
 const THREAD_STATUSES = ['open','in_progress','resolved','wont_fix'] as const;
@@ -96,10 +141,11 @@ type ThreadStatus = typeof THREAD_STATUSES[number];
 
 export async function ensureThread(input: {
   projectId: string;
-  contextType: 'approval' | 'workspace' | 'page' | 'section';
+  contextType: 'approval' | 'workspace' | 'page' | 'section' | 'ticket';
   contextId?: string | null;
   workspace?: string | null;
   title?: string | null;
+  priority?: 'low' | 'normal' | 'high' | 'urgent';
 }): Promise<Result<{ threadId: string }>> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -123,6 +169,7 @@ export async function ensureThread(input: {
       context_id:   input.contextId ?? null,
       workspace:    input.workspace ?? null,
       title:        input.title ?? null,
+      priority:     input.priority ?? 'normal',
       created_by:   user.id,
     })
     .select('id').single<{ id: string }>();
@@ -184,6 +231,19 @@ export async function postMessage(input: {
   revalidatePath(`/client/${input.projectSlug}`);
   revalidatePath(`/projects/${input.projectSlug}`);
   return { ok: true, data: { threadId, messageId: data.id } };
+}
+
+export async function setThreadPriority(
+  threadId: string,
+  projectSlug: string,
+  priority: 'low' | 'normal' | 'high' | 'urgent'
+): Promise<Result> {
+  const supabase = await createClient();
+  const { error } = await supabase.from('comment_threads').update({ priority }).eq('id', threadId);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath(`/client/${projectSlug}`);
+  revalidatePath(`/projects/${projectSlug}`);
+  return { ok: true };
 }
 
 export async function setThreadStatus(
@@ -280,6 +340,7 @@ export async function deleteChecklistItem(
 
 export async function recordFile(input: {
   projectId: string; projectSlug: string; workspace?: string | null;
+  category?: string | null;
   filename: string; storagePath: string;
   mimeType: string; sizeBytes: number;
   notes?: string | null;
@@ -303,6 +364,7 @@ export async function recordFile(input: {
     .insert({
       project_id:   input.projectId,
       workspace:    input.workspace ?? null,
+      category:     input.category ?? null,
       filename:     input.filename,
       storage_path: input.storagePath,
       file_url:     fileUrl,

@@ -33,6 +33,8 @@ interface Props {
   workspace: string;
   items: ChecklistItemRow[];
   isStudio: boolean;
+  /** When false and !isStudio, hide the "+ Add item" form. Defaults to false (clients can't add items by default). */
+  clientCanAddItems?: boolean;
 }
 
 const STATUS_ICONS: Record<ChecklistStatus, typeof CheckCircle2> = {
@@ -48,7 +50,11 @@ const STATUS_LABELS: Record<ChecklistStatus, string> = {
   pending: 'ממתין', in_progress: 'בטיפול', done: 'בוצע', na: 'לא רלוונטי',
 };
 
-export function Checklist({ projectId, projectSlug, workspace, items, isStudio }: Props) {
+export function Checklist({
+  projectId, projectSlug, workspace, items, isStudio,
+  clientCanAddItems = false,
+}: Props) {
+  const canAdd = isStudio || clientCanAddItems;
   const router = useRouter();
   const [showCreate, setShowCreate] = useState(false);
   const [newTitle, setNewTitle] = useState('');
@@ -77,6 +83,11 @@ export function Checklist({ projectId, projectSlug, workspace, items, isStudio }
   return (
     <div className="space-y-3">
       <ul className="space-y-2">
+        {items.length === 0 && (
+          <li className="rounded-md border border-dashed border-border bg-muted/30 p-6 text-center text-sm text-muted-fg">
+            {canAdd ? 'אין פריטים. הוסיפו פריט.' : 'עדיין לא הוגדרו פריטים.'}
+          </li>
+        )}
         {items.map(item => (
           <ChecklistRow key={item.id} item={item}
                         projectSlug={projectSlug} workspace={workspace}
@@ -84,7 +95,7 @@ export function Checklist({ projectId, projectSlug, workspace, items, isStudio }
         ))}
       </ul>
 
-      {isStudio && (
+      {canAdd && (
         !showCreate ? (
           <Button type="button" variant="outline"
                   onClick={() => setShowCreate(true)}

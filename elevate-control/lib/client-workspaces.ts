@@ -31,7 +31,7 @@ export const STAGE_LABELS: Record<ProjectStage, string> = {
 
 export type WorkspaceSlug =
   | 'finance' | 'spec' | 'design' | 'development' | 'qa'
-  | 'content' | 'integrations' | 'launch' | 'training';
+  | 'content' | 'integrations' | 'launch' | 'training' | 'support';
 
 export interface WorkspaceMeta {
   slug:      WorkspaceSlug;
@@ -96,6 +96,12 @@ export const WORKSPACES: WorkspaceMeta[] = [
     blurb: 'מדריכים, FAQ, טיפים לעבודה עם האתר',
     minStage: 'live',
     lockedMsg: 'ייפתח אחרי שהאתר עולה לאוויר.',
+  },
+  {
+    slug: 'support', label: 'שירות ותמיכה', emoji: '🎧',
+    blurb: 'פתיחת טיקטים, מענה לתקלות, התראות במייל',
+    minStage: 'live',
+    lockedMsg: 'יוצג אחרי שהפרויקט עולה לאוויר.',
   },
 ];
 

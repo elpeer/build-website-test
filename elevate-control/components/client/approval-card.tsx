@@ -25,6 +25,7 @@ export interface ApprovalCardData {
   status: ApprovalStatus;
   status_note: string | null;
   status_changed_at: string | null;
+  metadata?: Record<string, unknown> | null;
 }
 
 interface ThreadInfo {
@@ -118,13 +119,49 @@ export function ApprovalCard({
             </span>
           </div>
 
-          {approval.link_url && (
-            <a href={approval.link_url} target="_blank" rel="noopener noreferrer"
-               className="inline-flex items-center gap-1 text-sm text-brand hover:underline">
-              <ExternalLink className="h-3.5 w-3.5" />
-              פתח קישור
-            </a>
-          )}
+          {(() => {
+            const meta = approval.metadata ?? {};
+            const desktop = (meta.desktop_url as string | undefined) ?? null;
+            const mobile  = (meta.mobile_url  as string | undefined) ?? null;
+            // Dual link: design workspace gets desktop + mobile pills
+            if (desktop || mobile) {
+              return (
+                <div className="flex flex-wrap gap-2">
+                  {desktop && (
+                    <a href={desktop} target="_blank" rel="noopener noreferrer"
+                       className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-1.5 text-sm hover:border-brand">
+                      🖥️ דסקטופ
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  )}
+                  {mobile && (
+                    <a href={mobile} target="_blank" rel="noopener noreferrer"
+                       className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-1.5 text-sm hover:border-brand">
+                      📱 מובייל
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  )}
+                  {approval.link_url && (
+                    <a href={approval.link_url} target="_blank" rel="noopener noreferrer"
+                       className="inline-flex items-center gap-1 text-sm text-brand hover:underline">
+                      <ExternalLink className="h-3 w-3" />
+                      קישור נוסף
+                    </a>
+                  )}
+                </div>
+              );
+            }
+            if (approval.link_url) {
+              return (
+                <a href={approval.link_url} target="_blank" rel="noopener noreferrer"
+                   className="inline-flex items-center gap-1 text-sm text-brand hover:underline">
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  פתח קישור
+                </a>
+              );
+            }
+            return null;
+          })()}
 
           {approval.status_note && (
             <p className="rounded-md bg-muted/50 p-2 text-xs italic">
@@ -244,21 +281,31 @@ export function CreateApprovalForm({ projectId, projectSlug, workspace, isStudio
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [linkUrl, setLinkUrl] = useState('');
+  const [desktopUrl, setDesktopUrl] = useState('');
+  const [mobileUrl, setMobileUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   if (!isStudio) return null;
 
+  const isDesign = workspace === 'design';
+
   function handleSubmit() {
     setError(null);
     startTransition(async () => {
       const { createApproval } = await import('@/app/actions/client-workspace');
+      const metadata = isDesign && (desktopUrl || mobileUrl)
+        ? { desktop_url: desktopUrl || null, mobile_url: mobileUrl || null }
+        : null;
       const result = await createApproval({
         projectId, projectSlug, workspace,
-        title, description: description || null, link_url: linkUrl || null,
+        title, description: description || null,
+        link_url: linkUrl || null,
+        metadata: metadata ?? undefined,
       });
       if (!result.ok) { setError(result.error); return; }
-      setTitle(''); setDescription(''); setLinkUrl(''); setOpen(false);
+      setTitle(''); setDescription(''); setLinkUrl('');
+      setDesktopUrl(''); setMobileUrl(''); setOpen(false);
       router.refresh();
     });
   }
@@ -280,9 +327,20 @@ export function CreateApprovalForm({ projectId, projectSlug, workspace, isStudio
              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm" />
       <Textarea value={description} onChange={e => setDescription(e.target.value)} rows={2}
                 placeholder="תיאור (אופציונלי)" />
-      <input value={linkUrl} onChange={e => setLinkUrl(e.target.value)} dir="ltr"
-             placeholder="https:// (אופציונלי)"
-             className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm font-mono" />
+      {isDesign ? (
+        <div className="grid gap-2 md:grid-cols-2">
+          <input value={desktopUrl} onChange={e => setDesktopUrl(e.target.value)} dir="ltr"
+                 placeholder="🖥️ לינק דסקטופ"
+                 className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm font-mono" />
+          <input value={mobileUrl} onChange={e => setMobileUrl(e.target.value)} dir="ltr"
+                 placeholder="📱 לינק מובייל"
+                 className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm font-mono" />
+        </div>
+      ) : (
+        <input value={linkUrl} onChange={e => setLinkUrl(e.target.value)} dir="ltr"
+               placeholder="https:// (אופציונלי)"
+               className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm font-mono" />
+      )}
       {error && <div className="text-xs text-red-700">{error}</div>}
       <div className="flex justify-end gap-2">
         <Button type="button" variant="ghost" onClick={() => setOpen(false)}>ביטול</Button>

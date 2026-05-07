@@ -22,8 +22,16 @@ interface Props {
   projectId: string;
   projectSlug: string;
   workspace: string;
+  category?: string | null;       // optional sub-bucket within the workspace
   files: ProjectFileRow[];
   isStudio: boolean;
+  /** When false and !isStudio, hide the upload button (read-only client view). */
+  clientCanUpload?: boolean;
+  /** When false and !isStudio, hide the delete button. */
+  clientCanDelete?: boolean;
+  /** Title shown above the list (so we can have multiple FilesList per workspace). */
+  title?: string;
+  emptyText?: string;
 }
 
 const ACCEPT = 'image/*,application/pdf,.zip,.doc,.docx,.xls,.xlsx,.txt,.csv';
@@ -36,7 +44,15 @@ function formatSize(bytes: number | null): string {
   return `${(bytes / 1024 / 1024).toFixed(1)}MB`;
 }
 
-export function FilesList({ projectId, projectSlug, workspace, files, isStudio }: Props) {
+export function FilesList({
+  projectId, projectSlug, workspace, category,
+  files, isStudio,
+  clientCanUpload = true,
+  clientCanDelete = false,
+  title, emptyText,
+}: Props) {
+  const canUpload = isStudio || clientCanUpload;
+  const canDelete = isStudio || clientCanDelete;
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -61,6 +77,7 @@ export function FilesList({ projectId, projectSlug, workspace, files, isStudio }
 
         const result = await recordFile({
           projectId, projectSlug, workspace,
+          category: category ?? null,
           filename: file.name,
           storagePath: path,
           mimeType: file.type,
@@ -89,16 +106,22 @@ export function FilesList({ projectId, projectSlug, workspace, files, isStudio }
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-muted-fg">{files.length} קבצים</h3>
-        <Button type="button" variant="outline" size="sm"
-                onClick={() => inputRef.current?.click()}
-                disabled={uploading}>
-          <Upload className="ms-1 h-3.5 w-3.5" />
-          {uploading ? 'מעלה...' : 'העלאה'}
-        </Button>
-        <input ref={inputRef} type="file" multiple accept={ACCEPT}
-               className="hidden"
-               onChange={e => handleFiles(e.target.files)} />
+        <h3 className="text-sm font-semibold text-muted-fg">
+          {title ?? `${files.length} קבצים`}
+        </h3>
+        {canUpload && (
+          <>
+            <Button type="button" variant="outline" size="sm"
+                    onClick={() => inputRef.current?.click()}
+                    disabled={uploading}>
+              <Upload className="ms-1 h-3.5 w-3.5" />
+              {uploading ? 'מעלה...' : 'העלאה'}
+            </Button>
+            <input ref={inputRef} type="file" multiple accept={ACCEPT}
+                   className="hidden"
+                   onChange={e => handleFiles(e.target.files)} />
+          </>
+        )}
       </div>
 
       {error && (
@@ -109,7 +132,7 @@ export function FilesList({ projectId, projectSlug, workspace, files, isStudio }
 
       {files.length === 0 ? (
         <div className="rounded-md border border-dashed border-border bg-muted/30 p-8 text-center text-sm text-muted-fg">
-          אין קבצים עדיין. גררו קובץ לכאן או לחצו על העלאה.
+          {emptyText ?? (canUpload ? 'אין קבצים עדיין. לחצו על העלאה.' : 'עדיין לא הועלו קבצים.')}
         </div>
       ) : (
         <ul className="space-y-2">
@@ -138,7 +161,7 @@ export function FilesList({ projectId, projectSlug, workspace, files, isStudio }
                    className="text-brand hover:underline" aria-label="פתח">
                   <ExternalLink className="h-4 w-4" />
                 </a>
-                {isStudio && (
+                {canDelete && (
                   <button type="button" onClick={() => handleDelete(f.id, f.filename)}
                           className="text-red-600 hover:text-red-700" aria-label="מחק">
                     <Trash2 className="h-4 w-4" />
