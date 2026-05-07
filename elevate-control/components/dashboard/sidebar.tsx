@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { FolderKanban, Users, Settings, BookOpen } from 'lucide-react';
-import type { Database } from '@/lib/supabase/database.types';
+import type { ProfileRow } from '@/lib/supabase/database.types';
 
-type Profile = Database['public']['Tables']['profiles']['Row'];
+type Profile = Pick<ProfileRow, 'id' | 'email' | 'full_name' | 'avatar_url' | 'role' | 'studio_admin'>;
 
 const NAV_ITEMS: { label: string; href: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { label: 'פרויקטים',         href: '/projects',          icon: FolderKanban },

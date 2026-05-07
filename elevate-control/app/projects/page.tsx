@@ -3,10 +3,25 @@ import { createClient } from '@/lib/supabase/server';
 import { Button } from '@/components/ui/button';
 import { ProjectCard } from '@/components/projects/project-card';
 import { Plus, FolderOpen } from 'lucide-react';
+import type { ProjectStatus } from '@/lib/supabase/database.types';
 
 export const metadata = { title: 'פרויקטים' };
 
-const STATUS_LABELS: Record<string, string> = {
+// Local row type for what we select. Keeps page-level inference stable and
+// independent of the placeholder Database types until `pnpm db:types` runs.
+type ProjectRow = {
+  id: string;
+  slug: string;
+  name: string;
+  client_name: string | null;
+  status: ProjectStatus;
+  logo_url: string | null;
+  target_at: string | null;
+  updated_at: string;
+  pm_id: string | null;
+};
+
+const STATUS_LABELS: Record<ProjectStatus, string> = {
   draft:     'בהכנה',
   active:    'פעילים',
   on_hold:   'בהמתנה',
@@ -18,7 +33,7 @@ const STATUS_LABELS: Record<string, string> = {
 export default async function ProjectsPage() {
   const supabase = await createClient();
 
-  const { data: projects, error } = await supabase
+  const { data, error } = await supabase
     .from('projects')
     .select('id, slug, name, client_name, status, logo_url, target_at, updated_at, pm_id')
     .is('archived_at', null)
@@ -28,13 +43,15 @@ export default async function ProjectsPage() {
     console.error('projects query error:', error.message);
   }
 
-  // Group by status for the dashboard view
-  const grouped = (projects ?? []).reduce<Record<string, typeof projects>>((acc, p) => {
-    (acc[p.status] ??= []).push(p);
-    return acc;
-  }, {});
+  const projects: ProjectRow[] = (data ?? []) as ProjectRow[];
 
-  const orderedStatuses: Array<keyof typeof STATUS_LABELS> = [
+  // Group by status for the dashboard view
+  const grouped: Partial<Record<ProjectStatus, ProjectRow[]>> = {};
+  for (const p of projects) {
+    (grouped[p.status] ??= []).push(p);
+  }
+
+  const orderedStatuses: ProjectStatus[] = [
     'active', 'review', 'draft', 'on_hold', 'completed',
   ];
 
@@ -45,7 +62,7 @@ export default async function ProjectsPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">פרויקטים</h1>
           <p className="mt-1 text-sm text-muted-fg">
-            כל הפרויקטים הפעילים של הסטודיו ({projects?.length ?? 0})
+            כל הפרויקטים הפעילים של הסטודיו ({projects.length})
           </p>
         </div>
         <Button asChild variant="accent">
@@ -56,7 +73,7 @@ export default async function ProjectsPage() {
         </Button>
       </header>
 
-      {!projects || projects.length === 0 ? (
+      {projects.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-card py-16">
           <FolderOpen className="h-12 w-12 text-muted-fg" />
           <h2 className="mt-4 text-lg font-semibold">אין עדיין פרויקטים</h2>

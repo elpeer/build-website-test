@@ -2,9 +2,9 @@ import Image from 'next/image';
 import { signOut } from '@/app/actions/auth';
 import { Button } from '@/components/ui/button';
 import { LogOut, User as UserIcon } from 'lucide-react';
-import type { Database } from '@/lib/supabase/database.types';
+import type { ProfileRow } from '@/lib/supabase/database.types';
 
-type Profile = Database['public']['Tables']['profiles']['Row'];
+type Profile = Pick<ProfileRow, 'id' | 'email' | 'full_name' | 'avatar_url' | 'role' | 'studio_admin'>;
 
 export function Topbar({ user }: { user: Profile }) {
   const initials = (user.full_name ?? user.email).slice(0, 2).toUpperCase();
