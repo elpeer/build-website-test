@@ -1,6 +1,3 @@
 /ninjatours-theme.zip
 /ninjatours-theme/
 node_modules/
-
-# Separate repo — initialized inside parent for convenience
-/elevate-control/
