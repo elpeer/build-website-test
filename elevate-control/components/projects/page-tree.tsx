@@ -18,6 +18,7 @@ interface PageRow {
   type: PageType;
   status: PageStatus;
   order: number;
+  parent_id?: string | null;
 }
 
 const TYPE_LABELS: Record<PageType, string> = {
@@ -115,39 +116,9 @@ export function PageTree({ projectId, projectSlug, pages, cpts = [] }: Props) {
   return (
     <div className="space-y-4">
 
-      {/* Existing pages */}
+      {/* Existing pages — hierarchical site tree */}
       {pages.length > 0 && (
-        <ul className="space-y-2">
-          {pages.map(page => {
-            const Icon = TYPE_ICONS[page.type];
-            return (
-              <li key={page.id}>
-                <Link
-                  href={`/projects/${projectSlug}/${page.slug}`}
-                  className="flex items-center justify-between gap-3 rounded-md border border-border bg-background px-4 py-3 transition-colors hover:border-brand hover:bg-brand/5"
-                >
-                  <div className="flex min-w-0 items-center gap-3">
-                    <Icon className="h-4 w-4 shrink-0 text-muted-fg" />
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">{page.name_he ?? page.slug}</p>
-                      <p className="truncate text-xs text-muted-fg">
-                        <code className="rounded bg-muted px-1.5 py-0.5">/{page.slug}</code>
-                        <span className="mx-2">·</span>
-                        {TYPE_LABELS[page.type]}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-2">
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_PILLS[page.status]}`}>
-                      {STATUS_LABELS[page.status]}
-                    </span>
-                    <ChevronLeft className="h-4 w-4 text-muted-fg rtl:rotate-180" />
-                  </div>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <SiteTree pages={pages} projectSlug={projectSlug} />
       )}
 
       {/* Add page button / form */}
@@ -276,5 +247,67 @@ export function PageTree({ projectId, projectSlug, pages, cpts = [] }: Props) {
       )}
 
     </div>
+  );
+}
+
+// ─── Site tree (recursive, nested by parent_id) ────────────────────────────
+
+function SiteTree({ pages, projectSlug }: { pages: PageRow[]; projectSlug: string }) {
+  // Bucket children by parent_id
+  const childrenByParent = new Map<string | null, PageRow[]>();
+  for (const p of pages) {
+    const key = p.parent_id ?? null;
+    const list = childrenByParent.get(key) ?? [];
+    list.push(p);
+    childrenByParent.set(key, list);
+  }
+  const roots = childrenByParent.get(null) ?? [];
+
+  return <ul className="space-y-2">{roots.map(p => <TreeNode key={p.id} page={p} all={childrenByParent} projectSlug={projectSlug} depth={0} />)}</ul>;
+}
+
+function TreeNode({
+  page, all, projectSlug, depth,
+}: {
+  page: PageRow;
+  all: Map<string | null, PageRow[]>;
+  projectSlug: string;
+  depth: number;
+}) {
+  const Icon = TYPE_ICONS[page.type];
+  const children = all.get(page.id) ?? [];
+
+  return (
+    <li>
+      <Link
+        href={`/projects/${projectSlug}/${page.slug}`}
+        style={depth > 0 ? { marginInlineStart: `${depth * 16}px` } : undefined}
+        className="flex items-center justify-between gap-3 rounded-md border border-border bg-background px-4 py-3 transition-colors hover:border-brand hover:bg-brand/5"
+      >
+        <div className="flex min-w-0 items-center gap-3">
+          {depth > 0 && <span className="text-muted-fg">↳</span>}
+          <Icon className="h-4 w-4 shrink-0 text-muted-fg" />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium">{page.name_he ?? page.slug}</p>
+            <p className="truncate text-xs text-muted-fg">
+              <code className="rounded bg-muted px-1.5 py-0.5">/{page.slug}</code>
+              <span className="mx-2">·</span>
+              {TYPE_LABELS[page.type]}
+            </p>
+          </div>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_PILLS[page.status]}`}>
+            {STATUS_LABELS[page.status]}
+          </span>
+          <ChevronLeft className="h-4 w-4 text-muted-fg rtl:rotate-180" />
+        </div>
+      </Link>
+      {children.length > 0 && (
+        <ul className="mt-2 space-y-2">
+          {children.map(c => <TreeNode key={c.id} page={c} all={all} projectSlug={projectSlug} depth={depth + 1} />)}
+        </ul>
+      )}
+    </li>
   );
 }

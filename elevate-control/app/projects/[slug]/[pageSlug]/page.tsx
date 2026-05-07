@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ChevronLeft, FileText, Folder, Layers, Settings, AlertTriangle } from 'lucide-react';
+import { ChevronLeft, FileText, Folder, Layers, Settings, AlertTriangle, Sparkles } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AddSectionPicker } from '@/components/sections/add-section-picker';
 import { SectionRow } from '@/components/sections/section-row';
-import type { PageStatus, PageType, SectionStatus } from '@/lib/supabase/database.types';
+import { DesignUploader } from '@/components/designs/design-uploader';
+import type { DesignViewport, PageStatus, PageType, SectionStatus } from '@/lib/supabase/database.types';
 
 interface Props {
   params: Promise<{ slug: string; pageSlug: string }>;
@@ -33,6 +34,7 @@ interface SectionRecord {
   status: SectionStatus;
   notes: string | null;
   order: number;
+  content: unknown;
 }
 
 interface DefinitionRecord {
@@ -42,6 +44,14 @@ interface DefinitionRecord {
   name_en: string | null;
   category: string | null;
   description: string | null;
+}
+
+interface DesignThumb {
+  id: string;
+  viewport: DesignViewport;
+  file_url: string;
+  mime_type: string | null;
+  ai_analyzed_at: string | null;
 }
 
 const PAGE_TYPE_LABELS: Record<PageType, string> = {
@@ -61,6 +71,10 @@ const PAGE_STATUS_LABELS: Record<PageStatus, string> = {
   in_dev: 'בפיתוח', built: 'נבנה', reviewed: 'נסקר', live: 'בייצור',
 };
 
+const VIEWPORT_LABELS: Record<DesignViewport, string> = {
+  desktop: 'דסקטופ', tablet: 'טאבלט', mobile: 'מובייל',
+};
+
 export async function generateMetadata({ params }: Props) {
   const { slug, pageSlug } = await params;
   return { title: `${pageSlug} · ${slug}` };
@@ -70,7 +84,6 @@ export default async function PageDetailPage({ params }: Props) {
   const { slug, pageSlug } = await params;
   const supabase = await createClient();
 
-  // Look up the project (also enforces RLS — non-members get null)
   const { data: project } = await supabase
     .from('projects')
     .select('id, slug, name')
@@ -79,7 +92,6 @@ export default async function PageDetailPage({ params }: Props) {
 
   if (!project) notFound();
 
-  // Then the page
   const { data: page } = await supabase
     .from('pages')
     .select('id, slug, name_he, name_en, type, status, notes')
@@ -89,16 +101,14 @@ export default async function PageDetailPage({ params }: Props) {
 
   if (!page) notFound();
 
-  // Sections on this page
   const { data: sectionsData } = await supabase
     .from('sections')
-    .select('id, definition_slug, status, notes, order')
+    .select('id, definition_slug, status, notes, order, content')
     .eq('page_id', page.id)
     .order('order', { ascending: true });
 
   const sections: SectionRecord[] = (sectionsData ?? []) as SectionRecord[];
 
-  // Section definitions catalog (for the picker + row labels)
   const { data: definitionsData } = await supabase
     .from('section_definitions')
     .select('id, slug, name_he, name_en, category, description')
@@ -106,6 +116,15 @@ export default async function PageDetailPage({ params }: Props) {
 
   const definitions: DefinitionRecord[] = (definitionsData ?? []) as DefinitionRecord[];
   const definitionsBySlug = new Map(definitions.map(d => [d.slug, d]));
+
+  // Designs attached to this page
+  const { data: designsData } = await supabase
+    .from('designs')
+    .select('id, viewport, file_url, mime_type, ai_analyzed_at')
+    .eq('page_id', page.id)
+    .order('created_at', { ascending: false });
+
+  const designs: DesignThumb[] = (designsData ?? []) as DesignThumb[];
 
   const TypeIcon = PAGE_TYPE_ICONS[page.type];
   const ctx = {
@@ -155,10 +174,72 @@ export default async function PageDetailPage({ params }: Props) {
 
       <Card>
         <CardHeader>
+          <CardTitle>עיצובים של העמוד</CardTitle>
+          <CardDescription>
+            העלו עיצוב לעמוד הזה. לחיצה על תמונה פותחת את התצוגה המלאה עם כפתור ניתוח עם Claude.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {designs.length > 0 && (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {designs.map(d => (
+                <Link
+                  key={d.id}
+                  href={`/projects/${project.slug}/${page.slug}/designs/${d.id}`}
+                  className="group relative block overflow-hidden rounded-md border border-border bg-muted transition-shadow hover:shadow-md"
+                >
+                  <div className="aspect-video bg-muted">
+                    {d.mime_type?.startsWith('image/') ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={d.file_url}
+                        alt={`עיצוב ${d.viewport}`}
+                        className="h-full w-full object-cover transition-transform group-hover:scale-[1.02]"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-muted-fg">
+                        <FileText className="h-12 w-12" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between gap-2 bg-background/95 px-3 py-2 text-xs">
+                    <span className="font-medium">{VIEWPORT_LABELS[d.viewport]}</span>
+                    {d.ai_analyzed_at ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-brand/10 px-2 py-0.5 text-brand">
+                        <Sparkles className="h-3 w-3" />
+                        נותח
+                      </span>
+                    ) : (
+                      <span className="text-muted-fg">טרם נותח</span>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          <details className="rounded-md border border-dashed border-border bg-muted/30 p-4" {...(designs.length === 0 ? { open: true } : {})}>
+            <summary className="cursor-pointer text-sm font-medium text-muted-fg hover:text-brand">
+              + העלאת עיצוב חדש לעמוד
+            </summary>
+            <div className="mt-4">
+              <DesignUploader
+                projectId={project.id}
+                projectSlug={project.slug}
+                defaultPageId={page.id}
+              />
+            </div>
+          </details>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>סקשנים</CardTitle>
           <CardDescription>
             {sections.length === 0
-              ? 'אין סקשנים בעמוד הזה. בחרו סקשן ראשון מהקטלוג למטה.'
+              ? 'אין סקשנים בעמוד הזה. בחרו סקשן ראשון מהקטלוג למטה, או נתחו עיצוב כדי שייווצרו אוטומטית.'
               : `${sections.length} סקשנים. גרור או השתמש בחיצים לסידור.`}
           </CardDescription>
         </CardHeader>
@@ -169,9 +250,15 @@ export default async function PageDetailPage({ params }: Props) {
               {sections.map((section, idx) => (
                 <SectionRow
                   key={section.id}
-                  section={section}
+                  section={section as never}
                   definition={definitionsBySlug.get(section.definition_slug)}
                   ctx={ctx}
+                  promptCtx={{
+                    pageNameHe: page.name_he ?? page.slug,
+                    pageSlug:   page.slug,
+                    pageType:   page.type,
+                    projectName: project.name,
+                  }}
                   isFirst={idx === 0}
                   isLast={idx === sections.length - 1}
                   index={idx}

@@ -7,7 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { ChevronUp, ChevronDown, Trash2, Edit2, Save, X, AlertCircle } from 'lucide-react';
-import type { SectionStatus } from '@/lib/supabase/database.types';
+import { SectionPromptButtons } from '@/components/sections/section-prompt-buttons';
+import type { SectionStatus, Json } from '@/lib/supabase/database.types';
+import type { FieldDefForPrompt } from '@/lib/section-prompts';
 
 interface SectionRow {
   id: string;
@@ -15,6 +17,21 @@ interface SectionRow {
   status: SectionStatus;
   notes: string | null;
   order: number;
+  content?: Json;
+}
+
+interface SectionContentMeta {
+  field_schema?: FieldDefForPrompt[];
+  cpt_driven?: boolean;
+  cpt_slug?: string | null;
+  cpt_name_he?: string | null;
+}
+
+interface PromptCtx {
+  pageNameHe: string;
+  pageSlug: string;
+  pageType: string;
+  projectName: string;
 }
 
 interface Definition {
@@ -35,6 +52,7 @@ interface Props {
   section: SectionRow;
   definition: Definition | undefined;
   ctx: PageContext;
+  promptCtx?: PromptCtx;
   isFirst: boolean;
   isLast: boolean;
   index: number;
@@ -56,7 +74,7 @@ const STATUS_PILLS: Record<SectionStatus, string> = {
   reviewed:  'bg-green-50 text-green-700',
 };
 
-export function SectionRow({ section, definition, ctx, isFirst, isLast, index }: Props) {
+export function SectionRow({ section, definition, ctx, promptCtx, isFirst, isLast, index }: Props) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [notes, setNotes]     = useState(section.notes ?? '');
@@ -149,6 +167,29 @@ export function SectionRow({ section, definition, ctx, isFirst, isLast, index }:
               {section.notes}
             </p>
           )}
+
+          {!editing && promptCtx && (() => {
+            const meta = (section.content ?? {}) as SectionContentMeta;
+            return (
+              <div className="mt-3">
+                <SectionPromptButtons
+                  input={{
+                    pageNameHe:     promptCtx.pageNameHe,
+                    pageSlug:       promptCtx.pageSlug,
+                    pageType:       promptCtx.pageType,
+                    projectName:    promptCtx.projectName,
+                    sectionNameHe:  title,
+                    definitionSlug: section.definition_slug,
+                    description:    section.notes ?? '',
+                    fieldSchema:    meta.field_schema ?? [],
+                    cptDriven:      meta.cpt_driven ?? false,
+                    cptSlug:        meta.cpt_slug ?? null,
+                    cptNameHe:      meta.cpt_name_he ?? null,
+                  }}
+                />
+              </div>
+            );
+          })()}
 
           {editing && (
             <div className="mt-3 space-y-3 border-t border-border pt-3">

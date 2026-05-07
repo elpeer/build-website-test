@@ -24,6 +24,7 @@ interface PageRow {
   type: PageType;
   status: PageStatus;
   order: number;
+  parent_id: string | null;
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -60,7 +61,7 @@ export default async function ProjectPage({ params }: Props) {
   // Project's pages (page tree)
   const { data: pagesData } = await supabase
     .from('pages')
-    .select('id, slug, name_he, type, status, order')
+    .select('id, slug, name_he, type, status, order, parent_id')
     .eq('project_id', project.id)
     .order('order', { ascending: true });
 

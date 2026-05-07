@@ -12,8 +12,6 @@ interface Props {
   searchParams: Promise<{ viewport?: string; page?: string }>;
 }
 
-import type { Json } from '@/lib/supabase/database.types';
-
 interface DesignRecord {
   id: string;
   viewport: DesignViewport;
@@ -23,7 +21,7 @@ interface DesignRecord {
   notes: string | null;
   created_at: string;
   page_id: string | null;
-  ai_analysis: Json | null;
+  ai_analyzed_at: string | null;
 }
 
 interface PageRecord {
@@ -68,7 +66,7 @@ export default async function DesignsPage({ params, searchParams }: Props) {
 
   let designsQuery = supabase
     .from('designs')
-    .select('id, viewport, storage_path, file_url, mime_type, notes, created_at, page_id, ai_analysis')
+    .select('id, viewport, storage_path, file_url, mime_type, notes, created_at, page_id, ai_analyzed_at')
     .eq('project_id', project.id)
     .order('created_at', { ascending: false });
 

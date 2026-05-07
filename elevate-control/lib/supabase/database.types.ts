@@ -143,6 +143,7 @@ export type PageRow = {
   description: string | null;
   type: PageType;
   cpt_id: string | null;
+  parent_id: string | null;
   url_pattern: string | null;
   status: PageStatus;
   order: number;
