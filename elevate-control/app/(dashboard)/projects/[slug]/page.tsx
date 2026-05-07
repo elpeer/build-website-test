@@ -9,6 +9,7 @@ import { ActivityFeed } from '@/components/activity/activity-feed';
 import { GithubPanel } from '@/components/projects/github-panel';
 import { StageControl } from '@/components/projects/stage-control';
 import { ClientCommentsFeed } from '@/components/projects/client-comments-feed';
+import { WorkspaceNavigator } from '@/components/projects/workspace-navigator';
 import type { ProjectStage } from '@/lib/client-workspaces';
 import type { PageStatus, PageType } from '@/lib/supabase/database.types';
 
@@ -227,6 +228,12 @@ export default async function ProjectPage({ params }: Props) {
       </div>
 
       <StageControl
+        projectId={project.id as string}
+        projectSlug={project.slug as string}
+        currentStage={(project.current_stage as ProjectStage) ?? 'quote'}
+      />
+
+      <WorkspaceNavigator
         projectId={project.id as string}
         projectSlug={project.slug as string}
         currentStage={(project.current_stage as ProjectStage) ?? 'quote'}
