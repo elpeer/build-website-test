@@ -7,7 +7,7 @@ description: "Build front-end HTML/CSS/JS for Elevate Digital Studio client site
 
 This skill captures Elevate Digital Studio's front-end coding conventions AND visual taste. Use both layers — the conventions ensure output drops cleanly into the existing codebase; the taste rules ensure output doesn't look generic.
 
-The skill is organized in seven reference files. Read whichever match the task.
+The skill is organized in eight reference files. Read whichever match the task.
 
 ## How to use this skill
 
@@ -27,7 +27,10 @@ The skill is organized in seven reference files. Read whichever match the task.
 **For converting static markup into a WordPress theme:**
 - Read `wordpress-adaptation.md`.
 
-The seven reference files:
+**At project start, OR whenever the page list / brand changes:**
+- Read `project-overview-page.md`. Every project ships a branded `sitemap.html` (project overview / design-system page) under the static HTML folder. Create or update it whenever pages are added, removed, restructured, or rebranded. **This is a maintenance obligation, not a one-time deliverable** — agents working on a project should proactively update the sitemap whenever they touch the page list.
+
+The eight reference files:
 
 - `references/design-system.md` — Visual taste rules: the three modes (Bright/Friendly, Dark/Luxury, Bold/Sport), typography systems, color systems, motion, the "broken element" rule, anti-patterns, and how to read a design reference.
 - `references/section-recipes.md` — Twelve high-impact section archetypes pulled from real agency references (Honda, Hefestus, Mitsubishi, Young, Tali Meir Pick, Uzramed, Xelerate, Biomind). Each with markup, CSS, and what makes it not-templated.
@@ -36,6 +39,7 @@ The seven reference files:
 - `references/js-patterns.md` — IIFE wrapper, Swiper auto-init via data attributes, dual sliders, video progress, Fancybox, AOS, header sticky, mobile menu, accordion, filterItems, TOC, slide-toggle.
 - `references/accessibility-il.md` — Israeli WCAG requirements, required pages, color contrast, focus rings, reduced motion, pre-launch checklist, accessibility widget.
 - `references/wordpress-adaptation.md` — Theme file structure, header.php / footer.php / functions.php, ACF flexible-content page builder, WooCommerce overrides, Polylang.
+- `references/project-overview-page.md` — Branded `sitemap.html` artifact every project ships: hero, brand identity (palette + typography), Pages grid, CPT wrappers, System pages, footer with agency credit. Includes language toggle (HE/EN) with `?lang=` URL param, sticky side TOC, and clickable cards that open the static HTML preview.
 
 ---
 
@@ -62,6 +66,21 @@ If the request is clear, skip the check-in and just build.
 **Step 5 — Add the signature touch.** Every output should have at least one of: micro-animation, ghost text overlay, decorative SVG accent, photo-collage offset block, oversized stat, mixed-script headline, stamp badge, or asymmetric grid break. One per section, no more than two per page. This is what makes the difference between "fine" and "wow."
 
 **Step 6 — Output.** Per the user's preferences: full working code first, 1–3 sentences max about what it does and any gotchas. Don't over-explain.
+
+**Step 7 — Update the project overview page.** If the change you just made adds, removes, renames, or restructures a page, OR changes brand identity (colors, typography, logo), update `{client}/sitemap.html` in the same commit. See `references/project-overview-page.md` for the structure and the customization checklist. The stats numbers at the top (WP Pages / CPTs / Taxonomies / Sections) are the early-warning system — if they're wrong, the page is stale.
+
+---
+
+## Project lifecycle obligations
+
+These artifacts must exist for every project and stay current:
+
+1. **Static HTML pages** in `{client}/*.html` — the design deliverables
+2. **Branded `sitemap.html`** under the same folder — the project overview / design-system page (see `references/project-overview-page.md`). Update on every page-list change.
+3. **WordPress theme** (when the brief includes WP) at `wp-theme/{client}-theme/` — the production implementation
+4. **Theme README** at `wp-theme/{client}-theme/README.md` — installation + maintenance notes
+
+When the user asks to add a page, build a section, or rebrand — proactively update items 2 (always) and 4 (when relevant) without being asked.
 
 ---
 
