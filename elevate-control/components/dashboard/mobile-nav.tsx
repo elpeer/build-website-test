@@ -7,13 +7,6 @@ import type { ProfileRow } from '@/lib/supabase/database.types';
 
 type Profile = Pick<ProfileRow, 'id' | 'email' | 'full_name' | 'role' | 'studio_admin'>;
 
-const NAV_ITEMS = [
-  { label: 'פרויקטים',    href: '/projects',         icon: FolderKanban },
-  { label: 'חברי צוות',   href: '/team',             icon: Users },
-  { label: 'מאגר סקשנים', href: '/section-library',  icon: BookOpen },
-  { label: 'הגדרות',      href: '/settings',         icon: Settings },
-];
-
 export function MobileNav({ user }: { user: Profile }) {
   const [open, setOpen] = useState(false);
 
@@ -29,78 +22,83 @@ export function MobileNav({ user }: { user: Profile }) {
     };
   }, [open]);
 
+  function close() { setOpen(false); }
+
   return (
     <>
       <button type="button"
               onClick={() => setOpen(true)}
-              className="inline-flex items-center justify-center rounded-md p-2 text-muted-fg hover:bg-muted hover:text-foreground lg:hidden"
+              className="inline-flex items-center justify-center rounded-md p-2 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 lg:hidden"
               aria-label="פתח תפריט">
         <Menu className="h-5 w-5" />
       </button>
 
       {open && (
         <>
-          {/* Backdrop */}
-          <button type="button"
-                  aria-label="סגור תפריט"
-                  onClick={() => setOpen(false)}
+          <button type="button" aria-label="סגור תפריט" onClick={close}
                   className="fixed inset-0 z-[60] cursor-default bg-black/50 lg:hidden" />
 
-          {/* Drawer */}
-          <aside className="fixed inset-y-0 end-0 z-[70] w-72 max-w-[85vw] overflow-y-auto bg-background shadow-2xl lg:hidden"
+          <aside className="fixed inset-y-0 end-0 z-[70] flex w-72 max-w-[85vw] flex-col bg-white shadow-2xl lg:hidden"
                  role="dialog" aria-modal="true">
-            <div className="flex h-16 items-center justify-between border-b border-border px-4">
-              <Link href="/projects" onClick={() => setOpen(false)} className="flex items-center gap-2">
+            <div className="flex h-16 shrink-0 items-center justify-between border-b border-zinc-200 px-4">
+              <Link href="/projects" onClick={close} className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-md bg-brand text-white">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
                        strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
                     <path d="M3 12l2-2 7-7 7 7 2 2v9a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/>
                   </svg>
                 </div>
-                <span className="font-bold">Elevate Control</span>
+                <span className="font-bold text-zinc-900">Elevate Control</span>
               </Link>
-              <button type="button" onClick={() => setOpen(false)}
-                      className="rounded-md p-2 text-muted-fg hover:bg-muted"
+              <button type="button" onClick={close}
+                      className="rounded-md p-2 text-zinc-600 hover:bg-zinc-100"
                       aria-label="סגור">
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <nav className="space-y-1 p-3">
-              {NAV_ITEMS.map(item => (
-                <Link key={item.href} href={item.href} onClick={() => setOpen(false)}
-                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-fg hover:bg-muted hover:text-foreground">
-                  <item.icon className="h-4 w-4" />
-                  <span>{item.label}</span>
-                </Link>
-              ))}
-            </nav>
+            <div className="flex-1 overflow-y-auto">
+              <nav className="space-y-1 p-3">
+                <Item href="/projects"        icon={FolderKanban} onClose={close}>פרויקטים</Item>
+                <Item href="/team"            icon={Users}        onClose={close}>חברי צוות</Item>
+                <Item href="/section-library" icon={BookOpen}     onClose={close}>מאגר סקשנים</Item>
+                <Item href="/settings"        icon={Settings}     onClose={close}>הגדרות</Item>
+              </nav>
 
-            {user.studio_admin && (
-              <div className="border-t border-border p-3">
-                <p className="px-3 text-xs font-semibold uppercase tracking-wider text-muted-fg">אדמין</p>
-                <Link href="/admin/studio-members" onClick={() => setOpen(false)}
-                      className="mt-2 flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-fg hover:bg-muted hover:text-foreground">
-                  <Shield className="h-4 w-4" /><span>חברי סטודיו</span>
-                </Link>
-                <Link href="/admin/section-definitions" onClick={() => setOpen(false)}
-                      className="mt-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-fg hover:bg-muted hover:text-foreground">
-                  <Settings className="h-4 w-4" /><span>קטלוג סקשנים</span>
-                </Link>
-                <Link href="/admin/guides" onClick={() => setOpen(false)}
-                      className="mt-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-fg hover:bg-muted hover:text-foreground">
-                  <BookOpen className="h-4 w-4" /><span>מאגר מדריכים</span>
-                </Link>
-              </div>
-            )}
+              {user.studio_admin && (
+                <div className="border-t border-zinc-200 p-3">
+                  <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">אדמין</p>
+                  <Item href="/admin/studio-members"     icon={Shield}   onClose={close}>חברי סטודיו</Item>
+                  <Item href="/admin/section-definitions" icon={Settings} onClose={close}>קטלוג סקשנים</Item>
+                  <Item href="/admin/guides"             icon={BookOpen} onClose={close}>מאגר מדריכים</Item>
+                </div>
+              )}
+            </div>
 
-            <div className="border-t border-border p-3 text-xs text-muted-fg">
-              <p className="font-medium">{user.full_name ?? user.email}</p>
+            <div className="shrink-0 border-t border-zinc-200 p-3 text-xs text-zinc-500">
+              <p className="font-medium text-zinc-700">{user.full_name ?? user.email}</p>
               <p className="text-[11px]" dir="ltr">{user.email}</p>
             </div>
           </aside>
         </>
       )}
     </>
+  );
+}
+
+function Item({
+  href, icon: Icon, onClose, children,
+}: {
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link href={href} onClick={onClose}
+          className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900">
+      <Icon className="h-4 w-4" />
+      <span>{children}</span>
+    </Link>
   );
 }
