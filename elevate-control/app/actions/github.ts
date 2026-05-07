@@ -61,6 +61,69 @@ export async function updateProjectRepo(
 
 interface GhTreeEntry { path: string; type: 'blob' | 'tree' }
 
+export interface GhCommit {
+  sha: string;
+  message: string;
+  author_name: string;
+  author_email: string;
+  author_avatar_url: string | null;
+  author_login: string | null;
+  date: string;        // ISO 8601
+  url: string;         // html_url to the commit
+  files_changed: number;
+}
+
+/**
+ * Fetch recent commits across `main` and `master` branches. Returns the
+ * most recent N (default 20). Auth: GITHUB_TOKEN if set, anon otherwise.
+ * Returns [] if the repo can't be read at all.
+ */
+export async function listRecentCommits(repo: string, limit = 20): Promise<GhCommit[]> {
+  const token = process.env.GITHUB_TOKEN;
+  const headers: Record<string, string> = {
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+  };
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  // Try main first, then master. We use `?per_page=N&sha=<branch>`.
+  for (const branch of ['main', 'master']) {
+    try {
+      const res = await fetch(
+        `https://api.github.com/repos/${repo}/commits?sha=${branch}&per_page=${limit}`,
+        { headers, next: { revalidate: 60 } },
+      );
+      if (!res.ok) continue;
+
+      type CommitItem = {
+        sha: string;
+        html_url: string;
+        commit: {
+          message: string;
+          author: { name: string; email: string; date: string };
+        };
+        author: { login: string; avatar_url: string } | null;
+        // We don't ask for files in the list endpoint — leave files_changed=0
+      };
+      const data = await res.json() as CommitItem[];
+      return data.map(c => ({
+        sha:               c.sha.slice(0, 7),
+        message:           (c.commit.message ?? '').split('\n')[0],
+        author_name:       c.commit.author?.name ?? 'Unknown',
+        author_email:      c.commit.author?.email ?? '',
+        author_avatar_url: c.author?.avatar_url ?? null,
+        author_login:      c.author?.login ?? null,
+        date:              c.commit.author?.date ?? new Date().toISOString(),
+        url:               c.html_url,
+        files_changed:     0,
+      }));
+    } catch (e) {
+      console.warn(`[listRecentCommits] ${branch} fetch failed:`, (e as Error).message);
+    }
+  }
+  return [];
+}
+
 /**
  * Recursively pull the file tree of a directory inside the project's repo
  * via GitHub's REST API. Uses GITHUB_TOKEN if set (private repos / higher

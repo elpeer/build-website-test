@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { PageTree } from '@/components/projects/page-tree';
 import { ActivityFeed } from '@/components/activity/activity-feed';
 import { GithubPanel } from '@/components/projects/github-panel';
+import { GithubActivity } from '@/components/projects/github-activity';
 import { StageControl } from '@/components/projects/stage-control';
 import { ClientCommentsFeed } from '@/components/projects/client-comments-feed';
 import { WorkspaceNavigator } from '@/components/projects/workspace-navigator';
@@ -251,6 +252,8 @@ export default async function ProjectPage({ params }: Props) {
         initialHtmlPath={(project.github_html_path as string | null) ?? null}
         initialThemePath={(project.github_theme_path as string | null) ?? null}
       />
+
+      <GithubActivity repo={(project.github_repo as string | null) ?? null} />
 
       <Card>
         <CardHeader>
