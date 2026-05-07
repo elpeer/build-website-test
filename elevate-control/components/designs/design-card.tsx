@@ -4,8 +4,9 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { deleteDesign } from '@/app/actions/designs';
 import { Button } from '@/components/ui/button';
+import { DesignAnalyzer } from './design-analyzer';
 import { Trash2, Monitor, Tablet, Smartphone, FileText, ExternalLink } from 'lucide-react';
-import type { DesignViewport } from '@/lib/supabase/database.types';
+import type { DesignViewport, Json } from '@/lib/supabase/database.types';
 
 interface DesignRow {
   id: string;
@@ -17,6 +18,7 @@ interface DesignRow {
   created_at: string;
   page_slug: string | null;
   page_name: string | null;
+  ai_analysis: Json | null;
 }
 
 interface Props {
@@ -91,6 +93,15 @@ export function DesignCard({ design, projectSlug }: Props) {
           <p className="line-clamp-2 text-sm text-foreground">{design.notes}</p>
         )}
         <p className="text-xs text-muted-fg">{date}</p>
+
+        {isImage && (
+          <DesignAnalyzer
+            designId={design.id}
+            projectSlug={projectSlug}
+            initialAnalysis={design.ai_analysis as never}
+            hasPage={!!design.page_slug}
+          />
+        )}
 
         <div className="mt-auto flex items-center justify-between gap-2 pt-2">
           <a
