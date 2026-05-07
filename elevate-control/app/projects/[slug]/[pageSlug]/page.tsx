@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { AddSectionPicker } from '@/components/sections/add-section-picker';
 import { SectionRow } from '@/components/sections/section-row';
 import { DesignUploader } from '@/components/designs/design-uploader';
+import { PageStructureSuggester } from '@/components/pages/page-structure-suggester';
 import type { DesignViewport, PageStatus, PageType, SectionStatus } from '@/lib/supabase/database.types';
 
 interface Props {
@@ -26,6 +27,7 @@ interface PageRecord {
   type: PageType;
   status: PageStatus;
   notes: string | null;
+  creation_context: unknown;
 }
 
 interface SectionRecord {
@@ -94,7 +96,7 @@ export default async function PageDetailPage({ params }: Props) {
 
   const { data: page } = await supabase
     .from('pages')
-    .select('id, slug, name_he, name_en, type, status, notes')
+    .select('id, slug, name_he, name_en, type, status, notes, creation_context')
     .eq('project_id', project.id)
     .eq('slug', pageSlug)
     .single<PageRecord>();
@@ -171,6 +173,14 @@ export default async function PageDetailPage({ params }: Props) {
           </CardContent>
         </Card>
       )}
+
+      <PageStructureSuggester
+        pageId={page.id}
+        projectSlug={project.slug}
+        pageSlug={page.slug}
+        hasSections={sections.length > 0}
+        creationContext={page.creation_context as never}
+      />
 
       <Card>
         <CardHeader>

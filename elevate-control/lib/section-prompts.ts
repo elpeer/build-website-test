@@ -1,12 +1,18 @@
 /**
- * Build "copy-paste-ready" prompts for a section, one for each downstream
- * task (frontend HTML/CSS/JS via the elevate-website-builder skill,
- * and ACF-driven WordPress admin via the WordPress builder).
+ * Build "copy-paste-ready" prompts for a section, one per downstream task.
  *
- * The frontend prompt carries enough context that pasting it into Claude
- * Code along with a screenshot of the section is enough to produce the
- * markup. The admin prompt focuses on field types — same screenshot, but
- * the model is asked to write the ACF group definition + any PHP wiring.
+ * The studio's pipeline is two-step:
+ *
+ * 1. **Frontend** — pure HTML/CSS/JS for the section, following Elevate's
+ *    visual conventions. No WordPress, no ACF, no PHP. The output is a
+ *    static .html (+ .css/.js) that lives under the project's `frontend/`
+ *    folder. This is what the designer/frontend dev hands the WP dev.
+ *
+ * 2. **Admin / WP theme** — takes the *existing* frontend HTML file as
+ *    input and produces the WordPress theme template part (PHP) plus the
+ *    ACF Field Group definition. The frontend HTML is the source of truth
+ *    for the visual structure; the admin prompt's job is to break it into
+ *    editable fields and rebuild it as a `flexible_content` layout.
  */
 
 export interface FieldDefForPrompt {
@@ -47,48 +53,55 @@ function fieldsToText(fields: FieldDefForPrompt[], depth = 0): string {
   }).join('\n');
 }
 
-export function buildFrontendPrompt(input: SectionPromptInput): string {
-  const cptInfo = input.cptDriven
-    ? `\n## תוכן דינמי\nהסקשן הזה נטען מ-CPT \`${input.cptSlug}\` (${input.cptNameHe}). כתבו את ה-HTML כתבנית עבור פריט בודד + לולאה. שדות ה-CPT עצמם לא מופיעים ב-field_schema למטה — הם של ה-CPT.`
-    : '';
+// ─── Frontend prompt: pure HTML/CSS/JS, no WordPress ────────────────────
 
-  return `# בניית הסקשן: ${input.sectionNameHe}
+export function buildFrontendPrompt(input: SectionPromptInput): string {
+  return `# בניית הסקשן (Frontend בלבד): ${input.sectionNameHe}
 
 הקלט: צילום מסך של הסקשן הזה (מצורף בנפרד) + ההגדרה הבאה.
+הפלט: קוד HTML/CSS/JS סטטי בלבד. **בלי WordPress, בלי PHP, בלי ACF.**
 
 ## מיקום
-- עמוד: ${input.pageNameHe} (\`/${input.pageSlug}\`, type=${input.pageType})
-- Section definition: \`${input.definitionSlug}\`${input.projectName ? `\n- פרויקט: ${input.projectName}` : ''}
+- עמוד: ${input.pageNameHe} (\`/${input.pageSlug}\`)
+- מזהה הסקשן: \`${input.definitionSlug}\`${input.projectName ? `\n- פרויקט: ${input.projectName}` : ''}
 
-## תיאור הסקשן
+## מה הסקשן עושה
 ${input.description}
-${cptInfo}
-
-## שדות שיוזנו דרך ACF
-${fieldsToText(input.fieldSchema)}
 
 ## משימה
-על-בסיס צילום המסך + ההגדרה הזו, הפיקו:
-1. קובץ HTML/PHP (template part / FC layout) של הסקשן ב-BEM, RTL-first, עברית כשפת ברירת המחדל.
-2. CSS (קובץ נפרד או section-scoped) — צבעים, טיפוגרפיה ומרווחים מהעיצוב.
-3. JS אם נדרש (Swiper, AOS, accordion, אלא אם זה סטטי).
+על-בסיס צילום המסך, הפיקו:
 
-עקבו אחרי הקונבנציות של הסטודיו (skill: \`elevate-website-builder\`):
-- BEM כפול underscore.
-- מחלקות כפתורים: \`btn btn--primary\`, \`btn btn--ghost\`, וכו'.
-- אייקונים מ-icomoon (\`.icon__\`).
-- Swiper עם מחלקת \`default-slider\` כשרלוונטי.
-- AOS לאנימציות.
+1. **HTML** — קובץ או section markup, RTL, עברית כברירת מחדל. שמרו על מבנה סמנטי (\`<section>\`, \`<header>\`, רשימות וכו').
+2. **CSS** — כל הצבעים, הטיפוגרפיה, המרווחים, ה-states וה-responsive breakpoints. אפשר קובץ נפרד או section-scoped.
+3. **JS** — רק אם הסקשן דורש זאת (קרוסלה, אקורדיון, מודאל, פילטר). Vanilla או Swiper/AOS לפי הצורך.
 
-החזירו את הקבצים בהתאמה למבנה תמת WordPress (\`templates/parts/sections/<slug>.php\`).`;
+עקבו אחרי קונבנציות הסטודיו (skill: \`elevate-website-builder\`):
+- BEM כפול underscore: \`.section-name\`, \`.section-name__element\`, \`.section-name--modifier\`.
+- מחלקות כפתורים: \`btn btn--primary\`, \`btn btn--ghost\`, \`btn--lg\`.
+- אייקונים: \`<i class="icon icon-name"></i>\` מ-icomoon, או SVG inline.
+- Swiper: מחלקת \`default-slider\` כשרלוונטי.
+- AOS: data-aos לאנימציות בגלילה.
+
+**אל תכתבו PHP, אל תרשמו ACF, אל תשתמשו ב-\`get_field()\`. רק HTML+CSS+JS.**
+
+הקבצים שתפיקו צריכים להישמר תחת תיקיית הפרויקט ב-\`frontend/sections/${input.definitionSlug}/\` (HTML) ובהתאמה תחת \`frontend/css/sections/\` ו-\`frontend/js/sections/\`.`;
 }
+
+// ─── Admin prompt: take EXISTING HTML → WP theme + ACF ──────────────────
 
 export function buildAdminPrompt(input: SectionPromptInput): string {
   const cptInfo = input.cptDriven
-    ? `\nהסקשן נטען מ-CPT \`${input.cptSlug}\` (${input.cptNameHe}). שדות ה-field_schema למטה הם השדות "העוטפים" (כותרת על־עמודית, CTA, מספר פריטים) — שדות הפוסט עצמו (תמונה ראשית, תוכן, תאריך) נמצאים ברישום ה-CPT הנפרד שלו.`
+    ? `\n## תוכן דינמי\nהסקשן נטען מ-CPT \`${input.cptSlug}\` (${input.cptNameHe}). שדות ה-field_schema למטה הם השדות "העוטפים" (כותרת על-עמודית, CTA, מספר פריטים) — שדות הפוסט עצמו (תמונה ראשית, תוכן) שייכים לרישום ה-CPT הנפרד.`
     : '';
 
-  return `# הגדרת ACF + ניהול: ${input.sectionNameHe}
+  return `# המרת הסקשן ל-WordPress theme: ${input.sectionNameHe}
+
+הקלט:
+- קובץ ה-HTML/CSS/JS של הסקשן (כבר קיים תחת \`frontend/sections/${input.definitionSlug}/\`).
+- צילום מסך של הסקשן כפי שהוא ב-frontend.
+- ההגדרה הבאה.
+
+הפלט: קובץ template part PHP + הגדרת ACF Field Group, מותאמים ל-flexible_content של תמת הוורדפרס.
 
 ## הקשר
 - עמוד: ${input.pageNameHe} (\`/${input.pageSlug}\`, type=${input.pageType})
@@ -98,17 +111,22 @@ ${cptInfo}
 ## תיאור הסקשן
 ${input.description}
 
-## שדות מוצעים
+## שדות ACF המאושרים
 ${fieldsToText(input.fieldSchema)}
 
 ## משימה
-הפיקו:
-1. רישום ACF Field Group (קוד PHP, \`acf_add_local_field_group\`) — שדות בדיוק כמתואר, מפתחות \`field_<group>_<key>\`.
-2. שיוך ה-Field Group לפי לוקיישן: \`flexible_content_layout = ${input.definitionSlug}\` או location מתאים אחר (להחליט לפי איך זה משתלב במבנה ה-FC של הסטודיו).
-3. אם ה-section כולל ${input.cptDriven ? 'CPT-driven content' : 'אובייקטים שצריכים תמונות / קבצים'} — וודאו שהשדות מוגדרים נכון (return type, image format).
-4. אם יש שדה repeater — וודאו min/max מתאימים והערות לעורך התוכן.
+1. **קראו את ה-HTML** של הסקשן מתיקיית \`frontend/sections/${input.definitionSlug}/\`.
+2. **זהו את החלקים הניתנים לעריכה** (כותרות, טקסטים, תמונות, כפתורים, רשימות) והחליפו אותם ב-\`<?php the_field('...'); ?>\` או ב-loop על repeaters לפי ה-field_schema למעלה.
+3. **שמרו את ה-CSS וה-JS כמו שהם** — רק ה-HTML הופך לתבנית PHP. ה-classes נשארים זהים כדי שה-CSS שכבר נכתב ימשיך לעבוד 1:1.
+4. **הפיקו**:
+   - \`templates/parts/sections/${input.definitionSlug}.php\` — ה-template part. מבוסס על ה-HTML המקורי, עם החלפת התוכן הקבוע ב-ACF calls. ${input.cptDriven ? 'כולל \`WP_Query\` לטעינת הפריטים מ-' + input.cptSlug + '.' : ''}
+   - \`includes/acf/sections/${input.definitionSlug}.php\` — \`acf_add_local_field_group\` מלא. מפתחות \`field_${input.definitionSlug}_<key>\`, location: \`flexible_content_layout = ${input.definitionSlug}\` (תחת ה-FC הראשי של תמת הסטודיו).
+   - שורת \`require_once\` לקובץ ה-ACF, להוספה ל-\`functions.php\`.
 
-תפיקו קובץ \`includes/acf/sections/${input.definitionSlug}.php\` שאפשר להכליל מ-\`functions.php\`.
+חוקי זהב:
+- אין לשנות classes או מבנה מהקוד המקורי. רק להחליף תוכן בקריאות ACF.
+- לכל שדה repeater — \`have_rows() / the_row()\` עם הסאב-שדות בדיוק לפי ה-schema.
+- לתמונות: שדה ACF מוגדר return_format=array, ולקרוא \`['url']\` ו-\`['alt']\`.
 
 עקבו אחרי קונבנציות הסטודיו (skill: \`elevate-website-builder\`).`;
 }

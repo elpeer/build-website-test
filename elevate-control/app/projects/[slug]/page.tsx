@@ -6,6 +6,7 @@ import { formatDateHe } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageTree } from '@/components/projects/page-tree';
 import { ActivityFeed } from '@/components/activity/activity-feed';
+import { GithubPanel } from '@/components/projects/github-panel';
 import type { PageStatus, PageType } from '@/lib/supabase/database.types';
 
 interface Props {
@@ -214,6 +215,14 @@ export default async function ProjectPage({ params }: Props) {
           פעילות מלאה
         </Link>
       </div>
+
+      <GithubPanel
+        projectId={project.id as string}
+        projectSlug={project.slug as string}
+        initialRepo={(project.github_repo as string | null) ?? null}
+        initialHtmlPath={(project.github_html_path as string | null) ?? null}
+        initialThemePath={(project.github_theme_path as string | null) ?? null}
+      />
 
       <Card>
         <CardHeader>

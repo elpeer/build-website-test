@@ -587,11 +587,55 @@ export async function materializeAnalysis(
       .single<{ order: number }>();
     let pageOrder = (lastPage?.order ?? 0) + 10;
 
+    // For each new page: try to figure out which trigger section it came
+    // from. We match by CPT slug — if a section is CPT-driven and the page
+    // is type=archive/single with that same suggested slug, that's the
+    // trigger. Otherwise we just note "discovered from menu/footer".
+    const sectionsByCptSlug = new Map<string, AnalysisSection>();
+    for (const s of analysis.sections) {
+      if (s.cpt_driven && s.suggested_cpt) {
+        sectionsByCptSlug.set(slugify(s.suggested_cpt.slug), s);
+      }
+    }
+
+    const siblingSummaries = analysis.sections.map(s => ({
+      definition_slug: s.definition_slug,
+      name_he: s.name_he,
+      cpt_driven: s.cpt_driven,
+    }));
+
     // Two passes: first create everyone with no parent, then patch parent_id
     const created: Array<{ id: string; slug: string; parent_slug: string | null }> = [];
     for (const sp of analysis.additional_pages) {
       const cleanSlug = slugify(sp.slug);
       if (idBySlug.has(cleanSlug)) continue;
+
+      // Try to identify the trigger section. If the page type is archive or
+      // single and the page slug matches a CPT slug, the trigger is that
+      // CPT-driven section.
+      const triggerSection = sectionsByCptSlug.get(cleanSlug)
+        ?? Array.from(sectionsByCptSlug.values()).find(s =>
+          s.suggested_cpt && (cleanSlug.includes(slugify(s.suggested_cpt.slug)) ||
+                              slugify(s.suggested_cpt.slug).includes(cleanSlug))
+        );
+
+      const creationContext = {
+        source: 'design_analysis' as const,
+        source_design_id: design.id,
+        source_page_slug: slug,
+        source_page_name_he: analysis.page_name_he,
+        source_page_type: analysis.page_type,
+        trigger_section: triggerSection ? {
+          definition_slug: triggerSection.definition_slug,
+          name_he:         triggerSection.name_he,
+          description_he:  triggerSection.description_he,
+          cpt_slug:        triggerSection.suggested_cpt?.slug ?? null,
+          cpt_name_he:     triggerSection.suggested_cpt?.name_he ?? null,
+        } : null,
+        sibling_sections: siblingSummaries,
+        original_reason_he: sp.reason_he,
+        suggested_at: new Date().toISOString(),
+      };
 
       const { data: newPage, error } = await supabase
         .from('pages')
@@ -603,6 +647,7 @@ export async function materializeAnalysis(
           status:     'planned',
           order:      pageOrder,
           notes:      sp.reason_he,
+          creation_context: creationContext as unknown as Json,
           created_by: user.id,
         })
         .select('id, slug')
@@ -641,4 +686,407 @@ export async function materializeAnalysis(
   revalidatePath(`/projects/${ctx.projectSlug}/${slug}`);
 
   return { ok: true, data: report };
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// Page-structure suggester
+// ────────────────────────────────────────────────────────────────────────
+// Given a page that was created from a design analysis (so it has a rich
+// creation_context), call Claude with that context + project state and ask
+// for a proposed structure: sections (with field schemas), and (for archive
+// pages) suggested taxonomies for the linked CPT.
+// ════════════════════════════════════════════════════════════════════════
+
+export interface SuggestedTaxonomy {
+  slug: string;
+  name_he: string;
+  hierarchical: boolean;
+  terms: string[];
+  reasoning_he: string;
+}
+
+export interface PageStructureProposal {
+  page_summary_he: string;
+  reasoning_he: string;
+  sections: AnalysisSection[];
+  suggested_taxonomies: SuggestedTaxonomy[];
+}
+
+const TAXONOMY_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['slug', 'name_he', 'hierarchical', 'terms', 'reasoning_he'],
+  properties: {
+    slug:         { type: 'string', description: 'kebab-case English' },
+    name_he:      { type: 'string' },
+    hierarchical: { type: 'boolean', description: 'true=קטגוריות, false=תגיות' },
+    terms:        { type: 'array', items: { type: 'string' } },
+    reasoning_he: { type: 'string', description: 'למה הצענו את הטקסונומיה הזו' },
+  },
+} as const;
+
+const STRUCTURE_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['page_summary_he', 'reasoning_he', 'sections', 'suggested_taxonomies'],
+  properties: {
+    page_summary_he: { type: 'string', description: 'תקציר מטרת העמוד' },
+    reasoning_he:    { type: 'string', description: 'למה ההצעה הזו מתאימה — קצר וענייני' },
+    sections: {
+      type: 'array',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        required: ['definition_slug', 'name_he', 'description_he', 'order_hint',
+                   'cpt_driven', 'suggested_cpt', 'field_schema'],
+        properties: {
+          definition_slug: { type: 'string' },
+          name_he:         { type: 'string' },
+          description_he:  { type: 'string' },
+          order_hint:      { type: 'integer' },
+          cpt_driven:      { type: 'boolean' },
+          suggested_cpt: {
+            anyOf: [
+              { type: 'object', additionalProperties: false, required: ['slug', 'name_he'],
+                properties: { slug: { type: 'string' }, name_he: { type: 'string' } } },
+              { type: 'null' },
+            ],
+          },
+          field_schema: {
+            type: 'array',
+            items: FIELD_DEF_SCHEMA,
+          },
+        },
+      },
+    },
+    suggested_taxonomies: {
+      type: 'array',
+      description: 'רק אם רלוונטי (בעיקר עבור עמודי archive). אחרת מערך ריק.',
+      items: TAXONOMY_SCHEMA,
+    },
+  },
+} as const;
+
+export async function suggestPageStructure(
+  pageId: string,
+  ctx: { projectSlug: string }
+): Promise<Result<{ proposal: PageStructureProposal }>> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return { ok: false, error: 'ANTHROPIC_API_KEY לא מוגדר' };
+  }
+
+  const { data: page } = await supabase
+    .from('pages')
+    .select('id, project_id, slug, name_he, type, cpt_id, creation_context, notes')
+    .eq('id', pageId)
+    .single<{
+      id: string; project_id: string; slug: string; name_he: string | null;
+      type: PageType; cpt_id: string | null; creation_context: Json | null; notes: string | null;
+    }>();
+  if (!page) return { ok: false, error: 'העמוד לא נמצא' };
+
+  const { data: project } = await supabase
+    .from('projects')
+    .select('id, name, client_name')
+    .eq('id', page.project_id)
+    .single<{ id: string; name: string; client_name: string | null }>();
+
+  // CPT info if linked
+  let cptInfo: { slug: string; name_he: string | null; field_schema: Json } | null = null;
+  if (page.cpt_id) {
+    const { data: cpt } = await supabase
+      .from('cpts')
+      .select('slug, name_he, field_schema')
+      .eq('id', page.cpt_id)
+      .single<{ slug: string; name_he: string | null; field_schema: Json }>();
+    if (cpt) cptInfo = cpt;
+  }
+
+  // Section catalog
+  const { data: defsData } = await supabase
+    .from('section_definitions')
+    .select('slug, name_he, name_en, category, description, cpt_driven')
+    .order('category', { ascending: true });
+  const definitions = (defsData ?? []) as { slug: string; name_he: string | null; name_en: string | null; category: string | null; description: string | null; cpt_driven: boolean }[];
+
+  // Existing CPTs
+  const { data: cptsData } = await supabase
+    .from('cpts')
+    .select('slug, name_he')
+    .eq('project_id', page.project_id);
+  const existingCpts = (cptsData ?? []) as { slug: string; name_he: string | null }[];
+
+  const catalogText = definitions.map(d => {
+    const name = d.name_he ?? d.name_en ?? d.slug;
+    const cat  = d.category ? `[${d.category}]` : '[other]';
+    const cpt  = d.cpt_driven ? ' (CPT-driven)' : '';
+    return `- \`${d.slug}\` ${cat} ${name}${cpt}`;
+  }).join('\n');
+
+  const cptsText = existingCpts.length === 0
+    ? '(אין CPTs)'
+    : existingCpts.map(c => `- \`${c.slug}\` — ${c.name_he ?? c.slug}`).join('\n');
+
+  const ctxText = page.creation_context
+    ? `\nהעמוד הזה נוצר אוטומטית במהלך ניתוח של עמוד אחר. הקונטקסט המלא:\n\`\`\`json\n${JSON.stringify(page.creation_context, null, 2)}\n\`\`\``
+    : '\n(אין קונטקסט יצירה — זה עמוד שנוצר ידנית)';
+
+  const cptText = cptInfo
+    ? `\nהעמוד מקושר ל-CPT \`${cptInfo.slug}\` (${cptInfo.name_he ?? cptInfo.slug}). שדות ה-CPT:\n\`\`\`json\n${JSON.stringify(cptInfo.field_schema, null, 2)}\n\`\`\``
+    : '';
+
+  const systemPrompt = `אתה אדריכל UX/IA עבור Elevate Digital Studio.
+
+המשימה שלך: לתכנן את המבנה של העמוד הספציפי. תקבל קונטקסט מפורט מאיפה העמוד הגיע (מאיזה עיצוב, מאיזה סקשן בעמוד אחר, מה האחים שלו), ועליך להציע:
+
+1. **מבנה הסקשנים** — אילו סקשנים מהקטלוג מתאימים, באיזה סדר, ומה התיאור של כל אחד.
+2. **מתי הסקשן אוטומטי לעומת ידני** — לעמודי ארכיון, לעיתים נכון שגריד הפריטים יטען אוטומטית מה-CPT (cpt_driven=true) במקום סקשן עריכת תוכן ידני. הסבר את זה ב-description.
+3. **טקסונומיות מומלצות** — אם זה עמוד archive שצריך פילטרים (לפי קטגוריה/יעד/מחיר), הצע אותן עם terms ראשוניים.
+4. **שדות ACF "עוטפים"** — לכל סקשן, שדות שמאפשרים עריכה (כותרת על-עמודית, מספר פריטים, CTA וכו'). אל תכלול שדות שכבר נמצאים ב-CPT עצמו.
+
+חוקים:
+- כל definition_slug חייב להיות מהקטלוג שלמטה.
+- כל הטקסטים בעברית, פרט ל-slugs ול-keys.
+- נטה לפשטות: אל תוסיף סקשנים סתם בשביל המראה.
+- ההסבר ב-reasoning_he חייב לקשור בין ההצעה לבין הקונטקסט שקיבלת.
+
+קטלוג הסקשנים:
+${catalogText}
+
+CPTs קיימים בפרויקט:
+${cptsText}
+`;
+
+  const userText = `**פרויקט:** ${project?.name ?? '?'}${project?.client_name ? ` (${project.client_name})` : ''}
+
+**העמוד:**
+- שם: ${page.name_he ?? page.slug}
+- slug: \`${page.slug}\`
+- סוג: ${page.type}
+- הערות נוכחיות: ${page.notes ?? '(ריק)'}${cptText}
+
+**קונטקסט יצירה:**${ctxText}
+
+הצע את המבנה האידיאלי של העמוד הזה — סקשנים, מה אוטומטי ומה ידני, וטקסונומיות אם רלוונטי.`;
+
+  const client = new Anthropic();
+
+  let parsed: unknown;
+  try {
+    const response = await client.messages.create({
+      model: 'claude-opus-4-7',
+      max_tokens: 16000,
+      thinking: { type: 'adaptive' },
+      system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
+      output_config: { format: { type: 'json_schema', schema: STRUCTURE_SCHEMA } },
+      messages: [{ role: 'user', content: userText }],
+    });
+    const textBlock = response.content.find(b => b.type === 'text');
+    if (!textBlock || textBlock.type !== 'text') {
+      return { ok: false, error: 'Claude לא החזיר טקסט' };
+    }
+    parsed = JSON.parse(textBlock.text);
+  } catch (err) {
+    if (err instanceof Anthropic.APIError) {
+      return { ok: false, error: `שגיאת Claude (${err.status}): ${err.message}` };
+    }
+    return { ok: false, error: `שגיאה: ${(err as Error).message}` };
+  }
+
+  const proposal = parsed as PageStructureProposal;
+  const validSlugs = new Set(definitions.map(d => d.slug));
+  proposal.sections = (proposal.sections ?? [])
+    .filter(s => validSlugs.has(s.definition_slug))
+    .sort((a, b) => a.order_hint - b.order_hint);
+
+  // Persist proposal under creation_context.proposed_structure
+  const existingCtx = (page.creation_context as Record<string, unknown> | null) ?? {};
+  const newCtx = { ...existingCtx, proposed_structure: proposal };
+
+  await supabase
+    .from('pages')
+    .update({ creation_context: newCtx as unknown as Json })
+    .eq('id', pageId);
+
+  await supabase.from('activity_log').insert({
+    project_id:  page.project_id,
+    actor_id:    user.id,
+    actor_label: 'Claude (claude-opus-4-7)',
+    kind:        'updated',
+    entity_type: 'page',
+    entity_id:   page.id,
+    summary:     `Claude הציע מבנה לעמוד ${page.name_he ?? page.slug}: ${proposal.sections.length} סקשנים${proposal.suggested_taxonomies.length ? `, ${proposal.suggested_taxonomies.length} טקסונומיות` : ''}`,
+  });
+
+  revalidatePath(`/projects/${ctx.projectSlug}/${page.slug}`);
+  return { ok: true, data: { proposal } };
+}
+
+export async function updatePageProposal(
+  pageId: string,
+  ctx: { projectSlug: string },
+  proposal: PageStructureProposal
+): Promise<Result> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+
+  const { data: page } = await supabase
+    .from('pages')
+    .select('slug, creation_context')
+    .eq('id', pageId)
+    .single<{ slug: string; creation_context: Json | null }>();
+  if (!page) return { ok: false, error: 'העמוד לא נמצא' };
+
+  const existingCtx = (page.creation_context as Record<string, unknown> | null) ?? {};
+  const newCtx = { ...existingCtx, proposed_structure: proposal };
+
+  const { error } = await supabase
+    .from('pages')
+    .update({ creation_context: newCtx as unknown as Json })
+    .eq('id', pageId);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath(`/projects/${ctx.projectSlug}/${page.slug}`);
+  return { ok: true };
+}
+
+export async function materializePageStructure(
+  pageId: string,
+  ctx: { projectSlug: string }
+): Promise<Result<{ sectionsAdded: number; taxonomiesCreated: number }>> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+
+  const { data: page } = await supabase
+    .from('pages')
+    .select('id, project_id, slug, cpt_id, creation_context')
+    .eq('id', pageId)
+    .single<{
+      id: string; project_id: string; slug: string;
+      cpt_id: string | null; creation_context: Json | null;
+    }>();
+  if (!page) return { ok: false, error: 'העמוד לא נמצא' };
+
+  const cc = page.creation_context as Record<string, unknown> | null;
+  const proposal = cc?.proposed_structure as PageStructureProposal | undefined;
+  if (!proposal) return { ok: false, error: 'אין הצעת מבנה שמורה. הריצו "הצע מבנה" קודם.' };
+
+  // CPTs that the proposal references — create/reuse like in materializeAnalysis
+  const cptByOriginalSlug = new Map<string, string>();
+  const proposedCpts = proposal.sections
+    .map(s => s.suggested_cpt)
+    .filter((c): c is { slug: string; name_he: string } => !!c);
+  const uniqueCpts = new Map<string, { slug: string; name_he: string }>();
+  for (const c of proposedCpts) uniqueCpts.set(slugify(c.slug), c);
+
+  if (uniqueCpts.size > 0) {
+    const { data: existingCpts } = await supabase
+      .from('cpts').select('id, slug')
+      .eq('project_id', page.project_id)
+      .in('slug', Array.from(uniqueCpts.keys()));
+    const existingMap = new Map((existingCpts ?? []).map(c => [c.slug, c.id]));
+    let cptOrder = 0;
+    for (const [, c] of uniqueCpts) {
+      const cleanSlug = slugify(c.slug);
+      const existingId = existingMap.get(cleanSlug);
+      if (existingId) { cptByOriginalSlug.set(c.slug, existingId); continue; }
+      cptOrder += 10;
+      const { data: created } = await supabase
+        .from('cpts')
+        .insert({
+          project_id: page.project_id, slug: cleanSlug, name_he: c.name_he,
+          has_archive: true, has_single: true, order: cptOrder,
+        })
+        .select('id').single<{ id: string }>();
+      if (created) cptByOriginalSlug.set(c.slug, created.id);
+    }
+  }
+
+  // Sections
+  const slugs = proposal.sections.map(s => s.definition_slug);
+  const { data: defs } = slugs.length
+    ? await supabase.from('section_definitions').select('id, slug').in('slug', slugs)
+    : { data: [] as { id: string; slug: string }[] };
+  const defBySlug = new Map((defs ?? []).map(d => [d.slug, d.id]));
+
+  const { data: existingSections } = await supabase
+    .from('sections')
+    .select('order')
+    .eq('page_id', page.id)
+    .order('order', { ascending: false })
+    .limit(1);
+  let nextOrder = ((existingSections?.[0]?.order ?? 0) + 10);
+
+  let sectionsAdded = 0;
+  for (const s of proposal.sections) {
+    const definitionId = defBySlug.get(s.definition_slug);
+    if (!definitionId) continue;
+    const content = {
+      field_schema: s.field_schema ?? [],
+      cpt_driven:   s.cpt_driven,
+      cpt_id:       s.suggested_cpt ? cptByOriginalSlug.get(s.suggested_cpt.slug) ?? null : null,
+      cpt_slug:     s.suggested_cpt?.slug ?? null,
+      cpt_name_he:  s.suggested_cpt?.name_he ?? null,
+    };
+    const { error } = await supabase.from('sections').insert({
+      page_id:         page.id,
+      definition_id:   definitionId,
+      definition_slug: s.definition_slug,
+      order:           nextOrder,
+      status:          'planned' as SectionStatus,
+      notes:           s.description_he,
+      content:         content as unknown as Json,
+    });
+    if (!error) { sectionsAdded++; nextOrder += 10; }
+  }
+
+  // Taxonomies — only if the page is linked to a CPT
+  let taxonomiesCreated = 0;
+  if (page.cpt_id && proposal.suggested_taxonomies?.length) {
+    for (const t of proposal.suggested_taxonomies) {
+      const cleanSlug = slugify(t.slug);
+      const { data: existing } = await supabase
+        .from('taxonomies')
+        .select('id')
+        .eq('cpt_id', page.cpt_id)
+        .eq('slug', cleanSlug)
+        .maybeSingle<{ id: string }>();
+      if (existing) continue;
+      const { error } = await supabase.from('taxonomies').insert({
+        project_id:   page.project_id,
+        cpt_id:       page.cpt_id,
+        slug:         cleanSlug,
+        name_he:      t.name_he,
+        hierarchical: t.hierarchical,
+        terms:        t.terms as unknown as Json,
+      });
+      if (!error) taxonomiesCreated++;
+    }
+  }
+
+  // Mark the proposal as approved/materialized so the UI doesn't re-offer it
+  const ctxSrc = (page.creation_context as Record<string, unknown> | null) ?? {};
+  const newCtx = { ...ctxSrc, proposed_structure: proposal, materialized_at: new Date().toISOString() };
+  await supabase
+    .from('pages')
+    .update({ creation_context: newCtx as unknown as Json, status: 'sectioned' })
+    .eq('id', page.id);
+
+  await supabase.from('activity_log').insert({
+    project_id:  page.project_id,
+    actor_id:    user.id,
+    actor_label: 'Claude (claude-opus-4-7)',
+    kind:        'created',
+    entity_type: 'page',
+    entity_id:   page.id,
+    summary:     `אושר מבנה לעמוד: ${sectionsAdded} סקשנים, ${taxonomiesCreated} טקסונומיות`,
+  });
+
+  revalidatePath(`/projects/${ctx.projectSlug}/${page.slug}`);
+  return { ok: true, data: { sectionsAdded, taxonomiesCreated } };
 }
