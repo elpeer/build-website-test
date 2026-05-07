@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { uploadDesign } from '@/app/actions/designs';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Upload, Monitor, Tablet, Smartphone, X, AlertCircle } from 'lucide-react';
 import type { DesignViewport } from '@/lib/supabase/database.types';
