@@ -6,9 +6,10 @@ import { postMessage, setThreadStatus } from '@/app/actions/client-workspace';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { AnnotationCanvas } from '@/components/client/annotation-canvas';
 import {
   MessageCircle, Send, Paperclip, X, AlertCircle, CheckCircle2,
-  Hourglass, ImageIcon, FileText,
+  Hourglass, ImageIcon, FileText, Pencil,
 } from 'lucide-react';
 
 export interface CommentMessage {
@@ -64,6 +65,7 @@ export function CommentThread({
   const [messages, setMessages] = useState(initialMessages);
   const [body, setBody] = useState('');
   const [attachments, setAttachments] = useState<{ file: File; previewUrl: string }[]>([]);
+  const [annotating, setAnnotating] = useState<{ url: string; name: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [, startSending] = useTransition();
@@ -208,16 +210,28 @@ export function CommentThread({
                 {m.attachments?.length > 0 && (
                   <div className="mt-2 grid gap-2 sm:grid-cols-2">
                     {m.attachments.map((a, i) => (
-                      <a key={i} href={a.url} target="_blank" rel="noopener noreferrer"
-                         className="flex items-center gap-2 rounded-md border border-border bg-background p-2 text-xs hover:border-brand">
-                        {a.mime.startsWith('image/') ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={a.url} alt={a.name} className="h-12 w-12 rounded object-cover" />
-                        ) : (
-                          <FileText className="h-6 w-6 text-muted-fg" />
+                      <div key={i}
+                           className="group relative flex items-center gap-2 rounded-md border border-border bg-background p-2 text-xs hover:border-brand">
+                        {a.mime.startsWith('image/') && (
+                          <button type="button"
+                                  onClick={(e) => { e.preventDefault(); setAnnotating({ url: a.url, name: a.name }); }}
+                                  className="absolute end-1 top-1 z-10 hidden items-center gap-1 rounded-full bg-brand/95 px-2 py-1 text-[10px] font-medium text-white shadow group-hover:flex"
+                                  title="סמן על התמונה">
+                            <Pencil className="h-3 w-3" />
+                            סמן
+                          </button>
                         )}
-                        <span className="truncate flex-1">{a.name}</span>
-                      </a>
+                        <a href={a.url} target="_blank" rel="noopener noreferrer"
+                           className="flex flex-1 items-center gap-2">
+                          {a.mime.startsWith('image/') ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={a.url} alt={a.name} className="h-12 w-12 rounded object-cover" />
+                          ) : (
+                            <FileText className="h-6 w-6 text-muted-fg" />
+                          )}
+                          <span className="truncate flex-1">{a.name}</span>
+                        </a>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -286,6 +300,39 @@ export function CommentThread({
           </Button>
         </div>
       </div>
+
+      {annotating && (
+        <AnnotationCanvas
+          imageUrl={annotating.url}
+          imageName={annotating.name}
+          onCancel={() => setAnnotating(null)}
+          onSave={async (blob, filename) => {
+            // Upload as a new attachment + post a new message in this thread
+            const supabase = createClient();
+            const path = `${projectId}/comments/${crypto.randomUUID()}.png`;
+            const { error: upErr } = await supabase.storage
+              .from('client-files').upload(path, blob, { contentType: 'image/png', upsert: false });
+            if (upErr) { setError(`כשל בהעלאה: ${upErr.message}`); return; }
+            const { data: signed } = await supabase.storage
+              .from('client-files').createSignedUrl(path, 60 * 60 * 24 * 365);
+
+            await postMessage({
+              threadId: thread.id ?? '',
+              projectSlug,
+              body: '',
+              attachments: [{
+                url: signed?.signedUrl ?? '',
+                name: filename,
+                mime: 'image/png',
+                size_bytes: blob.size,
+              }],
+              ensure: !thread.id ? ensure : undefined,
+            });
+            setAnnotating(null);
+            router.refresh();
+          }}
+        />
+      )}
     </div>
   );
 }
