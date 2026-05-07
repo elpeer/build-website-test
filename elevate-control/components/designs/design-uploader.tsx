@@ -2,7 +2,8 @@
 
 import { useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { uploadDesign } from '@/app/actions/designs';
+import { recordDesignUpload } from '@/app/actions/designs';
+import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -28,6 +29,19 @@ const VIEWPORTS: { value: DesignViewport; label: string; icon: typeof Monitor }[
   { value: 'mobile',  label: 'מובייל', icon: Smartphone },
 ];
 
+const ALLOWED_MIME = new Set([
+  'image/png', 'image/jpeg', 'image/webp', 'image/gif', 'application/pdf',
+]);
+const MAX_BYTES = 50 * 1024 * 1024;
+
+const EXT_FOR_MIME: Record<string, string> = {
+  'image/png':       'png',
+  'image/jpeg':      'jpg',
+  'image/webp':      'webp',
+  'image/gif':       'gif',
+  'application/pdf': 'pdf',
+};
+
 export function DesignUploader({ projectId, projectSlug, pages = [], defaultPageId = '' }: Props) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -38,7 +52,9 @@ export function DesignUploader({ projectId, projectSlug, pages = [], defaultPage
   const [notes, setNotes] = useState('');
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [progress, setProgress] = useState(0);
+  const [uploading, setUploading] = useState(false);
+  const [, startTransition] = useTransition();
 
   function handleFile(f: File) {
     setError(null);
@@ -46,8 +62,7 @@ export function DesignUploader({ projectId, projectSlug, pages = [], defaultPage
     if (f.type.startsWith('image/')) {
       const url = URL.createObjectURL(f);
       setPreviewUrl(url);
-      // Auto-detect viewport from image width
-      const img = new Image();
+      const img = new window.Image();
       img.onload = () => {
         if (img.width <= 600) setViewport('mobile');
         else if (img.width <= 1024) setViewport('tablet');
@@ -65,31 +80,78 @@ export function DesignUploader({ projectId, projectSlug, pages = [], defaultPage
     setPreviewUrl(null);
     setNotes('');
     setError(null);
+    setProgress(0);
     if (fileInputRef.current) fileInputRef.current.value = '';
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!file) { setError('בחרו קובץ קודם'); return; }
-
-    const fd = new FormData();
-    fd.set('project_id',   projectId);
-    fd.set('project_slug', projectSlug);
-    fd.set('viewport',     viewport);
-    if (pageId) fd.set('page_id', pageId);
-    if (notes)  fd.set('notes',   notes);
-    fd.set('file', file);
+    if (!ALLOWED_MIME.has(file.type)) {
+      setError(`סוג קובץ לא נתמך: ${file.type}`); return;
+    }
+    if (file.size > MAX_BYTES) {
+      setError(`הקובץ גדול מדי (מקסימום 50MB)`); return;
+    }
 
     setError(null);
-    startTransition(async () => {
-      const result = await uploadDesign(fd);
-      if (result.ok) {
-        reset();
-        router.refresh();
-      } else {
-        setError(result.error);
+    setUploading(true);
+    setProgress(5);
+
+    try {
+      const ext = EXT_FOR_MIME[file.type] ?? 'bin';
+      const storagePath = `${projectId}/${crypto.randomUUID()}.${ext}`;
+
+      // Direct browser → Supabase Storage upload (bypasses Vercel body limit).
+      const supabase = createClient();
+      const { error: uploadError } = await supabase.storage
+        .from('designs')
+        .upload(storagePath, file, {
+          contentType: file.type,
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (uploadError) {
+        setError(`כשל בהעלאה: ${uploadError.message}`);
+        setUploading(false);
+        return;
       }
-    });
+
+      setProgress(85);
+
+      // Now record the metadata row via Server Action (small payload).
+      const result = await recordDesignUpload({
+        projectId,
+        projectSlug,
+        pageId:      pageId || null,
+        pageSlug:    null,
+        viewport,
+        storagePath,
+        fileSize:    file.size,
+        mimeType:    file.type,
+        fileName:    file.name,
+        notes:       notes || null,
+      });
+
+      if (!result.ok) {
+        // Server-side failed — clean up the orphan storage object
+        await supabase.storage.from('designs').remove([storagePath]);
+        setError(result.error);
+        setUploading(false);
+        return;
+      }
+
+      setProgress(100);
+      reset();
+      startTransition(() => {
+        router.refresh();
+      });
+    } catch (err) {
+      setError(`שגיאה לא צפויה: ${(err as Error).message}`);
+    } finally {
+      setUploading(false);
+    }
   }
 
   return (
@@ -216,6 +278,15 @@ export function DesignUploader({ projectId, projectSlug, pages = [], defaultPage
         />
       </div>
 
+      {uploading && (
+        <div className="space-y-1">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div className="h-full bg-brand transition-all" style={{ width: `${progress}%` }} />
+          </div>
+          <p className="text-xs text-muted-fg">מעלה לאחסון... {progress}%</p>
+        </div>
+      )}
+
       {error && (
         <div className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
@@ -224,14 +295,14 @@ export function DesignUploader({ projectId, projectSlug, pages = [], defaultPage
       )}
 
       <div className="flex items-center justify-end gap-2">
-        {file && (
+        {file && !uploading && (
           <Button type="button" variant="ghost" onClick={reset}>
             ניקוי
           </Button>
         )}
-        <Button type="submit" variant="accent" disabled={!file || isPending}>
+        <Button type="submit" variant="accent" disabled={!file || uploading}>
           <Upload className="ms-1 h-4 w-4" />
-          {isPending ? 'מעלה...' : 'העלה'}
+          {uploading ? 'מעלה...' : 'העלה'}
         </Button>
       </div>
     </form>

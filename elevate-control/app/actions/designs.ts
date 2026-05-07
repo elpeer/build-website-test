@@ -1,7 +1,6 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { randomUUID } from 'crypto';
 import { createClient } from '@/lib/supabase/server';
 import type { DesignViewport } from '@/lib/supabase/database.types';
 
@@ -10,108 +9,77 @@ type Result<T = undefined> =
   | { ok: false; error: string };
 
 const ALLOWED_VIEWPORTS: DesignViewport[] = ['desktop', 'tablet', 'mobile'];
-const ALLOWED_MIME = new Set([
-  'image/png', 'image/jpeg', 'image/webp', 'image/gif', 'application/pdf',
-]);
-const MAX_BYTES = 50 * 1024 * 1024;
-
-const EXT_FOR_MIME: Record<string, string> = {
-  'image/png':       'png',
-  'image/jpeg':      'jpg',
-  'image/webp':      'webp',
-  'image/gif':       'gif',
-  'application/pdf': 'pdf',
-};
 
 /**
- * Upload a design file to the `designs` Supabase Storage bucket.
- * The file is stored at <project_id>/<random-uuid>.<ext>, and a row is
- * inserted in the `designs` table linking storage path → project (and
- * optionally → page).
+ * Record a design that the client just uploaded directly to Supabase Storage.
+ * The client handles the actual file transfer (avoids Vercel's body size cap
+ * on Server Actions); we only insert the metadata row + signed URL here.
  */
-export async function uploadDesign(formData: FormData): Promise<Result<{ id: string }>> {
+export async function recordDesignUpload(input: {
+  projectId:   string;
+  projectSlug: string;
+  pageId:      string | null;
+  pageSlug:    string | null;
+  viewport:    string;
+  storagePath: string;
+  fileSize:    number;
+  mimeType:    string;
+  fileName:    string;
+  notes:       string | null;
+}): Promise<Result<{ id: string }>> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: 'אינך מחובר' };
 
-  const projectId   = formData.get('project_id')   as string | null;
-  const projectSlug = formData.get('project_slug') as string | null;
-  const pageId      = (formData.get('page_id')     as string | null) || null;
-  const pageSlug    = (formData.get('page_slug')   as string | null) || null;
-  const viewport    = (formData.get('viewport')    as string | null) || 'desktop';
-  const notes       = (formData.get('notes')       as string | null)?.trim() || null;
-  const file        =  formData.get('file') as File | null;
-
-  if (!projectId) return { ok: false, error: 'project_id חסר' };
-  if (!file || !(file instanceof File) || file.size === 0) {
-    return { ok: false, error: 'לא נבחר קובץ' };
+  if (!input.projectId) return { ok: false, error: 'project_id חסר' };
+  if (!ALLOWED_VIEWPORTS.includes(input.viewport as DesignViewport)) {
+    return { ok: false, error: `viewport לא חוקי: ${input.viewport}` };
   }
-  if (file.size > MAX_BYTES) {
-    return { ok: false, error: `הקובץ גדול מדי (מקסימום ${MAX_BYTES / 1024 / 1024}MB)` };
-  }
-  if (!ALLOWED_MIME.has(file.type)) {
-    return { ok: false, error: `סוג קובץ לא נתמך: ${file.type}` };
-  }
-  if (!ALLOWED_VIEWPORTS.includes(viewport as DesignViewport)) {
-    return { ok: false, error: `viewport לא חוקי: ${viewport}` };
+  if (!input.storagePath.startsWith(`${input.projectId}/`)) {
+    return { ok: false, error: 'נתיב אחסון לא תקין' };
   }
 
-  const ext = EXT_FOR_MIME[file.type] ?? 'bin';
-  const storagePath = `${projectId}/${randomUUID()}.${ext}`;
-
-  const { error: uploadError } = await supabase.storage
-    .from('designs')
-    .upload(storagePath, file, {
-      contentType: file.type,
-      cacheControl: '3600',
-      upsert: false,
-    });
-
-  if (uploadError) {
-    console.error('design upload error:', uploadError);
-    return { ok: false, error: `כשל בהעלאה: ${uploadError.message}` };
-  }
-
-  // Signed URL (1 year) — bucket is private
+  // Sign a long-lived URL for the gallery (bucket is private)
   const { data: signed } = await supabase.storage
     .from('designs')
-    .createSignedUrl(storagePath, 60 * 60 * 24 * 365);
+    .createSignedUrl(input.storagePath, 60 * 60 * 24 * 365);
 
   const fileUrl = signed?.signedUrl ?? '';
 
   const { data: design, error: insertError } = await supabase
     .from('designs')
     .insert({
-      project_id:      projectId,
-      page_id:         pageId,
-      viewport:        viewport as DesignViewport,
-      storage_path:    storagePath,
+      project_id:      input.projectId,
+      page_id:         input.pageId,
+      viewport:        input.viewport as DesignViewport,
+      storage_path:    input.storagePath,
       file_url:        fileUrl,
-      file_size_bytes: file.size,
-      mime_type:       file.type,
-      notes,
+      file_size_bytes: input.fileSize,
+      mime_type:       input.mimeType,
+      notes:           input.notes,
       uploaded_by:     user.id,
     })
     .select('id')
     .single<{ id: string }>();
 
   if (insertError || !design) {
-    // Try to clean up the orphan storage object
-    await supabase.storage.from('designs').remove([storagePath]);
+    await supabase.storage.from('designs').remove([input.storagePath]);
     return { ok: false, error: insertError?.message ?? 'שגיאה לא ידועה' };
   }
 
   await supabase.from('activity_log').insert({
-    project_id:  projectId,
+    project_id:  input.projectId,
     actor_id:    user.id,
     kind:        'design_uploaded',
     entity_type: 'design',
     entity_id:   design.id,
-    summary:     `הועלה עיצוב (${viewport}): ${file.name}`,
+    summary:     `הועלה עיצוב (${input.viewport}): ${input.fileName}`,
   });
 
-  if (projectSlug) revalidatePath(`/projects/${projectSlug}/designs`);
-  if (projectSlug && pageSlug) revalidatePath(`/projects/${projectSlug}/${pageSlug}`);
+  if (input.projectSlug) revalidatePath(`/projects/${input.projectSlug}/designs`);
+  if (input.projectSlug && input.pageSlug) {
+    revalidatePath(`/projects/${input.projectSlug}/${input.pageSlug}`);
+  }
   return { ok: true, data: { id: design.id } };
 }
 
