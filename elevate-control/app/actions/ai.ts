@@ -2,9 +2,16 @@
 
 import { revalidatePath } from 'next/cache';
 import Anthropic from '@anthropic-ai/sdk';
+import sharp from 'sharp';
 import { createClient } from '@/lib/supabase/server';
 import { slugify } from '@/lib/utils';
 import type { Json, PageType, SectionStatus } from '@/lib/supabase/database.types';
+
+// Anthropic caps images at 8000px on either dimension. Opus 4.7's high-res
+// vision actually maxes out at 2576px on the long edge — anything larger is
+// downsampled server-side anyway, so resizing client-side saves bandwidth
+// and avoids the 8000px hard limit on tall full-page screenshots.
+const MAX_LONG_EDGE = 2576;
 
 type Result<T = undefined> =
   | (T extends undefined ? { ok: true } : { ok: true; data: T })
@@ -83,11 +90,36 @@ export async function analyzeDesign(
     return { ok: false, error: 'ניתוח אוטומטי תומך כרגע רק בתמונות (לא PDF)' };
   }
 
-  // Fresh signed URL — Claude needs to fetch the image
-  const { data: signed } = await supabase.storage
+  // Download the image from storage and resize it before sending to Claude.
+  // Full-page Figma exports are routinely > 8000px tall, which Anthropic
+  // rejects outright; even shorter images benefit from being downscaled
+  // since Opus caps useful detail at 2576px anyway.
+  const { data: blob, error: downloadError } = await supabase.storage
     .from('designs')
-    .createSignedUrl(design.storage_path, 60 * 10); // 10 min is enough for the API call
-  if (!signed?.signedUrl) return { ok: false, error: 'לא הצלחנו לחתום URL לעיצוב' };
+    .download(design.storage_path);
+
+  if (downloadError || !blob) {
+    return { ok: false, error: `הורדת העיצוב נכשלה: ${downloadError?.message ?? 'לא נמצא'}` };
+  }
+
+  let resizedBuffer: Buffer;
+  try {
+    const inputBuffer = Buffer.from(await blob.arrayBuffer());
+    resizedBuffer = await sharp(inputBuffer)
+      .rotate()
+      .resize({
+        width: MAX_LONG_EDGE,
+        height: MAX_LONG_EDGE,
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .jpeg({ quality: 85, mozjpeg: true })
+      .toBuffer();
+  } catch (err) {
+    return { ok: false, error: `כשל בעיבוד התמונה: ${(err as Error).message}` };
+  }
+
+  const imageBase64 = resizedBuffer.toString('base64');
 
   // Section definitions catalog (so Claude picks valid slugs)
   const { data: defsData } = await supabase
@@ -148,7 +180,7 @@ ${catalogText}
           content: [
             {
               type: 'image',
-              source: { type: 'url', url: signed.signedUrl },
+              source: { type: 'base64', media_type: 'image/jpeg', data: imageBase64 },
             },
             {
               type: 'text',
