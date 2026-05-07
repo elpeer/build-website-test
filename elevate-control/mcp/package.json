@@ -1,0 +1,25 @@
+{
+  "name": "@elevate-control/mcp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Elevate Control MCP server — exposes project state to Claude Code",
+  "type": "module",
+  "bin": {
+    "elevate-control-mcp": "dist/server.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev":   "tsx src/server.ts",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "@supabase/supabase-js": "^2.45.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "@types/node": "^22.7.4"
+  }
+}
