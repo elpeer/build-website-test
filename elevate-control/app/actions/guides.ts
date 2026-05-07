@@ -28,7 +28,7 @@ export async function createGuide(formData: FormData): Promise<Result<{ id: stri
   const category    = (formData.get('category') as string | null)?.trim() || null;
   const videoUrl    = (formData.get('video_url') as string | null)?.trim() || null;
   const coverUrl    = (formData.get('cover_url') as string | null)?.trim() || null;
-  const contentMd   = (formData.get('content_md') as string | null) ?? '';
+  const contentHtml = (formData.get('content_html') as string | null) ?? '';
 
   if (!title) return { ok: false, error: 'כותרת חובה' };
   const slug = slugify(slugInput || title);
@@ -38,7 +38,8 @@ export async function createGuide(formData: FormData): Promise<Result<{ id: stri
     .insert({
       slug, title, description, category,
       video_url: videoUrl, cover_url: coverUrl,
-      content_md: contentMd,
+      content_md: '',
+      content_html: contentHtml,
       created_by: auth.userId,
     })
     .select('id').single<{ id: string }>();
@@ -57,7 +58,7 @@ export async function updateGuide(
   patch: {
     title?: string; description?: string | null; category?: string | null;
     video_url?: string | null; cover_url?: string | null;
-    content_md?: string; published?: boolean;
+    content_md?: string; content_html?: string; published?: boolean;
   }
 ): Promise<Result> {
   const auth = await requireStudioAdmin();

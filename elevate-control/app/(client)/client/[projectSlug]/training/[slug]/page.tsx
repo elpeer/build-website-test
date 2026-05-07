@@ -18,6 +18,7 @@ interface GuideRecord {
   title: string;
   description: string | null;
   content_md: string;
+  content_html: string;
   category: string | null;
   video_url: string | null;
   cover_url: string | null;
@@ -26,7 +27,6 @@ interface GuideRecord {
 }
 
 function youtubeEmbed(url: string): string | null {
-  // Convert common YouTube/Vimeo URLs to embed form. Fallback: return null.
   const yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{11})/);
   if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
   const vm = url.match(/vimeo\.com\/(\d+)/);
@@ -42,13 +42,16 @@ export default async function ClientGuidePage({ params }: Props) {
 
   const { data: guide } = await supabase
     .from('guide_articles')
-    .select('id, title, description, content_md, category, video_url, cover_url, published, updated_at')
+    .select('id, title, description, content_md, content_html, category, video_url, cover_url, published, updated_at')
     .eq('slug', slug)
     .eq('published', true)
     .single<GuideRecord>();
   if (!guide) notFound();
 
-  const html = await marked.parse(guide.content_md, { async: true });
+  // Prefer the rich HTML; fall back to legacy Markdown if HTML is empty.
+  const html = guide.content_html?.trim()
+    ? guide.content_html
+    : (guide.content_md ? await marked.parse(guide.content_md, { async: true }) : '');
   const embed = guide.video_url ? youtubeEmbed(guide.video_url) : null;
 
   return (

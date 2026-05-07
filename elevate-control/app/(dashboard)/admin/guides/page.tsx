@@ -12,6 +12,7 @@ interface GuideRow {
   title: string;
   description: string | null;
   content_md: string;
+  content_html: string;
   category: string | null;
   video_url: string | null;
   cover_url: string | null;
@@ -41,7 +42,7 @@ export default async function GuidesAdminPage() {
 
   const { data: guidesData } = await supabase
     .from('guide_articles')
-    .select('id, slug, title, description, content_md, category, video_url, cover_url, published, position, updated_at')
+    .select('id, slug, title, description, content_md, content_html, category, video_url, cover_url, published, position, updated_at')
     .order('category', { ascending: true })
     .order('position', { ascending: true });
 

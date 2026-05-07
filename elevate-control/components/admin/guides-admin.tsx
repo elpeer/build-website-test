@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import {
   Plus, Edit2, Trash2, Eye, EyeOff, ExternalLink, Save, X, AlertCircle,
 } from 'lucide-react';
@@ -17,6 +18,7 @@ interface GuideRow {
   title: string;
   description: string | null;
   content_md: string;
+  content_html: string;
   category: string | null;
   video_url: string | null;
   cover_url: string | null;
@@ -34,14 +36,19 @@ export function GuidesAdmin({ guides }: Props) {
   const [showCreate, setShowCreate] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [createHtml, setCreateHtml] = useState('');
   const [, startTransition] = useTransition();
 
   function handleCreate(formData: FormData) {
+    formData.set('content_html', createHtml);
     setError(null);
     startTransition(async () => {
       const result = await createGuide(formData);
-      if (result.ok) { setShowCreate(false); router.refresh(); }
-      else setError(result.error);
+      if (result.ok) {
+        setShowCreate(false);
+        setCreateHtml('');
+        router.refresh();
+      } else setError(result.error);
     });
   }
 
@@ -88,9 +95,12 @@ export function GuidesAdmin({ guides }: Props) {
             <Input name="video_url" dir="ltr" className="font-mono" placeholder="https://www.youtube.com/watch?v=..." />
           </div>
           <div>
-            <Label className="text-xs">תוכן (Markdown)</Label>
-            <Textarea name="content_md" rows={10} dir="rtl"
-                      placeholder={`# כותרת\n\nתיאור...\n\n## שלב 1\n...\n\n![צילום מסך](https://...)`} />
+            <Label className="text-xs">תוכן</Label>
+            <RichTextEditor
+              initialHtml={createHtml}
+              onChange={setCreateHtml}
+              placeholder="כתבו... העתק-הדבק תמונות ישר לכאן"
+            />
           </div>
           {error && (
             <div className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-2 text-xs text-red-700">
@@ -126,7 +136,7 @@ function GuideRow({ guide, isEditing, onEdit, onCancel, onSaved }: {
   const [category, setCategory]       = useState(guide.category ?? 'general');
   const [videoUrl, setVideoUrl]       = useState(guide.video_url ?? '');
   const [coverUrl, setCoverUrl]       = useState(guide.cover_url ?? '');
-  const [contentMd, setContentMd]     = useState(guide.content_md);
+  const [contentHtml, setContentHtml] = useState(guide.content_html || guide.content_md);
   const [published, setPublished]     = useState(guide.published);
   const [error, setError]             = useState<string | null>(null);
   const [, startTransition] = useTransition();
@@ -138,7 +148,7 @@ function GuideRow({ guide, isEditing, onEdit, onCancel, onSaved }: {
         title, description: description || null,
         category, video_url: videoUrl || null,
         cover_url: coverUrl || null,
-        content_md: contentMd, published,
+        content_html: contentHtml, published,
       });
       if (result.ok) onSaved(); else setError(result.error);
     });
@@ -236,9 +246,11 @@ function GuideRow({ guide, isEditing, onEdit, onCancel, onSaved }: {
         </div>
       </div>
       <div>
-        <Label className="text-xs">תוכן (Markdown)</Label>
-        <Textarea rows={12} value={contentMd}
-                  onChange={e => setContentMd(e.target.value)} />
+        <Label className="text-xs">תוכן</Label>
+        <RichTextEditor
+          initialHtml={contentHtml}
+          onChange={setContentHtml}
+        />
       </div>
       <label className="flex items-center gap-2 text-sm">
         <input type="checkbox" checked={published}
