@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { slugify } from '@/lib/utils';
@@ -34,21 +33,26 @@ export async function createProject(formData: FormData): Promise<CreateProjectRe
   const slug = slugify(slugInput || name);
   if (!slug) return { ok: false, error: 'לא הצלחנו ליצור slug תקין מהשם' };
 
-  // Insert the project
+  // NB: cast to `never` on insert until `pnpm db:types` is run against the
+  // live schema. Our placeholder Database types collapse Insert<T> to never
+  // in the supabase-js generic, blocking type-check. Runtime is unaffected.
+  const projectInsert = {
+    name,
+    slug,
+    client_name: clientName,
+    description,
+    target_at: targetAt,
+    has_wordpress: hasWordpress,
+    has_mobile_design: hasMobileDesign,
+    created_by: user.id,
+    pm_id: user.id,
+    status: 'draft',
+  };
+
   const { data: project, error: insertError } = await supabase
     .from('projects')
-    .insert({
-      name,
-      slug,
-      client_name: clientName,
-      description,
-      target_at: targetAt,
-      has_wordpress: hasWordpress,
-      has_mobile_design: hasMobileDesign,
-      created_by: user.id,
-      pm_id: user.id,                    // creator is the default PM; can be reassigned later
-      status: 'draft',
-    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .insert(projectInsert as any)
     .select('id, slug')
     .single();
 
@@ -61,14 +65,16 @@ export async function createProject(formData: FormData): Promise<CreateProjectRe
   }
 
   // Add the creator as the project owner
+  const memberInsert = {
+    project_id: project.id,
+    user_id: user.id,
+    role: 'owner',
+    added_by: user.id,
+  };
   const { error: memberError } = await supabase
     .from('project_members')
-    .insert({
-      project_id: project.id,
-      user_id: user.id,
-      role: 'owner',
-      added_by: user.id,
-    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .insert(memberInsert as any);
 
   if (memberError) {
     console.error('createProject member error:', memberError);
@@ -76,15 +82,17 @@ export async function createProject(formData: FormData): Promise<CreateProjectRe
   }
 
   // Log the activity
-  await supabase.from('activity_log').insert({
+  const activityInsert = {
     project_id: project.id,
     actor_id: user.id,
     kind: 'created',
     entity_type: 'project',
     entity_id: project.id,
     summary: `נוצר פרויקט: ${name}`,
-  });
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await supabase.from('activity_log').insert(activityInsert as any);
 
   revalidatePath('/projects');
-  return { ok: true, slug: project.slug };
+  return { ok: true, slug: project.slug as string };
 }
