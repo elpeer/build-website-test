@@ -86,6 +86,7 @@ export type ProjectRow = {
   github_repo: string | null;
   github_html_path: string | null;
   github_theme_path: string | null;
+  vercel_url: string | null;
   has_wordpress: boolean;
   has_mobile_design: boolean;
   kickoff_at: string | null;

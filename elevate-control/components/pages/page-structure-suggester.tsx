@@ -55,7 +55,7 @@ function emptyField(): FieldDef {
   return { key: '', label_he: '', type: 'text', required: false };
 }
 
-export function PageStructureSuggester({ pageId, projectSlug, pageSlug, hasSections, creationContext }: Props) {
+export function PageStructureSuggester({ pageId, projectSlug, hasSections, creationContext }: Props) {
   const router = useRouter();
   const [proposal, setProposal] = useState<PageStructureProposal | null>(
     creationContext?.proposed_structure ?? null
