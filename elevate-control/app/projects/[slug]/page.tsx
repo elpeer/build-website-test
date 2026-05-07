@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ChevronLeft, Calendar, User, Globe, Smartphone } from 'lucide-react';
+import { ChevronLeft, Calendar, User, Globe, Smartphone, Database } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { formatDateHe } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -64,6 +64,15 @@ export default async function ProjectPage({ params }: Props) {
     .order('order', { ascending: true });
 
   const pages: PageRow[] = (pagesData ?? []) as PageRow[];
+
+  // Project's CPTs (for the page form's archive/single picker)
+  const { data: cptsData } = await supabase
+    .from('cpts')
+    .select('id, slug, name_he, name_en')
+    .eq('project_id', project.id)
+    .order('order', { ascending: true });
+
+  const cpts = (cptsData ?? []) as { id: string; slug: string; name_he: string | null; name_en: string | null }[];
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -148,6 +157,16 @@ export default async function ProjectPage({ params }: Props) {
         </Card>
       </div>
 
+      <div className="flex flex-wrap gap-2">
+        <Link
+          href={`/projects/${project.slug}/cpts`}
+          className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-4 py-2 text-sm font-medium transition-colors hover:border-brand hover:bg-brand/5"
+        >
+          <Database className="h-4 w-4" />
+          ניהול CPTs ({cpts.length})
+        </Link>
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle>עץ עמודים</CardTitle>
@@ -160,6 +179,7 @@ export default async function ProjectPage({ params }: Props) {
             projectId={project.id as string}
             projectSlug={project.slug as string}
             pages={pages}
+            cpts={cpts}
           />
         </CardContent>
       </Card>

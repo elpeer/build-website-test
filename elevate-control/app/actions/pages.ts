@@ -24,11 +24,17 @@ export async function createPage(formData: FormData): Promise<CreatePageResult> 
   const nameHe     = (formData.get('name_he')     as string | null)?.trim() ?? '';
   const slugInput  = (formData.get('slug')        as string | null)?.trim() ?? '';
   const typeInput  =  formData.get('type')        as string | null;
+  const cptIdInput = (formData.get('cpt_id')      as string | null)?.trim() || null;
 
   if (!projectId)  return { ok: false, error: 'project_id חסר' };
   if (!nameHe)     return { ok: false, error: 'שם העמוד הוא שדה חובה' };
 
   const type = (ALLOWED_TYPES.includes(typeInput as PageType) ? typeInput : 'page') as PageType;
+  const needsCpt = type === 'archive' || type === 'single';
+  if (needsCpt && !cptIdInput) {
+    return { ok: false, error: 'עמוד מסוג זה דורש בחירת CPT' };
+  }
+  const cptId = needsCpt ? cptIdInput : null;
   const slug = slugify(slugInput || nameHe);
   if (!slug) return { ok: false, error: 'לא הצלחנו ליצור slug תקין מהשם' };
 
@@ -50,6 +56,7 @@ export async function createPage(formData: FormData): Promise<CreatePageResult> 
       name_he: nameHe,
       slug,
       type,
+      cpt_id: cptId,
       order: nextOrder,
       status: 'planned',
       created_by: user.id,
