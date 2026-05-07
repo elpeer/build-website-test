@@ -2,6 +2,9 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
+import {
+  notifyNewComment, notifyApprovalStatus, notifyNewTicket,
+} from '@/lib/notify';
 import type { Json } from '@/lib/supabase/database.types';
 
 type Result<T = undefined> =
@@ -73,6 +76,27 @@ export async function setApprovalStatus(
     .eq('id', approvalId);
   if (error) return { ok: false, error: error.message };
 
+  // Notify the other side
+  const { data: approval } = await supabase
+    .from('client_approvals').select('project_id, title').eq('id', approvalId)
+    .single<{ project_id: string; title: string }>();
+  const { data: profile } = await supabase
+    .from('profiles').select('full_name, email, role').eq('id', user.id)
+    .single<{ full_name: string | null; email: string; role: string }>();
+
+  if (approval && profile) {
+    await notifyApprovalStatus({
+      projectId: approval.project_id,
+      projectSlug: ctx.projectSlug,
+      workspace: ctx.workspace,
+      approvalTitle: approval.title,
+      newStatus: status,
+      changedByLabel: profile.full_name ?? profile.email,
+      changedByIsClient: profile.role === 'client',
+      note: note?.trim() || null,
+    });
+  }
+
   revalidatePath(`/client/${ctx.projectSlug}/${ctx.workspace}`);
   revalidatePath(`/projects/${ctx.projectSlug}`);
   return { ok: true };
@@ -127,6 +151,15 @@ export async function createTicket(input: {
     author_label: label,
     body:         input.firstMessage,
     attachments:  (input.attachments ?? []) as unknown as Json,
+  });
+
+  await notifyNewTicket({
+    projectId:   input.projectId,
+    projectSlug: input.projectSlug,
+    ticketTitle: input.title,
+    priority:    input.priority,
+    body:        input.firstMessage,
+    authorLabel: label ?? 'משתמש',
   });
 
   revalidatePath(`/client/${input.projectSlug}/support`);
@@ -227,6 +260,28 @@ export async function postMessage(input: {
   await supabase.from('comment_threads')
     .update({ updated_at: new Date().toISOString() })
     .eq('id', threadId);
+
+  // Email the other side
+  const { data: thread } = await supabase
+    .from('comment_threads')
+    .select('project_id, workspace, title, context_type')
+    .eq('id', threadId)
+    .single<{ project_id: string; workspace: string | null; title: string | null; context_type: string }>();
+  const { data: actor } = await supabase
+    .from('profiles').select('role').eq('id', user.id)
+    .single<{ role: string }>();
+
+  if (thread && actor) {
+    await notifyNewComment({
+      projectId: thread.project_id,
+      projectSlug: input.projectSlug,
+      workspace: thread.workspace,
+      authorIsClient: actor.role === 'client',
+      authorLabel: label ?? 'משתמש',
+      body: input.body,
+      threadTitle: thread.title,
+    });
+  }
 
   revalidatePath(`/client/${input.projectSlug}`);
   revalidatePath(`/projects/${input.projectSlug}`);

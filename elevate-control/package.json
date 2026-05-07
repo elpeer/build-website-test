@@ -23,9 +23,11 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.460.0",
+    "marked": "^18.0.3",
     "next": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "resend": "^6.12.3",
     "sharp": "^0.34.5",
     "tailwind-merge": "^2.5.0"
   },

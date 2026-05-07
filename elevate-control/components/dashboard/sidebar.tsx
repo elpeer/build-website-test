@@ -55,6 +55,13 @@ export function Sidebar({ user }: { user: Profile }) {
             <Settings className="h-4 w-4" />
             <span>קטלוג סקשנים</span>
           </Link>
+          <Link
+            href="/admin/guides"
+            className="mt-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-fg hover:bg-muted hover:text-foreground"
+          >
+            <BookOpen className="h-4 w-4" />
+            <span>מאגר מדריכים</span>
+          </Link>
         </div>
       )}
     </aside>

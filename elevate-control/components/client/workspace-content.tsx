@@ -6,6 +6,7 @@ import { FilesList, type ProjectFileRow } from './files-list';
 import { WorkspaceSettingInput } from './workspace-setting-input';
 import { ClientNotes } from './client-notes';
 import { SupportTickets, type TicketRow } from './support-tickets';
+import { GuidesList, type GuideListItem } from './guides-list';
 import { Lock } from 'lucide-react';
 import type { WorkspaceMeta } from '@/lib/client-workspaces';
 import type { Json } from '@/lib/supabase/database.types';
@@ -429,15 +430,19 @@ export async function WorkspaceContent({
       );
 
     // ─── TRAINING — studio-curated guides ──────────────────────────────
-    case 'training':
+    case 'training': {
+      const guides = await fetchGuidesForProject(projectId);
       return (
         <div className="space-y-6">
-          <SectionHeader title="מדריכים וחומרי לימוד"
-                         subtitle="מדריכים על מערכות שאנחנו עובדים איתן (ClickUp, WordPress וכו')." />
+          <SectionHeader title="מדריכים מהמאגר"
+                         subtitle="מדריכים מוכנים על המערכות שאנחנו עובדים איתן." />
+          <GuidesList guides={guides} projectSlug={projectSlug} />
+
+          <SectionHeader title="קבצים ומסמכים נוספים לפרויקט" />
           <FilesList projectId={projectId} projectSlug={projectSlug} workspace="training"
                      files={filesNoCategory}
                      isStudio={isStudio} clientCanUpload={false}
-                     emptyText="עדיין אין מדריכים." />
+                     emptyText="לא הועלו קבצים נוספים." />
 
           <SectionHeader title="לינקים שימושיים" />
           <Checklist projectId={projectId} projectSlug={projectSlug} workspace="training"
@@ -447,6 +452,7 @@ export async function WorkspaceContent({
           {workspaceCommentSection}
         </div>
       );
+    }
 
     // ─── SUPPORT — tickets ─────────────────────────────────────────────
     case 'support':
@@ -494,6 +500,25 @@ function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }
       {subtitle && <p className="mt-0.5 text-sm text-muted-fg">{subtitle}</p>}
     </div>
   );
+}
+
+async function fetchGuidesForProject(projectId: string): Promise<GuideListItem[]> {
+  const supabase = await createClient();
+  const [{ data: guidesData }, { data: hidden }] = await Promise.all([
+    supabase.from('guide_articles')
+      .select('id, slug, title, description, category, cover_url, video_url, published, position')
+      .eq('published', true)
+      .order('category', { ascending: true })
+      .order('position', { ascending: true }),
+    supabase.from('project_guide_overrides')
+      .select('guide_id, hidden')
+      .eq('project_id', projectId)
+      .eq('hidden', true),
+  ]);
+  const hiddenSet = new Set((hidden ?? []).map((h: { guide_id: string }) => h.guide_id));
+  return (guidesData ?? [])
+    .filter((g: { id: string }) => !hiddenSet.has(g.id))
+    .map((g: GuideListItem) => g);
 }
 
 export type { ChecklistStatus };
