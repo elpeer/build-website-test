@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
   // inside the larger build-website-test repo).
   outputFileTracingRoot: path.join(__dirname),
 
+  experimental: {
+    // Server Actions cap request bodies at 1MB by default; design uploads
+    // routinely exceed that. Match the bucket's hard cap (50MB).
+    serverActions: {
+      bodySizeLimit: '50mb',
+    },
+  },
+
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '*.supabase.co' },
