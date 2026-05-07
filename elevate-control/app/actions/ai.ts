@@ -15,7 +15,6 @@ interface AnalysisSection {
   name_he: string;
   description_he: string;
   order_hint: number;
-  content_hints?: Record<string, unknown>;
 }
 
 interface DesignAnalysis {
@@ -47,13 +46,8 @@ const ANALYSIS_SCHEMA = {
         properties: {
           definition_slug: { type: 'string', description: 'slug from the catalog of section_definitions' },
           name_he:         { type: 'string' },
-          description_he:  { type: 'string', description: 'מה יהיה בסקשן הזה - 2-4 משפטים' },
+          description_he:  { type: 'string', description: 'מה יהיה בסקשן הזה - 2-4 משפטים, כולל כותרות מוצעות, CTA, ומבנה התוכן' },
           order_hint:      { type: 'integer', description: 'סדר הופעה בעמוד, החל מ-1' },
-          content_hints: {
-            type: 'object',
-            description: 'רמזי תוכן: כותרות, CTA, טקסט מוצע',
-            additionalProperties: true,
-          },
         },
       },
     },
@@ -317,7 +311,7 @@ export async function materializeAnalysis(
       order:           nextOrder,
       status:          'planned' as SectionStatus,
       notes:           s.description_he,
-      content:         (s.content_hints ?? {}) as unknown as Json,
+      content:         {} as unknown as Json,
     });
 
     if (!error) {
