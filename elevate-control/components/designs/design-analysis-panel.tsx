@@ -514,6 +514,51 @@ export function DesignAnalysisPanel({
         </ul>
       </div>
 
+      {/* Design system (extracted) */}
+      {analysis.design_system && (
+        <div className="rounded-md border border-brand/30 bg-brand/5 p-4">
+          <p className="mb-2 text-sm font-semibold">🎨 Design System שזוהה אוטומטית</p>
+          <p className="mb-3 text-xs text-muted-fg">
+            {analysis.design_system.notes_he}
+          </p>
+          <div className="grid gap-3 md:grid-cols-2">
+            <div>
+              <Label className="text-xs mb-1.5 block">צבעים</Label>
+              <div className="grid grid-cols-4 gap-1.5">
+                {(['primary','secondary','accent','neutral'] as const).map(k => (
+                  <div key={k}>
+                    <div className="h-10 w-full rounded border border-border"
+                         style={{ backgroundColor: analysis.design_system!.colors[k] }} />
+                    <p className="mt-1 text-[10px] text-muted-fg">{k}</p>
+                    <code className="block text-[10px]" dir="ltr">{analysis.design_system!.colors[k]}</code>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <Label className="text-xs mb-1.5 block">פונטים</Label>
+              <div className="space-y-2">
+                <div className="rounded border border-border bg-background p-2">
+                  <p className="text-[10px] text-muted-fg">כותרות</p>
+                  <p className="text-sm font-bold" style={{ fontFamily: analysis.design_system.fonts.headings }}>
+                    {analysis.design_system.fonts.headings}
+                  </p>
+                </div>
+                <div className="rounded border border-border bg-background p-2">
+                  <p className="text-[10px] text-muted-fg">גוף</p>
+                  <p className="text-sm" style={{ fontFamily: analysis.design_system.fonts.body }}>
+                    {analysis.design_system.fonts.body}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p className="mt-3 text-xs text-muted-fg">
+            יוחל אוטומטית על הפרויקט בלחיצה על &quot;צור עמודים, סקשנים ו-CPTs&quot; (אם עדיין לא הוגדרו tokens אחרים).
+          </p>
+        </div>
+      )}
+
       {/* Design notes */}
       {analysis.design_notes_he && (
         <div className="rounded-md border border-border bg-background p-4">

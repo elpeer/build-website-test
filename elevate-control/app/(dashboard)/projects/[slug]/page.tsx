@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import {
   ChevronLeft, Calendar, MessageCircle, TrendingUp, FileText,
-  Settings,
+  Settings, Sparkles,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { formatDateHe } from '@/lib/utils';
@@ -127,18 +127,25 @@ export default async function ProjectPage({ params }: Props) {
 
           {/* Header — no card background */}
           <header className="space-y-2">
-            <div className="flex items-start justify-between gap-3">
-              <div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
                 {project.client_name && (
                   <p className="text-sm uppercase tracking-wider text-muted-fg">{project.client_name}</p>
                 )}
-                <h1 className="mt-1 text-4xl font-bold tracking-tight">{project.name}</h1>
+                <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">{project.name}</h1>
               </div>
-              <Link href={`/projects/${project.slug}/settings`}
-                    className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-sm font-medium text-muted-fg transition-colors hover:border-brand hover:text-brand">
-                <Settings className="h-4 w-4" />
-                הגדרות
-              </Link>
+              <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
+                <Link href={`/projects/${project.slug}/ask`}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-brand/30 bg-brand/5 px-3 py-2 text-sm font-medium text-brand transition-colors hover:bg-brand/10">
+                  <Sparkles className="h-4 w-4" />
+                  שאל את Claude
+                </Link>
+                <Link href={`/projects/${project.slug}/settings`}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-sm font-medium text-muted-fg transition-colors hover:border-brand hover:text-brand">
+                  <Settings className="h-4 w-4" />
+                  הגדרות
+                </Link>
+              </div>
             </div>
 
             {project.description && (

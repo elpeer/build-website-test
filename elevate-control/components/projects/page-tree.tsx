@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus, FileText, Layers, Folder, AlertTriangle, Settings, AlertCircle, ChevronLeft } from 'lucide-react';
+import { SearchInput } from '@/components/ui/search-input';
 import type { PageStatus, PageType } from '@/lib/supabase/database.types';
 
 interface PageRow {
@@ -81,7 +82,16 @@ export function PageTree({ projectId, projectSlug, pages, cpts = [] }: Props) {
   const [cptId, setCptId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [query, setQuery] = useState('');
   const needsCpt = type === 'archive' || type === 'single';
+
+  // Filter pages by query (matches name or slug)
+  const visiblePages = query.trim()
+    ? pages.filter(p => {
+        const q = query.trim().toLowerCase();
+        return (p.name_he ?? '').toLowerCase().includes(q) || p.slug.toLowerCase().includes(q);
+      })
+    : pages;
 
   function onNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
@@ -117,8 +127,17 @@ export function PageTree({ projectId, projectSlug, pages, cpts = [] }: Props) {
     <div className="space-y-4">
 
       {/* Existing pages — hierarchical site tree */}
-      {pages.length > 0 && (
-        <SiteTree pages={pages} projectSlug={projectSlug} />
+      {pages.length > 3 && (
+        <SearchInput value={query} onChange={setQuery}
+                     placeholder={`חיפוש בעמודים... (${pages.length} עמודים)`} />
+      )}
+      {visiblePages.length > 0 && (
+        <SiteTree pages={visiblePages} projectSlug={projectSlug} />
+      )}
+      {pages.length > 0 && visiblePages.length === 0 && (
+        <div className="rounded-md border border-dashed border-border bg-muted/30 p-6 text-center text-sm text-muted-fg">
+          לא נמצאו עמודים תואמים ל-&quot;{query}&quot;.
+        </div>
       )}
 
       {/* Add page button / form */}

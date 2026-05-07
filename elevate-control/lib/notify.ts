@@ -67,10 +67,35 @@ interface SendInput {
   ctaLabel?: string;
   ctaHref?: string;       // absolute URL
   fromActor?: string;     // who triggered ("הלקוח", "אלי גינסברג", etc.)
+  // In-app notification fields (used in addition to email)
+  inAppKind?: string;     // 'comment' | 'approval' | 'ticket' | ...
+  inAppTitle?: string;    // short title for the bell
+  inAppBody?: string;     // optional body / snippet
+  inAppLink?: string;     // relative path to navigate to
+  projectId?: string;     // for filtering on project page
 }
 
 export async function sendNotification(input: SendInput): Promise<void> {
   if (input.to.length === 0) return;
+
+  // Always insert in-app notifications (regardless of Resend)
+  if (input.inAppKind && input.inAppTitle) {
+    try {
+      const admin = createServiceClient();
+      const rows = input.to.map(r => ({
+        user_id:    r.id,
+        project_id: input.projectId ?? null,
+        kind:       input.inAppKind,
+        title:      input.inAppTitle,
+        body:       input.inAppBody ?? null,
+        link:       input.inAppLink ?? null,
+      }));
+      await admin.from('notifications').insert(rows);
+    } catch (e) {
+      console.warn('[notify] in-app insert failed:', (e as Error).message);
+    }
+  }
+
   const client = getClient();
   if (!client) return;
 
@@ -138,6 +163,7 @@ export async function notifyNewComment(input: {
 
   const snippet = input.body.length > 200 ? input.body.slice(0, 200) + '…' : input.body;
 
+  const localLink = link.replace(process.env.NEXT_PUBLIC_APP_URL ?? '', '');
   await sendNotification({
     to: recipients,
     subject: `תגובה חדשה${input.threadTitle ? `: ${input.threadTitle}` : ''}`,
@@ -145,6 +171,11 @@ export async function notifyNewComment(input: {
     fromActor: input.authorLabel,
     ctaLabel: 'פתח/י את התגובה',
     ctaHref: link,
+    inAppKind: 'comment',
+    inAppTitle: `${input.authorLabel}: ${input.threadTitle ?? 'תגובה חדשה'}`,
+    inAppBody: snippet,
+    inAppLink: localLink,
+    projectId: input.projectId,
     bodyHtml: `
       <p><strong>${escape(input.authorLabel)}</strong> כתב/ה תגובה ${input.threadTitle ? `על: <em>${escape(input.threadTitle)}</em>` : ''}:</p>
       <blockquote style="margin:8px 0;padding:12px;border-inline-start:3px solid #f59e0b;background:#fffbeb;border-radius:0 6px 6px 0;color:#1f2937;white-space:pre-wrap;">${escape(snippet)}</blockquote>
@@ -180,6 +211,7 @@ export async function notifyApprovalStatus(input: {
     ? `<blockquote style="margin:8px 0;padding:12px;background:#fffbeb;border-inline-start:3px solid #f59e0b;border-radius:0 6px 6px 0;white-space:pre-wrap;">${escape(input.note)}</blockquote>`
     : '';
 
+  const localLink = link.replace(process.env.NEXT_PUBLIC_APP_URL ?? '', '');
   await sendNotification({
     to: recipients,
     subject: `סטטוס "${input.approvalTitle}": ${STATUS_LABELS[input.newStatus] ?? input.newStatus}`,
@@ -187,6 +219,11 @@ export async function notifyApprovalStatus(input: {
     fromActor: input.changedByLabel,
     ctaLabel: 'פתח/י את הפריט',
     ctaHref: link,
+    inAppKind: 'approval',
+    inAppTitle: `${STATUS_LABELS[input.newStatus] ?? input.newStatus}: ${input.approvalTitle}`,
+    inAppBody: input.note ?? `${input.changedByLabel} שינה/תה את הסטטוס`,
+    inAppLink: localLink,
+    projectId: input.projectId,
     bodyHtml: `
       <p><strong>${escape(input.changedByLabel)}</strong> עדכן/ה את הסטטוס של <em>${escape(input.approvalTitle)}</em> ל-<strong>${escape(STATUS_LABELS[input.newStatus] ?? input.newStatus)}</strong>.</p>
       ${noteHtml}
@@ -211,6 +248,7 @@ export async function notifyNewTicket(input: {
   };
   const link = `${appUrl()}/client/${input.projectSlug}/support`;
 
+  const localLink = link.replace(process.env.NEXT_PUBLIC_APP_URL ?? '', '');
   await sendNotification({
     to: recipients,
     subject: `🎧 טיקט חדש (${PRIORITY_LABELS[input.priority] ?? input.priority}): ${input.ticketTitle}`,
@@ -218,6 +256,11 @@ export async function notifyNewTicket(input: {
     fromActor: input.authorLabel,
     ctaLabel: 'פתח/י את הטיקט',
     ctaHref: link,
+    inAppKind: 'ticket',
+    inAppTitle: `🎧 טיקט (${PRIORITY_LABELS[input.priority] ?? input.priority}): ${input.ticketTitle}`,
+    inAppBody: input.body.slice(0, 200),
+    inAppLink: localLink,
+    projectId: input.projectId,
     bodyHtml: `
       <p><strong>${escape(input.authorLabel)}</strong> פתח/ה טיקט חדש בדחיפות <strong>${escape(PRIORITY_LABELS[input.priority] ?? input.priority)}</strong>:</p>
       <p style="font-size:16px;font-weight:600;">${escape(input.ticketTitle)}</p>

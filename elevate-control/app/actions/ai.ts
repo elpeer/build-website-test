@@ -50,6 +50,20 @@ export interface SuggestedPage {
   reason_he: string;           // why we're proposing this page
 }
 
+export interface DetectedDesignSystem {
+  colors: {
+    primary:    string; // hex
+    secondary:  string;
+    accent:     string;
+    neutral:    string;
+  };
+  fonts: {
+    headings: string; // CSS font-family
+    body:     string;
+  };
+  notes_he: string;
+}
+
 export interface DesignAnalysis {
   page_name_he: string;
   page_name_en: string | null;
@@ -59,6 +73,7 @@ export interface DesignAnalysis {
   sections: AnalysisSection[];
   additional_pages: SuggestedPage[]; // pages detected from links/menus/footers
   design_notes_he: string | null;
+  design_system: DetectedDesignSystem | null;  // populated only when this is a homepage analysis
 }
 
 const FIELD_TYPE_ENUM = [
@@ -96,12 +111,39 @@ const FIELD_DEF_SCHEMA = {
   },
 } as const;
 
+const DESIGN_SYSTEM_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['colors', 'fonts', 'notes_he'],
+  properties: {
+    colors: {
+      type: 'object', additionalProperties: false,
+      required: ['primary', 'secondary', 'accent', 'neutral'],
+      properties: {
+        primary:    { type: 'string', description: 'הצבע הראשי של המותג (hex)' },
+        secondary:  { type: 'string', description: 'צבע משני' },
+        accent:     { type: 'string', description: 'צבע הדגשה / CTA' },
+        neutral:    { type: 'string', description: 'אפור/ניטרלי לרקעים ועצמים משניים' },
+      },
+    },
+    fonts: {
+      type: 'object', additionalProperties: false,
+      required: ['headings', 'body'],
+      properties: {
+        headings: { type: 'string', description: 'CSS font-family לכותרות' },
+        body:     { type: 'string', description: 'CSS font-family לטקסט גוף' },
+      },
+    },
+    notes_he: { type: 'string', description: 'הערות על ה-design system' },
+  },
+} as const;
+
 const ANALYSIS_SCHEMA = {
   type: 'object',
   additionalProperties: false,
   required: [
     'page_name_he', 'page_name_en', 'page_slug', 'page_type',
-    'summary_he', 'sections', 'additional_pages', 'design_notes_he',
+    'summary_he', 'sections', 'additional_pages', 'design_notes_he', 'design_system',
   ],
   properties: {
     page_name_he: { type: 'string' },
@@ -167,6 +209,10 @@ const ANALYSIS_SCHEMA = {
       },
     },
     design_notes_he: { type: ['string', 'null'] },
+    design_system: {
+      anyOf: [DESIGN_SYSTEM_SCHEMA, { type: 'null' }],
+      description: 'אם זה עמוד הבית או עמוד שמייצג את שפת המותג — חלץ את הצבעים והפונטים. אחרת null.',
+    },
   },
 } as const;
 
@@ -274,6 +320,7 @@ export async function analyzeDesign(
 5. field_schema = שדות ACF שצריכים לאפשר עריכה של הסקשן הזה במנגנון ניהול. לסקשנים CPT-driven, אל תשים את שדות ה-CPT עצמם — רק שדות "עוטפים" כמו כותרת על־עמודית, תיאור, CTA, מספר פריטים להצגה. אם זה repeater (כמו רשימת תכונות, רשימת שלבים) השתמש ב-type=repeater עם sub_fields.
 6. additional_pages = כל עמוד שזוהה דרך לינקים בעיצוב (תפריט, פוטר, breadcrumbs) שלא הוא העמוד הזה. גם עמודי מערכת ושירות צפויים (404, חיפוש, תקנון, נגישות, מדיניות פרטיות) — הוסף אותם גם אם לא ראית קישור מפורש. parent_slug = רק אם העמוד שייך תחת עמוד אב לוגי (לדוגמה, "תקנון" יכול להיות תחת "footer" כעמוד עצמאי, אז parent_slug=null; אבל "ארכיון של מאמר" יכול להיות parent="blog").
 7. כל הטקסטים בעברית, פרט ל-slugs ול-keys.
+8. design_system: אם זה נראה כמו עמוד הבית או עמוד מרכזי שחושף את שפת המותג, חלץ את הצבעים והפונטים. אם זה עמוד פנימי שלא נראה כמו עמוד-בית — החזר null.
 
 הקטלוג של section_definitions:
 
@@ -426,6 +473,25 @@ export async function materializeAnalysis(
   const report: MaterializeReport = {
     pageId: '', pageSlug: slug, sectionsAdded: 0, cptsCreated: 0, pagesCreated: 0,
   };
+
+  // ─── Apply detected design system to project (only if project tokens are
+  //     empty so we never overwrite manually configured ones). ──────────
+  if (analysis.design_system) {
+    const { data: proj } = await supabase
+      .from('projects').select('design_tokens')
+      .eq('id', design.project_id).single<{ design_tokens: Json }>();
+    const tokens = (proj?.design_tokens ?? {}) as Record<string, unknown>;
+    const hasColors = !!(tokens.colors && Object.keys(tokens.colors as object).length);
+    const hasFonts  = !!(tokens.fonts && Object.keys(tokens.fonts as object).length);
+    if (!hasColors && !hasFonts) {
+      await supabase.from('projects').update({
+        design_tokens: {
+          colors: analysis.design_system.colors,
+          fonts:  analysis.design_system.fonts,
+        } as unknown as Json,
+      }).eq('id', design.project_id);
+    }
+  }
 
   // ─── Create CPTs ───────────────────────────────────────────────────────
   const cptByOriginalSlug = new Map<string, string>(); // original suggested slug → DB id

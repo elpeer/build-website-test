@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { recordFile, deleteFile } from '@/app/actions/client-workspace';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
+import { SearchInput } from '@/components/ui/search-input';
 import { Upload, FileText, Trash2, ExternalLink, AlertCircle, ImageIcon } from 'lucide-react';
 
 export interface ProjectFileRow {
@@ -56,7 +57,12 @@ export function FilesList({
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const visibleFiles = query.trim()
+    ? files.filter(f => f.filename.toLowerCase().includes(query.trim().toLowerCase()))
+    : files;
   const [, startTransition] = useTransition();
 
   async function handleFiles(list: FileList | null) {
@@ -130,13 +136,22 @@ export function FilesList({
         </div>
       )}
 
+      {files.length > 6 && (
+        <SearchInput value={query} onChange={setQuery}
+                     placeholder={`חיפוש בקבצים... (${files.length})`} />
+      )}
+
       {files.length === 0 ? (
         <div className="rounded-md border border-dashed border-border bg-muted/30 p-8 text-center text-sm text-muted-fg">
           {emptyText ?? (canUpload ? 'אין קבצים עדיין. לחצו על העלאה.' : 'עדיין לא הועלו קבצים.')}
         </div>
+      ) : visibleFiles.length === 0 ? (
+        <div className="rounded-md border border-dashed border-border bg-muted/30 p-6 text-center text-sm text-muted-fg">
+          לא נמצאו קבצים תואמים.
+        </div>
       ) : (
         <ul className="space-y-2">
-          {files.map(f => {
+          {visibleFiles.map(f => {
             const isImage = f.mime_type?.startsWith('image/');
             return (
               <li key={f.id} className="flex items-center gap-3 rounded-md border border-border bg-background p-3">
