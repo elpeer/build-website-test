@@ -11,6 +11,7 @@ import type { Json } from '@/lib/supabase/database.types';
 
 interface Props {
   params: Promise<{ projectSlug: string; workspace: string }>;
+  searchParams: Promise<{ as?: string }>;
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -19,8 +20,10 @@ export async function generateMetadata({ params }: Props) {
   return { title: `${meta?.label ?? workspace} · ${projectSlug}` };
 }
 
-export default async function ClientWorkspacePage({ params }: Props) {
+export default async function ClientWorkspacePage({ params, searchParams }: Props) {
   const { projectSlug, workspace } = await params;
+  const sp = await searchParams;
+  const previewAsClient = sp?.as === 'client';
   const meta = WORKSPACE_BY_SLUG[workspace as WorkspaceSlug];
   if (!meta) notFound();
 
@@ -42,7 +45,8 @@ export default async function ClientWorkspacePage({ params }: Props) {
   const { data: profile } = await supabase
     .from('profiles').select('studio_admin, role').eq('id', user.id)
     .single<{ studio_admin: boolean; role: string }>();
-  const isStudio = !!profile?.studio_admin || (profile?.role !== 'client' && profile?.role !== undefined);
+  const isReallyStudio = !!profile?.studio_admin || (profile?.role !== 'client' && profile?.role !== undefined);
+  const isStudio = isReallyStudio && !previewAsClient;
 
   const { data: override } = await supabase
     .from('client_workspace_overrides')
