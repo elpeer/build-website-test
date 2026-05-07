@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { signOut } from '@/app/actions/auth';
 import { createClient } from '@/lib/supabase/server';
 import { Button } from '@/components/ui/button';
@@ -22,8 +23,19 @@ export async function Topbar({ user }: { user: Profile }) {
   const notifications = (notifData ?? []) as NotificationRow[];
 
   return (
-    <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-sm md:px-6">
-      <MobileNav user={user} />
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-2 border-b border-border bg-background/80 px-4 backdrop-blur-sm md:px-6">
+      <div className="flex items-center gap-2">
+        <MobileNav user={user} />
+        <Link href="/projects" className="flex items-center gap-2 lg:hidden">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-brand text-white">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                 strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+              <path d="M3 12l2-2 7-7 7 7 2 2v9a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/>
+            </svg>
+          </div>
+          <span className="text-sm font-bold tracking-tight">Elevate</span>
+        </Link>
+      </div>
       <div className="flex items-center gap-3">
         <NotificationsBell userId={user.id} initial={notifications} />
 

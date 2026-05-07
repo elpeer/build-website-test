@@ -15,7 +15,7 @@ import { PagesPreviewBoard } from '@/components/projects/pages-preview-board';
 import { StageControl } from '@/components/projects/stage-control';
 import { ClientCommentsFeed } from '@/components/projects/client-comments-feed';
 import { WorkspaceNavigator } from '@/components/projects/workspace-navigator';
-import { FloatingToc, type TocItem } from '@/components/projects/floating-toc';
+import { FloatingToc, FloatingTocMobile, type TocItem } from '@/components/projects/floating-toc';
 import type { ProjectStage } from '@/lib/client-workspaces';
 import type { PageStatus, PageType } from '@/lib/supabase/database.types';
 
@@ -124,6 +124,8 @@ export default async function ProjectPage({ params }: Props) {
             <ChevronLeft className="h-4 w-4 rtl:rotate-180" />
             חזרה לפרויקטים
           </Link>
+
+          <FloatingTocMobile items={tocItems} />
 
           {/* Header — no card background */}
           <header className="space-y-2">

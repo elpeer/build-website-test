@@ -16,20 +16,22 @@ interface Props {
 
 interface OverrideRow { workspace: string; unlocked: boolean }
 
+async function fetchOverrides(projectId: string) {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from('client_workspace_overrides')
+    .select('workspace, unlocked')
+    .eq('project_id', projectId);
+  return new Map(((data ?? []) as OverrideRow[]).map(o => [o.workspace, o]));
+}
+
 /**
- * Sticky side menu used on /projects/[slug]/manage/[workspace] — lets the
- * studio jump between all 9 workspace screens without going back to the
- * project dashboard. Includes a back arrow and a "view as client" link.
+ * Vertical sticky right rail (xl+ only). Place as the second grid column.
  */
 export async function WorkspaceSideMenu({
   projectId, projectSlug, projectName, currentSlug, currentStage,
 }: Props) {
-  const supabase = await createClient();
-  const { data: overridesData } = await supabase
-    .from('client_workspace_overrides')
-    .select('workspace, unlocked')
-    .eq('project_id', projectId);
-  const overrideBySlug = new Map(((overridesData ?? []) as OverrideRow[]).map(o => [o.workspace, o]));
+  const overrideBySlug = await fetchOverrides(projectId);
 
   return (
     <aside aria-label="ניווט אזורי עבודה" className="hidden xl:block">
@@ -79,5 +81,42 @@ export async function WorkspaceSideMenu({
         </div>
       </nav>
     </aside>
+  );
+}
+
+/**
+ * Horizontal sticky chip bar for mobile/tablet — place at the top of the
+ * content column. Visible only on <xl.
+ */
+export async function WorkspaceMobileBar({
+  projectId, projectSlug, currentSlug, currentStage,
+}: Pick<Props, 'projectId' | 'projectSlug' | 'currentSlug' | 'currentStage'>) {
+  const overrideBySlug = await fetchOverrides(projectId);
+
+  return (
+    <nav aria-label="ניווט אזורי עבודה"
+         className="sticky top-16 z-20 -mx-4 mb-2 border-b border-border bg-background/95 backdrop-blur sm:-mx-6 lg:-mx-8 xl:hidden">
+      <ul className="flex gap-1 overflow-x-auto whitespace-nowrap px-4 py-2 sm:px-6 lg:px-8">
+        {WORKSPACES.map(w => {
+          const override = overrideBySlug.get(w.slug);
+          const unlocked = isWorkspaceUnlocked(w, currentStage, override);
+          const active = w.slug === currentSlug;
+          return (
+            <li key={w.slug} className="shrink-0">
+              <Link href={`/projects/${projectSlug}/manage/${w.slug}`}
+                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors ${
+                      active
+                        ? 'bg-brand text-white'
+                        : 'bg-muted text-muted-fg hover:bg-muted/80'
+                    }`}>
+                <span>{w.emoji}</span>
+                <span>{w.label}</span>
+                {!unlocked && <Lock className="h-3 w-3" />}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
 }

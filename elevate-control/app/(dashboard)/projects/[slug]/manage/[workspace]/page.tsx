@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { Lock } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { WorkspaceContent } from '@/components/client/workspace-content';
-import { WorkspaceSideMenu } from '@/components/projects/workspace-side-menu';
+import { WorkspaceSideMenu, WorkspaceMobileBar } from '@/components/projects/workspace-side-menu';
 import {
   WORKSPACE_BY_SLUG, isWorkspaceUnlocked,
   type WorkspaceSlug, type ProjectStage,
@@ -54,6 +54,13 @@ export default async function StudioWorkspaceManagePage({ params }: Props) {
     <div className="mx-auto max-w-7xl">
       <div className="grid gap-8 xl:grid-cols-[1fr_220px]">
         <div className="min-w-0 space-y-6">
+
+          <WorkspaceMobileBar
+            projectId={project.id}
+            projectSlug={project.slug}
+            currentSlug={meta.slug}
+            currentStage={project.current_stage}
+          />
 
           <header className="flex items-start gap-4">
             <span className="text-4xl">{meta.emoji}</span>

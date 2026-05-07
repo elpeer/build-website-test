@@ -19,12 +19,13 @@ export function MobileNav({ user }: { user: Profile }) {
 
   useEffect(() => {
     if (!open) return;
-    function onKey(e: KeyboardEvent) { if (e.key === 'Escape') setOpen(false); }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
     window.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     return () => {
       window.removeEventListener('keydown', onKey);
-      document.body.style.overflow = '';
+      document.body.style.overflow = prevOverflow;
     };
   }, [open]);
 
@@ -38,9 +39,16 @@ export function MobileNav({ user }: { user: Profile }) {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setOpen(false)} />
-          <aside className="fixed inset-y-0 end-0 w-72 max-w-[85vw] overflow-y-auto bg-background shadow-xl">
+        <>
+          {/* Backdrop */}
+          <button type="button"
+                  aria-label="סגור תפריט"
+                  onClick={() => setOpen(false)}
+                  className="fixed inset-0 z-[60] cursor-default bg-black/50 lg:hidden" />
+
+          {/* Drawer */}
+          <aside className="fixed inset-y-0 end-0 z-[70] w-72 max-w-[85vw] overflow-y-auto bg-background shadow-2xl lg:hidden"
+                 role="dialog" aria-modal="true">
             <div className="flex h-16 items-center justify-between border-b border-border px-4">
               <Link href="/projects" onClick={() => setOpen(false)} className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-md bg-brand text-white">
@@ -91,7 +99,7 @@ export function MobileNav({ user }: { user: Profile }) {
               <p className="text-[11px]" dir="ltr">{user.email}</p>
             </div>
           </aside>
-        </div>
+        </>
       )}
     </>
   );
