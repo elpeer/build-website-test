@@ -2,14 +2,16 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { createGuide, updateGuide, deleteGuide } from '@/app/actions/guides';
+import {
+  createGuide, updateGuide, deleteGuide, setGuideAssignments,
+} from '@/app/actions/guides';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import {
   Plus, Edit2, Trash2, Eye, EyeOff, ExternalLink, Save, X, AlertCircle,
+  Globe, FolderKanban,
 } from 'lucide-react';
 
 interface GuideRow {
@@ -20,6 +22,8 @@ interface GuideRow {
   content_md: string;
   content_html: string;
   category: string | null;
+  category_id: string | null;
+  visibility: 'global' | 'project';
   video_url: string | null;
   cover_url: string | null;
   published: boolean;
@@ -27,11 +31,18 @@ interface GuideRow {
   updated_at: string;
 }
 
-interface Props { guides: GuideRow[] }
+interface CategoryOption { id: string; slug: string; label: string }
+interface ProjectOption  { id: string; slug: string; name: string }
 
-const CATEGORIES = ['general', 'wordpress', 'clickup', 'figma', 'launch'];
+interface Props {
+  guides: GuideRow[];
+  categories: CategoryOption[];
+  projects: ProjectOption[];
+  /** Map<guideId, projectId[]> — current per-guide assignments. */
+  assignmentsByGuide: Record<string, string[]>;
+}
 
-export function GuidesAdmin({ guides }: Props) {
+export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }: Props) {
   const router = useRouter();
   const [showCreate, setShowCreate] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -77,12 +88,21 @@ export function GuidesAdmin({ guides }: Props) {
             <Label className="text-xs">תיאור קצר</Label>
             <Input name="description" placeholder="מדריך קצר על מנגנון העריכה הראשי" />
           </div>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid gap-3 md:grid-cols-3">
             <div>
               <Label className="text-xs">קטגוריה</Label>
-              <select name="category" defaultValue="general"
+              <select name="category_id" defaultValue=""
                       className="block h-10 w-full rounded-md border border-border bg-background px-3 text-sm">
-                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                <option value="">— ללא —</option>
+                {categories.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+              </select>
+            </div>
+            <div>
+              <Label className="text-xs">חשיפה</Label>
+              <select name="visibility" defaultValue="global"
+                      className="block h-10 w-full rounded-md border border-border bg-background px-3 text-sm">
+                <option value="global">לכל הלקוחות</option>
+                <option value="project">לפרויקטים נבחרים</option>
               </select>
             </div>
             <div>
@@ -96,10 +116,13 @@ export function GuidesAdmin({ guides }: Props) {
           </div>
           <div>
             <Label className="text-xs">תוכן</Label>
+            <p className="mb-1 text-[11px] text-muted-fg">
+              הקישו <code className="rounded bg-muted px-1">/</code> כדי לפתוח תפריט בלוקים (כותרת, רשימה, ציטוט, תמונה ועוד).
+            </p>
             <RichTextEditor
               initialHtml={createHtml}
               onChange={setCreateHtml}
-              placeholder="כתבו... העתק-הדבק תמונות ישר לכאן"
+              placeholder="כתבו... הקישו '/' להוספת בלוקים"
             />
           </div>
           {error && (
@@ -108,32 +131,48 @@ export function GuidesAdmin({ guides }: Props) {
             </div>
           )}
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="ghost" onClick={() => { setShowCreate(false); setError(null); }}>ביטול</Button>
+            <Button type="button" variant="ghost"
+                    onClick={() => { setShowCreate(false); setError(null); }}>ביטול</Button>
             <Button type="submit" variant="accent">צור מדריך</Button>
           </div>
+          <p className="text-[11px] text-muted-fg">
+            לאחר היצירה: לפרויקטים נבחרים — פתחו את המדריך ובחרו אילו פרויקטים יראו אותו.
+          </p>
         </form>
       )}
 
       <ul className="space-y-2">
         {guides.map(g => (
-          <GuideRow key={g.id} guide={g}
-                    isEditing={editingId === g.id}
-                    onEdit={() => setEditingId(g.id)}
-                    onCancel={() => setEditingId(null)}
-                    onSaved={() => { setEditingId(null); router.refresh(); }} />
+          <GuideRowItem key={g.id} guide={g}
+                        categories={categories}
+                        projects={projects}
+                        assignedProjectIds={assignmentsByGuide[g.id] ?? []}
+                        isEditing={editingId === g.id}
+                        onEdit={() => setEditingId(g.id)}
+                        onCancel={() => setEditingId(null)}
+                        onSaved={() => { setEditingId(null); router.refresh(); }} />
         ))}
       </ul>
     </div>
   );
 }
 
-function GuideRow({ guide, isEditing, onEdit, onCancel, onSaved }: {
-  guide: GuideRow; isEditing: boolean;
+function GuideRowItem({
+  guide, categories, projects, assignedProjectIds,
+  isEditing, onEdit, onCancel, onSaved,
+}: {
+  guide: GuideRow;
+  categories: CategoryOption[];
+  projects: ProjectOption[];
+  assignedProjectIds: string[];
+  isEditing: boolean;
   onEdit: () => void; onCancel: () => void; onSaved: () => void;
 }) {
   const [title, setTitle]             = useState(guide.title);
   const [description, setDescription] = useState(guide.description ?? '');
-  const [category, setCategory]       = useState(guide.category ?? 'general');
+  const [categoryId, setCategoryId]   = useState(guide.category_id ?? '');
+  const [visibility, setVisibility]   = useState<'global' | 'project'>(guide.visibility);
+  const [assignedSet, setAssignedSet] = useState<Set<string>>(new Set(assignedProjectIds));
   const [videoUrl, setVideoUrl]       = useState(guide.video_url ?? '');
   const [coverUrl, setCoverUrl]       = useState(guide.cover_url ?? '');
   const [contentHtml, setContentHtml] = useState(guide.content_html || guide.content_md);
@@ -141,16 +180,31 @@ function GuideRow({ guide, isEditing, onEdit, onCancel, onSaved }: {
   const [error, setError]             = useState<string | null>(null);
   const [, startTransition] = useTransition();
 
+  function toggleProject(id: string) {
+    setAssignedSet(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
+
   function handleSave() {
     setError(null);
     startTransition(async () => {
       const result = await updateGuide(guide.id, {
         title, description: description || null,
-        category, video_url: videoUrl || null,
+        category_id: categoryId || null,
+        visibility,
+        video_url: videoUrl || null,
         cover_url: coverUrl || null,
         content_html: contentHtml, published,
       });
-      if (result.ok) onSaved(); else setError(result.error);
+      if (!result.ok) { setError(result.error); return; }
+      // Persist assignment list when in 'project' visibility (or when
+      // toggling away from it — we still want to clear stale rows).
+      const assignmentsResult = await setGuideAssignments(guide.id, Array.from(assignedSet));
+      if (!assignmentsResult.ok) { setError(assignmentsResult.error); return; }
+      onSaved();
     });
   }
   function handleDelete() {
@@ -167,6 +221,7 @@ function GuideRow({ guide, isEditing, onEdit, onCancel, onSaved }: {
   }
 
   if (!isEditing) {
+    const categoryLabel = categories.find(c => c.id === guide.category_id)?.label ?? guide.category;
     return (
       <li className="flex items-start gap-3 rounded-md border border-border bg-background p-3">
         {guide.cover_url && (
@@ -175,10 +230,21 @@ function GuideRow({ guide, isEditing, onEdit, onCancel, onSaved }: {
                className="h-14 w-20 rounded object-cover" />
         )}
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <p className="font-medium">{guide.title}</p>
-            {guide.category && (
-              <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-fg">{guide.category}</span>
+            {categoryLabel && (
+              <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-fg">{categoryLabel}</span>
+            )}
+            {guide.visibility === 'global' ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs text-blue-700">
+                <Globe className="h-3 w-3" />
+                כל הלקוחות
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2 py-0.5 text-xs text-purple-700">
+                <FolderKanban className="h-3 w-3" />
+                {assignedProjectIds.length} פרויקטים
+              </span>
             )}
             {!guide.published && (
               <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600">מוסתר</span>
@@ -223,9 +289,10 @@ function GuideRow({ guide, isEditing, onEdit, onCancel, onSaved }: {
         </div>
         <div>
           <Label className="text-xs">קטגוריה</Label>
-          <select value={category} onChange={e => setCategory(e.target.value)}
+          <select value={categoryId} onChange={e => setCategoryId(e.target.value)}
                   className="block h-10 w-full rounded-md border border-border bg-background px-3 text-sm">
-            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+            <option value="">— ללא —</option>
+            {categories.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
           </select>
         </div>
       </div>
@@ -245,8 +312,50 @@ function GuideRow({ guide, isEditing, onEdit, onCancel, onSaved }: {
                  onChange={e => setVideoUrl(e.target.value)} />
         </div>
       </div>
+
+      <div className="rounded-md border border-border bg-background p-3">
+        <Label className="text-xs">חשיפה</Label>
+        <div className="mt-1 flex flex-wrap gap-2 text-sm">
+          <label className="inline-flex items-center gap-1.5">
+            <input type="radio" name={`vis-${guide.id}`}
+                   checked={visibility === 'global'}
+                   onChange={() => setVisibility('global')} />
+            <Globe className="h-3.5 w-3.5" />
+            <span>לכל הלקוחות</span>
+          </label>
+          <label className="inline-flex items-center gap-1.5">
+            <input type="radio" name={`vis-${guide.id}`}
+                   checked={visibility === 'project'}
+                   onChange={() => setVisibility('project')} />
+            <FolderKanban className="h-3.5 w-3.5" />
+            <span>רק לפרויקטים שאבחר</span>
+          </label>
+        </div>
+
+        {visibility === 'project' && (
+          <div className="mt-2 max-h-48 space-y-1 overflow-y-auto rounded-md border border-border bg-muted/20 p-2">
+            {projects.length === 0 ? (
+              <p className="text-xs text-muted-fg">אין פרויקטים פעילים.</p>
+            ) : (
+              projects.map(p => (
+                <label key={p.id} className="flex items-center gap-2 rounded px-2 py-1 text-sm hover:bg-muted">
+                  <input type="checkbox"
+                         checked={assignedSet.has(p.id)}
+                         onChange={() => toggleProject(p.id)} />
+                  <span className="flex-1 truncate">{p.name}</span>
+                  <code dir="ltr" className="text-[10px] text-muted-fg">{p.slug}</code>
+                </label>
+              ))
+            )}
+          </div>
+        )}
+      </div>
+
       <div>
         <Label className="text-xs">תוכן</Label>
+        <p className="mb-1 text-[11px] text-muted-fg">
+          הקישו <code className="rounded bg-muted px-1">/</code> בעורך כדי לפתוח תפריט בלוקים.
+        </p>
         <RichTextEditor
           initialHtml={contentHtml}
           onChange={setContentHtml}

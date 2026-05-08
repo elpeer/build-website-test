@@ -528,9 +528,13 @@ function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }
 
 async function fetchGuidesForProject(projectId: string): Promise<GuideListItem[]> {
   const supabase = await createClient();
-  const [{ data: guidesData }, { data: hidden }] = await Promise.all([
+  const [
+    { data: guidesData },
+    { data: hidden },
+    { data: assignments },
+  ] = await Promise.all([
     supabase.from('guide_articles')
-      .select('id, slug, title, description, category, cover_url, video_url, published, position')
+      .select('id, slug, title, description, category, cover_url, video_url, published, position, visibility')
       .eq('published', true)
       .order('category', { ascending: true })
       .order('position', { ascending: true }),
@@ -538,10 +542,20 @@ async function fetchGuidesForProject(projectId: string): Promise<GuideListItem[]
       .select('guide_id, hidden')
       .eq('project_id', projectId)
       .eq('hidden', true),
+    supabase.from('project_guide_assignments')
+      .select('guide_id')
+      .eq('project_id', projectId),
   ]);
-  const hiddenSet = new Set((hidden ?? []).map((h: { guide_id: string }) => h.guide_id));
+  const hiddenSet      = new Set((hidden      ?? []).map((h: { guide_id: string }) => h.guide_id));
+  const assignedSet    = new Set((assignments ?? []).map((a: { guide_id: string }) => a.guide_id));
   return (guidesData ?? [])
-    .filter((g: { id: string }) => !hiddenSet.has(g.id))
+    .filter((g: { id: string; visibility?: string }) => {
+      if (hiddenSet.has(g.id)) return false;
+      // 'project' visibility → only show if explicitly assigned to this project.
+      if (g.visibility === 'project') return assignedSet.has(g.id);
+      // 'global' (default) → show unless hidden.
+      return true;
+    })
     .map((g: GuideListItem) => g);
 }
 

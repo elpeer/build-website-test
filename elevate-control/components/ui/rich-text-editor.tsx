@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useEditor, EditorContent, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -8,6 +8,9 @@ import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import Highlight from '@tiptap/extension-highlight';
 import Underline from '@tiptap/extension-underline';
+import 'tippy.js/dist/tippy.css';
+import { SlashCommands } from './slash-extension';
+import { buildSlashItems } from './slash-items';
 import { createClient } from '@/lib/supabase/client';
 import {
   Bold, Italic, Underline as UnderlineIcon, Strikethrough,
@@ -31,6 +34,17 @@ export function RichTextEditor({
 }: Props) {
   const [uploading, setUploading] = useState(false);
 
+  // Refs the slash-items can reach back into for late-bound callbacks
+  // (pickImage / setLink need the live editor + supabase client, which
+  // aren't ready when the items array is built).
+  const pickImageRef = useRef<() => void>(() => {});
+  const setLinkRef   = useRef<() => void>(() => {});
+
+  const slashItems = useMemo(() => buildSlashItems({
+    pickImage: () => pickImageRef.current(),
+    setLink:   () => setLinkRef.current(),
+  }), []);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -45,7 +59,10 @@ export function RichTextEditor({
         openOnClick: false,
         HTMLAttributes: { rel: 'noopener noreferrer', target: '_blank', class: 'text-brand underline' },
       }),
-      Placeholder.configure({ placeholder: placeholder ?? 'התחילו לכתוב...' }),
+      Placeholder.configure({
+        placeholder: placeholder ?? "התחילו לכתוב... הקישו '/' להוספת בלוקים",
+      }),
+      SlashCommands.configure({ items: slashItems }),
     ],
     content: initialHtml,
     editorProps: {
@@ -119,6 +136,7 @@ export function RichTextEditor({
     };
     input.click();
   }
+  pickImageRef.current = pickImage;
 
   function setLink() {
     if (!editor) return;
@@ -131,6 +149,7 @@ export function RichTextEditor({
     }
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   }
+  setLinkRef.current = setLink;
 
   // Keep external content prop in sync if it changes from outside
   useEffect(() => {
