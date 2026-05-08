@@ -156,3 +156,36 @@ export async function updatePageStatus(
   revalidatePath(`/projects/${projectSlug}`);
   return { ok: true };
 }
+
+/**
+ * Persist a new tree state for a project — order + parent for each page in
+ * one round-trip. Caller computes the full new state client-side.
+ */
+export async function reorderAndReparentPages(
+  projectSlug: string,
+  updates: Array<{ id: string; parent_id: string | null; order: number }>
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+  if (updates.length === 0) return { ok: true };
+
+  for (const u of updates) {
+    const { data, error } = await supabase
+      .from('pages')
+      .update({ parent_id: u.parent_id, order: u.order })
+      .eq('id', u.id)
+      .select('id');
+    if (error) {
+      console.error('reorderAndReparentPages update', { id: u.id, error });
+      return { ok: false, error: error.message };
+    }
+    if (!data?.length) {
+      return { ok: false, error: 'לא הצלחנו לעדכן עמוד — בדקו הרשאות' };
+    }
+  }
+
+  revalidatePath(`/projects/${projectSlug}`);
+  return { ok: true };
+}
+

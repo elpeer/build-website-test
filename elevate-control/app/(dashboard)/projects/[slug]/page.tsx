@@ -7,11 +7,12 @@ import {
 import { createClient } from '@/lib/supabase/server';
 import { formatDateHe } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { PageTree } from '@/components/projects/page-tree';
+import { PageTree, type PreviewInfo } from '@/components/projects/page-tree';
 import { ActivityFeed } from '@/components/activity/activity-feed';
 import { GithubPanel } from '@/components/projects/github-panel';
 import { GithubActivity } from '@/components/projects/github-activity';
-import { PagesPreviewBoard } from '@/components/projects/pages-preview-board';
+import { listProjectHtmlFiles } from '@/app/actions/github';
+import { findPagePreview } from '@/lib/preview-links';
 import { StageControl } from '@/components/projects/stage-control';
 import { ClientCommentsFeed } from '@/components/projects/client-comments-feed';
 import { WorkspaceNavigator } from '@/components/projects/workspace-navigator';
@@ -67,6 +68,22 @@ export default async function ProjectPage({ params }: Props) {
     .eq('project_id', project.id).order('order', { ascending: true });
   const cpts = (cptsData ?? []) as { id: string; slug: string; name_he: string | null; name_en: string | null }[];
 
+  // Preview links — match each page to its HTML file in GitHub + Vercel URL.
+  // Inlined into the tree (no more separate "preview links" card).
+  const previews: Record<string, PreviewInfo> = {};
+  if (pages.length > 0) {
+    const { files, vercelUrl, error: ghError } = await listProjectHtmlFiles(project.id as string);
+    if (!ghError || vercelUrl) {
+      for (const p of pages) {
+        const info = findPagePreview(files, p.slug, vercelUrl);
+        previews[p.id] = {
+          status: info.status === 'found' ? 'found' : 'missing',
+          previewUrl: info.previewUrl ?? null,
+        };
+      }
+    }
+  }
+
   // Activity
   const { data: activitiesData } = await supabase
     .from('activity_log')
@@ -108,7 +125,6 @@ export default async function ProjectPage({ params }: Props) {
     { id: 'stages',    label: 'שלבי פרויקט',  emoji: '🚦' },
     { id: 'workspaces', label: 'אזורי עבודה',  emoji: '🧩' },
     { id: 'pages',     label: 'עץ עמודים',     emoji: '📑' },
-    { id: 'previews',  label: 'לינקי תצוגה',   emoji: '🌐' },
     { id: 'comments',  label: 'תגובות לקוח',   emoji: '💬' },
     { id: 'github',    label: 'GitHub',         emoji: '⚙️' },
     { id: 'activity',  label: 'פעילות',        emoji: '⏱️' },
@@ -215,17 +231,10 @@ export default async function ProjectPage({ params }: Props) {
                   projectSlug={project.slug as string}
                   pages={pages}
                   cpts={cpts}
+                  previews={previews}
                 />
               </CardContent>
             </Card>
-          </section>
-
-          {/* Previews */}
-          <section id="previews" className="scroll-mt-6">
-            <PagesPreviewBoard
-              projectId={project.id as string}
-              projectSlug={project.slug as string}
-            />
           </section>
 
           {/* Client comments */}
