@@ -107,42 +107,48 @@ export function GuidesList({ guides, projectSlug, categories = [] }: Props) {
           לא נמצאו מדריכים תואמים. נסו ביטוי אחר.
         </div>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {visible.map(g => (
             <Link key={g.id}
                   href={`/client/${projectSlug}/training/${g.slug}`}
-                  className="group flex gap-3 overflow-hidden rounded-lg border border-border bg-background p-3 transition-shadow hover:shadow-md">
-              <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-md bg-muted">
-                {g.cover_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
+                  className="group flex flex-col overflow-hidden rounded-lg border border-border bg-background transition-shadow hover:shadow-md">
+              {g.cover_url && (
+                <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={g.cover_url} alt={g.title}
-                       className="h-full w-full object-cover" />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-muted-fg">
-                    <BookOpen className="h-6 w-6" />
-                  </div>
-                )}
-                {g.video_url && (
-                  <span className="absolute inset-0 flex items-center justify-center bg-black/30 text-white">
-                    <PlayCircle className="h-6 w-6" />
-                  </span>
-                )}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <h4 className="truncate font-medium group-hover:text-brand">{g.title}</h4>
-                  {g.category && (
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-fg">
-                      {labelFor.get(g.category) ?? g.category}
+                       className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                  {g.video_url && (
+                    <span className="absolute inset-0 flex items-center justify-center bg-black/30 text-white">
+                      <PlayCircle className="h-10 w-10" />
                     </span>
                   )}
                 </div>
+              )}
+              <div className="flex flex-1 flex-col gap-1.5 p-3">
+                <div className="flex items-start gap-2">
+                  {!g.cover_url && (
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-brand/10 text-brand">
+                      <BookOpen className="h-3.5 w-3.5" />
+                    </span>
+                  )}
+                  <h4 className="text-sm font-semibold leading-snug group-hover:text-brand">
+                    {g.title}
+                  </h4>
+                </div>
                 {g.description && (
-                  <p className="mt-1 line-clamp-2 text-sm text-muted-fg">{g.description}</p>
+                  <p className="line-clamp-2 text-xs text-muted-fg">{g.description}</p>
                 )}
-                <p className="mt-1 inline-flex items-center gap-1 text-xs text-brand">
-                  קרא/י <ExternalLink className="h-3 w-3" />
-                </p>
+                <div className="mt-auto flex items-center justify-between gap-2 pt-1">
+                  {g.category && (
+                    <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-fg">
+                      {labelFor.get(g.category) ?? g.category}
+                    </span>
+                  )}
+                  <span className="ms-auto inline-flex items-center gap-1 text-xs font-medium text-brand">
+                    קרא/י
+                    <ExternalLink className="h-3 w-3" />
+                  </span>
+                </div>
               </div>
             </Link>
           ))}
