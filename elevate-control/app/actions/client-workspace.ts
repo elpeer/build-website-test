@@ -21,6 +21,7 @@ export async function createApproval(input: {
   title: string; description?: string | null;
   link_url?: string | null; thumbnail_url?: string | null;
   metadata?: Json;
+  kind?: string; // 'frontend' | 'cms' (development workspace) — defaults to 'frontend'
 }): Promise<Result<{ id: string }>> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -44,6 +45,7 @@ export async function createApproval(input: {
       link_url: input.link_url?.trim() || null,
       thumbnail_url: input.thumbnail_url?.trim() || null,
       metadata: input.metadata ?? null,
+      kind: input.kind ?? 'frontend',
       position, created_by: user.id,
     })
     .select('id').single<{ id: string }>();
@@ -512,6 +514,60 @@ export async function deleteFile(
   const { error } = await supabase.from('project_files').delete().eq('id', fileId);
   if (error) return { ok: false, error: error.message };
 
+  if (ctx.workspace) revalidatePath(`/client/${ctx.projectSlug}/${ctx.workspace}`);
+  return { ok: true };
+}
+
+// ─── Project links (external URLs alongside files) ───────────────────
+
+export async function createProjectLink(input: {
+  projectId: string; projectSlug: string;
+  workspace?: string | null; category?: string | null;
+  url: string; label?: string | null;
+}): Promise<Result<{ id: string }>> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+  if (!input.url?.trim()) return { ok: false, error: 'לינק הוא חובה' };
+
+  const { data, error } = await supabase
+    .from('project_links')
+    .insert({
+      project_id: input.projectId,
+      workspace:  input.workspace ?? null,
+      category:   input.category ?? null,
+      url:        input.url.trim(),
+      label:      input.label?.trim() || null,
+      created_by: user.id,
+    })
+    .select('id').single<{ id: string }>();
+  if (error || !data) return { ok: false, error: error?.message ?? 'נכשל' };
+  if (input.workspace) revalidatePath(`/client/${input.projectSlug}/${input.workspace}`);
+  return { ok: true, data };
+}
+
+export async function updateProjectLink(
+  linkId: string,
+  ctx: { projectSlug: string; workspace?: string | null },
+  patch: { url?: string; label?: string | null }
+): Promise<Result> {
+  const supabase = await createClient();
+  const update: Record<string, unknown> = {};
+  if (patch.url !== undefined)   update.url   = patch.url.trim();
+  if (patch.label !== undefined) update.label = patch.label?.trim() || null;
+  const { error } = await supabase.from('project_links').update(update).eq('id', linkId);
+  if (error) return { ok: false, error: error.message };
+  if (ctx.workspace) revalidatePath(`/client/${ctx.projectSlug}/${ctx.workspace}`);
+  return { ok: true };
+}
+
+export async function deleteProjectLink(
+  linkId: string,
+  ctx: { projectSlug: string; workspace?: string | null }
+): Promise<Result> {
+  const supabase = await createClient();
+  const { error } = await supabase.from('project_links').delete().eq('id', linkId);
+  if (error) return { ok: false, error: error.message };
   if (ctx.workspace) revalidatePath(`/client/${ctx.projectSlug}/${ctx.workspace}`);
   return { ok: true };
 }

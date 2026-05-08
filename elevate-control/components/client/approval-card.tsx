@@ -240,9 +240,14 @@ interface CreateProps {
   projectSlug: string;
   workspace: string;
   isStudio: boolean;
+  /** For workspaces that split approvals into multiple buckets (development:
+   *  frontend vs cms). Forwarded to the create action. */
+  kind?: string;
+  /** Override the button label / form heading (e.g. "+ הוסיפו עמוד CMS"). */
+  ctaLabel?: string;
 }
 
-export function CreateApprovalForm({ projectId, projectSlug, workspace, isStudio }: CreateProps) {
+export function CreateApprovalForm({ projectId, projectSlug, workspace, isStudio, kind, ctaLabel }: CreateProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
@@ -269,6 +274,7 @@ export function CreateApprovalForm({ projectId, projectSlug, workspace, isStudio
         title, description: description || null,
         link_url: linkUrl || null,
         metadata: metadata ?? undefined,
+        kind,
       });
       if (!result.ok) { setError(result.error); return; }
       setTitle(''); setDescription(''); setLinkUrl('');
@@ -282,7 +288,7 @@ export function CreateApprovalForm({ projectId, projectSlug, workspace, isStudio
       <Button type="button" variant="outline"
               onClick={() => setOpen(true)}
               className="w-full justify-center border-dashed py-3">
-        + הוסיפו פריט לאישור
+        {ctaLabel ?? '+ הוסיפו פריט לאישור'}
       </Button>
     );
   }

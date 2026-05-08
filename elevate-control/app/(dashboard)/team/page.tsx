@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { InviteClientForm } from '@/components/team/invite-client-form';
 import { Shield, FolderKanban } from 'lucide-react';
 
 export const metadata = { title: 'חברי צוות' };
@@ -66,13 +67,23 @@ export default async function TeamPage() {
     membershipsByUser.set(m.user_id, arr);
   }
 
+  // Project list for the invite-client form
+  const { data: projectsData } = await supabase
+    .from('projects')
+    .select('id, slug, name')
+    .order('created_at', { ascending: false });
+  const projects = (projectsData ?? []) as { id: string; slug: string; name: string }[];
+
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <header>
-        <h1 className="text-3xl font-bold tracking-tight">חברי צוות</h1>
-        <p className="mt-1 text-sm text-muted-fg">
-          כל המשתמשים הרשומים במערכת והפרויקטים שהם חברים בהם.
-        </p>
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">חברי צוות</h1>
+          <p className="mt-1 text-sm text-muted-fg">
+            כל המשתמשים הרשומים במערכת והפרויקטים שהם חברים בהם.
+          </p>
+        </div>
+        <InviteClientForm projects={projects} />
       </header>
 
       <Card>

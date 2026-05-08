@@ -3,6 +3,7 @@ import { ApprovalCard, CreateApprovalForm, type ApprovalCardData, type ApprovalS
 import { CommentThread, type CommentMessage } from './comment-thread';
 import { Checklist, type ChecklistItemRow, type ChecklistStatus } from './checklist';
 import { FilesList, type ProjectFileRow } from './files-list';
+import { LinksList, type ProjectLinkRow } from './links-list';
 import { WorkspaceSettingInput } from './workspace-setting-input';
 import { ClientNotes } from './client-notes';
 import { CmsCredentials } from './cms-credentials';
@@ -33,6 +34,7 @@ interface ApprovalRow {
   status_note: string | null;
   status_changed_at: string | null;
   metadata: Json | null;
+  kind: string | null;
   position: number;
 }
 interface ThreadRow {
@@ -48,13 +50,18 @@ interface ThreadRow {
 interface FileRow extends ProjectFileRow {
   category: string | null;
 }
+interface LinkRow extends ProjectLinkRow {
+  category: string | null;
+}
 
 async function fetchWorkspaceData(projectId: string, workspaceSlug: string) {
   const supabase = await createClient();
 
-  const [{ data: approvalsData }, { data: checklistData }, { data: filesData }] = await Promise.all([
+  const [
+    { data: approvalsData }, { data: checklistData }, { data: filesData }, { data: linksData },
+  ] = await Promise.all([
     supabase.from('client_approvals')
-      .select('id, workspace, title, description, link_url, thumbnail_url, status, status_note, status_changed_at, metadata, position')
+      .select('id, workspace, title, description, link_url, thumbnail_url, status, status_note, status_changed_at, metadata, kind, position')
       .eq('project_id', projectId).eq('workspace', workspaceSlug)
       .order('position', { ascending: true }),
     supabase.from('checklist_items')
@@ -65,11 +72,16 @@ async function fetchWorkspaceData(projectId: string, workspaceSlug: string) {
       .select('id, workspace, category, filename, storage_path, file_url, mime_type, size_bytes, notes, created_at')
       .eq('project_id', projectId).eq('workspace', workspaceSlug)
       .order('created_at', { ascending: false }),
+    supabase.from('project_links')
+      .select('id, workspace, category, url, label, created_at')
+      .eq('project_id', projectId).eq('workspace', workspaceSlug)
+      .order('created_at', { ascending: false }),
   ]);
 
   const approvals = (approvalsData ?? []) as ApprovalRow[];
   const checklist = (checklistData ?? []) as ChecklistItemRow[];
   const files     = (filesData     ?? []) as FileRow[];
+  const links     = (linksData     ?? []) as LinkRow[];
 
   // Threads in this project for these contexts (approvals, workspace, tickets)
   const approvalIds = approvals.map(a => a.id);
@@ -120,7 +132,7 @@ async function fetchWorkspaceData(projectId: string, workspaceSlug: string) {
   }
 
   return {
-    approvals, checklist, files,
+    approvals, checklist, files, links,
     threadByApproval, workspaceThread, tickets, messagesByThread,
   };
 }
@@ -175,9 +187,10 @@ export async function WorkspaceContent({
     </div>
   );
 
-  // Files filtered by category
+  // Files & links filtered by category
   const filesByCategory = (cat: string) => data.files.filter(f => f.category === cat);
   const filesNoCategory = data.files.filter(f => !f.category);
+  const linksByCategory = (cat: string) => data.links.filter(l => l.category === cat);
 
   switch (workspace.slug) {
     // ─── FINANCE — studio-managed, client read+comment ─────────────────
@@ -246,13 +259,18 @@ export async function WorkspaceContent({
                      title="אפיון תוכן"
                      emptyText="טרם הועלה." />
 
-          <SectionHeader title="חומרים מהלקוח" subtitle="לוגו, ספר מותג, תמונות, חומרים מקצועיים — אתם יכולים להעלות לכאן" />
+          <SectionHeader title="חומרים מהלקוח"
+                         subtitle="לוגו, ספר מותג, תמונות — אפשר להעלות קבצים או לצרף לינקים (Google Drive, Dropbox וכו׳)" />
           <FilesList projectId={projectId} projectSlug={projectSlug} workspace="spec"
                      category="client_materials"
                      files={filesByCategory('client_materials')}
                      isStudio={isStudio} clientCanUpload clientCanDelete
-                     title="חומרים שהועלו"
-                     emptyText="עדיין לא הועלו חומרים. גררו או לחצו 'העלאה' כדי להוסיף." />
+                     title="קבצים שהועלו"
+                     emptyText="עדיין לא הועלו קבצים." />
+          <LinksList projectId={projectId} projectSlug={projectSlug} workspace="spec"
+                     category="client_materials"
+                     links={linksByCategory('client_materials')}
+                     isStudio={isStudio} clientCanEdit />
 
           <SectionHeader title="הערות הלקוח" />
           <ClientNotes projectId={projectId} projectSlug={projectSlug}
@@ -268,12 +286,17 @@ export async function WorkspaceContent({
     case 'design':
       return (
         <div className="space-y-6">
-          <SectionHeader title="Brand Book ומסמכים" subtitle="קבצי שפה ויזואלית, פונטים, צבעים" />
+          <SectionHeader title="Brand Book ומסמכים"
+                         subtitle="קבצי שפה ויזואלית, פונטים, צבעים — אפשר להעלות קובץ או לצרף לינק (Figma / Google Drive וכו׳)" />
           <FilesList projectId={projectId} projectSlug={projectSlug} workspace="design"
                      category="brand"
                      files={filesByCategory('brand')}
                      isStudio={isStudio} clientCanUpload={false}
                      emptyText="עדיין לא הועלה brand book." />
+          <LinksList projectId={projectId} projectSlug={projectSlug} workspace="design"
+                     category="brand"
+                     links={linksByCategory('brand')}
+                     isStudio={isStudio} clientCanEdit={false} />
 
           <SectionHeader title="עמודי עיצוב לאישור"
                          subtitle="לכל עמוד יש לינק לדסקטופ ולמובייל. פתחו, סקרו, ולחצו 'אשר' או 'בקש תיקון' עם הערות וצילומי מסך." />
@@ -285,30 +308,44 @@ export async function WorkspaceContent({
         </div>
       );
 
-    // ─── DEVELOPMENT — studio uploads frontend page links ──────────────
-    case 'development':
+    // ─── DEVELOPMENT — split into Frontend + CMS approvals ─────────────
+    case 'development': {
+      const frontendApprovals = data.approvals.filter(a => (a.kind ?? 'frontend') === 'frontend');
+      const cmsApprovals      = data.approvals.filter(a => a.kind === 'cms');
       return (
         <div className="space-y-6">
-          <WorkspaceSettingInput projectId={projectId} projectSlug={projectSlug}
-                                 workspace="development" settingKey="cms_url"
-                                 label="לינק ל-CMS (לעריכת תוכן)"
-                                 placeholder="https://..." currentValue={workspaceSettings.cms_url ?? null}
-                                 isStudio={isStudio} isUrl />
           <WorkspaceSettingInput projectId={projectId} projectSlug={projectSlug}
                                  workspace="development" settingKey="staging_url"
                                  label="סביבת פיתוח"
                                  placeholder="https://staging-..." currentValue={workspaceSettings.staging_url ?? null}
                                  isStudio={isStudio} isUrl />
 
-          <SectionHeader title="עמודי פיתוח לאישור"
-                         subtitle="הקליקו על הלינק לבדיקה ואשרו או בקשו תיקון. כמו בעיצוב — הערות, צילומי מסך, ושרשור תגובות." />
+          <SectionHeader title="עמודי פרונט-אנד לאישור"
+                         subtitle="הלינקים נטענים מסביבת ה-Vercel/Staging. אשרו או בקשו תיקון בכל עמוד." />
           <div className="space-y-3">
-            {data.approvals.map(renderApprovalCard)}
+            {frontendApprovals.map(renderApprovalCard)}
             <CreateApprovalForm projectId={projectId} projectSlug={projectSlug}
-                                workspace="development" isStudio={isStudio} />
+                                workspace="development" isStudio={isStudio}
+                                kind="frontend" ctaLabel="+ הוסיפו עמוד פרונט" />
+          </div>
+
+          <SectionHeader title="מערכת ניהול ועמודים אחרי הטמעת WP"
+                         subtitle="לינקים לעמודים שכבר עברו ל-WordPress עם תוכן ועריכה." />
+          <CmsCredentials projectId={projectId} projectSlug={projectSlug}
+                          workspace="development"
+                          cmsUrl={workspaceSettings.cms_url ?? null}
+                          cmsUser={workspaceSettings.cms_user ?? null}
+                          cmsPassword={workspaceSettings.cms_password ?? null}
+                          isStudio={isStudio} />
+          <div className="space-y-3">
+            {cmsApprovals.map(renderApprovalCard)}
+            <CreateApprovalForm projectId={projectId} projectSlug={projectSlug}
+                                workspace="development" isStudio={isStudio}
+                                kind="cms" ctaLabel="+ הוסיפו עמוד CMS" />
           </div>
         </div>
       );
+    }
 
     // ─── QA — both can write ────────────────────────────────────────────
     case 'qa':
