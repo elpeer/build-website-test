@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   createGuideCategory, updateGuideCategory, deleteGuideCategory,
-  moveGuideCategory, reorderGuideCategories,
+  reorderGuideCategories,
 } from '@/app/actions/guides';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,6 +36,32 @@ export function GuideCategoriesAdmin({ categories }: Props) {
   const [reorderError, setReorderError] = useState<string | null>(null);
   const [, startTransition] = useTransition();
 
+  // Optimistic local mirror of the categories order. Synced from props
+  // whenever the server returns fresh data (after refresh).
+  const [order, setOrder] = useState(categories);
+  useEffect(() => { setOrder(categories); }, [categories]);
+
+  function commitReorder(newOrder: typeof categories) {
+    setOrder(newOrder);
+    startTransition(async () => {
+      const r = await reorderGuideCategories(newOrder.map(c => c.id));
+      if (!r.ok) {
+        setReorderError(`שינוי סדר נכשל: ${r.error}`);
+        setOrder(categories); // revert
+        return;
+      }
+      setReorderError(null);
+      router.refresh();
+    });
+  }
+  function moveByIndex(idx: number, delta: -1 | 1) {
+    const target = idx + delta;
+    if (target < 0 || target >= order.length) return;
+    const next = order.slice();
+    [next[idx], next[target]] = [next[target], next[idx]];
+    commitReorder(next);
+  }
+
   function handleCreate() {
     if (!newLabel.trim()) return;
     setError(null);
@@ -61,30 +87,29 @@ export function GuideCategoriesAdmin({ categories }: Props) {
           </button>
         </div>
       )}
-      {categories.length === 0 ? (
+      {order.length === 0 ? (
         <div className="rounded-md border border-dashed border-border bg-muted/30 p-4 text-center text-sm text-muted-fg">
           עדיין לא הוגדרו קטגוריות.
         </div>
       ) : (
         <SortableList
-          items={categories}
+          items={order}
           contextId="guide-categories"
           onReorder={(orderedIds) => {
-            startTransition(async () => {
-              const r = await reorderGuideCategories(orderedIds);
-              if (!r.ok) { setReorderError(`שינוי סדר נכשל: ${r.error}`); return; }
-              setReorderError(null);
-              router.refresh();
-            });
+            const map = new Map(order.map(c => [c.id, c]));
+            const next = orderedIds.map(id => map.get(id)!).filter(Boolean);
+            commitReorder(next);
           }}
           renderItem={(c, dragHandle) => {
-            const i = categories.findIndex(x => x.id === c.id);
+            const i = order.findIndex(x => x.id === c.id);
             return (
               <CategoryRowItem cat={c}
                                isFirst={i === 0}
-                               isLast={i === categories.length - 1}
+                               isLast={i === order.length - 1}
                                editing={editingId === c.id}
                                dragHandle={dragHandle}
+                               onMoveUp={() => moveByIndex(i, -1)}
+                               onMoveDown={() => moveByIndex(i, +1)}
                                onEdit={() => setEditingId(c.id)}
                                onCancel={() => setEditingId(null)}
                                onSaved={() => { setEditingId(null); router.refresh(); }} />
@@ -129,13 +154,16 @@ export function GuideCategoriesAdmin({ categories }: Props) {
 }
 
 function CategoryRowItem({
-  cat, editing, isFirst, isLast, dragHandle, onEdit, onCancel, onSaved,
+  cat, editing, isFirst, isLast, dragHandle,
+  onMoveUp, onMoveDown, onEdit, onCancel, onSaved,
 }: {
   cat: CategoryRow;
   editing: boolean;
   isFirst: boolean;
   isLast: boolean;
   dragHandle?: React.ReactNode;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
   onEdit: () => void;
   onCancel: () => void;
   onSaved: () => void;
@@ -143,13 +171,6 @@ function CategoryRowItem({
   const [label, setLabel] = useState(cat.label);
   const [slug,  setSlug]  = useState(cat.slug);
   const [, startTransition] = useTransition();
-
-  function move(direction: 'up' | 'down') {
-    startTransition(async () => {
-      await moveGuideCategory(cat.id, direction);
-      onSaved();
-    });
-  }
 
   function save() {
     startTransition(async () => {
@@ -194,12 +215,12 @@ function CategoryRowItem({
     <div className="flex items-center gap-2 rounded-md border border-border bg-background p-2">
       {dragHandle}
       <div className="flex shrink-0 flex-col">
-        <button type="button" onClick={() => move('up')} disabled={isFirst}
+        <button type="button" onClick={onMoveUp} disabled={isFirst}
                 className="rounded p-0.5 text-muted-fg hover:bg-muted hover:text-brand disabled:opacity-25"
                 aria-label="הזז למעלה">
           <ChevronUp className="h-3.5 w-3.5" />
         </button>
-        <button type="button" onClick={() => move('down')} disabled={isLast}
+        <button type="button" onClick={onMoveDown} disabled={isLast}
                 className="rounded p-0.5 text-muted-fg hover:bg-muted hover:text-brand disabled:opacity-25"
                 aria-label="הזז למטה">
           <ChevronDown className="h-3.5 w-3.5" />

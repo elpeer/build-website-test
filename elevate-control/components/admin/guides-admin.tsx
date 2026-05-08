@@ -1,9 +1,9 @@
 'use client';
 
-import { useMemo, useState, useTransition } from 'react';
+import { useEffect, useMemo, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  createGuide, updateGuide, deleteGuide, setGuideAssignments, moveGuide,
+  createGuide, updateGuide, deleteGuide, setGuideAssignments,
   reorderGuidesInCategory,
 } from '@/app/actions/guides';
 import { Button } from '@/components/ui/button';
@@ -58,41 +58,65 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
   const [filterCatId, setFilterCatId] = useState<string>('');
   const [, startTransition] = useTransition();
 
+  // Optimistic local mirror — updated immediately on drag/arrow so the UI
+  // doesn't snap back while we wait for the server + router.refresh.
+  const [orderedGuides, setOrderedGuides] = useState(guides);
+  useEffect(() => { setOrderedGuides(guides); }, [guides]);
+
+  function commitBucketReorder(categoryId: string | null, orderedIdsInBucket: string[]) {
+    // Optimistic write: rebuild positions for items in this bucket, leave
+    // other buckets untouched.
+    setOrderedGuides(prev => {
+      const map = new Map(orderedIdsInBucket.map((id, i) => [id, (i + 1) * 10]));
+      return prev.map(g => {
+        const sameBucket = (g.category_id ?? null) === categoryId;
+        if (!sameBucket || !map.has(g.id)) return g;
+        return { ...g, position: map.get(g.id)! };
+      });
+    });
+    startTransition(async () => {
+      const result = await reorderGuidesInCategory(categoryId, orderedIdsInBucket);
+      if (!result.ok) {
+        setError(`שינוי סדר נכשל: ${result.error}`);
+        setOrderedGuides(guides);
+        return;
+      }
+      setError(null);
+      router.refresh();
+    });
+  }
+
   const visibleGuides = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return guides.filter(g => {
+    return orderedGuides.filter(g => {
       if (filterCatId === '__none__' && g.category_id) return false;
       if (filterCatId && filterCatId !== '__none__' && g.category_id !== filterCatId) return false;
       if (!q) return true;
       const hay = `${g.title} ${g.description ?? ''} ${g.slug}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [guides, query, filterCatId]);
+  }, [orderedGuides, query, filterCatId]);
 
   const guideCountByCat = useMemo(() => {
     const m = new Map<string, number>();
     let noCat = 0;
-    guides.forEach(g => {
+    orderedGuides.forEach(g => {
       if (g.category_id) m.set(g.category_id, (m.get(g.category_id) ?? 0) + 1);
       else noCat += 1;
     });
     return { byId: m, noCat };
-  }, [guides]);
+  }, [orderedGuides]);
 
   const filterActive = query.trim().length > 0 || filterCatId !== '';
 
-  // Group guides by category in the order categories appear, with the
-  // 'no category' bucket at the end. Each bucket is internally sorted by
-  // position so drag-and-drop reflects the saved order.
   const bucketsForDrag = useMemo(() => {
     const byCat = new Map<string | null, GuideRow[]>();
-    guides.forEach(g => {
+    orderedGuides.forEach(g => {
       const k = g.category_id ?? null;
       const arr = byCat.get(k) ?? [];
       arr.push(g);
       byCat.set(k, arr);
     });
-    // Sort each bucket by position
     byCat.forEach(arr => arr.sort((a, b) => a.position - b.position));
 
     type Bucket = { key: string; categoryId: string | null; label: string; items: GuideRow[] };
@@ -107,7 +131,19 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
       out.push({ key: '__none__', categoryId: null, label: 'ללא קטגוריה', items: orphans });
     }
     return out;
-  }, [guides, categories]);
+  }, [orderedGuides, categories]);
+
+  function moveGuideArrow(g: GuideRow, delta: -1 | 1) {
+    // Find this guide's bucket and rebuild a swapped order, then commit.
+    const bucket = bucketsForDrag.find(b => b.categoryId === (g.category_id ?? null));
+    if (!bucket) return;
+    const idx = bucket.items.findIndex(x => x.id === g.id);
+    const target = idx + delta;
+    if (target < 0 || target >= bucket.items.length) return;
+    const next = bucket.items.slice();
+    [next[idx], next[target]] = [next[target], next[idx]];
+    commitBucketReorder(bucket.categoryId, next.map(i => i.id));
+  }
 
   function toggleCreateProject(id: string) {
     setCreateAssignedSet(prev => {
@@ -301,10 +337,9 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
       ) : null}
 
       {filterActive ? (
-        // Filtered view — flat list, drag disabled (arrows still work).
         <ul className="space-y-2">
           {visibleGuides.map(g => {
-            const sameCat = guides
+            const sameCat = orderedGuides
               .filter(x => (x.category_id ?? '__null__') === (g.category_id ?? '__null__'))
               .sort((a, b) => a.position - b.position);
             const idx = sameCat.findIndex(x => x.id === g.id);
@@ -316,6 +351,8 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
                               assignedProjectIds={assignmentsByGuide[g.id] ?? []}
                               isFirst={idx === 0}
                               isLast={idx === sameCat.length - 1}
+                              onMoveUp={() => moveGuideArrow(g, -1)}
+                              onMoveDown={() => moveGuideArrow(g, +1)}
                               isEditing={editingId === g.id}
                               onEdit={() => setEditingId(g.id)}
                               onCancel={() => setEditingId(null)}
@@ -340,17 +377,7 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
               <SortableList
                 items={bucket.items}
                 contextId={`guides-${bucket.key}`}
-                onReorder={(orderedIds) => {
-                  startTransition(async () => {
-                    const result = await reorderGuidesInCategory(bucket.categoryId, orderedIds);
-                    if (!result.ok) {
-                      setError(`שינוי סדר נכשל: ${result.error}`);
-                      return;
-                    }
-                    setError(null);
-                    router.refresh();
-                  });
-                }}
+                onReorder={(orderedIds) => commitBucketReorder(bucket.categoryId, orderedIds)}
                 renderItem={(g, dragHandle) => {
                   const idx = bucket.items.findIndex(x => x.id === g.id);
                   return (
@@ -361,6 +388,8 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
                                   isFirst={idx === 0}
                                   isLast={idx === bucket.items.length - 1}
                                   dragHandle={dragHandle}
+                                  onMoveUp={() => moveGuideArrow(g, -1)}
+                                  onMoveDown={() => moveGuideArrow(g, +1)}
                                   isEditing={editingId === g.id}
                                   onEdit={() => setEditingId(g.id)}
                                   onCancel={() => setEditingId(null)}
@@ -378,7 +407,9 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
 
 function GuideRowItem({
   guide, categories, projects, assignedProjectIds,
-  isFirst, isLast, dragHandle, isEditing, onEdit, onCancel, onSaved,
+  isFirst, isLast, dragHandle,
+  onMoveUp, onMoveDown,
+  isEditing, onEdit, onCancel, onSaved,
 }: {
   guide: GuideRow;
   categories: CategoryOption[];
@@ -387,6 +418,8 @@ function GuideRowItem({
   isFirst: boolean;
   isLast: boolean;
   dragHandle?: React.ReactNode;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
   isEditing: boolean;
   onEdit: () => void; onCancel: () => void; onSaved: () => void;
 }) {
@@ -402,13 +435,6 @@ function GuideRowItem({
   const [published, setPublished]     = useState(guide.published);
   const [error, setError]             = useState<string | null>(null);
   const [, startTransition] = useTransition();
-
-  function move(direction: 'up' | 'down') {
-    startTransition(async () => {
-      await moveGuide(guide.id, direction);
-      onSaved();
-    });
-  }
 
   function toggleProject(id: string) {
     setAssignedSet(prev => {
@@ -457,12 +483,12 @@ function GuideRowItem({
       <div className="flex items-start gap-3 rounded-md border border-border bg-background p-3">
         {dragHandle}
         <div className="flex shrink-0 flex-col">
-          <button type="button" onClick={() => move('up')} disabled={isFirst}
+          <button type="button" onClick={onMoveUp} disabled={isFirst}
                   className="rounded p-0.5 text-muted-fg hover:bg-muted hover:text-brand disabled:opacity-25"
                   aria-label="הזז למעלה">
             <ChevronUp className="h-3.5 w-3.5" />
           </button>
-          <button type="button" onClick={() => move('down')} disabled={isLast}
+          <button type="button" onClick={onMoveDown} disabled={isLast}
                   className="rounded p-0.5 text-muted-fg hover:bg-muted hover:text-brand disabled:opacity-25"
                   aria-label="הזז למטה">
             <ChevronDown className="h-3.5 w-3.5" />
