@@ -334,14 +334,21 @@ begin
     (v_project_id, v_user_id, 'created', 'ticket',  'טיקט תמיכה דחוף — טופס לא שולח', now() - interval '6 hours'),
     (v_project_id, v_user_id, 'updated', 'ticket',  'דניאל החל לעבוד על הטיקט', now() - interval '5 hours');
 
-  -- ── Notifications for the studio admin ────────────────────────────
-  delete from notifications where user_id = v_user_id and project_id = v_project_id and kind in ('approval','ticket','comment');
-  insert into notifications (user_id, project_id, kind, title, body, link, read_at, created_at) values
-    (v_user_id, v_project_id, 'approval', 'בקשה לתיקון: אודות',                   'הצוות נראה רחוק מדי. אפשר להגדיל ולקרב?', '/projects/ninja-tours/manage/design',  null, now() - interval '2 days'),
-    (v_user_id, v_project_id, 'ticket',   'טיקט דחוף: טופס יצירת הקשר לא שולח',  'אנשים ממלאים את הטופס באתר אבל...',     '/projects/ninja-tours/manage/support', null, now() - interval '6 hours'),
-    (v_user_id, v_project_id, 'comment',  'תגובה חדשה: אודות',                   'מצוין, תודה!',                            '/projects/ninja-tours/manage/design',  null, now() - interval '4 hours'),
-    (v_user_id, v_project_id, 'approval', 'אושר: דף הבית',                       'הלקוח אישר את עיצוב דף הבית',             '/projects/ninja-tours/manage/design',  now() - interval '5 days', now() - interval '5 days'),
-    (v_user_id, v_project_id, 'comment',  'הלקוח כתב על אודות',                  'הצוות נראה רחוק מדי...',                  '/projects/ninja-tours/manage/design',  now() - interval '1 day', now() - interval '2 days');
+  -- ── Notifications for the studio admin (skip if table not yet migrated) ──
+  if to_regclass('public.notifications') is not null then
+    execute 'delete from notifications where user_id = $1 and project_id = $2 and kind in (''approval'',''ticket'',''comment'')'
+      using v_user_id, v_project_id;
+    execute $sql$
+      insert into notifications (user_id, project_id, kind, title, body, link, read_at, created_at) values
+        ($1, $2, 'approval', 'בקשה לתיקון: אודות',                   'הצוות נראה רחוק מדי. אפשר להגדיל ולקרב?', '/projects/ninja-tours/manage/design',  null, now() - interval '2 days'),
+        ($1, $2, 'ticket',   'טיקט דחוף: טופס יצירת הקשר לא שולח',  'אנשים ממלאים את הטופס באתר אבל...',     '/projects/ninja-tours/manage/support', null, now() - interval '6 hours'),
+        ($1, $2, 'comment',  'תגובה חדשה: אודות',                   'מצוין, תודה!',                            '/projects/ninja-tours/manage/design',  null, now() - interval '4 hours'),
+        ($1, $2, 'approval', 'אושר: דף הבית',                       'הלקוח אישר את עיצוב דף הבית',             '/projects/ninja-tours/manage/design',  now() - interval '5 days', now() - interval '5 days'),
+        ($1, $2, 'comment',  'הלקוח כתב על אודות',                  'הצוות נראה רחוק מדי...',                  '/projects/ninja-tours/manage/design',  now() - interval '1 day', now() - interval '2 days')
+    $sql$ using v_user_id, v_project_id;
+  else
+    raise notice 'notifications table not found — skipping notifications seed (run migration 0014_notifications.sql first)';
+  end if;
 
   raise notice 'Seed complete for project %', v_project_id;
 end $$;
