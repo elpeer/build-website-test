@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
-import { ApprovalCard, CreateApprovalForm, type ApprovalCardData, type ApprovalStatus } from './approval-card';
+import { CreateApprovalForm, type ApprovalStatus } from './approval-card';
+import { ApprovalsTable, type ApprovalRowData } from './approvals-table';
+import { DevApprovalsTabs } from './dev-approvals-tabs';
 import { CommentThread, type CommentMessage } from './comment-thread';
 import { Checklist, type ChecklistItemRow, type ChecklistStatus } from './checklist';
 import { FilesList, type ProjectFileRow } from './files-list';
@@ -142,26 +144,22 @@ export async function WorkspaceContent({
 }: Args) {
   const data = await fetchWorkspaceData(projectId, workspace.slug);
 
-  // Helper to render an approval card with its thread
-  function renderApprovalCard(a: ApprovalRow) {
+  // Build a Map<approvalId, {id,status,messages}> for the compact tables.
+  const approvalThreadInfo = new Map<string, { id: string | null; status: 'open' | 'in_progress' | 'resolved' | 'wont_fix'; messages: CommentMessage[] }>();
+  for (const a of data.approvals) {
     const thread = data.threadByApproval.get(a.id);
-    const apData: ApprovalCardData = {
-      ...a,
-      metadata: a.metadata as Record<string, unknown> | null,
+    approvalThreadInfo.set(a.id, {
+      id: thread?.id ?? null,
+      status: thread?.status ?? 'open',
+      messages: thread ? (data.messagesByThread.get(thread.id) ?? []) : [],
+    });
+  }
+  function toApprovalRowData(a: ApprovalRow): ApprovalRowData {
+    return {
+      id: a.id, workspace: a.workspace, title: a.title,
+      description: a.description, link_url: a.link_url,
+      status: a.status, metadata: a.metadata, kind: a.kind,
     };
-    return (
-      <ApprovalCard key={a.id}
-        approval={apData}
-        thread={{
-          id: thread?.id ?? null,
-          status: thread?.status ?? 'open',
-          messages: thread ? (data.messagesByThread.get(thread.id) ?? []) : [],
-        }}
-        projectId={projectId} projectSlug={projectSlug} workspace={workspace.slug}
-        currentUserId={currentUserId} isStudio={isStudio}
-        canDelete={isStudio}
-      />
-    );
   }
 
   // Workspace-level comments (used by most workspaces)
@@ -291,19 +289,23 @@ export async function WorkspaceContent({
                      isStudio={isStudio} clientCanEdit={false} />
 
           <SectionHeader title="עמודי עיצוב לאישור"
-                         subtitle="לכל עמוד יש לינק לדסקטופ ולמובייל. פתחו, סקרו, ולחצו 'אשר' או 'בקש תיקון' עם הערות וצילומי מסך." />
-          <div className="space-y-3">
-            {data.approvals.map(renderApprovalCard)}
-            <CreateApprovalForm projectId={projectId} projectSlug={projectSlug}
-                                workspace="design" isStudio={isStudio} />
-          </div>
+                         subtitle="שורה לכל עמוד עם דסקטופ + מובייל, סטטוס בלחיצה, והערות שנפתחות מתחת." />
+          <ApprovalsTable
+            approvals={data.approvals.map(toApprovalRowData)}
+            threadByApproval={approvalThreadInfo}
+            projectId={projectId} projectSlug={projectSlug} workspace="design"
+            currentUserId={currentUserId} isStudio={isStudio}
+            dualLinks
+          />
+          <CreateApprovalForm projectId={projectId} projectSlug={projectSlug}
+                              workspace="design" isStudio={isStudio} />
         </div>
       );
 
-    // ─── DEVELOPMENT — split into Frontend + CMS approvals ─────────────
+    // ─── DEVELOPMENT — Frontend + CMS approvals in tabs ────────────────
     case 'development': {
-      const frontendApprovals = data.approvals.filter(a => (a.kind ?? 'frontend') === 'frontend');
-      const cmsApprovals      = data.approvals.filter(a => a.kind === 'cms');
+      const frontendApprovals = data.approvals.filter(a => (a.kind ?? 'frontend') === 'frontend').map(toApprovalRowData);
+      const cmsApprovals      = data.approvals.filter(a => a.kind === 'cms').map(toApprovalRowData);
       return (
         <div className="space-y-6">
           <WorkspaceSettingInput projectId={projectId} projectSlug={projectSlug}
@@ -311,30 +313,20 @@ export async function WorkspaceContent({
                                  label="סביבת פיתוח"
                                  placeholder="https://staging-..." currentValue={workspaceSettings.staging_url ?? null}
                                  isStudio={isStudio} isUrl />
-
-          <SectionHeader title="עמודי פרונט-אנד לאישור"
-                         subtitle="הלינקים נטענים מסביבת ה-Vercel/Staging. אשרו או בקשו תיקון בכל עמוד." />
-          <div className="space-y-3">
-            {frontendApprovals.map(renderApprovalCard)}
-            <CreateApprovalForm projectId={projectId} projectSlug={projectSlug}
-                                workspace="development" isStudio={isStudio}
-                                kind="frontend" ctaLabel="+ הוסיפו עמוד פרונט" />
-          </div>
-
-          <SectionHeader title="מערכת ניהול ועמודים אחרי הטמעת WP"
-                         subtitle="לינקים לעמודים שכבר עברו ל-WordPress עם תוכן ועריכה." />
           <CmsCredentials projectId={projectId} projectSlug={projectSlug}
                           workspace="development"
                           cmsUrl={workspaceSettings.cms_url ?? null}
                           cmsUser={workspaceSettings.cms_user ?? null}
                           cmsPassword={workspaceSettings.cms_password ?? null}
                           isStudio={isStudio} />
-          <div className="space-y-3">
-            {cmsApprovals.map(renderApprovalCard)}
-            <CreateApprovalForm projectId={projectId} projectSlug={projectSlug}
-                                workspace="development" isStudio={isStudio}
-                                kind="cms" ctaLabel="+ הוסיפו עמוד CMS" />
-          </div>
+
+          <DevApprovalsTabs
+            frontendApprovals={frontendApprovals}
+            cmsApprovals={cmsApprovals}
+            threadByApproval={approvalThreadInfo}
+            projectId={projectId} projectSlug={projectSlug}
+            currentUserId={currentUserId} isStudio={isStudio}
+          />
         </div>
       );
     }
