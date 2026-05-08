@@ -58,6 +58,7 @@ export default async function StudioWorkspaceManagePage({ params }: Props) {
           <WorkspaceMobileBar
             projectId={project.id}
             projectSlug={project.slug}
+            projectName={project.name}
             currentSlug={meta.slug}
             currentStage={project.current_stage}
           />
