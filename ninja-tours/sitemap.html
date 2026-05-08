@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>Ninja Tours · Project Overview & Design System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ───── RESET + BASE ───── */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --c-blue:        #063874;
+      --c-blue-dark:   #042556;
+      --c-red:         #d2170a;
+      --c-red-dark:    #a60f04;
+      --c-cream:       #fffaf5;
+      --c-cream-deep:  #f6f3ee;
+      --c-ink:         #0a1828;
+      --c-mid:         #6a6a72;
+      --c-line:        #ece5dc;
+      --c-white:       #ffffff;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans Hebrew', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--c-cream);
+      color: var(--c-ink);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    body.lang-en {
+      font-family: 'Montserrat', 'Noto Sans Hebrew', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* ───── i18n VISIBILITY ───── */
+    .lang-he [data-i18n="en"] { display: none !important; }
+    .lang-en [data-i18n="he"] { display: none !important; }
+
+    .container { max-width: 1280px; margin-inline: auto; padding-inline: 2rem; }
+    @media (max-width: 768px) { .container { padding-inline: 1.25rem; } }
+
+    /* ───── HERO ───── */
+    .hero {
+      background:
+        radial-gradient(ellipse at top right, rgba(210,23,10,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, rgba(255,255,255,0.06) 0%, transparent 50%),
+        var(--c-blue);
+      color: var(--c-cream);
+      padding: 4rem 0 3.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero__top {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap;
+    }
+    .hero__brand { display: flex; align-items: center; gap: 1rem; }
+    .hero__logo {
+      width: 4.5rem; height: 4.5rem;
+      background: var(--c-cream);
+      border-radius: 0.875rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; padding: 0.5rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.15);
+    }
+    .hero__logo img { width: 100%; height: 100%; object-fit: contain; }
+    .hero__brand-text strong { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.02em; display: block; }
+    .hero__brand-text span { font-size: 0.78rem; opacity: 0.6; letter-spacing: 0.05em; }
+
+    .hero__meta {
+      display: flex; gap: 0.6rem; flex-wrap: wrap;
+      font-size: 0.78rem; letter-spacing: 0.04em;
+    }
+    .hero__meta-item {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 999px;
+      padding: 0.4rem 0.95rem;
+      backdrop-filter: blur(10px);
+    }
+    .hero__meta-item strong { color: #ff8070; font-weight: 700; margin-inline-start: 0.25rem; }
+
+    .hero__title-block { max-width: 60rem; }
+    .hero__eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.18em;
+      color: #ff8070; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .hero__eyebrow::before { content: ''; width: 1.5rem; height: 2px; background: var(--c-red); }
+    .hero h1 {
+      font-size: clamp(2.25rem, 5vw, 3.75rem);
+      font-weight: 900; line-height: 1.1; letter-spacing: -0.025em;
+      margin-bottom: 1rem;
+    }
+    .hero h1 em { font-style: normal; color: #ff8070; }
+    .hero__lead {
+      font-size: 1.05rem;
+      color: rgba(255,250,245,0.78);
+      max-width: 42rem; line-height: 1.7;
+    }
+
+    /* ───── LANG TOGGLE ───── */
+    .lang-toggle {
+      position: absolute;
+      top: 1.5rem;
+      inset-inline-end: 1.5rem;
+      z-index: 20;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: var(--c-cream);
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s, border-color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .lang-toggle:hover {
+      background: rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.4);
+    }
+    .lang-toggle svg { width: 0.85rem; height: 0.85rem; }
+    @media (max-width: 768px) {
+      .lang-toggle { padding: 0.35rem 0.75rem; font-size: 0.68rem; }
+    }
+
+    /* ───── SIDE NAV (TOC) ───── */
+    .side-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      inset-inline-end: 1.5rem;
+      z-index: 50;
+      background: var(--c-white);
+      border: 1px solid var(--c-line);
+      border-radius: 0.875rem;
+      padding: 0.6rem 0.5rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+    .side-nav__list { list-style: none; display: flex; flex-direction: column; gap: 0.1rem; }
+    .side-nav__item a {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 0.85rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--c-mid);
+      text-decoration: none;
+      border-radius: 0.45rem;
+      transition: color 0.2s, background 0.2s;
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+    }
+    .side-nav__item a:hover {
+      color: var(--c-blue);
+      background: var(--c-cream-deep);
+    }
+    .side-nav__item a.--active {
+      color: var(--c-white);
+      background: var(--c-blue);
+    }
+    .side-nav__item a::before {
+      content: '';
+      width: 0.4rem; height: 0.4rem;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.4;
+      flex-shrink: 0;
+    }
+    .side-nav__item a.--active::before { opacity: 1; }
+
+    @media (max-width: 1180px) {
+      .side-nav { display: none; }
+    }
+
+    /* ───── STATS ───── */
+    .stats { background: var(--c-white); border-bottom: 1px solid var(--c-line); position: relative; z-index: 1; }
+    .stats__inner {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 1.5rem 0;
+    }
+    .stats__item { text-align: center; padding-inline: 1rem; }
+    .stats__item:not(:last-child) { border-inline-end: 1px solid var(--c-line); }
+    .stats__num {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2rem; font-weight: 800; color: var(--c-blue);
+      line-height: 1; letter-spacing: -0.03em; display: block;
+    }
+    .stats__label {
+      font-size: 0.78rem; color: var(--c-mid);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      margin-top: 0.4rem; display: block;
+    }
+    @media (max-width: 768px) {
+      .stats__inner { grid-template-columns: 1fr 1fr; }
+      .stats__item:nth-child(2) { border-inline-end: 0; }
+      .stats__item { padding-block: 0.75rem; }
+      .stats__num { font-size: 1.5rem; }
+    }
+
+    /* ───── SECTION HEAD ───── */
+    section { padding-block: 4rem; }
+    @media (max-width: 768px) { section { padding-block: 2.5rem; } }
+
+    .section-head {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;
+    }
+    .section-head__left { max-width: 38rem; }
+    .section-head__eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em;
+      color: var(--c-red); text-transform: uppercase; margin-bottom: 0.6rem;
+    }
+    .section-head__eyebrow::before { content: ''; width: 1.25rem; height: 2px; background: var(--c-red); }
+    .section-head h2 {
+      font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+      font-weight: 800; color: var(--c-ink);
+      letter-spacing: -0.02em; line-height: 1.15;
+    }
+    .section-head h2 em { font-style: normal; color: var(--c-red); }
+    .section-head__count {
+      background: var(--c-white); border: 1px solid var(--c-line);
+      border-radius: 999px; padding: 0.4rem 0.95rem;
+      font-size: 0.85rem; font-weight: 600; color: var(--c-blue);
+      font-family: 'Montserrat', sans-serif;
+    }
+    .section-head__lead {
+      color: var(--c-mid); margin-top: 0.5rem; font-size: 0.95rem;
+    }
+
+    /* ───── PALETTE ───── */
+    .palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+    @media (max-width: 768px) { .palette { grid-template-columns: repeat(2, 1fr); } }
+    .swatch { background: var(--c-white); border-radius: 0.875rem; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    .swatch__color { height: 7rem; }
+    .swatch__body { padding: 0.85rem 1rem 0.95rem; }
+    .swatch__name { font-weight: 700; font-size: 0.92rem; color: var(--c-ink); }
+    .swatch__hex {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem; color: var(--c-mid);
+      letter-spacing: 0.03em; margin-top: 0.15rem;
+    }
+
+    /* ───── TYPOGRAPHY ───── */
+    .type-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1.25rem; }
+    @media (max-width: 768px) { .type-grid { grid-template-columns: 1fr; } }
+    .type-card { background: var(--c-white); border: 1px solid var(--c-line); border-radius: 1rem; padding: 1.5rem; }
+    .type-card__head {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1rem; padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--c-line);
+    }
+    .type-card__head strong { font-size: 0.85rem; color: var(--c-mid); font-weight: 600; }
+    .type-card__head span {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem; color: var(--c-mid); letter-spacing: 0.05em;
+    }
+    .type-card__sample-hebrew { font-family: 'Noto Sans Hebrew', sans-serif; direction: rtl; text-align: right; }
+    .type-card__sample-latin  { font-family: 'Montserrat', sans-serif; direction: ltr; text-align: left; }
+    .type-card .h-sample { font-size: 1.5rem; font-weight: 800; color: var(--c-blue); margin-bottom: 0.5rem; line-height: 1.2; }
+    .type-card .b-sample { font-size: 0.95rem; color: var(--c-ink); }
+
+    /* ───── PAGE CARDS GRID ───── */
+    .page-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 1024px) { .page-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px)  { .page-grid { grid-template-columns: 1fr; } }
+
+    .page-card {
+      background: var(--c-white);
+      border: 1px solid var(--c-line);
+      border-radius: 1rem;
+      padding: 1.35rem 1.45rem;
+      transition: border-color 0.2s, box-shadow 0.25s, transform 0.25s;
+      display: flex; flex-direction: column;
+      position: relative;
+      color: inherit;
+      text-decoration: none;
+    }
+    .page-card[data-preview] { cursor: pointer; }
+    .page-card[data-preview]:hover {
+      border-color: var(--c-blue);
+      box-shadow: 0 8px 28px rgba(6,56,116,0.08);
+      transform: translateY(-2px);
+    }
+    .page-card[data-preview]:hover .page-card__icon { opacity: 1; color: var(--c-blue); }
+    .page-card[data-preview]:hover .page-card__preview { opacity: 1; color: var(--c-red); }
+    /* Non-linked cards keep a more muted state */
+    .page-card:not([data-preview]) { opacity: 0.92; }
+
+    .page-card__top {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 0.85rem;
+    }
+    .page-card__type {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.3rem 0.7rem; border-radius: 999px;
+    }
+    .page-card__type.--page    { background: rgba(6,56,116,0.08);  color: var(--c-blue); }
+    .page-card__type.--archive { background: rgba(210,23,10,0.08); color: var(--c-red); }
+    .page-card__type.--single  { background: rgba(0,0,0,0.05);     color: var(--c-mid); }
+    .page-card__type.--system  { background: rgba(122,90,58,0.1);  color: #7a5a3a; }
+    .page-card__type.--template{ background: rgba(0,140,80,0.1);   color: #008c50; }
+
+    .page-card__icon { width: 1.75rem; height: 1.75rem; color: var(--c-blue); opacity: 0.5; transition: opacity 0.2s, color 0.2s; }
+
+    .page-card h3 {
+      font-size: 1.05rem; font-weight: 700; color: var(--c-ink);
+      letter-spacing: -0.015em; margin-bottom: 0.35rem; line-height: 1.3;
+    }
+    .page-card__path { font-size: 0.72rem; color: var(--c-mid); margin-bottom: 0.65rem; word-break: break-word; }
+    .page-card__path code {
+      background: var(--c-cream-deep);
+      padding: 0.15rem 0.45rem;
+      border-radius: 0.3rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.72rem; color: var(--c-blue-dark);
+    }
+    .page-card__desc { font-size: 0.85rem; color: var(--c-mid); line-height: 1.6; flex-grow: 1; }
+    .page-card__desc code {
+      background: var(--c-cream-deep);
+      padding: 0.1rem 0.35rem;
+      border-radius: 0.25rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.78rem; color: var(--c-blue-dark);
+    }
+    /* Preview indicator — bottom-right corner, only on linked cards */
+    .page-card__preview {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.85rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--c-blue);
+      letter-spacing: 0.04em;
+      opacity: 0.75;
+      transition: opacity 0.2s, color 0.2s;
+      align-self: flex-start;
+    }
+    .page-card__preview svg { width: 0.85rem; height: 0.85rem; }
+    .page-card__preview code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.7rem;
+      color: var(--c-mid);
+      background: var(--c-cream-deep);
+      padding: 0.1rem 0.35rem;
+      border-radius: 0.25rem;
+    }
+    .page-card__no-preview {
+      margin-top: 0.85rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--c-mid);
+      letter-spacing: 0.04em;
+      opacity: 0.55;
+      align-self: flex-start;
+    }
+
+    /* ───── CPT WRAP ───── */
+    .cpt-wrap {
+      background: var(--c-white);
+      border: 1px solid var(--c-line);
+      border-radius: 1.25rem;
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .cpt-wrap__head {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1rem;
+      border-bottom: 1px solid var(--c-line);
+      flex-wrap: wrap;
+    }
+    .cpt-wrap__title { display: flex; align-items: center; gap: 0.85rem; }
+    .cpt-wrap__icon {
+      width: 2.75rem; height: 2.75rem;
+      background: linear-gradient(135deg, var(--c-blue), var(--c-blue-dark));
+      border-radius: 0.75rem;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--c-cream); flex-shrink: 0;
+    }
+    .cpt-wrap__icon svg { width: 1.4rem; height: 1.4rem; }
+    .cpt-wrap__title h3 { font-size: 1.25rem; font-weight: 800; color: var(--c-ink); letter-spacing: -0.015em; }
+    .cpt-wrap__title p { font-size: 0.82rem; color: var(--c-mid); margin-top: 0.15rem; }
+    .cpt-wrap__title code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.72rem; color: var(--c-red);
+      background: rgba(210,23,10,0.06);
+      padding: 0.15rem 0.45rem; border-radius: 0.3rem;
+    }
+    .cpt-wrap__taxonomies { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+    .cpt-wrap__tax-label { font-size: 0.72rem; color: var(--c-mid); letter-spacing: 0.05em; margin-inline-end: 0.25rem; }
+    .cpt-wrap__tax {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem; font-weight: 600;
+      background: var(--c-cream-deep); color: var(--c-blue-dark);
+      padding: 0.2rem 0.6rem; border-radius: 999px;
+    }
+
+    /* ───── FOOTER ───── */
+    .footer { background: var(--c-blue); color: var(--c-cream); padding: 3rem 0 2rem; margin-top: 3rem; }
+    .footer__inner { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; }
+    @media (max-width: 768px) { .footer__inner { grid-template-columns: 1fr; text-align: center; } }
+    .footer__brand { display: flex; align-items: center; gap: 1rem; }
+    @media (max-width: 768px) { .footer__brand { justify-content: center; } }
+    .footer__brand-logo {
+      width: 3.5rem; height: 3.5rem;
+      background: rgba(255,255,255,0.08); border-radius: 0.65rem;
+      display: flex; align-items: center; justify-content: center; padding: 0.4rem;
+    }
+    .footer__brand-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .footer__brand-text strong { font-size: 1rem; font-weight: 700; display: block; }
+    .footer__brand-text span { font-size: 0.78rem; opacity: 0.65; }
+
+    .footer__credit { text-align: end; }
+    @media (max-width: 768px) { .footer__credit { text-align: center; } }
+    .footer__credit-label {
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); margin-bottom: 0.25rem;
+    }
+    .footer__credit-name {
+      font-size: 1.2rem; font-weight: 800; color: var(--c-cream);
+      font-family: 'Montserrat', sans-serif; letter-spacing: -0.01em;
+    }
+    .footer__credit-name em { font-style: normal; color: #ff8070; }
+
+    .footer__bottom {
+      margin-top: 2rem; padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex; justify-content: space-between;
+      font-size: 0.78rem; color: rgba(255,255,255,0.55);
+      flex-wrap: wrap; gap: 0.5rem;
+    }
+    @media (max-width: 768px) { .footer__bottom { justify-content: center; text-align: center; } }
+    .footer__bottom code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.72rem; color: rgba(255,255,255,0.7);
+    }
+
+    section[id] { scroll-margin-top: 1rem; }
+  </style>
+</head>
+
+<body class="lang-he">
+
+  <!-- ═════════ LANG TOGGLE ═════════ -->
+  <button class="lang-toggle" type="button" aria-label="Switch language">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+      <path d="M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10z"/>
+    </svg>
+    <span data-i18n="he">EN</span>
+    <span data-i18n="en">עברית</span>
+  </button>
+
+  <!-- ═════════ SIDE NAV (TOC) ═════════ -->
+  <nav class="side-nav" aria-label="Sections">
+    <ul class="side-nav__list">
+      <li class="side-nav__item"><a href="#brand">Brand</a></li>
+      <li class="side-nav__item"><a href="#pages">Pages</a></li>
+      <li class="side-nav__item"><a href="#cpts">Post Types</a></li>
+      <li class="side-nav__item"><a href="#system">System</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═════════ HERO ═════════ -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero__top">
+        <div class="hero__brand">
+          <div class="hero__logo">
+            <img src="images/logo.svg" alt="Ninja Tours">
+          </div>
+          <div class="hero__brand-text">
+            <strong>Ninja Tours</strong>
+            <span>Travel · Japan · Hebrew RTL</span>
+          </div>
+        </div>
+
+        <div class="hero__meta">
+          <span class="hero__meta-item">Version<strong>1.0</strong></span>
+          <span class="hero__meta-item">Updated<strong>2026-05</strong></span>
+          <span class="hero__meta-item">Status<strong>Development</strong></span>
+        </div>
+      </div>
+
+      <div class="hero__title-block">
+        <p class="hero__eyebrow">Project Overview · Design System</p>
+        <h1>
+          <span data-i18n="he">סקירת <em>הפרויקט</em> — מפת תוכן וזהות חזותית</span>
+          <span data-i18n="en">Project <em>Overview</em> — Content Map &amp; Visual Identity</span>
+        </h1>
+        <p class="hero__lead">
+          <span data-i18n="he">מסמך פנימי שמרכז את כל עמודי ה-WordPress וה-CPTs של אתר Ninja Tours, לצד הזהות החזותית של המותג. משמש כנקודת מוצא לכל מי שמצטרף לפרויקט — מפתחים, מנהלי תוכן, או הלקוח עצמו.</span>
+          <span data-i18n="en">An internal reference doc consolidating every WordPress page and CPT in the Ninja Tours site, alongside the brand's visual identity. A starting point for anyone joining the project — developers, content managers, or the client.</span>
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═════════ STATS ═════════ -->
+  <div class="stats">
+    <div class="container">
+      <div class="stats__inner">
+        <div class="stats__item">
+          <span class="stats__num">12</span>
+          <span class="stats__label">WP Pages</span>
+        </div>
+        <div class="stats__item">
+          <span class="stats__num">6</span>
+          <span class="stats__label">Post Types</span>
+        </div>
+        <div class="stats__item">
+          <span class="stats__num">7</span>
+          <span class="stats__label">Taxonomies</span>
+        </div>
+        <div class="stats__item">
+          <span class="stats__num">25</span>
+          <span class="stats__label">Section Layouts</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════ BRAND ═════════ -->
+  <section id="brand">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-head__left">
+          <p class="section-head__eyebrow">Brand</p>
+          <h2>
+            <span data-i18n="he">זהות חזותית · <em>Design Tokens</em></span>
+            <span data-i18n="en">Visual <em>Identity</em> · Design Tokens</span>
+          </h2>
+        </div>
+      </div>
+
+      <div class="palette">
+        <div class="swatch">
+          <div class="swatch__color" style="background:#063874;"></div>
+          <div class="swatch__body">
+            <div class="swatch__name">Brand Blue</div>
+            <div class="swatch__hex">#063874</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background:#d2170a;"></div>
+          <div class="swatch__body">
+            <div class="swatch__name">Accent Red</div>
+            <div class="swatch__hex">#d2170a</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background:#fffaf5; border-bottom:1px solid #ece5dc;"></div>
+          <div class="swatch__body">
+            <div class="swatch__name">Cream BG</div>
+            <div class="swatch__hex">#fffaf5</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background:#0a1828;"></div>
+          <div class="swatch__body">
+            <div class="swatch__name">Ink Text</div>
+            <div class="swatch__hex">#0a1828</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background:#f6f3ee; border-bottom:1px solid #ece5dc;"></div>
+          <div class="swatch__body">
+            <div class="swatch__name">Cream Deep</div>
+            <div class="swatch__hex">#f6f3ee</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="type-grid">
+        <div class="type-card">
+          <div class="type-card__head">
+            <strong>Hebrew</strong>
+            <span>Noto Sans Hebrew · 300–900</span>
+          </div>
+          <div class="type-card__sample-hebrew">
+            <p class="h-sample">מתכננים לכם טיול ליפן</p>
+            <p class="b-sample">אנחנו מתמחים אך ורק ביפן — וזה מה שעושה את ההבדל. הצוות שלנו חי ונושם יפן ומכיר כל פינה.</p>
+          </div>
+        </div>
+        <div class="type-card">
+          <div class="type-card__head">
+            <strong>Latin</strong>
+            <span>Montserrat · 400–800</span>
+          </div>
+          <div class="type-card__sample-latin">
+            <p class="h-sample">Ninja Tours · Japan Travel</p>
+            <p class="b-sample">A Hebrew-RTL travel-planning site for trips to Japan. Built end-to-end with ACF Pro Flexible Content.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ PAGES ═════════ -->
+  <section id="pages" style="background: var(--c-cream-deep);">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-head__left">
+          <p class="section-head__eyebrow">Pages</p>
+          <h2>
+            <span data-i18n="he">עמודי <em>תוכן רגילים</em></span>
+            <span data-i18n="en">Standard <em>Content Pages</em></span>
+          </h2>
+          <p class="section-head__lead">
+            <span data-i18n="he">עמודי WordPress רגילים תחת Pages — כל אחד עם ACF Flexible Content מאוכלס.</span>
+            <span data-i18n="en">Regular WordPress pages under Pages — each pre-populated with ACF Flexible Content.</span>
+          </p>
+        </div>
+        <span class="section-head__count">12 Pages</span>
+      </div>
+
+      <div class="page-grid">
+
+        <article class="page-card" data-preview="index.html">
+          <div class="page-card__top">
+            <span class="page-card__type --page">Page</span>
+            <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2 7-7 7 7 2 2v9a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2z"/></svg>
+          </div>
+          <h3>
+            <span data-i18n="he">Home · עמוד הבית</span>
+            <span data-i18n="en">Home</span>
+          </h3>
+          <p class="page-card__path"><code>/</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">Hero, Why Us, Trip Types, Attractions, Use Cases, Testimonials, Contact.</span>
+            <span data-i18n="en">Hero, Why Us, Trip Types, Attractions, Use Cases, Testimonials, Contact.</span>
+          </p>
+        </article>
+
+        <article class="page-card" data-preview="about.html">
+          <div class="page-card__top">
+            <span class="page-card__type --page">Page</span>
+            <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          </div>
+          <h3>
+            <span data-i18n="he">אודות</span>
+            <span data-i18n="en">About</span>
+          </h3>
+          <p class="page-card__path"><code>/about/</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">סיפור החברה — story, values, process, testimonials, contact.</span>
+            <span data-i18n="en">Company story, values, process, testimonials, and contact.</span>
+          </p>
+        </article>
+
+        <article class="page-card" data-preview="contact.html">
+          <div class="page-card__top">
+            <span class="page-card__type --page">Page</span>
+            <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <h3>
+            <span data-i18n="he">יצירת קשר</span>
+            <span data-i18n="en">Contact</span>
+          </h3>
+          <p class="page-card__path"><code>/contact/</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">עמוד יצירת קשר עם טופס CF7, טיפים לתכנון ומשפכי מידע.</span>
+            <span data-i18n="en">Contact page with CF7 form, planning tips, and info funnels.</span>
+          </p>
+        </article>
+
+        <article class="page-card">
+          <div class="page-card__top">
+            <span class="page-card__type --page">Page</span>
+            <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <h3>
+            <span data-i18n="he">למה אנחנו</span>
+            <span data-i18n="en">Why Us</span>
+          </h3>
+          <p class="page-card__path"><code>/why-us/</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">עמוד ייעודי — Why Us + Process + Testimonials + Contact.</span>
+            <span data-i18n="en">Dedicated landing — Why Us + Process + Testimonials + Contact.</span>
+          </p>
+        </article>
+
+        <article class="page-card" data-preview="blog.html">
+          <div class="page-card__top">
+            <span class="page-card__type --page">Posts Page</span>
+            <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          </div>
+          <h3>
+            <span data-i18n="he">בלוג</span>
+            <span data-i18n="en">Blog</span>
+          </h3>
+          <p class="page-card__path"><code>/blog/</code> · <code>home.php</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">עמוד הפוסטים — אינדקס פוסטים עם פילטר קטגוריות.</span>
+            <span data-i18n="en">Posts page — blog index with category filter tabs.</span>
+          </p>
+        </article>
+
+        <article class="page-card" data-preview="destinations.html">
+          <div class="page-card__top">
+            <span class="page-card__type --archive">Archive Page</span>
+            <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <h3>
+            <span data-i18n="he">יעדים</span>
+            <span data-i18n="en">Destinations</span>
+          </h3>
+          <p class="page-card__path"><code>/destinations/</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">העמוד הראשי של היעדים — Page Hero (עריכה אישית) + Destinations grid אוטומטי.</span>
+            <span data-i18n="en">Destinations main page — editable Page Hero + auto-loading Destinations grid.</span>
+          </p>
+        </article>
+
+        <article class="page-card" data-preview="hotels.html">
+          <div class="page-card__top">
+            <span class="page-card__type --archive">Archive Page</span>
+            <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16"/><path d="M9 7h6M9 11h6M9 15h2"/></svg>
+          </div>
+          <h3>
+            <span data-i18n="he">מלונות</span>
+            <span data-i18n="en">Hotels</span>
+          </h3>
+          <p class="page-card__path"><code>/hotels/</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">Page Hero + Custom Dropdowns (עיר/קהל יעד) + Hotels Catalog.</span>
+            <span data-i18n="en">Page Hero + Custom Dropdowns (city / audience) + Hotels Catalog.</span>
+          </p>
+        </article>
+
+        <article class="page-card" data-preview="attractions.html">
+          <div class="page-card__top">
+            <span class="page-card__type --archive">Archive Page</span>
+            <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22h20M5 22V8l7-5 7 5v14M9 22v-8h6v8"/></svg>
+          </div>
+          <h3>
+            <span data-i18n="he">אטרקציות</span>
+            <span data-i18n="en">Attractions</span>
+          </h3>
+          <p class="page-card__path"><code>/attractions/</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">Page Hero + סינון לפי קטגוריה + Attractions Catalog.</span>
+            <span data-i18n="en">Page Hero + category filter + Attractions Catalog.</span>
+          </p>
+        </article>
+
+        <article class="page-card" data-preview="use-cases.html">
+          <div class="page-card__top">
+            <span class="page-card__type --archive">Archive Page</span>
+            <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </div>
+          <h3>
+            <span data-i18n="he">טיולים שבנינו</span>
+            <span data-i18n="en">Use Cases</span>
+          </h3>
+          <p class="page-card__path"><code>/use-cases/</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">סינון 3-מימדי + פופ-אפ עם פרטי מסלול מלאים והמלצת לקוח.</span>
+            <span data-i18n="en">3-axis filter + popup with full itinerary and customer testimonial.</span>
+          </p>
+        </article>
+
+        <article class="page-card" data-preview="travel-type.html">
+          <div class="page-card__top">
+            <span class="page-card__type --archive">Archive Page</span>
+            <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          </div>
+          <h3>
+            <span data-i18n="he">סוגי טיולים</span>
+            <span data-i18n="en">Travel Types</span>
+          </h3>
+          <p class="page-card__path"><code>/travel-types/</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">תצוגה של כל סוגי הטיולים — לחיצה פותחת עמוד פנימי לסוג.</span>
+            <span data-i18n="en">Display of all travel types — click opens the detail page for each.</span>
+          </p>
+        </article>
+
+        <article class="page-card" data-preview="service.html">
+          <div class="page-card__top">
+            <span class="page-card__type --page">Service Page</span>
+            <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="14" rx="2"/><line x1="3" y1="14" x2="21" y2="14"/><circle cx="8" cy="18" r="2"/><circle cx="16" cy="18" r="2"/><line x1="3" y1="11" x2="21" y2="11"/></svg>
+          </div>
+          <h3>
+            <span data-i18n="he">תחבורה ורכבות</span>
+            <span data-i18n="en">Transportation &amp; Rail</span>
+          </h3>
+          <p class="page-card__path"><code>/service/</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">JR Pass · Service Hero + Train Types + Service Info + Process + FAQ + Contact.</span>
+            <span data-i18n="en">JR Pass · Service Hero + Train Types + Service Info + Process + FAQ + Contact.</span>
+          </p>
+        </article>
+
+        <article class="page-card" data-preview="car-rental.html">
+          <div class="page-card__top">
+            <span class="page-card__type --page">Service Page</span>
+            <svg class="page-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M14 10l7-7M8 21H3v-5M10 14l-7 7"/></svg>
+          </div>
+          <h3>
+            <span data-i18n="he">השכרת רכבים</span>
+            <span data-i18n="en">Car Rental</span>
+          </h3>
+          <p class="page-card__path"><code>/car-rental/</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">Service Hero + Car Types + Service Info + FAQ + Contact.</span>
+            <span data-i18n="en">Service Hero + Car Types + Service Info + FAQ + Contact.</span>
+          </p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ POST TYPES ═════════ -->
+  <section id="cpts">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-head__left">
+          <p class="section-head__eyebrow">Custom Post Types</p>
+          <h2>
+            <span data-i18n="he">פוסט <em>טייפים</em></span>
+            <span data-i18n="en">Custom <em>Post Types</em></span>
+          </h2>
+          <p class="section-head__lead">
+            <span data-i18n="he">6 סוגי תוכן דינמיים — לכל אחד עמוד ראשי ועמוד פנימי.</span>
+            <span data-i18n="en">6 dynamic content types — each with a main Page and a single template.</span>
+          </p>
+        </div>
+        <span class="section-head__count">6 CPTs · 7 Taxonomies</span>
+      </div>
+
+      <!-- Destinations -->
+      <div class="cpt-wrap">
+        <div class="cpt-wrap__head">
+          <div class="cpt-wrap__title">
+            <div class="cpt-wrap__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <h3>Destinations<span data-i18n="he"> · יעדים</span></h3>
+              <p>
+                <span data-i18n="he">ערים ואזורים ביפן · </span>
+                <span data-i18n="en">Cities and regions in Japan · </span>
+                <code>destination</code>
+              </p>
+            </div>
+          </div>
+          <div class="cpt-wrap__taxonomies">
+            <span class="cpt-wrap__tax-label">Taxonomy:</span>
+            <span class="cpt-wrap__tax">travel-region</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <article class="page-card" data-preview="destinations.html">
+            <div class="page-card__top"><span class="page-card__type --archive">Main Page</span></div>
+            <h3>
+              <span data-i18n="he">קטלוג יעדים</span>
+              <span data-i18n="en">Destinations Catalog</span>
+            </h3>
+            <p class="page-card__path"><code>/destinations/</code></p>
+            <p class="page-card__desc">
+              <span data-i18n="he">ניתן לעריכה תחת Pages → יעדים. רק ה-Hero ניתן לעריכה — הקטלוג נטען אוטומטית מה-CPT.</span>
+              <span data-i18n="en">Editable under Pages → Destinations. Only the Hero is editable — the catalog auto-loads from the CPT.</span>
+            </p>
+          </article>
+          <article class="page-card" data-preview="destination-tokyo.html">
+            <div class="page-card__top"><span class="page-card__type --single">Single Template</span></div>
+            <h3>
+              <span data-i18n="he">יעד פנימי</span>
+              <span data-i18n="en">Destination Single</span>
+            </h3>
+            <p class="page-card__path"><code>/destination/{slug}/</code></p>
+            <p class="page-card__desc">
+              <span data-i18n="he">תיאור מורחב, אטרקציות מומלצות, מלונות נבחרים והמלצות מקומיות.</span>
+              <span data-i18n="en">Extended description, recommended attractions, selected hotels, and local tips.</span>
+            </p>
+          </article>
+        </div>
+      </div>
+
+      <!-- Hotels -->
+      <div class="cpt-wrap">
+        <div class="cpt-wrap__head">
+          <div class="cpt-wrap__title">
+            <div class="cpt-wrap__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16"/><path d="M9 7h6M9 11h6M9 15h6"/></svg>
+            </div>
+            <div>
+              <h3>Hotels<span data-i18n="he"> · מלונות</span></h3>
+              <p>
+                <span data-i18n="he">מלונות ביפן · </span>
+                <span data-i18n="en">Hotels in Japan · </span>
+                <code>hotel</code>
+              </p>
+            </div>
+          </div>
+          <div class="cpt-wrap__taxonomies">
+            <span class="cpt-wrap__tax-label">Taxonomies:</span>
+            <span class="cpt-wrap__tax">hotel-city</span>
+            <span class="cpt-wrap__tax">hotel-audience</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <article class="page-card" data-preview="hotels.html">
+            <div class="page-card__top"><span class="page-card__type --archive">Main Page</span></div>
+            <h3>
+              <span data-i18n="he">קטלוג מלונות</span>
+              <span data-i18n="en">Hotels Catalog</span>
+            </h3>
+            <p class="page-card__path"><code>/hotels/</code></p>
+            <p class="page-card__desc">
+              <span data-i18n="he">סינון Custom Dropdowns לפי עיר וקהל יעד + רשת כרטיסיות מלונות.</span>
+              <span data-i18n="en">Custom Dropdowns filtering by city and audience + hotel cards grid.</span>
+            </p>
+          </article>
+          <article class="page-card" data-preview="hotel-detail.html">
+            <div class="page-card__top"><span class="page-card__type --single">Single Template</span></div>
+            <h3>
+              <span data-i18n="he">מלון פנימי</span>
+              <span data-i18n="en">Hotel Single</span>
+            </h3>
+            <p class="page-card__path"><code>/hotel/{slug}/</code></p>
+            <p class="page-card__desc">
+              <span data-i18n="he">גלריה, תיאור, חדרים, מתקנים, מפת מיקום, וסליידר מלונות נוספים.</span>
+              <span data-i18n="en">Gallery, description, rooms, amenities, map, and related hotels slider.</span>
+            </p>
+          </article>
+        </div>
+      </div>
+
+      <!-- Attractions -->
+      <div class="cpt-wrap">
+        <div class="cpt-wrap__head">
+          <div class="cpt-wrap__title">
+            <div class="cpt-wrap__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22h20M5 22V8l7-5 7 5v14M9 22v-8h6v8"/></svg>
+            </div>
+            <div>
+              <h3>Attractions<span data-i18n="he"> · אטרקציות</span></h3>
+              <p>
+                <span data-i18n="he">אתרים, פעילויות וחוויות · </span>
+                <span data-i18n="en">Sites, activities, and experiences · </span>
+                <code>attraction</code>
+              </p>
+            </div>
+          </div>
+          <div class="cpt-wrap__taxonomies">
+            <span class="cpt-wrap__tax-label">Taxonomy:</span>
+            <span class="cpt-wrap__tax">attraction-category</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <article class="page-card" data-preview="attractions.html">
+            <div class="page-card__top"><span class="page-card__type --archive">Main Page</span></div>
+            <h3>
+              <span data-i18n="he">קטלוג אטרקציות</span>
+              <span data-i18n="en">Attractions Catalog</span>
+            </h3>
+            <p class="page-card__path"><code>/attractions/</code></p>
+            <p class="page-card__desc">
+              <span data-i18n="he">סינון לפי קטגוריה + רשת כרטיסיות אטרקציות עם hover effects.</span>
+              <span data-i18n="en">Category filter + attraction cards grid with hover effects.</span>
+            </p>
+          </article>
+          <article class="page-card" data-preview="attraction-detail.html">
+            <div class="page-card__top"><span class="page-card__type --single">Single Template</span></div>
+            <h3>
+              <span data-i18n="he">אטרקציה פנימית</span>
+              <span data-i18n="en">Attraction Single</span>
+            </h3>
+            <p class="page-card__path"><code>/attraction/{slug}/</code></p>
+            <p class="page-card__desc">
+              <span data-i18n="he">גלריה, פרטי מידע (שעות/מחיר/הגעה), תיאור, טיפים, מפה, סליידר אטרקציות קשורות.</span>
+              <span data-i18n="en">Gallery, info chips (hours / price / getting there), description, tips, map, and related attractions slider.</span>
+            </p>
+          </article>
+        </div>
+      </div>
+
+      <!-- Use Cases -->
+      <div class="cpt-wrap">
+        <div class="cpt-wrap__head">
+          <div class="cpt-wrap__title">
+            <div class="cpt-wrap__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </div>
+            <div>
+              <h3>Use Cases<span data-i18n="he"> · טיולים שבנינו</span></h3>
+              <p>
+                <span data-i18n="he">מסלולי טיול מותאמים שביצענו · </span>
+                <span data-i18n="en">Custom trip itineraries we've built · </span>
+                <code>use-case</code>
+              </p>
+            </div>
+          </div>
+          <div class="cpt-wrap__taxonomies">
+            <span class="cpt-wrap__tax-label">Taxonomies:</span>
+            <span class="cpt-wrap__tax">trip-audience</span>
+            <span class="cpt-wrap__tax">trip-tag</span>
+            <span class="cpt-wrap__tax">trip-length</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <article class="page-card" data-preview="use-cases.html">
+            <div class="page-card__top"><span class="page-card__type --archive">Main Page</span></div>
+            <h3>
+              <span data-i18n="he">קטלוג Use Cases</span>
+              <span data-i18n="en">Use Cases Catalog</span>
+            </h3>
+            <p class="page-card__path"><code>/use-cases/</code></p>
+            <p class="page-card__desc">
+              <span data-i18n="he">סינון 3-מימדי + כרטיסיות שפותחות פופ-אפ עם המלצת לקוח.</span>
+              <span data-i18n="en">3-axis filter + cards opening a popup with the customer testimonial.</span>
+            </p>
+          </article>
+          <article class="page-card">
+            <div class="page-card__top"><span class="page-card__type --single">Single Template</span></div>
+            <h3>
+              <span data-i18n="he">Use Case פנימי</span>
+              <span data-i18n="en">Use Case Single</span>
+            </h3>
+            <p class="page-card__path"><code>/use-case/{slug}/</code></p>
+            <p class="page-card__desc">
+              <span data-i18n="he">תיאור מלא, תאריכים, נפשות, ציטוט מהלקוח.</span>
+              <span data-i18n="en">Full description, dates, party size, and customer quote.</span>
+            </p>
+          </article>
+        </div>
+      </div>
+
+      <!-- Travel Types -->
+      <div class="cpt-wrap">
+        <div class="cpt-wrap__head">
+          <div class="cpt-wrap__title">
+            <div class="cpt-wrap__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            </div>
+            <div>
+              <h3>Travel Types<span data-i18n="he"> · סוגי טיולים</span></h3>
+              <p>
+                <span data-i18n="he">קטגוריות שמופיעות בסליידר בעמוד הבית · </span>
+                <span data-i18n="en">Categories shown in the homepage trip-types slider · </span>
+                <code>travel-type</code>
+              </p>
+            </div>
+          </div>
+          <div class="cpt-wrap__taxonomies">
+            <span class="cpt-wrap__tax-label">Taxonomies:</span>
+            <span class="cpt-wrap__tax">—</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <article class="page-card">
+            <div class="page-card__top"><span class="page-card__type --archive">Main Page</span></div>
+            <h3>
+              <span data-i18n="he">סוגי טיולים</span>
+              <span data-i18n="en">Travel Types</span>
+            </h3>
+            <p class="page-card__path"><code>/travel-types/</code></p>
+            <p class="page-card__desc">
+              <span data-i18n="he">תצוגה של כל הקונספטים: טבע ונופים, תרבות ומסורת, ערים תוססות, שילוב מושלם.</span>
+              <span data-i18n="en">Display of all concepts: Nature, Culture, Cities, and Mixed.</span>
+            </p>
+          </article>
+          <article class="page-card" data-preview="travel-type.html">
+            <div class="page-card__top"><span class="page-card__type --single">Single Template</span></div>
+            <h3>
+              <span data-i18n="he">סוג טיול פנימי</span>
+              <span data-i18n="en">Travel Type Single</span>
+            </h3>
+            <p class="page-card__path"><code>/travel-type/{slug}/</code></p>
+            <p class="page-card__desc">
+              <span data-i18n="he">Hero · Meta Strip · About+Sidebar · Itinerary · Tips · Attractions · Why Us · Contact.</span>
+              <span data-i18n="en">Hero · Meta Strip · About + Sidebar · Itinerary · Tips · Attractions · Why Us · Contact.</span>
+            </p>
+          </article>
+        </div>
+      </div>
+
+      <!-- Client Reviews -->
+      <div class="cpt-wrap">
+        <div class="cpt-wrap__head">
+          <div class="cpt-wrap__title">
+            <div class="cpt-wrap__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L14.5 8.5 L21.5 9.2 L16.3 13.7 L17.9 20.5 L12 16.9 L6.1 20.5 L7.7 13.7 L2.5 9.2 L9.5 8.5 Z"/></svg>
+            </div>
+            <div>
+              <h3>Client Reviews<span data-i18n="he"> · המלצות לקוחות</span></h3>
+              <p>
+                <span data-i18n="he">המלצות בסליידר, ללא עמוד פומבי · </span>
+                <span data-i18n="en">Slider testimonials, no public page · </span>
+                <code>client-review</code>
+              </p>
+            </div>
+          </div>
+          <div class="cpt-wrap__taxonomies">
+            <span class="cpt-wrap__tax-label">Public archive:</span>
+            <span class="cpt-wrap__tax" style="background:rgba(210,23,10,0.08); color:var(--c-red);">Disabled</span>
+          </div>
+        </div>
+        <div class="page-grid">
+          <article class="page-card" style="grid-column: span 2;">
+            <div class="page-card__top"><span class="page-card__type --system">Slider Only</span></div>
+            <h3>
+              <span data-i18n="he">אין עמוד פומבי</span>
+              <span data-i18n="en">No Public Page</span>
+            </h3>
+            <p class="page-card__path">
+              <span data-i18n="he">משמש רק בסקשן </span>
+              <span data-i18n="en">Used only by the </span>
+              <code>testimonials</code>
+              <span data-i18n="en"> section</span>
+            </p>
+            <p class="page-card__desc">
+              <span data-i18n="he">המלצות לקוחות נכנסות לאתר רק דרך סקשן ייעודי — ללא עמוד ארכיון או עמוד פנימי. ניתן לבחירה ידנית או לטעינה אוטומטית של 10 ההמלצות האחרונות.</span>
+              <span data-i18n="en">Client reviews enter the site only through a dedicated section — no archive or single page. Manual curation or automatic loading of the latest 10 reviews.</span>
+            </p>
+          </article>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═════════ SYSTEM ═════════ -->
+  <section id="system" style="background: var(--c-cream-deep);">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-head__left">
+          <p class="section-head__eyebrow">System</p>
+          <h2>
+            <span data-i18n="he">עמודי <em>מערכת</em> ותבניות</span>
+            <span data-i18n="en">System <em>Pages</em> &amp; Templates</span>
+          </h2>
+          <p class="section-head__lead">
+            <span data-i18n="he">קבצי תבנית של ה-WordPress שמטפלים במצבים ייעודיים.</span>
+            <span data-i18n="en">WordPress template files handling specialized states.</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="page-grid">
+
+        <article class="page-card" data-preview="404.html">
+          <div class="page-card__top"><span class="page-card__type --system">System</span></div>
+          <h3>404</h3>
+          <p class="page-card__path"><code>404.php</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">דף שגיאה ידידותי כשהמשתמש מגיע לכתובת לא קיימת.</span>
+            <span data-i18n="en">Friendly error page shown when the user reaches a non-existent URL.</span>
+          </p>
+        </article>
+
+        <article class="page-card">
+          <div class="page-card__top"><span class="page-card__type --system">System</span></div>
+          <h3>Search Results</h3>
+          <p class="page-card__path"><code>search.php</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">דף תוצאות חיפוש כללי באתר.</span>
+            <span data-i18n="en">Site-wide search results page.</span>
+          </p>
+        </article>
+
+        <article class="page-card">
+          <div class="page-card__top"><span class="page-card__type --template">Template</span></div>
+          <h3>Flexible Content Page</h3>
+          <p class="page-card__path"><code>views/page-flexible-content.php</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">תבנית עמוד יחידה שמשמשת כל עמודי ה-Pages הציבוריים.</span>
+            <span data-i18n="en">The single page template used by every public-facing Page.</span>
+          </p>
+        </article>
+
+        <article class="page-card">
+          <div class="page-card__top"><span class="page-card__type --template">Template</span></div>
+          <h3>Header / Footer</h3>
+          <p class="page-card__path"><code>header.php · footer.php</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">2 תפריטים בהדר, לוגו דואלי + CTA. Footer עם תפריט נוסף ופרטי קשר.</span>
+            <span data-i18n="en">2 menus in the header, dual logo + CTA. Footer with an additional menu and contact details.</span>
+          </p>
+        </article>
+
+        <article class="page-card" data-preview="post.html">
+          <div class="page-card__top"><span class="page-card__type --template">Template</span></div>
+          <h3>Single Post</h3>
+          <p class="page-card__path"><code>single.php</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">תבנית פוסט בלוג מלא — Hero, Cover, Layout, מחבר, פוסטים קשורים.</span>
+            <span data-i18n="en">Full blog post template — Hero, Cover, Layout, author block, related posts.</span>
+          </p>
+        </article>
+
+        <article class="page-card">
+          <div class="page-card__top"><span class="page-card__type --template">Template</span></div>
+          <h3>Section Dispatcher</h3>
+          <p class="page-card__path"><code>content/flexible-content.php</code></p>
+          <p class="page-card__desc">
+            <span data-i18n="he">לולאה שמפעילה את הקובץ המתאים מ-<code>content/sections/</code>.</span>
+            <span data-i18n="en">Loop that fires the matching file from <code>content/sections/</code>.</span>
+          </p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════ FOOTER ═════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <div class="footer__brand-logo">
+            <img src="images/logo.svg" alt="Ninja Tours">
+          </div>
+          <div class="footer__brand-text">
+            <strong>Ninja Tours</strong>
+            <span>
+              <span data-i18n="he">פרויקט לקוח · עברית RTL · 2026</span>
+              <span data-i18n="en">Client Project · Hebrew RTL · 2026</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="footer__credit">
+          <div class="footer__credit-label">
+            <span data-i18n="he">עוצב ופותח על ידי</span>
+            <span data-i18n="en">Designed &amp; Developed by</span>
+          </div>
+          <div class="footer__credit-name"><em>Elevate</em> Digital Studio</div>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <p>
+          <span data-i18n="he">תיעוד פנימי לפרויקט · אינו חלק מהאתר הציבורי</span>
+          <span data-i18n="en">Internal project documentation · Not part of the public website</span>
+        </p>
+        <p><code>ninja-tours/sitemap.html</code></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // ─── Language toggle ─────────────────────────────────────────────
+      function setLang(lang) {
+        document.body.classList.remove('lang-he', 'lang-en');
+        document.body.classList.add('lang-' + lang);
+        document.documentElement.lang = lang;
+        document.documentElement.dir  = lang === 'he' ? 'rtl' : 'ltr';
+        try { localStorage.setItem('sitemap-lang', lang); } catch (e) {}
+      }
+
+      var urlLang = new URLSearchParams(window.location.search).get('lang');
+      var saved = 'he';
+      try { saved = localStorage.getItem('sitemap-lang') || 'he'; } catch (e) {}
+      // URL param wins → useful for sharing an English link with non-Hebrew devs
+      var initialLang = (urlLang === 'en' || urlLang === 'he') ? urlLang : saved;
+      setLang(initialLang);
+
+      var toggle = document.querySelector('.lang-toggle');
+      if (toggle) {
+        toggle.addEventListener('click', function () {
+          var current = document.body.classList.contains('lang-en') ? 'en' : 'he';
+          var next    = current === 'he' ? 'en' : 'he';
+          setLang(next);
+          // Update URL so refreshing or copying the link keeps the language
+          var u = new URL(window.location);
+          u.searchParams.set('lang', next);
+          window.history.replaceState({}, '', u);
+        });
+      }
+
+      // ─── Make page-cards with [data-preview] clickable ──────────────
+      document.querySelectorAll('.page-card[data-preview]').forEach(function (card) {
+        var url = card.getAttribute('data-preview');
+        if (!url) return;
+
+        var ind = document.createElement('span');
+        ind.className = 'page-card__preview';
+        ind.innerHTML =
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+            '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>' +
+            '<polyline points="15 3 21 3 21 9"/>' +
+            '<line x1="10" y1="14" x2="21" y2="3"/>' +
+          '</svg>' +
+          '<span data-i18n="he">תצוגה מקדימה</span>' +
+          '<span data-i18n="en">Preview HTML</span>' +
+          '<code>' + url + '</code>';
+        card.appendChild(ind);
+
+        card.addEventListener('click', function (e) {
+          // Allow inner clickable elements to work normally
+          if (e.target.closest('a, button')) return;
+          window.open(url, '_blank', 'noopener,noreferrer');
+        });
+      });
+
+      // ─── Side nav active section highlighting ───────────────────────
+      var sections = document.querySelectorAll('section[id]');
+      var navLinks = document.querySelectorAll('.side-nav__item a');
+
+      if ('IntersectionObserver' in window && sections.length && navLinks.length) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              var id = entry.target.id;
+              navLinks.forEach(function (link) {
+                link.classList.toggle('--active', link.getAttribute('href') === '#' + id);
+              });
+            }
+          });
+        }, { rootMargin: '-30% 0px -55% 0px' });
+
+        sections.forEach(function (s) { observer.observe(s); });
+      }
+    })();
+  </script>
+</body>
+</html>

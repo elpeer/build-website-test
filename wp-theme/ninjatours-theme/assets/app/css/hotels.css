@@ -1,0 +1,391 @@
+/* ==========================================================================
+   Hotels Page — Hero, Filter Bar, Catalog Grid
+   ========================================================================== */
+
+/* ── Hero ─────────────────────────────────────────────────────────────────── */
+.hotels-page-hero {
+  position: relative;
+  height: 50vh;
+  min-height: 380px;
+  display: flex;
+  align-items: flex-end;        /* push content toward bottom half */
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  z-index: 1;
+  padding-bottom: 4rem;
+}
+
+.hotels-page-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.hotels-page-hero__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hotels-page-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%);
+}
+
+.hotels-page-hero__inner {
+  position: relative;
+  z-index: 2;
+  padding: 0 1.5rem;
+}
+
+.hotels-page-hero__title {
+  font-size: 3.75rem;
+  font-weight: 800;
+  margin-bottom: 0.625rem;
+  line-height: 1.15;
+}
+
+.hotels-page-hero__lead {
+  font-size: 1.25rem;
+  font-weight: 400;
+  opacity: 0.92;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+/* ── Filter Bar ───────────────────────────────────────────────────────────── */
+.hotels-filter {
+  position: relative;
+  z-index: 10;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.hotels-filter .container {
+  max-width: 1200px;
+}
+
+.hotels-filter__form {
+  padding: 1.5rem 0;
+}
+
+.hotels-filter__row {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+}
+
+.hotels-filter__col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.hotels-filter__col--submit {
+  flex: 0 0 auto;
+  align-self: flex-end;
+}
+
+.hotels-filter__label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #3f3e42;
+  letter-spacing: -0.01em;
+}
+
+/* ── Custom Multi-Select Dropdown ─────────────────────────────────────────── */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.custom-dropdown__trigger {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 2.875rem;
+  padding: 0 1rem;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  color: #3f3e42;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  text-align: right;
+}
+
+.custom-dropdown__trigger:hover {
+  border-color: #bbb;
+}
+
+.custom-dropdown.--open .custom-dropdown__trigger {
+  border-color: #063874;
+  box-shadow: 0 0 0 3px rgba(6,56,116,0.08);
+}
+
+.custom-dropdown__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.custom-dropdown__value.--placeholder {
+  color: #999;
+}
+
+.custom-dropdown__chevron {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+  margin-inline-start: 0.5rem;
+  color: #999;
+  transition: transform 0.25s ease;
+}
+
+.custom-dropdown.--open .custom-dropdown__chevron {
+  transform: rotate(180deg);
+  color: #063874;
+}
+
+/* Panel */
+.custom-dropdown__panel {
+  position: absolute;
+  top: calc(100% + 0.375rem);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.625rem;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  padding: 0.375rem 0;
+  z-index: 100;
+  display: none;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.custom-dropdown.--open .custom-dropdown__panel {
+  display: block;
+  animation: dropdownSlide 0.18s ease-out;
+}
+
+@keyframes dropdownSlide {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.custom-dropdown__option {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 0.9375rem;
+  user-select: none;
+}
+
+.custom-dropdown__option:hover {
+  background: #f5f7fa;
+}
+
+.custom-dropdown__option input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 2px solid #ccc;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.15s;
+  background: #fff;
+}
+
+.custom-dropdown__option input[type="checkbox"]:checked {
+  background: #063874;
+  border-color: #063874;
+}
+
+.custom-dropdown__option input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 0.125rem;
+  left: 0.3125rem;
+  width: 0.3125rem;
+  height: 0.5625rem;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* ── Search Button ────────────────────────────────────────────────────────── */
+.hotels-filter__search-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.875rem;
+  padding: 0 1.5rem;
+  border: none;
+  border-radius: 2rem;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.hotels-filter__search-btn:hover {
+  background: #333;
+}
+
+.hotels-filter__search-btn:active {
+  transform: scale(0.97);
+}
+
+.hotels-filter__search-btn svg {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+}
+
+/* ── Active Filter Pills ──────────────────────────────────────────────────── */
+.hotels-filter__active {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+}
+
+.hotels-filter__active:empty {
+  display: none;
+}
+
+.hotels-filter__active-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 2rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #3f3e42;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.hotels-filter__active-pill:hover {
+  background: #e2e8f0;
+}
+
+.hotels-filter__active-pill svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  opacity: 0.5;
+}
+
+/* ── Hotel Catalog Grid ───────────────────────────────────────────────────── */
+.hotels-catalog {
+  padding-block: 3rem 4rem;
+  background: #f9f9fa;
+}
+
+.hotels-catalog__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.hotels-catalog__grid .hotels__card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  height: 100%;
+  transition: box-shadow 0.25s, transform 0.25s;
+}
+
+.hotels-catalog__grid .hotels__card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+}
+
+.hotels-catalog__grid .hotels__card-body {
+  flex-grow: 1;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (orientation: landscape), (min-width: 769px) and (orientation: portrait) {
+  /* desktop / tablet landscape — already set above */
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .hotels-page-hero {
+    height: 45vh;
+    min-height: 300px;
+    padding-bottom: 3rem;
+    align-items: center;
+  }
+
+  .hotels-page-hero__title {
+    font-size: 2.25rem;
+  }
+
+  .hotels-page-hero__lead {
+    font-size: 1rem;
+  }
+
+  /* Filter */
+  .hotels-filter__form {
+    padding: 1rem 0;
+  }
+
+  .hotels-filter__row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .hotels-filter__col--submit {
+    align-self: stretch;
+  }
+
+  .hotels-filter__search-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Grid */
+  .hotels-catalog {
+    padding-block: 2rem;
+  }
+
+  .hotels-catalog__grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+/* Tablet portrait (between mobile and desktop) */
+@media (min-width: 769px) and (max-width: 1100px) {
+  .hotels-catalog__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

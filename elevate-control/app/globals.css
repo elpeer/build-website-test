@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background:  255 250 245;   /* cream — same as agency brand */
+    --foreground:  10 24 40;      /* ink */
+    --muted:       246 243 238;
+    --muted-fg:    106 106 114;
+    --border:      236 229 220;
+    --ring:        6 56 116;
+    --card:        255 255 255;
+    --card-fg:     10 24 40;
+  }
+
+  .dark {
+    --background:  10 24 40;
+    --foreground:  255 250 245;
+    --muted:       30 41 59;
+    --muted-fg:    160 168 184;
+    --border:      30 41 59;
+    --ring:        59 130 246;
+    --card:        15 30 50;
+    --card-fg:     255 250 245;
+  }
+
+  * {
+    border-color: rgb(var(--border));
+  }
+
+  html {
+    font-family: var(--font-sans), 'Noto Sans Hebrew', 'Inter', system-ui, sans-serif;
+  }
+
+  body {
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* RTL-aware focus rings */
+  *:focus-visible {
+    outline: 2px solid rgb(var(--ring));
+    outline-offset: 2px;
+  }
+}

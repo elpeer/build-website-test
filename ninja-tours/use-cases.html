@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Ninja Tours | טיולים מותאמים שבנינו ללקוחות</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta name="description" content="טיולים מותאמים שבנינו ללקוחות - גלו את כל המסלולים שתכננו עבור משפחות, זוגות וקבוצות שטיילו ביפן." />
+
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700;800;900&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/hotels.css" />
+
+  <style>
+    /* ── Use-cases catalog grid: 4 cards per row on desktop ───────────────── */
+    .use-cases-catalog {
+      padding-block: 3rem 4rem;
+      background: #fffaf5;
+    }
+    .use-cases-catalog__grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+    /* Reset the fixed-width slider card for grid context */
+    .use-cases-catalog .custom-trips__card {
+      width: 100%;
+    }
+
+    /* Tags filter — looks the same as audience/destination dropdowns */
+
+    /* Empty state */
+    .use-cases-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #666;
+      font-size: 1rem;
+    }
+
+    /* Tablet — 3 per row */
+    @media (min-width: 769px) and (max-width: 1100px) {
+      .use-cases-catalog__grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+      }
+    }
+
+    /* Mobile — 1 per row */
+    @media (max-width: 768px) and (orientation: portrait) {
+      .use-cases-catalog {
+        padding-block: 2rem;
+      }
+      .use-cases-catalog__grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="page-use-cases">
+  <a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
+
+  <header class="header">
+    <div class="header-inner">
+      <nav class="main-menu main-menu--start" aria-label="תפריט ראשי - יעדים">
+        <ul>
+          <li><a href="destinations.html">יעדים</a></li>
+          <li><a href="hotels.html">מלונות</a></li>
+          <li><a href="attractions.html">אטרקציות</a></li>
+          <li><a href="#">מדריכים</a></li>
+          <li><a href="#">תחבורה</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <a href="index.html" class="logo" aria-label="Ninja Tours - חזרה לדף הבית">
+          <img class="--default" src="images/logo.svg" alt="Ninja Tours">
+          <img class="--dark" src="images/logo-dark.svg" alt="Ninja Tours">
+        </a>
+      </div>
+
+      <div class="header-end">
+        <nav class="main-menu main-menu--end" aria-label="תפריט ראשי - אודות">
+          <ul>
+            <li><a href="#">קצת עלינו</a></li>
+            <li><a href="use-cases.html">טיולים שבנינו</a></li>
+            <li><a href="#">על התהליך</a></li>
+          </ul>
+        </nav>
+
+        <button class="search-btn" aria-label="חיפוש">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="20" y1="20" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+
+        <a href="index.html#contact" class="btn-pill --light">
+          <span class="btn-pill__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/>
+              <polyline points="12 19 5 12 12 5"/>
+            </svg>
+          </span>
+          <span class="btn-pill__text">בואו נתחיל</span>
+        </a>
+      </div>
+
+      <button class="burger-btn" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="main-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ==========================================================================
+         Hero — same structure as hotels.html
+         ========================================================================== -->
+    <section class="hotels-page-hero" id="use-cases-hero">
+      <div class="hotels-page-hero__media" aria-hidden="true">
+        <video class="hotels-page-hero__video" autoplay muted loop playsinline poster="images/hero-poster.jpg">
+          <source src="video/hero.mp4" type="video/mp4">
+        </video>
+        <div class="hotels-page-hero__overlay"></div>
+      </div>
+
+      <div class="hotels-page-hero__inner">
+        <h1 class="hotels-page-hero__title" data-aos="fade-up" data-aos-duration="800">טיולים שבנינו ללקוחות</h1>
+        <p class="hotels-page-hero__lead" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">השראה מהמסלולים שתכננו — מצאו את הטיול שמתאים לכם.</p>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         Filters — 4 multi-select dropdowns: destination, audience, length, tags
+         ========================================================================== -->
+    <div class="hotels-filter" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
+      <div class="container">
+        <form class="hotels-filter__form" onsubmit="event.preventDefault();">
+          <div class="hotels-filter__row">
+
+            <!-- Destination -->
+            <div class="hotels-filter__col">
+              <label class="hotels-filter__label">יעד</label>
+              <div class="custom-dropdown" id="dropdown-destination">
+                <button type="button" class="custom-dropdown__trigger" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="custom-dropdown__value">בחרו יעד...</span>
+                  <svg class="custom-dropdown__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="custom-dropdown__panel" role="listbox" aria-multiselectable="true">
+                  <label class="custom-dropdown__option"><input type="checkbox" name="destination" value="tokyo"><span>טוקיו</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="destination" value="kyoto"><span>קיוטו</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="destination" value="osaka"><span>אוסקה</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="destination" value="hakone"><span>האקונה</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="destination" value="hokkaido"><span>הוקאידו</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="destination" value="kanazawa"><span>קאנאזאווה</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="destination" value="shikoku"><span>שיקוקו</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="destination" value="kyushu"><span>קיושו</span></label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Audience -->
+            <div class="hotels-filter__col">
+              <label class="hotels-filter__label">למי מתאים?</label>
+              <div class="custom-dropdown" id="dropdown-audience">
+                <button type="button" class="custom-dropdown__trigger" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="custom-dropdown__value">בחרו קהל יעד...</span>
+                  <svg class="custom-dropdown__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="custom-dropdown__panel" role="listbox" aria-multiselectable="true">
+                  <label class="custom-dropdown__option"><input type="checkbox" name="audience" value="couples"><span>זוגות</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="audience" value="families"><span>משפחות</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="audience" value="friends"><span>חברים</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="audience" value="honeymoon"><span>ירח דבש</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="audience" value="experienced"><span>מטיילים מנוסים</span></label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Length -->
+            <div class="hotels-filter__col">
+              <label class="hotels-filter__label">אורך הטיול</label>
+              <div class="custom-dropdown" id="dropdown-length">
+                <button type="button" class="custom-dropdown__trigger" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="custom-dropdown__value">בחרו אורך...</span>
+                  <svg class="custom-dropdown__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="custom-dropdown__panel" role="listbox" aria-multiselectable="true">
+                  <label class="custom-dropdown__option"><input type="checkbox" name="length" value="short"><span>עד 9 ימים</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="length" value="medium"><span>10-14 ימים</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="length" value="long"><span>15+ ימים</span></label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="hotels-filter__col">
+              <label class="hotels-filter__label">תגיות</label>
+              <div class="custom-dropdown" id="dropdown-tags">
+                <button type="button" class="custom-dropdown__trigger" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="custom-dropdown__value">בחרו תגיות...</span>
+                  <svg class="custom-dropdown__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="custom-dropdown__panel" role="listbox" aria-multiselectable="true">
+                  <label class="custom-dropdown__option"><input type="checkbox" name="tags" value="culture"><span>תרבות</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="tags" value="nature"><span>טבע</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="tags" value="food"><span>קולינריה</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="tags" value="shopping"><span>שופינג</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="tags" value="ski"><span>סקי</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="tags" value="onsen"><span>אונסן</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="tags" value="romance"><span>רומנטיקה</span></label>
+                  <label class="custom-dropdown__option"><input type="checkbox" name="tags" value="kids"><span>ילדים</span></label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="hotels-filter__col hotels-filter__col--submit">
+              <button type="submit" class="hotels-filter__search-btn">
+                <span>הצג תוצאות</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="19" y1="12" x2="5" y2="12"/>
+                  <polyline points="12 19 5 12 12 5"/>
+                </svg>
+              </button>
+            </div>
+
+          </div>
+
+          <div class="hotels-filter__active" id="use-cases-active-filters"></div>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+         Catalog Grid — 4 per row on desktop, 3 on tablet, 1 on mobile.
+         Each card opens a Fancybox modal with the full trip details.
+         data-* attributes drive client-side filtering.
+         ========================================================================== -->
+    <section class="use-cases-catalog" id="use-cases-catalog">
+      <div class="container">
+        <div class="use-cases-catalog__grid" id="use-cases-grid">
+
+          <article class="custom-trips__card" data-destination="shikoku,kyushu" data-audience="experienced" data-length="long" data-tags="culture" data-aos="fade-up" data-aos-delay="50">
+            <figure class="custom-trips__card-image">
+              <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="עומק, תרבות וגילוי" loading="lazy">
+            </figure>
+            <div class="custom-trips__card-body">
+              <h3 class="custom-trips__card-title">עומק, תרבות וגילוי</h3>
+              <p class="custom-trips__card-desc">מסלול מתקדם למי שכבר היה ורוצה לראות את יפן אחרת</p>
+              <p class="custom-trips__card-meta">
+                <span>21 יום</span><span class="custom-trips__card-bullet" aria-hidden="true"></span><span>4 מטיילים</span>
+              </p>
+              <button type="button" class="custom-trips__card-cta" data-fancybox data-src="#trip-modal-1">קרא עוד</button>
+            </div>
+          </article>
+
+          <article class="custom-trips__card" data-destination="tokyo,osaka" data-audience="families" data-length="medium" data-tags="kids,culture" data-aos="fade-up" data-aos-delay="100">
+            <figure class="custom-trips__card-image">
+              <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=800" alt="יפן למשפחות וחוויות" loading="lazy">
+            </figure>
+            <div class="custom-trips__card-body">
+              <h3 class="custom-trips__card-title">יפן למשפחות וחוויות</h3>
+              <p class="custom-trips__card-desc">אטרקציות, פארקים ורגעים בלתי נשכחים לכל המשפחה</p>
+              <p class="custom-trips__card-meta">
+                <span>12 יום</span><span class="custom-trips__card-bullet" aria-hidden="true"></span><span>6 מטיילים</span>
+              </p>
+              <button type="button" class="custom-trips__card-cta" data-fancybox data-src="#trip-modal-2">קרא עוד</button>
+            </div>
+          </article>
+
+          <article class="custom-trips__card" data-destination="hokkaido,hakone" data-audience="families" data-length="long" data-tags="nature,onsen" data-aos="fade-up" data-aos-delay="150">
+            <figure class="custom-trips__card-image">
+              <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=800" alt="טבע, כפרים ונופים" loading="lazy">
+            </figure>
+            <div class="custom-trips__card-body">
+              <h3 class="custom-trips__card-title">טבע, כפרים ונופים</h3>
+              <p class="custom-trips__card-desc">יפן הפראית והאותנטית – הרים, אגמים וכפרים מסורתיים</p>
+              <p class="custom-trips__card-meta">
+                <span>16 יום</span><span class="custom-trips__card-bullet" aria-hidden="true"></span><span>משפחה</span>
+              </p>
+              <button type="button" class="custom-trips__card-cta" data-fancybox data-src="#trip-modal-3">קרא עוד</button>
+            </div>
+          </article>
+
+          <article class="custom-trips__card" data-destination="tokyo,kyoto,osaka" data-audience="couples" data-length="medium" data-tags="culture" data-aos="fade-up" data-aos-delay="200">
+            <figure class="custom-trips__card-image">
+              <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="ערים, תרבות וקלאסיקה" loading="lazy">
+            </figure>
+            <div class="custom-trips__card-body">
+              <h3 class="custom-trips__card-title">ערים, תרבות וקלאסיקה</h3>
+              <p class="custom-trips__card-desc">הטיול הראשון המושלם בין טוקיו, קיוטו ואוסקה</p>
+              <p class="custom-trips__card-meta">
+                <span>14 יום</span><span class="custom-trips__card-bullet" aria-hidden="true"></span><span>זוג</span>
+              </p>
+              <button type="button" class="custom-trips__card-cta" data-fancybox data-src="#trip-modal-4">קרא עוד</button>
+            </div>
+          </article>
+
+          <article class="custom-trips__card" data-destination="tokyo,osaka" data-audience="couples" data-length="short" data-tags="shopping" data-aos="fade-up" data-aos-delay="50">
+            <figure class="custom-trips__card-image">
+              <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=800" alt="שופינג ואופנה בטוקיו" loading="lazy">
+            </figure>
+            <div class="custom-trips__card-body">
+              <h3 class="custom-trips__card-title">שופינג ואופנה</h3>
+              <p class="custom-trips__card-desc">הראבג׳וקו, גינזה ושיבויה - חוויית קניות יפנית</p>
+              <p class="custom-trips__card-meta">
+                <span>8 יום</span><span class="custom-trips__card-bullet" aria-hidden="true"></span><span>זוג</span>
+              </p>
+              <button type="button" class="custom-trips__card-cta" data-fancybox data-src="#trip-modal-5">קרא עוד</button>
+            </div>
+          </article>
+
+          <article class="custom-trips__card" data-destination="hakone,kyoto,kanazawa" data-audience="couples,honeymoon" data-length="medium" data-tags="romance,onsen" data-aos="fade-up" data-aos-delay="100">
+            <figure class="custom-trips__card-image">
+              <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800" alt="ירח דבש ביפן" loading="lazy">
+            </figure>
+            <div class="custom-trips__card-body">
+              <h3 class="custom-trips__card-title">רומנטיקה וירח דבש</h3>
+              <p class="custom-trips__card-desc">חוויה זוגית בלתי נשכחת בין מקדשים, אונסן ויקאנים</p>
+              <p class="custom-trips__card-meta">
+                <span>10 יום</span><span class="custom-trips__card-bullet" aria-hidden="true"></span><span>זוג</span>
+              </p>
+              <button type="button" class="custom-trips__card-cta" data-fancybox data-src="#trip-modal-6">קרא עוד</button>
+            </div>
+          </article>
+
+          <article class="custom-trips__card" data-destination="hokkaido" data-audience="friends,families" data-length="short" data-tags="ski,onsen" data-aos="fade-up" data-aos-delay="150">
+            <figure class="custom-trips__card-image">
+              <img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=800" alt="סקי בהוקאידו" loading="lazy">
+            </figure>
+            <div class="custom-trips__card-body">
+              <h3 class="custom-trips__card-title">סקי וחורף ביפן</h3>
+              <p class="custom-trips__card-desc">פאודר משובח בניסיקו ויומיוטו, אונסן חמים בערב</p>
+              <p class="custom-trips__card-meta">
+                <span>9 יום</span><span class="custom-trips__card-bullet" aria-hidden="true"></span><span>4 מטיילים</span>
+              </p>
+              <button type="button" class="custom-trips__card-cta" data-fancybox data-src="#trip-modal-7">קרא עוד</button>
+            </div>
+          </article>
+
+          <article class="custom-trips__card" data-destination="tokyo,kyoto,kyushu" data-audience="couples,experienced" data-length="medium" data-tags="food,culture" data-aos="fade-up" data-aos-delay="200">
+            <figure class="custom-trips__card-image">
+              <img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=800" alt="קולינריה יפנית" loading="lazy">
+            </figure>
+            <div class="custom-trips__card-body">
+              <h3 class="custom-trips__card-title">עומק קולינרי</h3>
+              <p class="custom-trips__card-desc">סדנאות עם שפים, שווקים מקומיים ואוכל אותנטי</p>
+              <p class="custom-trips__card-meta">
+                <span>11 יום</span><span class="custom-trips__card-bullet" aria-hidden="true"></span><span>2 מטיילים</span>
+              </p>
+              <button type="button" class="custom-trips__card-cta" data-fancybox data-src="#trip-modal-8">קרא עוד</button>
+            </div>
+          </article>
+
+        </div>
+
+        <p class="use-cases-empty" id="use-cases-empty" hidden>לא נמצאו טיולים מתאימים לפילטרים שבחרתם.</p>
+      </div>
+    </section>
+
+    <!-- Modal sources (cloned by Fancybox on open) -->
+    <div class="trip-modal-sources" hidden>
+      <div id="trip-modal-1" class="trip-modal" dir="rtl">
+        <button type="button" class="trip-modal__close" data-fancybox-close aria-label="סגור"><span class="trip-modal__close-text">סגור</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+        <div class="trip-modal__media"><img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200" alt=""></div>
+        <div class="trip-modal__body">
+          <h3 class="trip-modal__title">עומק, תרבות וגילוי</h3>
+          <p class="trip-modal__meta">21 יום • 4 מטיילים</p>
+          <p class="trip-modal__desc">טיול מתקדם למי שכבר ביקר ביפן ורוצה לחקור עוד יותר לעומק. אזורים פחות מוכרים, מסעדות מקומיות, סדנאות תרבות יפנית מסורתית ופגישות עם בעלי מקצוע מקומיים. הטיול בנוי על איזון בין חוויות שקטות לבין רגעי שיא ויזואליים שלא תשכחו.</p>
+          <div class="trip-modal__tags">
+            <span class="trip-modal__tag">שיקוקו</span>
+            <span class="trip-modal__tag">קיושו</span>
+            <span class="trip-modal__tag">יקושימה</span>
+            <span class="trip-modal__tag">סדנת תה</span>
+            <span class="trip-modal__tag">סדנת קליגרפיה</span>
+            <span class="trip-modal__tag">21 יום</span>
+            <span class="trip-modal__tag">4 מטיילים</span>
+          </div>
+          <blockquote class="trip-modal__quote">
+            <p>״זה הטיול השני שלי ליפן והוא היה ברמה אחרת לגמרי. גילינו דברים שאין שום סיכוי שהיינו מוצאים לבד.״</p>
+            <cite>— אבי, חיפה</cite>
+          </blockquote>
+        </div>
+      </div>
+
+      <div id="trip-modal-2" class="trip-modal" dir="rtl">
+        <button type="button" class="trip-modal__close" data-fancybox-close aria-label="סגור"><span class="trip-modal__close-text">סגור</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+        <div class="trip-modal__media"><img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=1200" alt=""></div>
+        <div class="trip-modal__body">
+          <h3 class="trip-modal__title">יפן למשפחות וחוויות</h3>
+          <p class="trip-modal__meta">12 יום • 6 מטיילים</p>
+          <p class="trip-modal__desc">יפן בעיניים של ילדים. דיסנילנד, יוניברסל, פסטיבלים מקומיים, חוויות אינטראקטיביות, ופארקים יפניים מסורתיים — כולם משולבים במסלול שמותאם בדיוק לקצב של משפחה. הצוות שלנו מלווה אתכם בכל שלב כדי לוודא שהילדים והמבוגרים נהנים באותה מידה.</p>
+          <div class="trip-modal__tags">
+            <span class="trip-modal__tag">טוקיו דיסנילנד</span>
+            <span class="trip-modal__tag">יוניברסל אוסקה</span>
+            <span class="trip-modal__tag">סנסו-ג׳י</span>
+            <span class="trip-modal__tag">אקווריום</span>
+            <span class="trip-modal__tag">12 יום</span>
+            <span class="trip-modal__tag">6 מטיילים</span>
+          </div>
+          <blockquote class="trip-modal__quote">
+            <p>״הילדים בקושי רצו לחזור הביתה. כל יום היה הרפתקה חדשה ומרגשת — והכי חשוב, היה גם זמן לנשום.״</p>
+            <cite>— משפחת כהן, רעננה</cite>
+          </blockquote>
+        </div>
+      </div>
+
+      <div id="trip-modal-3" class="trip-modal" dir="rtl">
+        <button type="button" class="trip-modal__close" data-fancybox-close aria-label="סגור"><span class="trip-modal__close-text">סגור</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+        <div class="trip-modal__media"><img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=1200" alt=""></div>
+        <div class="trip-modal__body">
+          <h3 class="trip-modal__title">טבע, כפרים ונופים</h3>
+          <p class="trip-modal__meta">16 יום • משפחה</p>
+          <p class="trip-modal__desc">יפן הפראית והאותנטית. נחקור כפרים קסומים בצפון, אזורי אונסן טבעיים, הרים מושלגים ואגמים שקטים. חוויה אינטימית עם תרבות יפנית כפרית מסורתית, רחוק מהעיר הסואנת.</p>
+          <div class="trip-modal__tags">
+            <span class="trip-modal__tag">הוקאידו</span>
+            <span class="trip-modal__tag">הר פוג׳י</span>
+            <span class="trip-modal__tag">אגם קוואגוצ׳יקו</span>
+            <span class="trip-modal__tag">שירקווה-גו</span>
+            <span class="trip-modal__tag">אונסן</span>
+            <span class="trip-modal__tag">16 יום</span>
+            <span class="trip-modal__tag">משפחה</span>
+          </div>
+          <blockquote class="trip-modal__quote">
+            <p>״כל יום היה מסע מרגש. גילינו יפן שלא ידענו שקיימת. הכל היה מתוכנן בשקט ומדויק.״</p>
+            <cite>— משפחת לוי, תל אביב</cite>
+          </blockquote>
+        </div>
+      </div>
+
+      <div id="trip-modal-4" class="trip-modal" dir="rtl">
+        <button type="button" class="trip-modal__close" data-fancybox-close aria-label="סגור"><span class="trip-modal__close-text">סגור</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+        <div class="trip-modal__media"><img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200" alt=""></div>
+        <div class="trip-modal__body">
+          <h3 class="trip-modal__title">ערים, תרבות וקלאסיקה</h3>
+          <p class="trip-modal__meta">14 יום • זוג</p>
+          <p class="trip-modal__desc">טיול קלאסי שמעניק את כל הטעמים של יפן — מטוקיו המודרנית והתוססת, דרך קיוטו עם המקדשים העתיקים והגיישות, ועד אוסקה הכיפית עם האוכל המדהים. הטיול המתאים למי שמגיע לראשונה ליפן ורוצה את כל הקלאסיקה במנה אחת.</p>
+          <div class="trip-modal__tags">
+            <span class="trip-modal__tag">טוקיו</span>
+            <span class="trip-modal__tag">קיוטו</span>
+            <span class="trip-modal__tag">אוסקה</span>
+            <span class="trip-modal__tag">נארה</span>
+            <span class="trip-modal__tag">מקדש פושימי אינארי</span>
+            <span class="trip-modal__tag">ארמון אוסקה</span>
+            <span class="trip-modal__tag">14 יום</span>
+            <span class="trip-modal__tag">זוג</span>
+          </div>
+          <blockquote class="trip-modal__quote">
+            <p>״החוויה של החיים. הצוות של Ninja Tours תכנן את כל המסלול עד לפרטים הקטנים ביותר — כל יום היה מושלם.״</p>
+            <cite>— דנה ויובל, מודיעין</cite>
+          </blockquote>
+        </div>
+      </div>
+
+      <div id="trip-modal-5" class="trip-modal" dir="rtl">
+        <button type="button" class="trip-modal__close" data-fancybox-close aria-label="סגור"><span class="trip-modal__close-text">סגור</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+        <div class="trip-modal__media"><img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=1200" alt=""></div>
+        <div class="trip-modal__body">
+          <h3 class="trip-modal__title">שופינג ואופנה</h3>
+          <p class="trip-modal__meta">8 יום • זוג</p>
+          <p class="trip-modal__desc">חוויית הקניות היפנית האולטימטיבית. נטייל בשכונות האופנה הכי שוות של טוקיו ואוסקה — מהרחובות התוססים של הראבג׳וקו והשיבויה המודרנית, דרך הבוטיקים היוקרתיים של גינזה ועד לחנויות הוינטג׳ של דאיקאניאמה.</p>
+          <div class="trip-modal__tags">
+            <span class="trip-modal__tag">הראבג׳וקו</span>
+            <span class="trip-modal__tag">גינזה</span>
+            <span class="trip-modal__tag">שיבויה</span>
+            <span class="trip-modal__tag">דאיקאניאמה</span>
+            <span class="trip-modal__tag">שינסאיבאשי</span>
+            <span class="trip-modal__tag">8 יום</span>
+            <span class="trip-modal__tag">זוג</span>
+          </div>
+          <blockquote class="trip-modal__quote">
+            <p>״הצוות הכיר את כל החנויות הסודיות ואת המקומות הכי שווים. חוויה שאי אפשר היה לחזור עליה לבד.״</p>
+            <cite>— נועה ועמית, גבעתיים</cite>
+          </blockquote>
+        </div>
+      </div>
+
+      <div id="trip-modal-6" class="trip-modal" dir="rtl">
+        <button type="button" class="trip-modal__close" data-fancybox-close aria-label="סגור"><span class="trip-modal__close-text">סגור</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+        <div class="trip-modal__media"><img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200" alt=""></div>
+        <div class="trip-modal__body">
+          <h3 class="trip-modal__title">רומנטיקה וירח דבש</h3>
+          <p class="trip-modal__meta">10 יום • זוג</p>
+          <p class="trip-modal__desc">חוויית ירח דבש או יום נישואים שאי אפשר לשכוח — שילוב של אונסן פרטיים, יקאנים מסורתיים, ארוחות קייסקי איקוניות, וטיולים זוגיים בין מקדשים שקטים בערפל הבוקר. תכננו לכם את הדרך הרומנטית ביותר ליפן.</p>
+          <div class="trip-modal__tags">
+            <span class="trip-modal__tag">האקונה</span>
+            <span class="trip-modal__tag">קיוטו</span>
+            <span class="trip-modal__tag">קאנאזאווה</span>
+            <span class="trip-modal__tag">אונסן פרטי</span>
+            <span class="trip-modal__tag">ארוחת קייסקי</span>
+            <span class="trip-modal__tag">10 יום</span>
+            <span class="trip-modal__tag">זוג</span>
+          </div>
+          <blockquote class="trip-modal__quote">
+            <p>״ירח הדבש שחלמנו עליו. כל פרט תוכנן בקפידה — מהיקאן השקט ועד ארוחת הערב המיוחדת על שפת ההרים.״</p>
+            <cite>— יערה ואיתי, רמת גן</cite>
+          </blockquote>
+        </div>
+      </div>
+
+      <div id="trip-modal-7" class="trip-modal" dir="rtl">
+        <button type="button" class="trip-modal__close" data-fancybox-close aria-label="סגור"><span class="trip-modal__close-text">סגור</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+        <div class="trip-modal__media"><img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=1200" alt=""></div>
+        <div class="trip-modal__body">
+          <h3 class="trip-modal__title">סקי וחורף ביפן</h3>
+          <p class="trip-modal__meta">9 יום • 4 מטיילים</p>
+          <p class="trip-modal__desc">פאודר משובח ויעדי סקי המוכרים שביפן. שילוב של ימי גלישה אינטנסיביים בניסיקו ויומיוטו עם ערבים נינוחים באונסן חמים. מתאים לגולשים מתחילים ומנוסים — אפשר לשלב מדריכים מקומיים בשפה אנגלית.</p>
+          <div class="trip-modal__tags">
+            <span class="trip-modal__tag">ניסיקו</span>
+            <span class="trip-modal__tag">הוקאידו</span>
+            <span class="trip-modal__tag">יומיוטו</span>
+            <span class="trip-modal__tag">סאפורו</span>
+            <span class="trip-modal__tag">אונסן</span>
+            <span class="trip-modal__tag">9 יום</span>
+            <span class="trip-modal__tag">4 מטיילים</span>
+          </div>
+          <blockquote class="trip-modal__quote">
+            <p>״הפאודר הכי טוב שגלשנו אי פעם, בשילוב עם בתי מלון מדהימים והאוכל הטוב בעולם. נחזור.״</p>
+            <cite>— אורי וחברים, חיפה</cite>
+          </blockquote>
+        </div>
+      </div>
+
+      <div id="trip-modal-8" class="trip-modal" dir="rtl">
+        <button type="button" class="trip-modal__close" data-fancybox-close aria-label="סגור"><span class="trip-modal__close-text">סגור</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+        <div class="trip-modal__media"><img src="https://images.unsplash.com/photo-1578637387939-43c525550085?w=1200" alt=""></div>
+        <div class="trip-modal__body">
+          <h3 class="trip-modal__title">עומק קולינרי</h3>
+          <p class="trip-modal__meta">11 יום • 2 מטיילים</p>
+          <p class="trip-modal__desc">המסלול לחובבי האוכל המופלא. סדנאות בישול עם שפים מקומיים, ביקורי שווקים אותנטיים, מסעדות עם כוכבי מישלן ומסעדות מקומיות שלא תמצאו במדריכים. מתפריט הסושי של טסוקיג׳י ועד הראמן של פוקואוקה.</p>
+          <div class="trip-modal__tags">
+            <span class="trip-modal__tag">טסוקיג׳י</span>
+            <span class="trip-modal__tag">פוקואוקה</span>
+            <span class="trip-modal__tag">קיוטו</span>
+            <span class="trip-modal__tag">סדנת סושי</span>
+            <span class="trip-modal__tag">סדנת ראמן</span>
+            <span class="trip-modal__tag">מישלן</span>
+            <span class="trip-modal__tag">11 יום</span>
+            <span class="trip-modal__tag">2 מטיילים</span>
+          </div>
+          <blockquote class="trip-modal__quote">
+            <p>״הלכנו לישון רעבים כל לילה כדי שתהיה לנו בטן ליום הבא. כל ארוחה הייתה חוויה תרבותית בפני עצמה.״</p>
+            <cite>— תמר ויואב, ירושלים</cite>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer" id="footer">
+    <div class="footer__inner">
+      <div class="footer__col footer__col--logo">
+        <a href="index.html" class="footer__logo" aria-label="Ninja Tours">
+          <img src="images/logo.svg" alt="Ninja Tours" width="160" height="120">
+        </a>
+      </div>
+
+      <nav class="footer__col" aria-label="קטגוריות">
+        <h4 class="footer__heading">קטגוריות</h4>
+        <ul>
+          <li><a href="#">תחבורה</a></li>
+          <li><a href="attractions.html">אטרקציות</a></li>
+          <li><a href="hotels.html">מלונות</a></li>
+          <li><a href="use-cases.html">טיולים שבנינו</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="יעדים פופולריים">
+        <h4 class="footer__heading">יעדים פופולריים</h4>
+        <ul>
+          <li><a href="destination-tokyo.html">טוקיו</a></li>
+          <li><a href="destinations.html">אוסקה</a></li>
+          <li><a href="destinations.html">קיוטו</a></li>
+          <li><a href="destinations.html">עוד יעדים</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="עלינו">
+        <h4 class="footer__heading">עלינו</h4>
+        <ul>
+          <li><a href="about.html">אודות</a></li>
+          <li><a href="#">שאלות ותשובות</a></li>
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="מידע למטייל">
+        <h4 class="footer__heading">מידע למטייל</h4>
+        <ul>
+          <li><a href="blog.html">מדריכים</a></li>
+          <li><a href="#">מידע שימושי</a></li>
+          <li><a href="#">קישורים חשובים</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer__col footer__col--contact">
+        <h4 class="footer__heading">יצירת קשר</h4>
+        <a class="footer__email" href="mailto:ninjatours@gmail.com">ninjatours@gmail.com</a>
+        <ul class="footer__socials" aria-label="רשתות חברתיות">
+          <li>
+            <a class="footer__social" href="#" aria-label="פייסבוק">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.2-1.5 1.5-1.5h1.6V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8.2v3h2.5V21h2.8z"/></svg>
+            </a>
+          </li>
+          <li>
+            <a class="footer__social" href="#" aria-label="אינסטגרם">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor"/>
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bar">
+      <p class="footer__copy">Copyright &copy;Ninja Tours. All right reserved</p>
+      <p class="footer__credit">Design &amp; Code by Elevate</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      /* ── Header scroll / burger ─────────────────────────────────────── */
+      var header = document.querySelector('.header');
+      function onScroll() {
+        if (!header) return;
+        header.classList.toggle('fixed', window.scrollY > 50);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      var burger = document.querySelector('.burger-btn');
+      var menus = document.querySelectorAll('.main-menu');
+      if (burger) {
+        burger.addEventListener('click', function () {
+          var open = burger.getAttribute('aria-expanded') === 'true';
+          burger.setAttribute('aria-expanded', String(!open));
+          menus.forEach(function (m) { m.classList.toggle('--open'); });
+          document.body.classList.toggle('--menu-open');
+        });
+      }
+
+      /* ── Custom Multi-Select Dropdowns ──────────────────────────────── */
+      var dropdowns = document.querySelectorAll('.custom-dropdown');
+      var activeFiltersEl = document.getElementById('use-cases-active-filters');
+
+      var labelMap = {
+        // destinations
+        tokyo: 'טוקיו', kyoto: 'קיוטו', osaka: 'אוסקה',
+        hakone: 'האקונה', hokkaido: 'הוקאידו',
+        kanazawa: 'קאנאזאווה', shikoku: 'שיקוקו', kyushu: 'קיושו',
+        // audience
+        couples: 'זוגות', families: 'משפחות', friends: 'חברים',
+        honeymoon: 'ירח דבש', experienced: 'מטיילים מנוסים',
+        // length
+        short: 'עד 9 ימים', medium: '10-14 ימים', long: '15+ ימים',
+        // tags
+        culture: 'תרבות', nature: 'טבע', food: 'קולינריה',
+        shopping: 'שופינג', ski: 'סקי', onsen: 'אונסן',
+        romance: 'רומנטיקה', kids: 'ילדים'
+      };
+
+      dropdowns.forEach(function (dd) {
+        var trigger = dd.querySelector('.custom-dropdown__trigger');
+        var valueEl = dd.querySelector('.custom-dropdown__value');
+        var checks  = dd.querySelectorAll('input[type="checkbox"]');
+        var placeholder = valueEl.textContent;
+
+        trigger.addEventListener('click', function (e) {
+          e.preventDefault();
+          var wasOpen = dd.classList.contains('--open');
+          dropdowns.forEach(function (d) { d.classList.remove('--open'); });
+          if (!wasOpen) dd.classList.add('--open');
+          trigger.setAttribute('aria-expanded', String(!wasOpen));
+        });
+
+        checks.forEach(function (cb) {
+          cb.addEventListener('change', function () {
+            updateDropdownLabel(dd, valueEl, checks, placeholder);
+            renderActiveFilters();
+            applyFilters();
+          });
+        });
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.custom-dropdown')) {
+          dropdowns.forEach(function (d) {
+            d.classList.remove('--open');
+            var t = d.querySelector('.custom-dropdown__trigger');
+            if (t) t.setAttribute('aria-expanded', 'false');
+          });
+        }
+      });
+
+      function updateDropdownLabel(dd, valueEl, checks, placeholder) {
+        var selected = [];
+        checks.forEach(function (cb) {
+          if (cb.checked) selected.push(labelMap[cb.value] || cb.value);
+        });
+        if (selected.length === 0) {
+          valueEl.textContent = placeholder;
+          valueEl.classList.add('--placeholder');
+        } else {
+          valueEl.textContent = selected.join(', ');
+          valueEl.classList.remove('--placeholder');
+        }
+      }
+
+      function renderActiveFilters() {
+        if (!activeFiltersEl) return;
+        activeFiltersEl.innerHTML = '';
+        var allChecked = document.querySelectorAll('.hotels-filter input[type="checkbox"]:checked');
+        allChecked.forEach(function (cb) {
+          var pill = document.createElement('span');
+          pill.className = 'hotels-filter__active-pill';
+          pill.innerHTML = (labelMap[cb.value] || cb.value) +
+            ' <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+          pill.addEventListener('click', function () {
+            cb.checked = false;
+            cb.dispatchEvent(new Event('change'));
+          });
+          activeFiltersEl.appendChild(pill);
+        });
+      }
+
+      /* ── Client-side filter logic ───────────────────────────────────── */
+      function applyFilters() {
+        var groups = ['destination', 'audience', 'length', 'tags'];
+        var selected = {};
+        groups.forEach(function (g) {
+          selected[g] = Array.prototype.map.call(
+            document.querySelectorAll('input[name="' + g + '"]:checked'),
+            function (cb) { return cb.value; }
+          );
+        });
+
+        var cards = document.querySelectorAll('#use-cases-grid .custom-trips__card');
+        var visibleCount = 0;
+
+        cards.forEach(function (card) {
+          var matches = groups.every(function (g) {
+            if (selected[g].length === 0) return true;
+            var cardVals = (card.getAttribute('data-' + g) || '').split(',').map(function (s) { return s.trim(); });
+            return selected[g].some(function (v) { return cardVals.indexOf(v) !== -1; });
+          });
+          card.hidden = !matches;
+          if (matches) visibleCount++;
+        });
+
+        var emptyEl = document.getElementById('use-cases-empty');
+        if (emptyEl) emptyEl.hidden = visibleCount > 0;
+      }
+    })();
+  </script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
