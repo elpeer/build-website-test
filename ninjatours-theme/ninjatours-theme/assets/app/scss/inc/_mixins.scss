@@ -1,0 +1,103 @@
+//vars
+$primaryFont: 'Noto Sans Hebrew', sans-serif;
+$secondaryFont: 'Montserrat', sans-serif;
+
+//color
+$primaryColor: #fff;
+$accentColor: #91BDFF;
+$textColor: rgba(255, 255, 255, .8);
+
+//properties
+$transition: .5s ease;
+
+//mixins
+$maxWidth: 1920;
+$mobWidth: 390;
+$rootFontSize: 16;
+
+//convert px to rem
+@function rem($value) {
+  $remValue: (
+    $value / $rootFontSize) + rem;
+  @return $remValue;
+}
+
+//convert px to em
+@function em($value, $const: $rootFontSize) {
+  $emValue: (
+    $value / $const) + em;
+  @return $emValue;
+}
+
+//convert px to percent
+@function percent($value, $const) {
+  $percent: '%';
+  $percentValue: (
+    $value / $const * 100)#{$percent};
+  @return $percentValue;
+}
+
+//convert px to vw
+@function vw($value) {
+  $vwValue: (
+    $value / $maxWidth * 100) + vw;
+  @return $vwValue;
+}
+
+//convert px to vw for mobile
+@function vwm($value) {
+  $vwValue: (
+    $value / $mobWidth * 100) + vw;
+  @return $vwValue;
+}
+
+//add default styles for before and after
+@mixin bf-af {
+  position: absolute;
+  content: "";
+}
+
+//add background styles
+@mixin bg-set($bg_size, $pos: center) {
+  background-size: $bg_size;
+  background-position: $pos;
+  background-repeat: no-repeat;
+}
+
+//media queries
+@mixin mq-mob {
+  @media (max-width: 768px) and (orientation: portrait) {
+    @content;
+  }
+}
+
+@mixin mq-mob-inv {
+
+  @media (orientation: landscape),
+  (min-width: 769px) and (orientation: portrait) {
+    @content;
+  }
+}
+
+@mixin hover {
+  @media (any-hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+// directions
+@mixin ltr {
+
+  html:not([dir]) &,
+  html[dir='ltr'] & {
+    @content;
+  }
+}
+
+@mixin rtl {
+  html[dir='rtl'] & {
+    @content;
+  }
+}

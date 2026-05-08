@@ -1,0 +1,3033 @@
+/* ==========================================================================
+   Ninja Tours — Base styles
+   Conventions: Elevate Digital Studio (BEM, RTL, fluid rem, two breakpoints)
+   ========================================================================== */
+
+:root {
+  --header-height: 5.5rem;
+  --header-height-mob: 5rem;
+  --color-text: #1a1a1a;
+  --color-bg: #ffffff;
+  --color-muted: #6b6b6b;
+  --color-accent: #e1251b;
+  --color-accent-hover: #b71d14;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding: 5.625rem 0 0 0;
+  font-size: 0.83333vw;
+  overflow-x: hidden;
+  /* Always reserve room for the scrollbar so opening/closing a modal
+     doesn't shift the layout horizontally */
+  scrollbar-gutter: stable;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  html {
+    font-size: 4.10256vw;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: 'Noto Sans Hebrew', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img,
+picture,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+p {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  inset-block-start: -100px;
+  inset-inline-start: 1rem;
+  background: var(--color-text);
+  color: #fff;
+  padding: 0.625rem 1rem;
+  border-radius: 0.25rem;
+  z-index: 9999;
+  transition: inset-block-start 0.2s ease;
+}
+
+.skip-link:focus {
+  inset-block-start: 1rem;
+  outline: 2px solid var(--color-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 3.5rem;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .container {
+    padding-inline: 1rem;
+  }
+}
+
+/* Section title */
+.section-title {
+  font-weight: 600;
+  font-size: 4rem;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  color: #063874;
+
+  em,
+  strong,
+  b {
+    font-weight: 600;
+    font-style: normal;
+    color: var(--color-accent);
+  }
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .section-title {
+    line-height: 1.375;
+    font-size: 2rem;
+  }
+}
+
+/* ==========================================================================
+   Pill button (text + circular icon-on-end)
+   ========================================================================== */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-inline-start: 1.25rem;
+  padding-inline-end: 0.3125rem;
+  padding-block: 0.3125rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1;
+  flex-direction: row-reverse;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.btn-pill__text {
+  display: inline-block;
+  padding-inline-end: 0.125rem;
+}
+
+.btn-pill__icon {
+  width: 2.125rem;
+  height: 2.125rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.btn-pill__icon svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.btn-pill.--primary {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.btn-pill.--primary .btn-pill__icon {
+  background: #fff;
+  color: var(--color-accent);
+}
+
+.btn-pill.--primary:hover {
+  background: var(--color-accent-hover);
+}
+
+/* Large pill — 60px height per design guide (button height: 60px,
+   horizontal padding: 32px, radius: 30px, icon padding-left: 16px,
+   gap icon→text: 12px, icon SVG: 20px) */
+.btn-pill.--lg {
+  height: 4.5rem;
+  padding-inline-start: 2.5rem;
+  padding-inline-end: 0.5rem;
+  padding-block: 0;
+  gap: 1rem;
+  border-radius: 2.25rem;
+  font-size: 1.375rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+}
+
+.btn-pill.--lg .btn-pill__text {
+  padding-inline-end: 0.5rem;
+}
+
+.btn-pill.--lg .btn-pill__icon {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.btn-pill.--lg .btn-pill__icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Solid blue with red icon circle (used by Why-us CTA) */
+.btn-pill.--blue {
+  background: #063874;
+  color: #fff;
+}
+
+.btn-pill.--blue .btn-pill__icon {
+  background: #d2170a;
+  color: #fff;
+}
+
+.btn-pill.--blue:hover {
+  background: #042957;
+}
+
+.btn-pill.--light {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.btn-pill.--light .btn-pill__icon {
+  background: #fff;
+  color: var(--color-text);
+}
+
+.btn-pill.--light:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* On scroll → light pill flips to white solid + dark text */
+.header.fixed .btn-pill.--light {
+  background: #f4f4f4;
+  color: var(--color-text);
+  backdrop-filter: none;
+}
+
+.header.fixed .btn-pill.--light .btn-pill__icon {
+  background: #fff;
+  color: var(--color-text);
+}
+
+/* ==========================================================================
+   Header (transparent over hero, white on scroll)
+   ========================================================================== */
+.header {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 100;
+  background: transparent;
+  color: #fff;
+  transition: background 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.header.fixed {
+  background: #fff;
+  color: var(--color-text);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+
+  .logo {
+
+    img.--default {
+      opacity: 0;
+    }
+
+    img.--dark {
+      opacity: 1;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 2.75rem;
+    }
+  }
+
+}
+
+.header-inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: var(--header-height);
+  padding-inline: 6.25rem;
+  gap: 2rem;
+}
+
+/* Menus */
+.main-menu ul {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.main-menu a {
+  font-weight: 400;
+  font-size: 1.125rem;
+  letter-spacing: 0.01em;
+  position: relative;
+  padding-block: 0.25rem;
+  transition: opacity 0.2s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.main-menu a:hover {
+  border-color: currentColor;
+}
+
+.main-menu--start ul {
+  justify-content: flex-start;
+}
+
+.main-menu--end ul {
+  justify-content: flex-end;
+}
+
+/* Logo (centered) */
+.logo {
+  display: inline-block;
+
+  img {
+    width: 4.8125rem;
+    display: block;
+    position: absolute;
+    top: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s ease;
+  }
+
+  img.--dark {
+    opacity: 0;
+  }
+}
+
+
+/* End cluster (search + CTA + secondary menu) */
+.header-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.75rem;
+}
+
+.header-end .main-menu--end {
+  order: 1;
+}
+
+.header-end .search-btn {
+  order: 2;
+}
+
+.header-end .btn-pill {
+  order: 3;
+}
+
+.search-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+
+.search-btn svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.search-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.header.fixed .search-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Burger (mobile only) */
+.burger-btn {
+  display: none;
+  width: 2rem;
+  height: 2rem;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+
+.burger-btn span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.mobile-menu {
+  display: none;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .header-inner {
+    height: var(--header-height-mob);
+    padding-inline: 1rem;
+    gap: 1rem;
+    z-index: 2;
+    position: relative;
+  }
+
+  .main-menu--start,
+  .header-end .main-menu--end,
+  .header-end .search-btn {
+    display: none;
+  }
+
+  .btn-pill.--light {
+    height: 2.25rem;
+    padding-inline: .5rem .25rem;
+
+    .btn-pill__text {
+      font-size: 0.75rem;
+    }
+
+    .btn-pill__icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+
+  .mobile-menu {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 8rem 1rem 2rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(100%);
+    transition: all .3s ease;
+
+    &.--open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+  }
+
+  .header:has(.mobile-menu.--open) {
+    .burger-btn span {
+      color: #000;
+    }
+
+    .btn-pill.--light {
+      background: rgba(0, 0, 0, .5);
+    }
+
+    .logo {
+      img.--default {
+        opacity: 0;
+      }
+
+      img.--dark {
+        opacity: 1;
+      }
+    }
+  }
+
+  .burger-btn {
+    display: flex;
+    order: -2;
+  }
+
+  .logo img {
+    width: 3rem;
+  }
+
+  .header.fixed .logo img {
+    width: 2rem !important;
+  }
+
+  .main-menu ul {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    color: #000;
+  }
+
+  body.--menu-open {
+    overflow: hidden;
+  }
+}
+
+/* ==========================================================================
+   Home Hero — full-bleed video background, centered content
+   Spec (Ninja Tours design guide @ 1440px reference):
+   • Title       100/110, weight 700, color #fff
+   • Features    28/36,   weight 500, color #ffffffcc, red dot #e1251b
+   • Lead        20/28,   weight 400, color #ffffff80
+   • CTA         60h, padding-inline 32, radius 30, text 18/24, weight 500
+   • Spacing     title→features 32, features→lead 24, lead→CTA 56
+   • Container   max 1440, padding-inline 64
+   ========================================================================== */
+.home-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #fff;
+  text-align: center;
+}
+
+.home-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: #1a1a1a;
+}
+
+.home-hero__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.home-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0.10) 35%, rgba(0, 0, 0, 0.55) 100%);
+  pointer-events: none;
+}
+
+.home-hero__inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 90rem;
+  padding-inline: 4rem;
+  padding-block-start: var(--header-height);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-hero__title {
+  font-size: 6.25rem;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: #fff;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
+  margin-block-end: 2rem;
+  white-space: nowrap;
+}
+
+.home-hero__features {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  font-size: 1.75rem;
+  line-height: 2.25rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+  margin-block-end: 1.5rem;
+}
+
+.home-hero__features li {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.home-hero__features li:not(:last-child)::after {
+  content: '';
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+}
+
+.home-hero__lead {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 400;
+  color: #fff;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+  margin-block-end: 3.5rem;
+}
+
+.home-hero__cta {
+  margin-block-start: 0;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .home-hero {
+    min-height: 92vh;
+  }
+
+  .home-hero__inner {
+    padding-inline: 1rem;
+    padding-block-start: var(--header-height-mob);
+  }
+
+  .home-hero__title {
+    font-size: 2.75rem;
+    line-height: 1.1;
+    margin-block-end: 1.25rem;
+    white-space: normal;
+  }
+
+  .home-hero__features {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-block-end: 1rem;
+  }
+
+  .home-hero__features li {
+    gap: 0.75rem;
+  }
+
+  .home-hero__features li:not(:last-child)::after {
+    width: 0.3125rem;
+    height: 0.3125rem;
+  }
+
+  .home-hero__lead {
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    margin-block-end: 2rem;
+  }
+
+  .btn-pill.--lg {
+    height: 3.5rem;
+    padding-inline-start: 1.75rem;
+    font-size: 1.0625rem;
+    border-radius: 1.75rem;
+    gap: 0.75rem;
+  }
+
+  .btn-pill.--lg .btn-pill__icon {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .btn-pill.--lg .btn-pill__icon svg {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+}
+
+/* ==========================================================================
+   Custom Trips — slider of past customer trips. Each card has a soft red
+   "קרא עוד" button that opens a Fancybox modal with full description,
+   tags, and a customer quote.
+   ========================================================================== */
+.custom-trips {
+  background: #fffaf5;
+  padding-block: 5rem 4rem;
+}
+
+.custom-trips__head {
+  text-align: center;
+  max-width: 75rem;
+  margin: 0 auto 3rem;
+  padding-inline: 2.5rem;
+}
+
+.custom-trips__slider {
+  position: relative;
+  overflow: hidden;
+  padding-inline-start: 2.5rem;
+  padding-inline-end: 0;
+  /* Vertical padding gives the card box-shadow room to render
+     without being clipped by overflow:hidden */
+  padding-block: 1.5rem 2.5rem;
+}
+
+.custom-trips__slider .swiper-wrapper {
+  align-items: stretch;
+}
+
+.custom-trips__slider .swiper-slide {
+  height: auto;
+}
+
+.custom-trips__card {
+  width: 24rem;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-trips__card-image {
+  margin: 0;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.custom-trips__card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.custom-trips__card-body {
+  padding: 1.5rem 1.5rem 1.75rem;
+  text-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.custom-trips__card-title {
+  font-size: 1.25rem;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #063874;
+  margin: 0;
+}
+
+.custom-trips__card-desc {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #5a5a5a;
+  margin: 0;
+}
+
+.custom-trips__card-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.875rem;
+  color: #222;
+  margin: 0.25rem 0 auto;
+}
+
+.custom-trips__card-bullet {
+  width: 0.3125rem;
+  height: 0.3125rem;
+  border-radius: 50%;
+  background: #d2170a;
+}
+
+.custom-trips__card-cta {
+  align-self: flex-start;
+  margin-block-start: 0.875rem;
+  padding: 0.5rem 1.125rem;
+  border: 1px solid rgba(210, 23, 10, 0.35);
+  border-radius: 999px;
+  background: transparent;
+  color: #d2170a;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.custom-trips__card-cta:hover {
+  background: #d2170a;
+  color: #fff;
+  border-color: #d2170a;
+}
+
+.custom-trips__nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.875rem;
+  margin-block-start: 2.5rem;
+}
+
+.custom-trips__nav-btn {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: #d2170a;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s ease, opacity 0.25s ease;
+}
+
+.custom-trips__nav-btn:hover {
+  background: #a60f04;
+}
+
+.custom-trips__nav-btn.swiper-button-disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.custom-trips__nav-btn svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* Modals are kept hidden in the source DOM; Fancybox clones them on open */
+.trip-modal-sources {
+  display: none;
+}
+
+/* Modal (rendered inside Fancybox) — full RTL, close button floats above */
+.trip-modal {
+  width: min(58rem, 92vw);
+  background: #fff !important;
+  border-radius: 1.5rem;
+  /* overflow: visible so the close button can sit ABOVE the card without
+     being clipped — inner clipping handled per child below */
+  overflow: visible;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  font-family: 'Noto Sans Hebrew', system-ui, sans-serif;
+  position: relative;
+  color: #222;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.trip-modal__close {
+  /* Sits just above the modal card; .trip-modal has overflow:visible so it shows */
+  position: absolute;
+  inset-block-end: calc(100% + 0.75rem);
+  inset-block-start: auto;
+  inset-inline-end: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding-inline: 1rem;
+  border-radius: 999px;
+  background: #fff;
+  color: #222;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  z-index: 10;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.trip-modal__close:hover {
+  background: #d2170a;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.trip-modal__close-text {
+  line-height: 1;
+}
+
+.trip-modal__close svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.trip-modal__media {
+  position: relative;
+  min-height: 22rem;
+  overflow: hidden;
+  /* Inline-start = right in RTL → image is on the right side of desktop modal */
+  border-start-start-radius: 1.5rem;
+  border-end-start-radius: 1.5rem;
+}
+
+.trip-modal__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.trip-modal__body {
+  padding: 2rem 2rem 2.25rem;
+  background: #fff;
+  /* Inline-end = left in RTL → body is on the left side of desktop modal */
+  border-start-end-radius: 1.5rem;
+  border-end-end-radius: 1.5rem;
+  text-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 80vh;
+  overflow-y: auto;
+  min-height: 0;
+  /* Always-visible thin scrollbar so users see they can scroll */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(210, 23, 10, 0.45) rgba(0, 0, 0, 0.05);
+}
+
+.trip-modal__body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.trip-modal__body::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+.trip-modal__body::-webkit-scrollbar-thumb {
+  background: rgba(210, 23, 10, 0.45);
+  border-radius: 3px;
+}
+
+.trip-modal__title {
+  font-size: 1.75rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #063874;
+  margin: 0;
+  text-align: start;
+}
+
+.trip-modal__meta {
+  font-size: 0.9375rem;
+  color: #d2170a;
+  font-weight: 600;
+  margin: 0;
+  text-align: start;
+}
+
+.trip-modal__desc {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #444;
+  margin: 0;
+  text-align: start;
+}
+
+.trip-modal__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+
+.trip-modal__tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3125rem 0.75rem;
+  background: rgba(6, 56, 116, 0.08);
+  color: #063874;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.trip-modal__quote {
+  position: relative;
+  margin: 0.5rem 0 0;
+  padding: 1.25rem 1.5rem;
+  background: #fffaf5;
+  border-inline-start: 3px solid #d2170a;
+  border-radius: 0.5rem;
+  text-align: start;
+}
+
+.trip-modal__quote p {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: #222;
+  font-style: italic;
+  text-align: start;
+}
+
+.trip-modal__quote cite {
+  font-style: normal;
+  font-size: 0.8125rem;
+  color: #6e6e6e;
+}
+
+/* Make Fancybox give us tight padding/no extra chrome */
+.fancybox__container .fancybox__content {
+  padding: 0;
+  background: transparent;
+}
+
+.fancybox__container .fancybox__content>.f-button.is-close-btn {
+  display: none;
+}
+
+.fancybox__slide {
+  padding: 1rem;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .custom-trips {
+    padding-block: 3rem 2.5rem;
+  }
+
+  .custom-trips__head {
+    padding-inline: 1rem;
+    margin-block-end: 2rem;
+  }
+
+  .custom-trips__slider {
+    padding-inline-start: 1rem;
+    padding-block: 0.5rem 1rem;
+  }
+
+  .custom-trips__card {
+    width: 16.5rem;
+  }
+
+  .custom-trips__card-body {
+    padding: 1rem 1.125rem 1.25rem;
+    gap: 0.375rem;
+  }
+
+  .custom-trips__card-title {
+    font-size: 1.0625rem;
+  }
+
+  .custom-trips__card-desc {
+    font-size: 0.875rem;
+  }
+
+  .custom-trips__card-cta {
+    margin-block-start: 0.625rem;
+    padding: 0.4375rem 1rem;
+  }
+
+  .custom-trips__nav {
+    margin-block-start: 1.75rem;
+  }
+
+  /* Mobile modal — centred sheet with symmetric side padding */
+  .fancybox__slide {
+    padding: 4rem 1rem 1rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .fancybox__content {
+    padding: 0 !important;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .trip-modal {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    width: 100%;
+    max-width: 100%;
+    max-height: 82vh;
+    height: 82vh;
+    margin: 0;
+    border-radius: 1rem;
+  }
+
+  .trip-modal__media {
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    border-radius: 1rem 1rem 0 0;
+    /* override desktop logical radii */
+    border-start-start-radius: 1rem;
+    border-end-start-radius: 0;
+  }
+
+  .trip-modal__body {
+    padding: 1.25rem 1.25rem 1.5rem;
+    max-height: none;
+    overflow-y: auto;
+    min-height: 0;
+    gap: 0.875rem;
+    border-radius: 0 0 1rem 1rem;
+    border-start-end-radius: 0;
+    border-end-end-radius: 1rem;
+  }
+
+  .trip-modal__title {
+    font-size: 1.375rem;
+  }
+
+  .trip-modal__desc {
+    font-size: 0.9375rem;
+  }
+
+  .trip-modal__tags {
+    gap: 0.375rem;
+  }
+
+  .trip-modal__tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.625rem;
+  }
+
+  .trip-modal__quote {
+    padding: 1rem 1.125rem;
+  }
+
+  .trip-modal__close {
+    inset-block-end: calc(100% + 0.5rem);
+    inset-inline-end: 0;
+    height: 2.25rem;
+    padding-inline: 0.875rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/* ==========================================================================
+   Testimonials — Google reviews slider with autoplay that pauses on hover
+   and stops permanently when the user clicks the prev/next buttons.
+   ========================================================================== */
+.testimonials {
+  background: #fffaf5;
+  padding-block: 5rem 4rem;
+}
+
+.testimonials__head {
+  text-align: center;
+  margin-block-end: 3rem;
+  padding-inline: 2.5rem;
+}
+
+.testimonials__head-stars {
+  display: inline-flex;
+  gap: 0.25rem;
+  color: #fcb800;
+  margin-block-end: 0.875rem;
+}
+
+.testimonials__head-stars svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.testimonials__slider {
+  position: relative;
+  overflow: hidden;
+  padding: 1rem 2.5rem 1.5rem;
+}
+
+.testimonials__slider .swiper-wrapper {
+  align-items: stretch;
+}
+
+.testimonials__slider .swiper-slide {
+  height: auto;
+}
+
+.testimonials__card {
+  width: 22rem;
+  flex-shrink: 0;
+  background: #f4ebde;
+  border-radius: 1.25rem;
+  padding: 2rem 1.75rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  text-align: start;
+  height: 100%;
+}
+
+.testimonials__quote-mark {
+  position: absolute;
+  inset-block-start: 1.25rem;
+  inset-inline-start: 1.5rem;
+  color: #b8b3aa;
+}
+
+.testimonials__quote-mark svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.testimonials__quote {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: #3a3a3a;
+  margin: 1.5rem 0 0;
+  flex: 1 1 auto;
+}
+
+.testimonials__author {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-block-start: 1.5rem;
+}
+
+.testimonials__author-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.testimonials__author-photo {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
+}
+
+.testimonials__author-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.testimonials__author-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #222;
+  line-height: 1.2;
+}
+
+.testimonials__author-stars {
+  font-size: 0.875rem;
+  color: #fcb800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.testimonials__google {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+}
+
+.testimonials__google svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.testimonials__nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.875rem;
+  margin-block-start: 2rem;
+}
+
+.testimonials__nav-btn {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: #d2170a;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s ease, opacity 0.25s ease;
+}
+
+.testimonials__nav-btn:hover {
+  background: #a60f04;
+}
+
+.testimonials__nav-btn svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .testimonials {
+    padding-block: 3rem 2.5rem;
+  }
+
+  .testimonials__head {
+    margin-block-end: 2rem;
+    padding-inline: 1rem;
+  }
+
+  .testimonials__slider {
+    padding: 0.5rem 1rem 1rem;
+  }
+
+  .testimonials__card {
+    width: 17.5rem;
+    padding: 1.5rem 1.25rem 1.25rem;
+  }
+
+  .testimonials__quote {
+    font-size: 0.875rem;
+  }
+
+  .testimonials__nav {
+    margin-block-start: 1.5rem;
+  }
+}
+
+/* ==========================================================================
+   Partners — two rows of partner logos that auto-marquee in opposite
+   directions. Each logo card has a fixed height, padding and background;
+   width adjusts to the logo's own aspect ratio.
+   ========================================================================== */
+.partners {
+  background: #fffaf5;
+  padding-block: 5rem 4rem;
+  overflow: hidden;
+}
+
+.partners__head {
+  text-align: center;
+  max-width: 80rem;
+  margin: 0 auto 2.5rem;
+  padding-inline: 2.5rem;
+}
+
+.partners__lead {
+  margin: 1rem auto 0;
+  max-width: 56rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #444;
+}
+
+/* Marquee — pattern from https://stackoverflow.com/a/79742980
+   (Nixit Ahir, CC BY-SA 4.0). The track is the animated element and
+   contains TWO identical lists. translateX goes 0 → -50%, which is
+   exactly one list's width → the second list lands where the first
+   started. Loop snaps invisibly because both lists are identical. */
+.partners__row {
+  width: 100%;
+  overflow: hidden;
+  margin-block-start: 1rem;
+}
+
+.partners__track {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  direction: ltr;
+
+  .js-marquee-wrapper {
+    display: flex;
+  }
+
+  .js-marquee {
+    float: none !important;
+    display: flex;
+  }
+}
+
+.partners__logo {
+  flex: 0 0 auto;
+  background: #f4ebde;
+  border-radius: 1rem;
+  padding: 1rem;
+  height: 9.6875rem;
+  /* Min-width guarantees each card occupies a known slot even if the image
+     hasn't loaded yet — without this, an unloaded <img> collapses the card
+     to ~padding-only width and the list shrinks below viewport width,
+     reintroducing dead space at the loop boundary. */
+  width: 22.0625rem;
+  /* Symmetric margin (both sides) so the gap before list 2's first item
+     equals the gap between items inside a list — pixel-perfect seam */
+  margin: 0 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.partners__logo img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .partners {
+    padding-block: 3rem 2.5rem;
+  }
+
+  .partners__head {
+    margin-block-end: 1.5rem;
+    padding-inline: 1rem;
+  }
+
+  .partners__lead {
+    font-size: 0.9375rem;
+  }
+
+  .partners__logo {
+    padding: .75rem;
+    border-radius: 0.875rem;
+    margin: 0 0.375rem;
+    width: 13rem;
+    height: 5.75rem;
+  }
+}
+
+/* ==========================================================================
+   About — image left + title/text/CTA right (desktop). Mobile stacks
+   image first then text per the design brief.
+   ========================================================================== */
+.about {
+  background: #fffaf5;
+  padding-block: 5rem;
+}
+
+.about .container {
+  max-width: 97.75rem;
+  margin-inline: auto;
+  padding-inline: 2.5rem;
+  display: grid;
+  grid-template-columns: 1fr 49.625rem;
+  align-items: center;
+  gap: 3rem;
+}
+
+.about__image {
+  border-radius: 1.5rem;
+  overflow: hidden;
+  aspect-ratio: 793/542;
+  margin: 0;
+}
+
+.about__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.about__text {
+  .section-title {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.about__body p {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #444;
+  margin: 0 0 1rem;
+}
+
+.about__body p:last-child {
+  margin-block-end: 1.5rem;
+}
+
+.about__cta {
+  display: inline-flex;
+  width: fit-content;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .about {
+    padding-block: 3rem;
+  }
+
+  .about .container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding-inline: 1rem;
+  }
+
+  /* Image first, text below (image takes row 1 on its own column too) */
+  .about__image,
+  .about__text {
+    grid-column: 1;
+    max-width: 100%;
+    justify-self: stretch;
+  }
+
+  .about__image {
+    grid-row: 1;
+    aspect-ratio: 4/3;
+  }
+
+  .about__text {
+    grid-row: 2;
+  }
+
+  .about__body p {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+  }
+}
+
+/* ==========================================================================
+   Contact — title with cherry-blossom leaves at the corners over a soft
+   background image, dark-blue form on one side, flat image on the other.
+   Mobile: image moves above the form; leaves move to top-right/bottom-left.
+   ========================================================================== */
+.contact {
+  position: relative;
+  isolation: isolate;
+  /* Section height locked to the background image's height (1800px = 112.5rem
+     at the 1920 reference viewport, scales with vw) so the inner composition
+     sits in the upper-middle band like the reference. */
+  min-height: 112.5rem;
+  display: flex;
+  align-items: flex-start;
+  /* anchor content to the top */
+  padding-block: 13rem 6rem;
+  /* pull title down to roughly the middle of the leaves */
+  background: #fff5e9 url('../images/footer_bg.jpg') center/cover no-repeat;
+  overflow: hidden;
+}
+
+.contact__inner {
+  width: 100%;
+}
+
+.contact__leaf {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+.contact__leaf--right {
+  width: 32rem;
+  inset-block-start: 4rem;
+  /* small breathing room from the section top */
+  inset-inline-start: 0;
+  /* RTL start = right side of viewport */
+}
+
+.contact__leaf--left {
+  width: 27.8125rem;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  /* RTL end = left side of viewport */
+}
+
+.contact__inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 95.3125rem;
+  margin-inline: auto;
+  padding-inline: 2.5rem;
+}
+
+.contact__head {
+  text-align: center;
+  margin-block-end: 9rem;
+}
+
+.contact__lead {
+  margin: 1rem auto 0;
+  max-width: 38rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #222;
+}
+
+.contact__layout {
+  display: grid;
+  grid-template-columns: 35.875rem 1fr;
+  gap: 1rem;
+}
+
+/* Form (right column in RTL = grid col 1) */
+.contact__form {
+  background: #063874;
+  border-radius: 1.75rem;
+  padding: 3.5rem 3rem 3rem;
+  color: #fff;
+}
+
+.contact__form-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+
+.contact__form-title {
+  font-size: 2.25rem;
+  line-height: 1.2;
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+}
+
+.contact__form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.25rem 2.5rem;
+  flex: 1 1 auto;
+  align-content: center;
+}
+
+.contact__field {
+  display: block;
+  position: relative;
+}
+
+.contact__field input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+  padding: 0.875rem 0;
+  color: #fff;
+  font: inherit;
+  font-size: 1.0625rem;
+  text-align: start;
+  /* Force RTL on tel/email/number inputs which otherwise default LTR */
+  direction: rtl;
+  border-radius: 0;
+}
+
+.contact__field input::placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.contact__field input:focus {
+  outline: none;
+  border-bottom-color: #fff;
+}
+
+.contact__submit {
+  align-self: stretch;
+  width: 100%;
+  justify-content: space-between;
+}
+
+/* Flat image (left column in RTL = grid col 2) */
+.contact__image {
+  position: relative;
+  border-radius: 1.75rem;
+  overflow: hidden;
+  margin: 0;
+  height: 100%;
+}
+
+.contact__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left bottom;
+  display: block;
+}
+
+/* Temporary text overlay until the flat 'LET'S PLAN YOUR TRIP' image is provided.
+   Positioned at the bottom-LEFT of the image (visually) and forced to LTR
+   so the English caption flows naturally left-to-right. */
+.contact__image-text {
+  position: absolute;
+  inset-block-end: 2.25rem;
+  inset-inline-end: 2.25rem;
+  /* end in RTL = left side of viewport */
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 4.5rem;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  text-shadow: 0 4px 22px rgba(0, 0, 0, 0.5);
+  direction: ltr;
+  text-align: left;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .contact {
+    /* Mobile section height locked to footer_mobile_bg.jpg (1872px = 117rem
+       at the 390 reference viewport, scales with vw) */
+    min-height: 117rem;
+    padding-block: 3rem 4rem;
+    background-image: url('../images/footer_mobile_bg.jpg');
+  }
+
+  .contact__inner {
+    padding-inline: 1rem;
+  }
+
+  .contact__head {
+    /* Make the head a positioning context so the leaves sit around the title
+       instead of around the whole section on mobile */
+    position: relative;
+    padding-block: 10rem 9.75rem;
+    margin-block-end: 1.5rem;
+
+    h2,
+    p {
+      max-width: 16.625rem;
+      margin-inline: auto;
+    }
+  }
+
+  /* Lift the section's leaves out of the way and re-render them inside the
+     head: top-right + middle-bottom-left around the title block */
+  .contact__leaf--right,
+  .contact__leaf--left {
+    display: none;
+  }
+
+  .contact__head::before,
+  .contact__head::after {
+    content: '';
+    position: absolute;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    pointer-events: none;
+  }
+
+  .contact__head::before {
+    /* right_leaf at the top-right (inline-start in RTL) */
+    background-image: url('../images/right_leaf.png');
+    inset-block-start: 0;
+    inset-inline-end: -1rem;
+    width: 13.8125rem;
+    aspect-ratio: 221/243;
+    transform: scaleX(-1);
+  }
+
+  .contact__head::after {
+    /* left_leaf at the bottom-left (inline-end in RTL) */
+    background-image: url('../images/left_leaf.png');
+    bottom: 0;
+    inset-inline-start: -1rem;
+    width: 7.9375rem;
+    aspect-ratio: 127/182;
+    transform: scaleX(-1);
+  }
+
+  .contact__layout {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  /* Image first then form, on mobile */
+  .contact__image {
+    grid-column: 1;
+    grid-row: 1;
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+  }
+
+  .contact__form {
+    grid-column: 1;
+    grid-row: 2;
+    padding: 1.75rem 1.5rem 1.5rem;
+    gap: 1.25rem;
+  }
+
+  .contact__form-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .contact__form-title {
+    font-size: 1.875rem;
+    text-align: center;
+  }
+
+  .contact__image-text {
+    font-size: 2rem;
+    inset-inline-start: 1rem;
+    inset-block-end: 1rem;
+  }
+}
+
+/* ==========================================================================
+   Image separator — full-bleed image with a 10px gap top/bottom
+   ========================================================================== */
+.image-separator {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+.image-separator img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ==========================================================================
+   Footer — dark green-black with 6 columns: logo, categories, destinations,
+   about, travel info, contact (with email + socials). Bottom bar holds
+   copyright + design credit.
+   ========================================================================== */
+.footer {
+  background: #132221;
+  color: #fff;
+  font-size: 0.9375rem;
+}
+
+.footer__inner {
+  max-width: 95.3125rem;
+  margin-inline: auto;
+  padding: 4rem 2.5rem 3rem;
+  display: grid;
+  /* 6 equal columns. Logo column hugs its inline-start (right in RTL)
+     via justify-self below, so the logo sits flush with the right edge
+     of the section while every other column shares the remaining width
+     evenly. */
+  grid-template-columns: repeat(6, 1fr);
+  align-items: start;
+  gap: 2rem;
+}
+
+@media (orientation: landscape),
+(min-width: 769px) and (orientation: portrait) {
+  .footer__menus {
+    grid-column: span 4;
+  }
+}
+
+.footer__menus>ul {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(4, 1fr);
+  font-size: 1.125rem;
+}
+
+.footer__menus>ul ul>li {
+  margin-top: 0.75rem;
+}
+
+.footer__menus>ul>li>a {
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: calc(27/20);
+}
+
+.footer__menus a:hover {
+  text-decoration: underline;
+}
+
+.footer__col {
+  text-align: start;
+}
+
+.footer__col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer__col li {
+  margin-block: 0.5rem;
+}
+
+.footer__col a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 400;
+  transition: opacity 0.2s ease;
+}
+
+.footer__col a:hover {
+  opacity: 0.7;
+}
+
+.footer__heading {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  color: #fff;
+}
+
+/* Contact column */
+.footer__col--contact .footer__email {
+  display: inline-block;
+  margin-block-end: 1rem;
+}
+
+.footer__socials {
+  display: flex;
+  gap: 0.625rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer__social {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: #d2170a;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.footer__social:hover {
+  background: #a60f04;
+  transform: translateY(-2px);
+}
+
+.footer__social svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* Logo column */
+.footer__col--logo {
+  align-self: center;
+  justify-self: start;
+  /* start in RTL = right edge of its grid cell */
+}
+
+.footer__logo img {
+  display: block;
+  width: 7rem;
+  height: auto;
+  max-width: 100%;
+}
+
+/* Bottom bar */
+.footer__bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 1.25rem 2.5rem;
+  max-width: 95.3125rem;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.footer__copy,
+.footer__credit {
+  margin: 0;
+}
+
+/* Copyright reads like a sentence, keep it ltr to render the © glyph correctly */
+.footer__copy,
+.footer__credit {
+  direction: ltr;
+  text-align: start;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .footer__inner {
+    grid-template-columns: 1fr;
+    padding: 2.5rem 1.25rem 2rem;
+    gap: 2rem 1.5rem;
+  }
+
+  .footer__col--logo {
+    justify-self: center;
+    align-self: start;
+    margin-block-end: 0.5rem;
+  }
+
+  .footer__logo img {
+    width: 6rem;
+  }
+
+  .footer__bar {
+    padding: 1rem 1.25rem;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.375rem;
+  }
+
+  .footer__menus>ul {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .footer__menus>ul>li>a {
+    font-size: 1.125rem;
+  }
+}
+
+/* ==========================================================================
+   Preloader — auto-hides via CSS (JS removes it sooner if available)
+   ========================================================================== */
+.preloader {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  z-index: 9999;
+  pointer-events: none;
+  animation: preloader-fade 0.6s ease 0.4s forwards;
+}
+
+.preloader.--hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@keyframes preloader-fade {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .home-hero__video {
+    display: none;
+  }
+
+  .home-hero__media {
+    background: #1a1a1a url('../images/hero-poster.jpg') center/cover no-repeat;
+  }
+}
+
+/* ==========================================================================
+   Sections — appended below as the design is built
+   ========================================================================== */
+
+/* ==========================================================================
+   Why Us — 5 numbered reasons with active centerpiece card
+   Spec @ 1440 ref:
+   • Container max 1200, padding-inline 40
+   • Eyebrow 14/20 weight 500 + 8px red dot
+   • Title H1 64/77 weight 700, color #0038b7, "איתנו" in #d11c1b
+   • Card num 18/25 weight 500
+   • Card title 20/28 weight 700, color #222
+   • Card desc 16/26 weight 400, color #5a5a5a
+   • Active card 260w, radius 16, bg #f4eee7, padding 24
+   • Spacing eyebrow→title 48, title→cards 48, cards→cta 56
+   • CTA blue #0038b7 with red 40 circle, white arrow, text 18 white
+   • Mobile: horizontal scroll-snap slider
+   ========================================================================== */
+.why-us {
+  background: #fffaf5;
+  padding-block: 6.25rem 5rem;
+}
+
+.why-us .container {
+  max-width: 95.3125rem;
+  margin-inline: auto;
+  padding-inline: 2.5rem;
+}
+
+.why-us__head {
+  text-align: center;
+  margin-block-end: 4rem;
+}
+
+.why-us__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #222;
+  margin: 0 0 1rem;
+}
+
+.why-us__eyebrow-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #d2170a;
+  display: inline-block;
+}
+
+.why-us__row {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  margin-block-end: 4rem;
+}
+
+.why-us__card {
+  flex: 1 1 0;
+  min-width: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem;
+  text-align: start;
+  border-radius: 1.25rem;
+  min-height: 20rem;
+  transition: background 0.3s ease;
+}
+
+/* Subtle vertical divider between cards */
+.why-us__card+.why-us__card::before {
+  content: "";
+  position: absolute;
+  inset-inline-end: 100%;
+  inset-block: 2rem;
+  width: 1px;
+  background: rgba(34, 34, 34, 0.1);
+}
+
+.why-us__card-head {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.why-us__card-num {
+  font-size: 1.125rem;
+  line-height: 1.4;
+  font-weight: 500;
+  color: #222;
+}
+
+.why-us__card-icon {
+  display: inline-flex;
+}
+
+.why-us__card-icon svg {
+  width: 3.75rem;
+  height: 3rem;
+  display: block;
+}
+
+/* Body anchored to bottom of card → title sits at the bottom by default,
+   so all card titles align across the row. On hover the description
+   reveals via grid 0fr→1fr, growing the body upward without shifting
+   the card height. */
+.why-us__card-body {
+  margin-block-start: auto;
+}
+
+.why-us__card-title {
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 700;
+  color: #222;
+  margin: 0;
+}
+
+.why-us__card-desc {
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 400;
+  color: #5a5a5a;
+  margin: 0;
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.4s ease, opacity 0.3s ease, margin 0.4s ease;
+}
+
+.why-us__card-desc>span {
+  overflow: hidden;
+  min-height: 0;
+  display: block;
+}
+
+@media (any-hover: hover) {
+  .why-us__card:hover {
+    background: #f4ebde;
+  }
+
+  .why-us__card:hover .why-us__card-desc {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-block-start: 0.75rem;
+  }
+}
+
+.why-us__cta {
+  display: flex;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .why-us {
+    padding-block: 3.5rem;
+  }
+
+  .why-us .container {
+    padding-inline: 1rem;
+  }
+
+  .why-us__head {
+    margin-block-end: 2.5rem;
+  }
+
+  .why-us__row {
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding-inline: 1rem;
+    margin-inline: -1rem;
+    margin-block-end: 2.5rem;
+    scrollbar-width: none;
+  }
+
+  .why-us__row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .why-us__card {
+    scroll-snap-align: center;
+    flex: 0 0 15rem;
+    padding: 1.75rem 1.5rem;
+    background: #f4ebde;
+    min-height: 18rem;
+  }
+
+  .why-us__card+.why-us__card::before {
+    display: none;
+  }
+
+  /* On mobile, no hover — show desc always */
+  .why-us__card-desc {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-block-start: 0.75rem;
+  }
+}
+
+/* ==========================================================================
+   Trip Types — slider of trip-style cards (470x610), last visible card
+   gets cropped on the leftward edge to hint at more content. The 4th
+   card has a circular blue CTA overlay.
+   ========================================================================== */
+.trip-types {
+  background: #fffaf5;
+  padding-block: 5rem 5rem;
+  overflow: hidden;
+}
+
+/* Head is centered with its own width. The slider below extends edge-to-edge. */
+.trip-types__head {
+  text-align: center;
+  margin-block-end: 3rem;
+  max-width: 75rem;
+  margin-inline: auto;
+  padding-inline: 2.5rem;
+}
+
+.trip-types__lead {
+  margin: 1rem auto 0;
+  max-width: 50rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #000;
+}
+
+/* Slider extends to viewport edges; the leftmost visible card naturally
+   gets clipped past the screen edge. Right-side has a small offset so
+   the first slide doesn't touch the viewport corner. */
+.trip-types__slider {
+  position: relative;
+  overflow: visible;
+  width: calc(100% + 2.5rem);
+  margin-inline: -.75rem;
+
+  .swiper-slide {
+    width: 30.875rem;
+    padding-inline: .75rem;
+  }
+}
+
+.trip-types__slider-wrapper {
+  padding-inline: 2.5rem;
+}
+
+.trip-types__card {
+  width: 100%;
+  aspect-ratio: 470 / 610;
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.trip-types__card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.trip-types__card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.7) 100%);
+  pointer-events: none;
+}
+
+.trip-types__card-body {
+  position: absolute;
+  inset-inline: 1.75rem;
+  inset-block-end: 1.75rem;
+  text-align: start;
+  color: #fff;
+  z-index: 2;
+}
+
+.trip-types__card-title {
+  font-size: 1.5rem;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.5rem;
+}
+
+.trip-types__card-desc {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #fff;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* All cards hide native cursor on hover EXCEPT the first one — the
+   custom round "בואו נתחיל" cursor follows the mouse over those cards. */
+@media (any-hover: hover) {
+  .trip-types__card {
+    cursor: default;
+  }
+
+  .trip-types__card:not(:first-child) {
+    cursor: none;
+  }
+}
+
+/* Custom follower cursor — toggled visible on mouseenter of cards 2..n */
+.trip-types__cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 9rem;
+  height: 9rem;
+  border-radius: 50%;
+  background: #063874;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 1.125rem;
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.6);
+  transition: opacity 0.2s ease, transform 0.25s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.trip-types__cursor.--visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.trip-types__nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.875rem;
+  margin-block-start: 2.5rem;
+}
+
+.trip-types__nav-btn {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: #d2170a;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, opacity 0.3s ease;
+}
+
+.trip-types__nav-btn:hover {
+  background: #a60f04;
+}
+
+.trip-types__nav-btn.swiper-button-disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.trip-types__nav-btn svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .trip-types {
+    padding-block: 3rem 3rem;
+  }
+
+  .trip-types__head {
+    margin-block-end: 2rem;
+    padding-inline: 1rem;
+  }
+
+  .trip-types__lead {
+    font-size: 0.9375rem;
+  }
+
+  .trip-types__slider {
+    padding-inline-start: 1rem;
+  }
+
+  .swiper-slide:has(.trip-types__card) {
+    width: 17.5rem;
+  }
+
+  .trip-types__card {
+    border-radius: 1.25rem;
+  }
+
+  .trip-types__card-body {
+    inset-inline: 1.25rem;
+    inset-block-end: 1.25rem;
+  }
+
+  .trip-types__card-title {
+    font-size: 1.25rem;
+  }
+
+  .trip-types__card-desc {
+    font-size: 0.875rem;
+  }
+
+  .trip-types__nav {
+    margin-block-start: 1.75rem;
+  }
+
+  /* No hover cursor on touch */
+  .trip-types__cursor {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Attractions — title + tabs + 3×2 card grid (mobile: 2-cards-per-slide
+   horizontal slider with peek of next pair).
+   ========================================================================== */
+.attractions {
+  background: #fffaf5;
+  padding-block: 5rem;
+}
+
+.attractions .container {
+  max-width: 95.3125rem;
+  margin-inline: auto;
+  padding-inline: 2.5rem;
+}
+
+.attractions__head {
+  text-align: center;
+  margin-block-end: 2rem;
+  max-width: 75rem;
+  margin-inline: auto;
+}
+
+.attractions__lead {
+  margin: 0.875rem auto 0;
+  max-width: 50rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #000;
+}
+
+/* Tabs */
+.attractions__tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #fff;
+  border-radius: 1.5rem;
+  padding: 0.5rem;
+  margin-block: 0 2.5rem;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+
+  img {
+    width: 2rem;
+  }
+}
+
+/* Center the tabs row inside the section */
+.attractions .attractions__tabs {
+  display: flex;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+.attractions__tab {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.875rem;
+  background: transparent;
+  color: #063874;
+  font-size: 0.875rem;
+  line-height: 1.2;
+  font-weight: 500;
+  min-width: 5.5rem;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.attractions__tab-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.attractions__tab-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.attractions__tab.--active {
+  background: #d2170a;
+  color: #fff;
+  pointer-events: none;
+
+  img {
+    filter: brightness(0) invert(1);
+  }
+}
+
+@media (any-hover: hover) {
+  .attractions__tab:not(.--active):hover {
+    background: #fff5f3;
+  }
+}
+
+/* Grid */
+.attractions__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+  margin-block-end: 3rem;
+}
+
+.attractions__pair {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.attractions__card {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: #1a1a1a;
+
+  a {
+    display: block;
+  }
+}
+
+.attractions__card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+@media (any-hover: hover) {
+  .attractions__card:hover .attractions__card-img {
+    transform: scale(1.04);
+  }
+}
+
+.attractions__card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.7) 100%);
+  pointer-events: none;
+}
+
+.attractions__card-arrow {
+  position: absolute;
+  inset-block-start: 1rem;
+  inset-inline-end: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: #fff;
+  color: #063874;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.attractions__card-arrow svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.attractions__card-body {
+  position: absolute;
+  inset-inline: 1.5rem;
+  inset-block-end: 1.5rem;
+  color: #fff;
+  z-index: 2;
+  text-align: start;
+}
+
+.attractions__card-title {
+  font-size: 1.5rem;
+  line-height: 1.3;
+  font-weight: 700;
+  margin: 0 0 0.375rem;
+  color: #fff;
+}
+
+.attractions__card-desc {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+  color: #fff;
+  opacity: 0.9;
+}
+
+.attractions__cta {
+  display: flex;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .attractions {
+    padding-block: 3rem;
+  }
+
+  .attractions .container {
+    padding-inline: 1rem;
+  }
+
+  .attractions__lead {
+    font-size: 0.9375rem;
+  }
+
+  /* Tabs scroll horizontally if they overflow */
+  .attractions__tabs {
+    width: 100%;
+    margin-block-end: 1.5rem;
+    padding: 0.375rem;
+    overflow-x: auto;
+    justify-content: flex-start;
+    scrollbar-width: none;
+  }
+
+  .attractions__tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .attractions__tab {
+    flex: 0 0 auto;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.75rem;
+    min-width: 4rem;
+  }
+
+  /* Grid → horizontal slider, 2 cards per slide pair, peek of next */
+  .attractions__grid {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 1rem;
+    padding-inline: 1rem;
+    margin-inline: -1rem;
+    scrollbar-width: none;
+  }
+
+  .attractions__grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .attractions__pair {
+    flex: 0 0 80%;
+    scroll-snap-align: start;
+    gap: 1rem;
+  }
+
+  .attractions__card {
+    aspect-ratio: 4 / 3;
+    border-radius: 1rem;
+  }
+
+  .attractions__card-arrow {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .attractions__card-arrow svg {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+}
+
+/* ==========================================================================
+   Process — 3-step timeline with central red line that fills as the user
+   scrolls through the section. Step 02 has a phone mockup composition
+   on the opposite side of the line.
+   ========================================================================== */
+.process {
+  background: #fffaf5;
+  padding-block: 5rem 4rem;
+}
+
+.process .container {
+  max-width: 95.3125rem;
+  margin-inline: auto;
+  padding-inline: 2.5rem;
+}
+
+.process__head {
+  text-align: center;
+  max-width: 75rem;
+  margin: 0 auto 3.5rem;
+}
+
+.process__lead {
+  margin: 1.25rem auto 0;
+  max-width: 50rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #000;
+}
+
+.process__timeline {
+  position: relative;
+  max-width: 90rem;
+  margin: 0 auto 3rem;
+  padding-block: 2rem;
+}
+
+.process__line {
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  width: .25rem;
+  background: rgba(210, 23, 10, 0.18);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.process__line-fill {
+  display: block;
+  width: 100%;
+  height: 0;
+  background: #d2170a;
+  transition: height 0.08s linear;
+}
+
+/* 2-col grid: image vs text. Steps 1, 3 → image right + text left.
+   Step 2 (--reverse) → image left + text right. */
+.process__step {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  column-gap: 6rem;
+  position: relative;
+  padding-block: 3.5rem;
+}
+
+.process__step-image {
+  margin: 0;
+  width: 100%;
+  max-width: 36rem;
+  justify-self: end;
+  /* end in RTL = left edge of col → near line */
+  align-self: center;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  mix-blend-mode: multiply;
+}
+
+.process__step-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.process__step-text {
+  grid-column: 2;
+  /* RTL col 2 = left side of line */
+  grid-row: 1;
+  max-width: 24rem;
+  justify-self: start;
+  /* start in RTL = right edge of col → near line */
+  align-self: center;
+  text-align: start;
+}
+
+/* Reversed (step 02): image left, text right */
+.process__step.--reverse .process__step-image {
+  grid-column: 2;
+  justify-self: start;
+  /* near line on the right side */
+}
+
+.process__step.--reverse .process__step-text {
+  grid-column: 1;
+  justify-self: end;
+  /* near line on the left side */
+}
+
+.process__step-num {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2.5rem;
+  line-height: 1;
+  margin-block-end: 0.625rem;
+  letter-spacing: 0;
+}
+
+.process__step-title {
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: #222;
+  margin: 0 0 0.625rem;
+  font-weight: 500;
+}
+
+.process__step-title em,
+.process__step-title b {
+  color: #d2170a;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.process__step-desc {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(0, 0, 0, 0.8);
+  margin: 0;
+}
+
+.process__step-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 50%;
+  background: #d2170a;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  box-shadow: 0 0 0 4px #fffaf5;
+}
+
+/* Scroll-in fade animation — text and image enter as the step
+   intersects the viewport. Triggered by .--in-view (added via JS). */
+.process__step-text,
+.process__step-image {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.process__step-text {
+  max-width: 20rem;
+}
+
+.process__step.--in-view .process__step-text {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.05s;
+}
+
+.process__step.--in-view .process__step-image {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.18s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .process__step-text,
+  .process__step-image {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+.process__cta {
+  display: flex;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+  .process {
+    padding-block: 3rem;
+  }
+
+  .process .container {
+    padding-inline: 1rem;
+  }
+
+  .process__lead {
+    font-size: 0.9375rem;
+  }
+
+  .process__head {
+    margin-block-end: 2rem;
+  }
+
+  .process__timeline {
+    padding-block: 1rem;
+    margin-block-end: 2rem;
+  }
+
+  .process__line {
+    left: auto;
+    inset-inline-start: 1.25rem;
+    transform: none;
+  }
+
+  .process__step {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+    row-gap: 1rem;
+    padding-block: 1.5rem;
+    padding-inline-start: 2.5rem;
+  }
+
+  .process__step-image,
+  .process__step-text,
+  .process__step.--reverse .process__step-image,
+  .process__step.--reverse .process__step-text {
+    grid-column: 1;
+    justify-self: stretch;
+    max-width: 100%;
+  }
+
+  .process__step-image {
+    aspect-ratio: 16/10;
+  }
+
+  .process__step-dot {
+    left: auto;
+    inset-inline-start: .5rem;
+    top: 2rem;
+    transform: translateX(-50%);
+  }
+
+  .process__step-num {
+    font-size: 1.75rem;
+  }
+}
+
+.wpcf7-form {
+  direction: rtl;
+}
+
+.hidden-fields-container {
+  display: none;
+}

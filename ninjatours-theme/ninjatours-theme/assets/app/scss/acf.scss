@@ -1,0 +1,221 @@
+.acf-fc-popup {
+  ul {
+    li {
+      a {
+        position: relative;
+        overflow: unset;
+
+        &::after {
+          position: absolute;
+          content: '';
+          z-index: 10;
+          right: calc(100% + 0.5rem);
+          top: 0;
+          width: 34.375rem;
+          height: 18.75rem;
+          border-radius: .5rem;
+          box-shadow: 0 0 0.5625rem 0.25rem rgba(0, 0, 0, 0.25);
+          background-repeat: no-repeat;
+          background-size: contain;
+          background-position: center;
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+          background-color: #FFFAF5;
+        }
+
+        @media (any-hover: hover) {
+          &:hover {
+            &::after {
+              opacity: 1;
+              visibility: visible;
+              pointer-events: all;
+            }
+          }
+        }
+      }
+
+      a[data-layout="home_hero"] {
+        &::after {
+          background-image: url('../previews/home_hero.jpg');
+        }
+      }
+
+      a[data-layout="why_us"] {
+        &::after {
+          background-image: url('../previews/why_us.jpg');
+        }
+      }
+
+      a[data-layout="trip_types"] {
+        &::after {
+          background-image: url('../previews/trip_types.jpg');
+        }
+      }
+
+      a[data-layout="attractions"] {
+        &::after {
+          background-image: url('../previews/attractions.jpg');
+        }
+      }
+
+      a[data-layout="process"] {
+        &::after {
+          background-image: url('../previews/process.jpg');
+        }
+      }
+
+      a[data-layout="image_separator"] {
+        &::after {
+          background-image: url('../previews/image_separator.jpg');
+        }
+      }
+
+      a[data-layout="customized_trips"] {
+        &::after {
+          background-image: url('../previews/customized_trips.jpg');
+        }
+      }
+
+      a[data-layout="testimonials"] {
+        &::after {
+          background-image: url('../previews/testimonials.jpg');
+        }
+      }
+
+      a[data-layout="partners"] {
+        &::after {
+          background-image: url('../previews/partners.jpg');
+        }
+      }
+
+      a[data-layout="content_media"] {
+        &::after {
+          background-image: url('../previews/content_media.jpg');
+        }
+      }
+
+      a[data-layout="contact"] {
+        &::after {
+          background-image: url('../previews/contact.jpg');
+        }
+      }
+    }
+  }
+}
+
+.acf-field-69f9c67875470 {
+  .acf-tab-wrap.-left .acf-tab-group {
+    z-index: 10 !important;
+  }
+
+  .acf-tab-group {
+
+    li {
+      a {
+        position: relative;
+
+        &::after {
+          position: absolute;
+          content: '';
+          z-index: 10;
+          left: calc(100% + 0.5rem);
+          top: 0;
+          width: 34.375rem;
+          height: 18.75rem;
+          border-radius: .5rem;
+          box-shadow: 0 0 0.5625rem 0.25rem rgba(0, 0, 0, 0.25);
+          background-repeat: no-repeat;
+          background-size: contain;
+          background-position: center;
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+          background-color: #FFFAF5;
+        }
+
+        @media (any-hover: hover) {
+          &:hover {
+            &::after {
+              opacity: 1;
+              visibility: visible;
+              pointer-events: all;
+            }
+          }
+        }
+      }
+
+      a[data-key="field_69f9c68175471"] {
+        &::after {
+          background-image: url('../previews/home_hero.jpg');
+        }
+      }
+
+      a[data-key="field_69f9c69775473"] {
+        &::after {
+          background-image: url('../previews/why_us.jpg');
+        }
+      }
+
+      a[data-key="field_69f9c6a975475"] {
+        &::after {
+          background-image: url('../previews/trip_types.jpg');
+        }
+      }
+
+      a[data-key="field_69f9c6c575477"] {
+        &::after {
+          background-image: url('../previews/attractions.jpg');
+        }
+      }
+
+      a[data-key="field_69f9c6e275479"] {
+        &::after {
+          background-image: url('../previews/process.jpg');
+        }
+      }
+
+      a[data-key="field_69f9c6f57547b"] {
+        &::after {
+          background-image: url('../previews/image_separator.jpg');
+        }
+      }
+
+      a[data-key="field_69f9c70a7547d"] {
+        &::after {
+          background-image: url('../previews/customized_trips.jpg');
+        }
+      }
+
+      a[data-key="field_69f9c7247547f"] {
+        &::after {
+          background-image: url('../previews/testimonials.jpg');
+        }
+      }
+
+      a[data-key="field_69f9c73b75481"] {
+        &::after {
+          background-image: url('../previews/partners.jpg');
+        }
+      }
+
+      a[data-key="field_69f9c74e75483"] {
+        &::after {
+          background-image: url('../previews/content_media.jpg');
+        }
+      }
+
+      a[data-key="field_69f9c76575485"] {
+        &::after {
+          background-image: url('../previews/contact.jpg');
+        }
+      }
+    }
+  }
+}
+
+.status-acf-disabled {
+  .row-title {
+    color: #666;
+  }
+}
