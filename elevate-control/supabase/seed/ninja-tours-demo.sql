@@ -91,7 +91,12 @@ begin
       'design',       jsonb_build_object('figma_url', 'https://www.figma.com/file/example/ninja-tours-design'),
       'development',  jsonb_build_object('cms_url', 'https://staging.ninja-tours.co.il/wp-admin', 'staging_url', 'https://staging.ninja-tours.co.il'),
       'qa',           jsonb_build_object('clickup_url', 'https://app.clickup.com/example/list/ninja-tours-qa'),
-      'content',      jsonb_build_object('cms_url', 'https://staging.ninja-tours.co.il/wp-admin', 'status_note', 'עמוד הבית הושלם. עמוד אודות בעבודה. ארכיונים ממתינים.'),
+      'content',      jsonb_build_object(
+        'cms_url',              'https://staging.ninja-tours.co.il/wp-admin',
+        'cms_user',             'ninja-editor',
+        'cms_password',         'NinjaT0urs!2026',
+        'external_content_url', 'https://docs.google.com/spreadsheets/d/example-content-tracker',
+        'status_note',          'עמוד הבית הושלם. עמוד אודות בעבודה. ארכיונים ממתינים.'),
       'spec',         jsonb_build_object('client_notes', 'מה שחשוב לנו:
 • אווירה ייחודית, לא תיירות מסחרית סטנדרטית
 • דגש על חוויות אותנטיות ולא רק לאטרקציות מסורתיות
@@ -175,13 +180,13 @@ begin
     (v_page_home_id, v_def_cta,     'cta_block',          60, 'planned',   'בלוק "מוכנים להתחיל לתכנן?" עם כפתור צור קשר',                                            '{"field_schema":[{"key":"title","label_he":"כותרת","type":"text","required":true},{"key":"subtitle","label_he":"תת-כותרת","type":"textarea","required":false},{"key":"cta_text","label_he":"טקסט כפתור","type":"text","required":true},{"key":"cta_url","label_he":"לינק","type":"url","required":true}]}'::jsonb),
     (v_page_home_id, v_def_form,    'contact_form',       70, 'planned',   'טופס "צור קשר מהיר" עם 4 שדות ושליחה למייל',                                              '{"field_schema":[]}'::jsonb);
 
-  -- ── Finance: payment milestones (checklist) ───────────────────────
+  -- ── Finance: payment milestones (checklist) with amounts ──────────
   delete from checklist_items where project_id = v_project_id and workspace = 'finance';
-  insert into checklist_items (project_id, workspace, title, description, status, position, created_by) values
-    (v_project_id, 'finance', 'מקדמה — 30%', 'תשלום מקדמה לפתיחת הפרויקט',                'done',    10, v_user_id),
-    (v_project_id, 'finance', 'אחרי אישור עיצוב — 30%', 'תשלום אמצעי בסיום שלב העיצוב',     'done',    20, v_user_id),
-    (v_project_id, 'finance', 'בסיום הפיתוח — 30%', 'תשלום שלישי לפני QA',                  'pending', 30, v_user_id),
-    (v_project_id, 'finance', 'עליה לאוויר — 10%',     'יתרת התשלום לאחר עליה לאוויר',     'pending', 40, v_user_id);
+  insert into checklist_items (project_id, workspace, title, description, status, amount_cents, position, created_by) values
+    (v_project_id, 'finance', 'מקדמה — 30%',           'תשלום מקדמה לפתיחת הפרויקט',         'done',    1500000, 10, v_user_id),
+    (v_project_id, 'finance', 'אחרי אישור עיצוב — 30%','תשלום אמצעי בסיום שלב העיצוב',       'done',    1500000, 20, v_user_id),
+    (v_project_id, 'finance', 'בסיום הפיתוח — 30%',    'תשלום שלישי לפני QA',                'pending', 1500000, 30, v_user_id),
+    (v_project_id, 'finance', 'עליה לאוויר — 10%',     'יתרת התשלום לאחר עליה לאוויר',       'pending',  500000, 40, v_user_id);
 
   -- ── Spec: deliverables checklist (client to provide) ──────────────
   delete from checklist_items where project_id = v_project_id and workspace = 'spec';
@@ -221,17 +226,17 @@ begin
 
   select id into v_appr_home_dev from client_approvals where project_id=v_project_id and workspace='development' and title='דף הבית — staging';
 
-  -- ── QA: testing checklist ─────────────────────────────────────────
+  -- ── QA: testing checklist (with sample client_note for demo) ──────
   delete from checklist_items where project_id = v_project_id and workspace = 'qa';
-  insert into checklist_items (project_id, workspace, title, description, status, position, created_by) values
-    (v_project_id, 'qa', 'בדיקת responsive בכל המסכים', 'iPhone, אנדרואיד, iPad, דסקטופ', 'pending', 10, v_user_id),
-    (v_project_id, 'qa', 'בדיקת טופס יצירת קשר',         'שליחה והגעה למייל',              'pending', 20, v_user_id),
-    (v_project_id, 'qa', 'בדיקת מהירות (Lighthouse)',    'מינימום 90 ב-Performance',       'pending', 30, v_user_id),
-    (v_project_id, 'qa', 'בדיקת SEO (כותרות, meta)',     'tags, og:image, canonical',       'pending', 40, v_user_id),
-    (v_project_id, 'qa', 'בדיקת נגישות',                 'WCAG AA',                         'pending', 50, v_user_id),
-    (v_project_id, 'qa', 'בדיקת RTL וטקסטים בעברית',     'דגש על מספרים, תאריכים',          'pending', 60, v_user_id),
-    (v_project_id, 'qa', 'תאימות דפדפנים',               'Chrome, Safari, Firefox, Edge',   'pending', 70, v_user_id),
-    (v_project_id, 'qa', 'בדיקת קישורים שבורים',         'כל הלינקים הפנימיים והחיצוניים',  'pending', 80, v_user_id);
+  insert into checklist_items (project_id, workspace, title, description, status, client_note, position, created_by) values
+    (v_project_id, 'qa', 'בדיקת responsive בכל המסכים', 'iPhone, אנדרואיד, iPad, דסקטופ',  'in_progress', 'בנייד התפריט קופץ מעל ההירו במקום להישאר sticky.', 10, v_user_id),
+    (v_project_id, 'qa', 'בדיקת טופס יצירת קשר',         'שליחה והגעה למייל',               'done',        null, 20, v_user_id),
+    (v_project_id, 'qa', 'בדיקת מהירות (Lighthouse)',    'מינימום 90 ב-Performance',        'pending',     null, 30, v_user_id),
+    (v_project_id, 'qa', 'בדיקת SEO (כותרות, meta)',     'tags, og:image, canonical',       'pending',     null, 40, v_user_id),
+    (v_project_id, 'qa', 'בדיקת נגישות',                 'WCAG AA',                         'pending',     null, 50, v_user_id),
+    (v_project_id, 'qa', 'בדיקת RTL וטקסטים בעברית',     'דגש על מספרים, תאריכים',          'pending',     null, 60, v_user_id),
+    (v_project_id, 'qa', 'תאימות דפדפנים',               'Chrome, Safari, Firefox, Edge',   'pending',     null, 70, v_user_id),
+    (v_project_id, 'qa', 'בדיקת קישורים שבורים',         'כל הלינקים הפנימיים והחיצוניים',  'pending',     null, 80, v_user_id);
 
   -- ── Content: deliverables ─────────────────────────────────────────
   delete from checklist_items where project_id = v_project_id and workspace = 'content';
@@ -269,6 +274,7 @@ begin
   -- Finance
   delete from project_files where project_id = v_project_id and workspace = 'finance';
   insert into project_files (project_id, workspace, category, filename, storage_path, file_url, mime_type, size_bytes, uploaded_by) values
+    (v_project_id, 'finance', 'proposed_quote','הצעת-מחיר-לעיון.pdf', v_project_id::text || '/files/finance/proposed-quote.pdf','https://example.com/files/proposed-quote.pdf','application/pdf', 235000, v_user_id),
     (v_project_id, 'finance', 'signed_quote', 'הצעת-מחיר-חתומה.pdf', v_project_id::text || '/files/finance/signed-quote.pdf', 'https://example.com/files/quote.pdf',   'application/pdf', 245000, v_user_id),
     (v_project_id, 'finance', 'invoice',      'חשבונית-מקדמה.pdf',    v_project_id::text || '/files/finance/invoice-1.pdf',   'https://example.com/files/invoice1.pdf','application/pdf', 180000, v_user_id),
     (v_project_id, 'finance', 'invoice',      'חשבונית-עיצוב.pdf',    v_project_id::text || '/files/finance/invoice-2.pdf',   'https://example.com/files/invoice2.pdf','application/pdf', 175000, v_user_id);
