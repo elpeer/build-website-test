@@ -138,6 +138,16 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
 
   return (
     <div className="space-y-4">
+      {error && !showCreate && (
+        <div className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-2 text-xs text-red-700">
+          <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <span className="flex-1">{error}</span>
+          <button type="button" onClick={() => setError(null)}
+                  className="text-red-700 hover:text-red-900">
+            <X className="h-3 w-3" />
+          </button>
+        </div>
+      )}
       {!showCreate ? (
         <Button type="button" variant="outline"
                 onClick={() => setShowCreate(true)}
@@ -332,7 +342,12 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
                 contextId={`guides-${bucket.key}`}
                 onReorder={(orderedIds) => {
                   startTransition(async () => {
-                    await reorderGuidesInCategory(bucket.categoryId, orderedIds);
+                    const result = await reorderGuidesInCategory(bucket.categoryId, orderedIds);
+                    if (!result.ok) {
+                      setError(`שינוי סדר נכשל: ${result.error}`);
+                      return;
+                    }
+                    setError(null);
                     router.refresh();
                   });
                 }}

@@ -97,26 +97,33 @@ export async function moveGuide(
     .single<{ id: string; position: number; category_id: string | null }>();
   if (!current) return { ok: false, error: 'מדריך לא נמצא' };
 
-  let neighborQuery = auth.supabase
-    .from('guide_articles')
-    .select('id, position')
+  // Build filters first (filter builder), then add transforms at the end.
+  let q = auth.supabase.from('guide_articles').select('id, position');
+  if (current.category_id === null) q = q.is('category_id', null);
+  else                              q = q.eq('category_id', current.category_id);
+  if (direction === 'up')   q = q.lt('position', current.position);
+  else                      q = q.gt('position', current.position);
+
+  const { data: neighborRows, error: neighborErr } = await q
+    .order('position', { ascending: direction === 'down' })
     .limit(1);
-  if (current.category_id === null) neighborQuery = neighborQuery.is('category_id', null);
-  else neighborQuery = neighborQuery.eq('category_id', current.category_id);
-
-  if (direction === 'up') {
-    neighborQuery = neighborQuery.lt('position', current.position).order('position', { ascending: false });
-  } else {
-    neighborQuery = neighborQuery.gt('position', current.position).order('position', { ascending: true });
+  if (neighborErr) {
+    console.error('moveGuide neighbor lookup', neighborErr);
+    return { ok: false, error: neighborErr.message };
   }
-
-  const { data: neighborRows } = await neighborQuery;
   const neighbor = neighborRows?.[0] as { id: string; position: number } | undefined;
   if (!neighbor) return { ok: true }; // already at the edge — no-op
 
-  // Swap the two positions in two updates.
-  await auth.supabase.from('guide_articles').update({ position: neighbor.position }).eq('id', current.id);
-  await auth.supabase.from('guide_articles').update({ position: current.position }).eq('id', neighbor.id);
+  // Swap the two positions; .select() guards against RLS-zero-row bugs.
+  const r1 = await auth.supabase.from('guide_articles')
+    .update({ position: neighbor.position }).eq('id', current.id).select('id');
+  if (r1.error) { console.error('moveGuide a', r1.error); return { ok: false, error: r1.error.message }; }
+  if (!r1.data?.length) return { ok: false, error: 'לא הצלחנו לעדכן את המדריך' };
+
+  const r2 = await auth.supabase.from('guide_articles')
+    .update({ position: current.position }).eq('id', neighbor.id).select('id');
+  if (r2.error) { console.error('moveGuide b', r2.error); return { ok: false, error: r2.error.message }; }
+  if (!r2.data?.length) return { ok: false, error: 'לא הצלחנו לעדכן את השכן' };
 
   revalidatePath('/admin/guides');
   return { ok: true };
@@ -136,13 +143,22 @@ export async function reorderGuidesInCategory(
   if (!auth.ok) return { ok: false, error: auth.error };
   if (orderedIds.length === 0) return { ok: true };
 
-  // One UPDATE per row. With small lists (under ~50 per category) this is
-  // fine; if it grows we can batch via an upsert with a CTE.
+  // One UPDATE per row + .select() so we know the row actually changed
+  // (RLS misconfiguration would silently 0-affect otherwise).
   for (let i = 0; i < orderedIds.length; i++) {
-    await auth.supabase
+    const { data, error } = await auth.supabase
       .from('guide_articles')
       .update({ position: (i + 1) * 10 })
-      .eq('id', orderedIds[i]);
+      .eq('id', orderedIds[i])
+      .select('id');
+    if (error) {
+      console.error('reorderGuidesInCategory update failed', { id: orderedIds[i], error });
+      return { ok: false, error: error.message };
+    }
+    if (!data || data.length === 0) {
+      console.error('reorderGuidesInCategory affected 0 rows', { id: orderedIds[i] });
+      return { ok: false, error: 'לא הצלחנו לעדכן — בדקו הרשאות' };
+    }
   }
   void categoryId;
 
@@ -159,10 +175,19 @@ export async function reorderGuideCategories(
   if (orderedIds.length === 0) return { ok: true };
 
   for (let i = 0; i < orderedIds.length; i++) {
-    await auth.supabase
+    const { data, error } = await auth.supabase
       .from('guide_categories')
       .update({ position: (i + 1) * 10 })
-      .eq('id', orderedIds[i]);
+      .eq('id', orderedIds[i])
+      .select('id');
+    if (error) {
+      console.error('reorderGuideCategories update failed', { id: orderedIds[i], error });
+      return { ok: false, error: error.message };
+    }
+    if (!data || data.length === 0) {
+      console.error('reorderGuideCategories affected 0 rows', { id: orderedIds[i] });
+      return { ok: false, error: 'לא הצלחנו לעדכן — בדקו הרשאות' };
+    }
   }
 
   revalidatePath('/admin/guides');
@@ -183,21 +208,29 @@ export async function moveGuideCategory(
     .single<{ id: string; position: number }>();
   if (!current) return { ok: false, error: 'קטגוריה לא נמצאה' };
 
-  let neighborQuery = auth.supabase
-    .from('guide_categories')
-    .select('id, position')
+  let q = auth.supabase.from('guide_categories').select('id, position');
+  if (direction === 'up')   q = q.lt('position', current.position);
+  else                      q = q.gt('position', current.position);
+
+  const { data: neighborRows, error: neighborErr } = await q
+    .order('position', { ascending: direction === 'down' })
     .limit(1);
-  if (direction === 'up') {
-    neighborQuery = neighborQuery.lt('position', current.position).order('position', { ascending: false });
-  } else {
-    neighborQuery = neighborQuery.gt('position', current.position).order('position', { ascending: true });
+  if (neighborErr) {
+    console.error('moveGuideCategory neighbor lookup', neighborErr);
+    return { ok: false, error: neighborErr.message };
   }
-  const { data: neighborRows } = await neighborQuery;
   const neighbor = neighborRows?.[0] as { id: string; position: number } | undefined;
   if (!neighbor) return { ok: true };
 
-  await auth.supabase.from('guide_categories').update({ position: neighbor.position }).eq('id', current.id);
-  await auth.supabase.from('guide_categories').update({ position: current.position }).eq('id', neighbor.id);
+  const r1 = await auth.supabase.from('guide_categories')
+    .update({ position: neighbor.position }).eq('id', current.id).select('id');
+  if (r1.error) { console.error('moveGuideCategory a', r1.error); return { ok: false, error: r1.error.message }; }
+  if (!r1.data?.length) return { ok: false, error: 'לא הצלחנו לעדכן קטגוריה' };
+
+  const r2 = await auth.supabase.from('guide_categories')
+    .update({ position: current.position }).eq('id', neighbor.id).select('id');
+  if (r2.error) { console.error('moveGuideCategory b', r2.error); return { ok: false, error: r2.error.message }; }
+  if (!r2.data?.length) return { ok: false, error: 'לא הצלחנו לעדכן שכן' };
 
   revalidatePath('/admin/guides');
   return { ok: true };

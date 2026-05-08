@@ -33,6 +33,7 @@ export function GuideCategoriesAdmin({ categories }: Props) {
   const [newSlug,  setNewSlug]  = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [reorderError, setReorderError] = useState<string | null>(null);
   const [, startTransition] = useTransition();
 
   function handleCreate() {
@@ -51,6 +52,15 @@ export function GuideCategoriesAdmin({ categories }: Props) {
 
   return (
     <div className="space-y-3">
+      {reorderError && (
+        <div className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-2 text-xs text-red-700">
+          <span className="flex-1">{reorderError}</span>
+          <button type="button" onClick={() => setReorderError(null)}
+                  className="text-red-700 hover:text-red-900">
+            <X className="h-3 w-3" />
+          </button>
+        </div>
+      )}
       {categories.length === 0 ? (
         <div className="rounded-md border border-dashed border-border bg-muted/30 p-4 text-center text-sm text-muted-fg">
           עדיין לא הוגדרו קטגוריות.
@@ -61,7 +71,9 @@ export function GuideCategoriesAdmin({ categories }: Props) {
           contextId="guide-categories"
           onReorder={(orderedIds) => {
             startTransition(async () => {
-              await reorderGuideCategories(orderedIds);
+              const r = await reorderGuideCategories(orderedIds);
+              if (!r.ok) { setReorderError(`שינוי סדר נכשל: ${r.error}`); return; }
+              setReorderError(null);
               router.refresh();
             });
           }}
