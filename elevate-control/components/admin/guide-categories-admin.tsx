@@ -3,10 +3,12 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  createGuideCategory, updateGuideCategory, deleteGuideCategory, moveGuideCategory,
+  createGuideCategory, updateGuideCategory, deleteGuideCategory,
+  moveGuideCategory, reorderGuideCategories,
 } from '@/app/actions/guides';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { SortableList } from '@/components/ui/sortable';
 import { Plus, Edit2, Trash2, Save, X, Tag, ChevronUp, ChevronDown } from 'lucide-react';
 
 export interface CategoryRow {
@@ -49,22 +51,35 @@ export function GuideCategoriesAdmin({ categories }: Props) {
 
   return (
     <div className="space-y-3">
-      <ul className="space-y-1.5">
-        {categories.map((c, i) => (
-          <CategoryRowItem key={c.id} cat={c}
-                           isFirst={i === 0}
-                           isLast={i === categories.length - 1}
-                           editing={editingId === c.id}
-                           onEdit={() => setEditingId(c.id)}
-                           onCancel={() => setEditingId(null)}
-                           onSaved={() => { setEditingId(null); router.refresh(); }} />
-        ))}
-        {categories.length === 0 && (
-          <li className="rounded-md border border-dashed border-border bg-muted/30 p-4 text-center text-sm text-muted-fg">
-            עדיין לא הוגדרו קטגוריות.
-          </li>
-        )}
-      </ul>
+      {categories.length === 0 ? (
+        <div className="rounded-md border border-dashed border-border bg-muted/30 p-4 text-center text-sm text-muted-fg">
+          עדיין לא הוגדרו קטגוריות.
+        </div>
+      ) : (
+        <SortableList
+          items={categories}
+          contextId="guide-categories"
+          onReorder={(orderedIds) => {
+            startTransition(async () => {
+              await reorderGuideCategories(orderedIds);
+              router.refresh();
+            });
+          }}
+          renderItem={(c, dragHandle) => {
+            const i = categories.findIndex(x => x.id === c.id);
+            return (
+              <CategoryRowItem cat={c}
+                               isFirst={i === 0}
+                               isLast={i === categories.length - 1}
+                               editing={editingId === c.id}
+                               dragHandle={dragHandle}
+                               onEdit={() => setEditingId(c.id)}
+                               onCancel={() => setEditingId(null)}
+                               onSaved={() => { setEditingId(null); router.refresh(); }} />
+            );
+          }}
+        />
+      )}
 
       {adding ? (
         <div className="space-y-2 rounded-md border border-border bg-muted/30 p-3">
@@ -102,12 +117,13 @@ export function GuideCategoriesAdmin({ categories }: Props) {
 }
 
 function CategoryRowItem({
-  cat, editing, isFirst, isLast, onEdit, onCancel, onSaved,
+  cat, editing, isFirst, isLast, dragHandle, onEdit, onCancel, onSaved,
 }: {
   cat: CategoryRow;
   editing: boolean;
   isFirst: boolean;
   isLast: boolean;
+  dragHandle?: React.ReactNode;
   onEdit: () => void;
   onCancel: () => void;
   onSaved: () => void;
@@ -143,7 +159,7 @@ function CategoryRowItem({
 
   if (editing) {
     return (
-      <li className="flex items-center gap-2 rounded-md border border-brand bg-brand/5 p-2">
+      <div className="flex items-center gap-2 rounded-md border border-brand bg-brand/5 p-2">
         <Tag className="h-4 w-4 shrink-0 text-brand" />
         <Input value={label} className="h-8 flex-1 text-sm"
                onChange={e => setLabel(e.target.value)} />
@@ -158,12 +174,13 @@ function CategoryRowItem({
                 className="rounded p-1 text-zinc-600 hover:bg-zinc-100" aria-label="ביטול">
           <X className="h-4 w-4" />
         </button>
-      </li>
+      </div>
     );
   }
 
   return (
-    <li className="flex items-center gap-2 rounded-md border border-border bg-background p-2">
+    <div className="flex items-center gap-2 rounded-md border border-border bg-background p-2">
+      {dragHandle}
       <div className="flex shrink-0 flex-col">
         <button type="button" onClick={() => move('up')} disabled={isFirst}
                 className="rounded p-0.5 text-muted-fg hover:bg-muted hover:text-brand disabled:opacity-25"
@@ -192,6 +209,6 @@ function CategoryRowItem({
               className="rounded p-1 text-red-600 hover:bg-red-50" aria-label="מחק">
         <Trash2 className="h-4 w-4" />
       </button>
-    </li>
+    </div>
   );
 }

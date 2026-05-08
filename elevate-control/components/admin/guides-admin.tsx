@@ -4,12 +4,14 @@ import { useMemo, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   createGuide, updateGuide, deleteGuide, setGuideAssignments, moveGuide,
+  reorderGuidesInCategory,
 } from '@/app/actions/guides';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import { SearchInput } from '@/components/ui/search-input';
+import { SortableList } from '@/components/ui/sortable';
 import {
   Plus, Edit2, Trash2, Eye, EyeOff, ExternalLink, Save, X, AlertCircle,
   Globe, FolderKanban, ChevronUp, ChevronDown, Star,
@@ -76,6 +78,36 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
     });
     return { byId: m, noCat };
   }, [guides]);
+
+  const filterActive = query.trim().length > 0 || filterCatId !== '';
+
+  // Group guides by category in the order categories appear, with the
+  // 'no category' bucket at the end. Each bucket is internally sorted by
+  // position so drag-and-drop reflects the saved order.
+  const bucketsForDrag = useMemo(() => {
+    const byCat = new Map<string | null, GuideRow[]>();
+    guides.forEach(g => {
+      const k = g.category_id ?? null;
+      const arr = byCat.get(k) ?? [];
+      arr.push(g);
+      byCat.set(k, arr);
+    });
+    // Sort each bucket by position
+    byCat.forEach(arr => arr.sort((a, b) => a.position - b.position));
+
+    type Bucket = { key: string; categoryId: string | null; label: string; items: GuideRow[] };
+    const out: Bucket[] = [];
+    categories.forEach(c => {
+      const items = byCat.get(c.id) ?? [];
+      if (items.length === 0) return;
+      out.push({ key: c.id, categoryId: c.id, label: c.label, items });
+    });
+    const orphans = byCat.get(null) ?? [];
+    if (orphans.length > 0) {
+      out.push({ key: '__none__', categoryId: null, label: 'ללא קטגוריה', items: orphans });
+    }
+    return out;
+  }, [guides, categories]);
 
   function toggleCreateProject(id: string) {
     setCreateAssignedSet(prev => {
@@ -258,34 +290,80 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
         </div>
       ) : null}
 
-      <ul className="space-y-2">
-        {visibleGuides.map(g => {
-          // First/last position info inside the same category, for arrow disabling.
-          const sameCat = guides
-            .filter(x => (x.category_id ?? '__null__') === (g.category_id ?? '__null__'))
-            .sort((a, b) => a.position - b.position);
-          const idx = sameCat.findIndex(x => x.id === g.id);
-          return (
-            <GuideRowItem key={g.id} guide={g}
-                          categories={categories}
-                          projects={projects}
-                          assignedProjectIds={assignmentsByGuide[g.id] ?? []}
-                          isFirst={idx === 0}
-                          isLast={idx === sameCat.length - 1}
-                          isEditing={editingId === g.id}
-                          onEdit={() => setEditingId(g.id)}
-                          onCancel={() => setEditingId(null)}
-                          onSaved={() => { setEditingId(null); router.refresh(); }} />
-          );
-        })}
-      </ul>
+      {filterActive ? (
+        // Filtered view — flat list, drag disabled (arrows still work).
+        <ul className="space-y-2">
+          {visibleGuides.map(g => {
+            const sameCat = guides
+              .filter(x => (x.category_id ?? '__null__') === (g.category_id ?? '__null__'))
+              .sort((a, b) => a.position - b.position);
+            const idx = sameCat.findIndex(x => x.id === g.id);
+            return (
+              <li key={g.id}>
+                <GuideRowItem guide={g}
+                              categories={categories}
+                              projects={projects}
+                              assignedProjectIds={assignmentsByGuide[g.id] ?? []}
+                              isFirst={idx === 0}
+                              isLast={idx === sameCat.length - 1}
+                              isEditing={editingId === g.id}
+                              onEdit={() => setEditingId(g.id)}
+                              onCancel={() => setEditingId(null)}
+                              onSaved={() => { setEditingId(null); router.refresh(); }} />
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        // Unfiltered — group by category, each bucket is its own sortable.
+        <div className="space-y-4">
+          {bucketsForDrag.map(bucket => (
+            <section key={bucket.key} className="space-y-2">
+              <div className="flex items-center gap-2 px-1">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-fg">
+                  {bucket.label}
+                </h3>
+                <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] text-muted-fg">
+                  {bucket.items.length}
+                </span>
+              </div>
+              <SortableList
+                items={bucket.items}
+                contextId={`guides-${bucket.key}`}
+                onReorder={(orderedIds) => {
+                  startTransition(async () => {
+                    await reorderGuidesInCategory(bucket.categoryId, orderedIds);
+                    router.refresh();
+                  });
+                }}
+                renderItem={(g, dragHandle) => {
+                  const idx = bucket.items.findIndex(x => x.id === g.id);
+                  return (
+                    <GuideRowItem guide={g}
+                                  categories={categories}
+                                  projects={projects}
+                                  assignedProjectIds={assignmentsByGuide[g.id] ?? []}
+                                  isFirst={idx === 0}
+                                  isLast={idx === bucket.items.length - 1}
+                                  dragHandle={dragHandle}
+                                  isEditing={editingId === g.id}
+                                  onEdit={() => setEditingId(g.id)}
+                                  onCancel={() => setEditingId(null)}
+                                  onSaved={() => { setEditingId(null); router.refresh(); }} />
+                  );
+                }}
+              />
+            </section>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
 function GuideRowItem({
   guide, categories, projects, assignedProjectIds,
-  isFirst, isLast, isEditing, onEdit, onCancel, onSaved,
+  isFirst, isLast, dragHandle, isEditing, onEdit, onCancel, onSaved,
 }: {
   guide: GuideRow;
   categories: CategoryOption[];
@@ -293,6 +371,7 @@ function GuideRowItem({
   assignedProjectIds: string[];
   isFirst: boolean;
   isLast: boolean;
+  dragHandle?: React.ReactNode;
   isEditing: boolean;
   onEdit: () => void; onCancel: () => void; onSaved: () => void;
 }) {
@@ -360,7 +439,8 @@ function GuideRowItem({
   if (!isEditing) {
     const categoryLabel = categories.find(c => c.id === guide.category_id)?.label ?? guide.category;
     return (
-      <li className="flex items-start gap-3 rounded-md border border-border bg-background p-3">
+      <div className="flex items-start gap-3 rounded-md border border-border bg-background p-3">
+        {dragHandle}
         <div className="flex shrink-0 flex-col">
           <button type="button" onClick={() => move('up')} disabled={isFirst}
                   className="rounded p-0.5 text-muted-fg hover:bg-muted hover:text-brand disabled:opacity-25"
@@ -431,12 +511,12 @@ function GuideRowItem({
             <Trash2 className="h-4 w-4" />
           </button>
         </div>
-      </li>
+      </div>
     );
   }
 
   return (
-    <li className="space-y-3 rounded-md border border-brand bg-brand/5 p-4">
+    <div className="space-y-3 rounded-md border border-brand bg-brand/5 p-4">
       <div className="grid gap-2 md:grid-cols-2">
         <div>
           <Label className="text-xs">כותרת</Label>
@@ -543,6 +623,6 @@ function GuideRowItem({
           <Save className="ms-1 h-3.5 w-3.5" /> שמור
         </Button>
       </div>
-    </li>
+    </div>
   );
 }

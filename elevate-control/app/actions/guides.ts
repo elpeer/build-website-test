@@ -122,6 +122,53 @@ export async function moveGuide(
   return { ok: true };
 }
 
+/**
+ * Persist a full new order for guides inside one category bucket.
+ * Caller passes the ordered list of guide ids that share the same
+ * category_id; we write position values (i+1)*10 in a single round-trip.
+ * Use this for drag-and-drop where the result is the entire new order.
+ */
+export async function reorderGuidesInCategory(
+  categoryId: string | null,
+  orderedIds: string[]
+): Promise<Result> {
+  const auth = await requireStudioAdmin();
+  if (!auth.ok) return { ok: false, error: auth.error };
+  if (orderedIds.length === 0) return { ok: true };
+
+  // One UPDATE per row. With small lists (under ~50 per category) this is
+  // fine; if it grows we can batch via an upsert with a CTE.
+  for (let i = 0; i < orderedIds.length; i++) {
+    await auth.supabase
+      .from('guide_articles')
+      .update({ position: (i + 1) * 10 })
+      .eq('id', orderedIds[i]);
+  }
+  void categoryId;
+
+  revalidatePath('/admin/guides');
+  return { ok: true };
+}
+
+/** Persist a full new order for the guide_categories list. */
+export async function reorderGuideCategories(
+  orderedIds: string[]
+): Promise<Result> {
+  const auth = await requireStudioAdmin();
+  if (!auth.ok) return { ok: false, error: auth.error };
+  if (orderedIds.length === 0) return { ok: true };
+
+  for (let i = 0; i < orderedIds.length; i++) {
+    await auth.supabase
+      .from('guide_categories')
+      .update({ position: (i + 1) * 10 })
+      .eq('id', orderedIds[i]);
+  }
+
+  revalidatePath('/admin/guides');
+  return { ok: true };
+}
+
 /** Same swap pattern, for guide categories. */
 export async function moveGuideCategory(
   id: string,
