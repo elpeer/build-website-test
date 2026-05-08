@@ -184,14 +184,6 @@ export function ApprovalCard({
                 בקש תיקון
               </Button>
             )}
-            {approval.status !== 'rejected' && isStudio && (
-              <Button type="button" variant="outline" size="sm"
-                      onClick={() => setStatus('rejected', true)} disabled={isPending}
-                      className="text-red-600 hover:bg-red-50">
-                <XCircle className="ms-1 h-3.5 w-3.5" />
-                דחה
-              </Button>
-            )}
             {approval.status !== 'pending' && isStudio && (
               <Button type="button" variant="ghost" size="sm"
                       onClick={() => setStatus('pending')} disabled={isPending}>
@@ -228,7 +220,7 @@ export function ApprovalCard({
                   ביטול
                 </Button>
                 <Button type="button" variant="accent" size="sm"
-                        onClick={() => setStatus(approval.status === 'changes_requested' ? 'changes_requested' : 'rejected', true)}
+                        onClick={() => setStatus('changes_requested', true)}
                         disabled={isPending || !note.trim()}>
                   שמור
                 </Button>

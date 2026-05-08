@@ -204,8 +204,6 @@ export async function WorkspaceContent({
                      clientCanUpload={false}
                      title="חשבוניות"
                      emptyText="טרם נשלחו חשבוניות" />
-
-          {workspaceCommentSection}
         </div>
       );
 
@@ -249,8 +247,6 @@ export async function WorkspaceContent({
                        placeholder="כתבו פה כל מה שחשוב לכם — דרישות מיוחדות, השראות, גבולות, פרסונות..."
                        initialValue={workspaceSettings.client_notes ?? null}
                        canEdit={!isStudio || true /* studio also can edit */} />
-
-          {workspaceCommentSection}
         </div>
       );
 
@@ -258,13 +254,6 @@ export async function WorkspaceContent({
     case 'design':
       return (
         <div className="space-y-6">
-          <WorkspaceSettingInput projectId={projectId} projectSlug={projectSlug}
-                                 workspace="design" settingKey="figma_url"
-                                 label="לינק לפיגמה (אם רוצים לראות את הקבצים המקוריים)"
-                                 placeholder="https://www.figma.com/file/..."
-                                 currentValue={workspaceSettings.figma_url ?? null}
-                                 isStudio={isStudio} isUrl />
-
           <SectionHeader title="Brand Book ומסמכים" subtitle="קבצי שפה ויזואלית, פונטים, צבעים" />
           <FilesList projectId={projectId} projectSlug={projectSlug} workspace="design"
                      category="brand"
@@ -279,8 +268,6 @@ export async function WorkspaceContent({
             <CreateApprovalForm projectId={projectId} projectSlug={projectSlug}
                                 workspace="design" isStudio={isStudio} />
           </div>
-
-          {workspaceCommentSection}
         </div>
       );
 
@@ -306,9 +293,6 @@ export async function WorkspaceContent({
             <CreateApprovalForm projectId={projectId} projectSlug={projectSlug}
                                 workspace="development" isStudio={isStudio} />
           </div>
-
-          <SectionHeader title="שאלות ותשובות" />
-          {workspaceCommentSection}
         </div>
       );
 
@@ -424,8 +408,6 @@ export async function WorkspaceContent({
           <SectionHeader title="Checklist עליה לאוויר" />
           <Checklist projectId={projectId} projectSlug={projectSlug} workspace="launch"
                      items={data.checklist} isStudio={isStudio} clientCanAddItems={false} />
-
-          {workspaceCommentSection}
         </div>
       );
 
@@ -447,9 +429,6 @@ export async function WorkspaceContent({
           <SectionHeader title="לינקים שימושיים" />
           <Checklist projectId={projectId} projectSlug={projectSlug} workspace="training"
                      items={data.checklist} isStudio={isStudio} clientCanAddItems={false} />
-
-          <SectionHeader title="שאלות ותשובות" />
-          {workspaceCommentSection}
         </div>
       );
     }
