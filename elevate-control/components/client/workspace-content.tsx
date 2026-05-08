@@ -458,12 +458,16 @@ export async function WorkspaceContent({
 
     // ─── TRAINING — studio-curated guides ──────────────────────────────
     case 'training': {
-      const guides = await fetchGuidesForProject(projectId);
+      const [guides, { data: categoriesData }] = await Promise.all([
+        fetchGuidesForProject(projectId),
+        (await createClient()).from('guide_categories').select('slug, label').order('position', { ascending: true }),
+      ]);
+      const categories = (categoriesData ?? []) as { slug: string; label: string }[];
       return (
         <div className="space-y-6">
           <SectionHeader title="מדריכים מהמאגר"
                          subtitle="מדריכים מוכנים על המערכות שאנחנו עובדים איתן." />
-          <GuidesList guides={guides} projectSlug={projectSlug} />
+          <GuidesList guides={guides} projectSlug={projectSlug} categories={categories} />
 
           <SectionHeader title="קבצים ומסמכים נוספים לפרויקט" />
           <FilesList projectId={projectId} projectSlug={projectSlug} workspace="training"

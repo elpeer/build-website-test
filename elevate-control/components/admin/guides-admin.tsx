@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useMemo, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   createGuide, updateGuide, deleteGuide, setGuideAssignments,
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import { SearchInput } from '@/components/ui/search-input';
 import {
   Plus, Edit2, Trash2, Eye, EyeOff, ExternalLink, Save, X, AlertCircle,
   Globe, FolderKanban,
@@ -50,7 +51,30 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
   const [createHtml, setCreateHtml] = useState('');
   const [createVisibility, setCreateVisibility] = useState<'global' | 'project'>('global');
   const [createAssignedSet, setCreateAssignedSet] = useState<Set<string>>(new Set());
+  const [query, setQuery] = useState('');
+  const [filterCatId, setFilterCatId] = useState<string>('');
   const [, startTransition] = useTransition();
+
+  const visibleGuides = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return guides.filter(g => {
+      if (filterCatId === '__none__' && g.category_id) return false;
+      if (filterCatId && filterCatId !== '__none__' && g.category_id !== filterCatId) return false;
+      if (!q) return true;
+      const hay = `${g.title} ${g.description ?? ''} ${g.slug}`.toLowerCase();
+      return hay.includes(q);
+    });
+  }, [guides, query, filterCatId]);
+
+  const guideCountByCat = useMemo(() => {
+    const m = new Map<string, number>();
+    let noCat = 0;
+    guides.forEach(g => {
+      if (g.category_id) m.set(g.category_id, (m.get(g.category_id) ?? 0) + 1);
+      else noCat += 1;
+    });
+    return { byId: m, noCat };
+  }, [guides]);
 
   function toggleCreateProject(id: string) {
     setCreateAssignedSet(prev => {
@@ -177,8 +201,59 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
         </form>
       )}
 
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <SearchInput value={query} onChange={setQuery}
+                     placeholder={`חיפוש ב-${guides.length} מדריכים...`}
+                     className="flex-1" />
+        {categories.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            <button type="button" onClick={() => setFilterCatId('')}
+                    className={`rounded-full px-3 py-1 text-xs transition-colors ${
+                      filterCatId === ''
+                        ? 'bg-brand text-white font-medium'
+                        : 'bg-muted text-muted-fg hover:bg-muted/80'
+                    }`}>
+              הכל ({guides.length})
+            </button>
+            {categories.map(c => {
+              const count = guideCountByCat.byId.get(c.id) ?? 0;
+              if (count === 0) return null;
+              const active = filterCatId === c.id;
+              return (
+                <button key={c.id} type="button"
+                        onClick={() => setFilterCatId(active ? '' : c.id)}
+                        className={`rounded-full px-3 py-1 text-xs transition-colors ${
+                          active
+                            ? 'bg-brand text-white font-medium'
+                            : 'bg-muted text-muted-fg hover:bg-muted/80'
+                        }`}>
+                  {c.label} ({count})
+                </button>
+              );
+            })}
+            {guideCountByCat.noCat > 0 && (
+              <button type="button"
+                      onClick={() => setFilterCatId(filterCatId === '__none__' ? '' : '__none__')}
+                      className={`rounded-full px-3 py-1 text-xs transition-colors ${
+                        filterCatId === '__none__'
+                          ? 'bg-brand text-white font-medium'
+                          : 'bg-muted text-muted-fg hover:bg-muted/80'
+                      }`}>
+                ללא קטגוריה ({guideCountByCat.noCat})
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {visibleGuides.length === 0 && guides.length > 0 ? (
+        <div className="rounded-md border border-dashed border-border bg-muted/30 p-6 text-center text-sm text-muted-fg">
+          לא נמצאו מדריכים תואמים. נסו ביטוי אחר או נקו את הפילטר.
+        </div>
+      ) : null}
+
       <ul className="space-y-2">
-        {guides.map(g => (
+        {visibleGuides.map(g => (
           <GuideRowItem key={g.id} guide={g}
                         categories={categories}
                         projects={projects}
