@@ -67,7 +67,10 @@ export function RichTextEditor({
     content: initialHtml,
     editorProps: {
       attributes: {
-        class: 'focus:outline-none min-h-[200px] max-w-none',
+        // Same Tailwind Typography classes the read-only frontend uses,
+        // so what the writer sees in the editor matches the published
+        // article. dir=rtl keeps Hebrew-first flow.
+        class: 'prose prose-sm max-w-none prose-headings:font-bold prose-a:text-brand prose-img:rounded-md focus:outline-none min-h-[200px]',
         dir: 'rtl',
       },
       handlePaste(view, event) {
