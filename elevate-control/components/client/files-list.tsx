@@ -2,11 +2,12 @@
 
 import { useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { recordFile, deleteFile } from '@/app/actions/client-workspace';
+import { recordFile, deleteFile, renameFile } from '@/app/actions/client-workspace';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { SearchInput } from '@/components/ui/search-input';
-import { Upload, FileText, Trash2, ExternalLink, AlertCircle, ImageIcon } from 'lucide-react';
+import { Upload, FileText, Trash2, ExternalLink, AlertCircle, Edit2, Check, X } from 'lucide-react';
 
 export interface ProjectFileRow {
   id: string;
@@ -109,6 +110,13 @@ export function FilesList({
     });
   }
 
+  function handleRename(id: string, newName: string) {
+    startTransition(async () => {
+      await renameFile(id, { projectSlug, workspace }, newName);
+      router.refresh();
+    });
+  }
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -151,42 +159,96 @@ export function FilesList({
         </div>
       ) : (
         <ul className="space-y-2">
-          {visibleFiles.map(f => {
-            const isImage = f.mime_type?.startsWith('image/');
-            return (
-              <li key={f.id} className="flex items-center gap-3 rounded-md border border-border bg-background p-3">
-                {isImage ? (
-                  <a href={f.file_url} target="_blank" rel="noopener noreferrer">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={f.file_url} alt={f.filename}
-                         className="h-12 w-12 rounded object-cover" />
-                  </a>
-                ) : (
-                  <div className="flex h-12 w-12 items-center justify-center rounded bg-muted">
-                    {isImage ? <ImageIcon className="h-5 w-5 text-muted-fg" /> : <FileText className="h-5 w-5 text-muted-fg" />}
-                  </div>
-                )}
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{f.filename}</p>
-                  <p className="text-xs text-muted-fg">
-                    {formatSize(f.size_bytes)} · {new Date(f.created_at).toLocaleDateString('he-IL')}
-                  </p>
-                </div>
-                <a href={f.file_url} target="_blank" rel="noopener noreferrer"
-                   className="text-brand hover:underline" aria-label="פתח">
-                  <ExternalLink className="h-4 w-4" />
-                </a>
-                {canDelete && (
-                  <button type="button" onClick={() => handleDelete(f.id, f.filename)}
-                          className="text-red-600 hover:text-red-700" aria-label="מחק">
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                )}
-              </li>
-            );
-          })}
+          {visibleFiles.map(f => (
+            <FileRow key={f.id} f={f} canDelete={canDelete} canRename={canDelete}
+                     onDelete={() => handleDelete(f.id, f.filename)}
+                     onRename={(name) => handleRename(f.id, name)} />
+          ))}
         </ul>
       )}
     </div>
+  );
+}
+
+function FileRow({
+  f, canDelete, canRename, onDelete, onRename,
+}: {
+  f: ProjectFileRow;
+  canDelete: boolean;
+  canRename: boolean;
+  onDelete: () => void;
+  onRename: (newName: string) => void;
+}) {
+  const isImage = f.mime_type?.startsWith('image/');
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState(f.filename);
+
+  function save() {
+    if (!name.trim() || name === f.filename) { setEditing(false); return; }
+    onRename(name);
+    setEditing(false);
+  }
+
+  return (
+    <li className="flex items-center gap-3 rounded-md border border-border bg-background p-3">
+      {isImage ? (
+        <a href={f.file_url} target="_blank" rel="noopener noreferrer">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={f.file_url} alt={f.filename}
+               className="h-12 w-12 rounded object-cover" />
+        </a>
+      ) : (
+        <div className="flex h-12 w-12 items-center justify-center rounded bg-muted">
+          <FileText className="h-5 w-5 text-muted-fg" />
+        </div>
+      )}
+      <div className="min-w-0 flex-1">
+        {editing ? (
+          <Input value={name} autoFocus className="h-8 text-sm"
+                 onChange={e => setName(e.target.value)}
+                 onKeyDown={e => {
+                   if (e.key === 'Enter') save();
+                   if (e.key === 'Escape') { setName(f.filename); setEditing(false); }
+                 }} />
+        ) : (
+          <p className="truncate text-sm font-medium">{f.filename}</p>
+        )}
+        <p className="text-xs text-muted-fg">
+          {formatSize(f.size_bytes)} · {new Date(f.created_at).toLocaleDateString('he-IL')}
+        </p>
+      </div>
+
+      {editing ? (
+        <>
+          <button type="button" onClick={save}
+                  className="text-green-600 hover:text-green-700" aria-label="שמור">
+            <Check className="h-4 w-4" />
+          </button>
+          <button type="button" onClick={() => { setName(f.filename); setEditing(false); }}
+                  className="text-zinc-600 hover:text-zinc-800" aria-label="ביטול">
+            <X className="h-4 w-4" />
+          </button>
+        </>
+      ) : (
+        <>
+          <a href={f.file_url} target="_blank" rel="noopener noreferrer"
+             className="text-brand hover:underline" aria-label="פתח">
+            <ExternalLink className="h-4 w-4" />
+          </a>
+          {canRename && (
+            <button type="button" onClick={() => setEditing(true)}
+                    className="text-muted-fg hover:text-brand" aria-label="ערוך שם">
+              <Edit2 className="h-4 w-4" />
+            </button>
+          )}
+          {canDelete && (
+            <button type="button" onClick={onDelete}
+                    className="text-red-600 hover:text-red-700" aria-label="מחק">
+              <Trash2 className="h-4 w-4" />
+            </button>
+          )}
+        </>
+      )}
+    </li>
   );
 }

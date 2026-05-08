@@ -45,6 +45,7 @@ interface Props {
   currentUserId: string;
   isStudio: boolean;
   compact?: boolean;
+  composerPlaceholder?: string;
 }
 
 const STATUS_LABELS: Record<ThreadStatus, string> = {
@@ -59,7 +60,7 @@ const STATUS_COLORS: Record<ThreadStatus, string> = {
 
 export function CommentThread({
   projectId, projectSlug, thread, messages: initialMessages,
-  ensure, currentUserId, isStudio, compact,
+  ensure, currentUserId, isStudio, compact, composerPlaceholder,
 }: Props) {
   const router = useRouter();
   const [messages, setMessages] = useState(initialMessages);
@@ -245,7 +246,7 @@ export function CommentThread({
         <Textarea value={body} onChange={e => setBody(e.target.value)}
                   onPaste={handlePaste}
                   rows={2}
-                  placeholder={isStudio ? 'תגובה ללקוח...' : 'כתבו הערה (אפשר להדביק צילום מסך)...'}
+                  placeholder={composerPlaceholder ?? (isStudio ? 'תגובה ללקוח...' : 'כתבו הערה (אפשר להדביק צילום מסך)...')}
                   className="resize-none" />
 
         {attachments.length > 0 && (

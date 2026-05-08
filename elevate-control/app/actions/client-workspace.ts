@@ -484,6 +484,21 @@ export async function recordFile(input: {
   return { ok: true, data };
 }
 
+export async function renameFile(
+  fileId: string,
+  ctx: { projectSlug: string; workspace?: string | null },
+  newFilename: string
+): Promise<Result> {
+  const supabase = await createClient();
+  const trimmed = newFilename.trim();
+  if (!trimmed) return { ok: false, error: 'שם קובץ לא יכול להיות ריק' };
+  const { error } = await supabase
+    .from('project_files').update({ filename: trimmed }).eq('id', fileId);
+  if (error) return { ok: false, error: error.message };
+  if (ctx.workspace) revalidatePath(`/client/${ctx.projectSlug}/${ctx.workspace}`);
+  return { ok: true };
+}
+
 export async function deleteFile(
   fileId: string,
   ctx: { projectSlug: string; workspace?: string | null }

@@ -10,7 +10,7 @@ import {
 } from '@/components/client/comment-thread';
 import {
   CheckCircle2, AlertCircle, XCircle, Clock,
-  ChevronDown, ChevronUp, ExternalLink, MessageCircle, Trash2,
+  ExternalLink, MessageCircle, Trash2,
 } from 'lucide-react';
 
 export type ApprovalStatus = 'pending' | 'approved' | 'changes_requested' | 'rejected';
@@ -69,22 +69,18 @@ export function ApprovalCard({
   currentUserId, isStudio, canDelete,
 }: Props) {
   const router = useRouter();
-  const [open, setOpen] = useState(thread.messages.length > 0 && thread.status !== 'resolved');
-  const [showNote, setShowNote] = useState(false);
-  const [note, setNote] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const Icon = STATUS_ICONS[approval.status];
 
-  function setStatus(next: ApprovalStatus, withNote = false) {
-    if (withNote && next !== approval.status) { setShowNote(true); return; }
+  function setStatus(next: ApprovalStatus) {
     setError(null);
     startTransition(async () => {
       const result = await setApprovalStatus(approval.id,
-        { projectSlug, workspace }, next, withNote ? note : null);
+        { projectSlug, workspace }, next, null);
       if (!result.ok) setError(result.error);
-      else { setShowNote(false); setNote(''); router.refresh(); }
+      else { router.refresh(); }
     });
   }
 
@@ -141,13 +137,6 @@ export function ApprovalCard({
                       <ExternalLink className="h-3 w-3" />
                     </a>
                   )}
-                  {approval.link_url && (
-                    <a href={approval.link_url} target="_blank" rel="noopener noreferrer"
-                       className="inline-flex items-center gap-1 text-sm text-brand hover:underline">
-                      <ExternalLink className="h-3 w-3" />
-                      קישור נוסף
-                    </a>
-                  )}
                 </div>
               );
             }
@@ -179,7 +168,7 @@ export function ApprovalCard({
             )}
             {approval.status !== 'changes_requested' && (
               <Button type="button" variant="outline" size="sm"
-                      onClick={() => setStatus('changes_requested', true)} disabled={isPending}>
+                      onClick={() => setStatus('changes_requested')} disabled={isPending}>
                 <AlertCircle className="ms-1 h-3.5 w-3.5" />
                 בקש תיקון
               </Button>
@@ -190,12 +179,12 @@ export function ApprovalCard({
                 החזר ל-ממתין
               </Button>
             )}
-            <button type="button" onClick={() => setOpen(o => !o)}
-                    className="ms-auto inline-flex items-center gap-1 text-xs text-muted-fg hover:text-brand">
-              <MessageCircle className="h-3.5 w-3.5" />
-              {thread.messages.length} תגובות
-              {open ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-            </button>
+            {thread.messages.length > 0 && (
+              <span className="ms-auto inline-flex items-center gap-1 text-xs text-muted-fg">
+                <MessageCircle className="h-3.5 w-3.5" />
+                {thread.messages.length} {thread.messages.length === 1 ? 'הודעה' : 'הודעות'}
+              </span>
+            )}
             {canDelete && (
               <button type="button" onClick={handleDelete} disabled={isPending}
                       className="text-red-600 hover:text-red-700 disabled:opacity-30" aria-label="מחק">
@@ -210,24 +199,6 @@ export function ApprovalCard({
             </div>
           )}
 
-          {showNote && (
-            <div className="space-y-2 rounded-md border border-amber-200 bg-amber-50 p-3">
-              <Textarea rows={2} value={note} onChange={e => setNote(e.target.value)}
-                        placeholder="פרטו מה צריך לשנות..." />
-              <div className="flex justify-end gap-2">
-                <Button type="button" variant="ghost" size="sm"
-                        onClick={() => { setShowNote(false); setNote(''); }}>
-                  ביטול
-                </Button>
-                <Button type="button" variant="accent" size="sm"
-                        onClick={() => setStatus('changes_requested', true)}
-                        disabled={isPending || !note.trim()}>
-                  שמור
-                </Button>
-              </div>
-            </div>
-          )}
-
           {error && (
             <div className="rounded-md border border-red-200 bg-red-50 p-2 text-xs text-red-700">
               {error}
@@ -236,26 +207,30 @@ export function ApprovalCard({
         </div>
       </div>
 
-      {open && (
-        <div className="border-t border-border bg-muted/20 p-4">
-          <CommentThread
-            projectId={projectId}
-            projectSlug={projectSlug}
-            thread={{ id: thread.id, status: thread.status }}
-            messages={thread.messages}
-            ensure={{
-              projectId,
-              contextType: 'approval',
-              contextId: approval.id,
-              workspace,
-              title: approval.title,
-            }}
-            currentUserId={currentUserId}
-            isStudio={isStudio}
-            compact
-          />
-        </div>
-      )}
+      {/* Inline conversation — always visible. The composer supports
+          screenshots (paste or upload), so 'request a fix' lives here
+          rather than in a separate note dialog. */}
+      <div className="border-t border-border bg-muted/20 p-4">
+        <CommentThread
+          projectId={projectId}
+          projectSlug={projectSlug}
+          thread={{ id: thread.id, status: thread.status }}
+          messages={thread.messages}
+          ensure={{
+            projectId,
+            contextType: 'approval',
+            contextId: approval.id,
+            workspace,
+            title: approval.title,
+          }}
+          currentUserId={currentUserId}
+          isStudio={isStudio}
+          compact
+          composerPlaceholder={approval.status === 'changes_requested'
+            ? 'הוסיפו עוד פרטים על התיקון...'
+            : 'בקשו תיקון, הוסיפו צילומי מסך, או כתבו הערה...'}
+        />
+      </div>
     </article>
   );
 }
