@@ -66,10 +66,10 @@ export function FloatingTocMobile({ items }: Props) {
 /**
  * Vertical sticky right rail. Place as the second grid column (xl+ only).
  */
-export function FloatingToc({ items }: Props) {
+export function FloatingToc({ items, className }: Props & { className?: string }) {
   const activeId = useActive(items);
   return (
-    <aside aria-label="ניווט בעמוד" className="hidden xl:block">
+    <aside aria-label="ניווט בעמוד" className={`hidden xl:block ${className ?? ''}`}>
       <nav className="sticky top-6 max-h-[calc(100vh-3rem)] overflow-y-auto pe-2">
         <p className="mb-2 ps-3 text-xs font-semibold uppercase tracking-wider text-muted-fg">
           ניווט בעמוד

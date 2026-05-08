@@ -117,7 +117,7 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <div className="mx-auto max-w-7xl">
       <div className="grid gap-8 xl:grid-cols-[220px_1fr]">
-        <div className="min-w-0 space-y-8 xl:order-2">
+        <div className="min-w-0 space-y-8 xl:col-start-2">
 
           <Link href="/projects"
                 className="inline-flex items-center gap-1 text-sm text-muted-fg hover:text-brand">
@@ -267,11 +267,10 @@ export default async function ProjectPage({ params }: Props) {
           </section>
         </div>
 
-        {/* Floating TOC sidebar — first in DOM so it lands in the first grid
-            column, which sits on the right edge in RTL. */}
-        <div className="xl:order-1">
-          <FloatingToc items={tocItems} />
-        </div>
+        {/* Floating TOC — placed in column 1 explicitly so it sits on the
+            right edge in RTL. Direct grid item so sticky has full cell
+            height to anchor against. */}
+        <FloatingToc items={tocItems} className="xl:col-start-1 xl:row-start-1" />
       </div>
     </div>
   );

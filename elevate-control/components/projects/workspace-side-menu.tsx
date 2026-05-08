@@ -29,12 +29,12 @@ async function fetchOverrides(projectId: string) {
  * Vertical sticky right rail (xl+ only). Place as the second grid column.
  */
 export async function WorkspaceSideMenu({
-  projectId, projectSlug, projectName, currentSlug, currentStage,
-}: Props) {
+  projectId, projectSlug, projectName, currentSlug, currentStage, className,
+}: Props & { className?: string }) {
   const overrideBySlug = await fetchOverrides(projectId);
 
   return (
-    <aside aria-label="ניווט אזורי עבודה" className="hidden xl:block">
+    <aside aria-label="ניווט אזורי עבודה" className={`hidden xl:block ${className ?? ''}`}>
       <nav className="sticky top-6 max-h-[calc(100vh-3rem)] overflow-y-auto pe-2 space-y-3">
         <Link href={`/projects/${projectSlug}`}
               className="inline-flex items-center gap-1 text-xs text-muted-fg hover:text-brand">
