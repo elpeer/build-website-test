@@ -104,7 +104,7 @@ export function SetPasswordButton({ userId, userLabel }: Props) {
       )}
       {success && (
         <p className="text-xs text-green-700">
-          הסיסמה נשמרה. שלחו אותה למשתמש (יחד עם המייל) — הוא יתחבר ב-/sign-in עם אופציית "סיסמה".
+          הסיסמה נשמרה. שלחו אותה למשתמש (יחד עם המייל) — הוא יתחבר ב-/sign-in עם אופציית &quot;סיסמה&quot;.
         </p>
       )}
     </div>
