@@ -90,7 +90,7 @@ export default async function ClientDashboardPage({ params }: Props) {
             label="עליה לאוויר"
             value={targetDate ? new Date(targetDate).toLocaleDateString('he-IL', { day:'numeric', month:'short' }) : 'לא נקבע'} />
           <Stat
-            icon={<ChevronLeft className="h-3.5 w-3.5 rtl:rotate-180" />}
+            icon={<ChevronLeft className="h-3.5 w-3.5" />}
             label="התקדמות"
             value={`${progressPercent}%`} />
           <Stat
@@ -147,12 +147,6 @@ export default async function ClientDashboardPage({ params }: Props) {
         </div>
       )}
 
-      {project.vercel_url && (
-        <Link href={project.vercel_url} target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm hover:border-brand">
-          🌐 צפו בגרסת הפיתוח של האתר
-        </Link>
-      )}
     </div>
   );
 }

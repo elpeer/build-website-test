@@ -52,8 +52,8 @@ export default async function StudioWorkspaceManagePage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <div className="grid gap-8 xl:grid-cols-[1fr_220px]">
-        <div className="min-w-0 space-y-6">
+      <div className="grid gap-8 xl:grid-cols-[220px_1fr]">
+        <div className="min-w-0 space-y-6 xl:order-2">
 
           <WorkspaceMobileBar
             projectId={project.id}
@@ -87,13 +87,15 @@ export default async function StudioWorkspaceManagePage({ params }: Props) {
           />
         </div>
 
-        <WorkspaceSideMenu
-          projectId={project.id}
-          projectSlug={project.slug}
-          projectName={project.name}
-          currentSlug={meta.slug}
-          currentStage={project.current_stage}
-        />
+        <div className="xl:order-1">
+          <WorkspaceSideMenu
+            projectId={project.id}
+            projectSlug={project.slug}
+            projectName={project.name}
+            currentSlug={meta.slug}
+            currentStage={project.current_stage}
+          />
+        </div>
       </div>
     </div>
   );

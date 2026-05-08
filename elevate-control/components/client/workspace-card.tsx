@@ -37,7 +37,7 @@ export function WorkspaceCard({ projectSlug, workspace, unlocked, lockedMessage 
       ) : (
         <span className="mt-auto inline-flex items-center gap-1 text-xs font-medium text-brand sm:text-sm">
           כניסה
-          <ChevronLeft className="h-3.5 w-3.5 rtl:rotate-180 sm:h-4 sm:w-4" />
+          <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
         </span>
       )}
     </div>
