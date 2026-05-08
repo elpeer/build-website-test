@@ -38,7 +38,7 @@ export function MobileNav({ user }: { user: Profile }) {
           <button type="button" aria-label="סגור תפריט" onClick={close}
                   className="fixed inset-0 z-[60] cursor-default bg-black/50 lg:hidden" />
 
-          <aside className="fixed inset-y-0 end-0 z-[70] flex w-72 max-w-[85vw] flex-col bg-white shadow-2xl lg:hidden"
+          <aside className="fixed inset-y-0 start-0 z-[70] flex w-72 max-w-[85vw] flex-col bg-white shadow-2xl lg:hidden"
                  role="dialog" aria-modal="true">
             <div className="flex h-16 shrink-0 items-center justify-between border-b border-zinc-200 px-4">
               <Link href="/projects" onClick={close} className="flex items-center gap-2">
