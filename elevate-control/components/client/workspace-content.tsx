@@ -1,4 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
+import { listProjectHtmlFiles } from '@/app/actions/github';
+import { findPagePreview } from '@/lib/preview-links';
 import { CreateApprovalForm, type ApprovalStatus } from './approval-card';
 import { ApprovalsTable, type ApprovalRowData } from './approvals-table';
 import { DevApprovalsTabs } from './dev-approvals-tabs';
@@ -37,6 +39,7 @@ interface ApprovalRow {
   status_changed_at: string | null;
   metadata: Json | null;
   kind: string | null;
+  page_id: string | null;
   position: number;
 }
 interface ThreadRow {
@@ -63,7 +66,7 @@ async function fetchWorkspaceData(projectId: string, workspaceSlug: string) {
     { data: approvalsData }, { data: checklistData }, { data: filesData }, { data: linksData },
   ] = await Promise.all([
     supabase.from('client_approvals')
-      .select('id, workspace, title, description, link_url, thumbnail_url, status, status_note, status_changed_at, metadata, kind, position')
+      .select('id, workspace, title, description, link_url, thumbnail_url, status, status_note, status_changed_at, metadata, kind, page_id, position')
       .eq('project_id', projectId).eq('workspace', workspaceSlug)
       .order('position', { ascending: true }),
     supabase.from('checklist_items')
@@ -304,8 +307,13 @@ export async function WorkspaceContent({
 
     // ─── DEVELOPMENT — Frontend + CMS approvals in tabs ────────────────
     case 'development': {
-      const frontendApprovals = data.approvals.filter(a => (a.kind ?? 'frontend') === 'frontend').map(toApprovalRowData);
-      const cmsApprovals      = data.approvals.filter(a => a.kind === 'cms').map(toApprovalRowData);
+      // Page-tree-driven dev workspace. Two tabs (frontend + CMS) each
+      // show a row per page from the project's site tree, in tree order.
+      const stagingBase = (workspaceSettings.staging_url ?? '').trim().replace(/\/$/, '');
+      const { frontendRows, cmsRows } = await buildDevPageRows({
+        projectId, stagingBase, approvals: data.approvals,
+        approvalThreadInfo,
+      });
       return (
         <div className="space-y-6">
           <WorkspaceSettingInput projectId={projectId} projectSlug={projectSlug}
@@ -321,8 +329,8 @@ export async function WorkspaceContent({
                           isStudio={isStudio} />
 
           <DevApprovalsTabs
-            frontendApprovals={frontendApprovals}
-            cmsApprovals={cmsApprovals}
+            frontendApprovals={frontendRows}
+            cmsApprovals={cmsRows}
             threadByApproval={approvalThreadInfo}
             projectId={projectId} projectSlug={projectSlug}
             currentUserId={currentUserId} isStudio={isStudio}
@@ -528,6 +536,149 @@ function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }
       {subtitle && <p className="mt-0.5 text-sm text-muted-fg">{subtitle}</p>}
     </div>
   );
+}
+
+/**
+ * Build the per-tab row arrays for the development workspace from the
+ * project's site tree. For each page we look up (or auto-create) a
+ * matching client_approvals row per kind ('frontend' / 'cms') and combine
+ * it with its thread + computed link URL. Pages without a usable link
+ * still appear in the list but are flagged disabled so the row renders
+ * read-only (no status flip / link icon / approve buttons).
+ */
+async function buildDevPageRows(input: {
+  projectId: string;
+  stagingBase: string;
+  approvals: ApprovalRow[];
+  approvalThreadInfo: Map<string, { id: string | null; status: 'open' | 'in_progress' | 'resolved' | 'wont_fix'; messages: CommentMessage[] }>;
+}): Promise<{ frontendRows: ApprovalRowData[]; cmsRows: ApprovalRowData[] }> {
+  const supabase = await createClient();
+
+  // 1. Pages — for tree order use parent + order.
+  const { data: pagesData } = await supabase
+    .from('pages')
+    .select('id, slug, name_he, parent_id, order, cms_url_override')
+    .eq('project_id', input.projectId)
+    .order('order', { ascending: true });
+  const pages = (pagesData ?? []) as Array<{
+    id: string; slug: string; name_he: string | null;
+    parent_id: string | null; order: number; cms_url_override: string | null;
+  }>;
+
+  // 2. Tree-flatten depth-first to keep visual order consistent with the
+  //    studio site tree.
+  const childrenByParent = new Map<string | null, typeof pages>();
+  pages.forEach(p => {
+    const arr = childrenByParent.get(p.parent_id ?? null) ?? [];
+    arr.push(p);
+    childrenByParent.set(p.parent_id ?? null, arr);
+  });
+  childrenByParent.forEach(arr => arr.sort((a, b) => a.order - b.order));
+  const orderedPages: typeof pages = [];
+  const walk = (parentId: string | null) => {
+    (childrenByParent.get(parentId) ?? []).forEach(p => {
+      orderedPages.push(p);
+      walk(p.id);
+    });
+  };
+  walk(null);
+
+  // 3. Existing dev approvals.
+  const devApprovals = input.approvals.filter(a => a.workspace === 'development');
+
+  // 4. Backfill match by slug for legacy approvals that have no page_id —
+  //    purely in-memory; we don't update the DB here.
+  type ApprovalShape = ApprovalRow & { page_id?: string | null };
+  const linkedByPageKind = new Map<string, ApprovalShape>();
+  devApprovals.forEach(a => {
+    const ax = a as ApprovalShape;
+    if (ax.page_id && a.kind) linkedByPageKind.set(`${ax.page_id}|${a.kind}`, ax);
+  });
+  const slugIndex = new Map(orderedPages.map(p => [p.slug.toLowerCase(), p.id]));
+  devApprovals.forEach(a => {
+    const ax = a as ApprovalShape;
+    if (ax.page_id) return;
+    // Try title → page slug
+    const titleSlug = (a.title ?? '').toLowerCase().trim();
+    let matchedId = slugIndex.get(titleSlug) ?? null;
+    if (!matchedId && a.link_url) {
+      const last = a.link_url.split(/[?#]/)[0].split('/').filter(Boolean).pop()?.toLowerCase();
+      if (last) matchedId = slugIndex.get(last) ?? null;
+    }
+    if (matchedId && a.kind) {
+      linkedByPageKind.set(`${matchedId}|${a.kind}`, ax);
+    }
+  });
+
+  // 5. Bootstrap missing approvals — single batch insert for any
+  //    page × kind combination without a row yet.
+  const toCreate: Array<{
+    project_id: string; workspace: string; kind: string; page_id: string;
+    title: string; position: number;
+  }> = [];
+  const KINDS: Array<'frontend' | 'cms'> = ['frontend', 'cms'];
+  orderedPages.forEach((p, idx) => {
+    KINDS.forEach(kind => {
+      if (linkedByPageKind.has(`${p.id}|${kind}`)) return;
+      toCreate.push({
+        project_id: input.projectId, workspace: 'development', kind,
+        page_id: p.id,
+        title: p.name_he ?? p.slug,
+        position: (kind === 'cms' ? 10000 : 0) + (idx + 1) * 10,
+      });
+    });
+  });
+  if (toCreate.length > 0) {
+    const { data: inserted } = await supabase
+      .from('client_approvals')
+      .insert(toCreate)
+      .select('id, workspace, title, description, link_url, thumbnail_url, status, status_note, status_changed_at, metadata, kind, position, page_id');
+    (inserted ?? []).forEach((row) => {
+      const r = row as unknown as ApprovalShape;
+      if (r.page_id && r.kind) linkedByPageKind.set(`${r.page_id}|${r.kind}`, r);
+    });
+  }
+
+  // 6. Resolve frontend preview URLs (GitHub repo + Vercel URL).
+  const { files, vercelUrl } = await listProjectHtmlFiles(input.projectId);
+
+  // 7. Build the row arrays.
+  function rowFor(p: typeof pages[number], kind: 'frontend' | 'cms'): ApprovalRowData {
+    const a = linkedByPageKind.get(`${p.id}|${kind}`);
+    let linkUrl: string | null = null;
+    if (kind === 'frontend') {
+      const info = findPagePreview(files, p.slug, vercelUrl);
+      linkUrl = info.previewUrl ?? null;
+    } else {
+      // CMS link: per-page override, otherwise staging_url + slug.
+      const override = (p.cms_url_override ?? '').trim();
+      if (override) linkUrl = override;
+      else if (input.stagingBase) linkUrl = `${input.stagingBase}/${p.slug}`;
+    }
+    return {
+      id: a?.id ?? `placeholder-${p.id}-${kind}`, // SortableTable wants a stable id
+      workspace: 'development',
+      title: p.name_he ?? p.slug,
+      description: a?.description ?? null,
+      link_url: linkUrl,
+      status: (a?.status ?? 'pending'),
+      metadata: a?.metadata ?? null,
+      kind,
+      disabled: !linkUrl,
+    };
+  }
+
+  const frontendRows = orderedPages.map(p => rowFor(p, 'frontend'));
+  const cmsRows      = orderedPages.map(p => rowFor(p, 'cms'));
+
+  // 8. Augment approvalThreadInfo with the bootstrapped rows so the table
+  //    shows comment counts. (Empty thread for fresh ones.)
+  frontendRows.concat(cmsRows).forEach(r => {
+    if (input.approvalThreadInfo.has(r.id)) return;
+    input.approvalThreadInfo.set(r.id, { id: null, status: 'open', messages: [] });
+  });
+
+  return { frontendRows, cmsRows };
 }
 
 async function fetchGuidesForProject(projectId: string): Promise<GuideListItem[]> {

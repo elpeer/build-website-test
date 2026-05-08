@@ -157,10 +157,26 @@ export async function updatePageStatus(
   return { ok: true };
 }
 
-/**
- * Persist a new tree state for a project — order + parent for each page in
- * one round-trip. Caller computes the full new state client-side.
- */
+/** Per-page CMS URL override for the development workspace. Pass null
+ *  to clear and fall back to auto-derived staging_url + slug. */
+export async function setPageCmsUrlOverride(
+  pageId: string,
+  projectSlug: string,
+  url: string | null
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+  const { error } = await supabase
+    .from('pages')
+    .update({ cms_url_override: url?.trim() || null })
+    .eq('id', pageId);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath(`/projects/${projectSlug}`);
+  revalidatePath(`/client/${projectSlug}/development`);
+  return { ok: true };
+}
+
 export async function reorderAndReparentPages(
   projectSlug: string,
   updates: Array<{ id: string; parent_id: string | null; order: number }>

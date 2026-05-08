@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { ApprovalsTable, type ApprovalRowData } from './approvals-table';
-import { CreateApprovalForm } from './approval-card';
 import type { CommentMessage } from './comment-thread';
 import { Code2, Settings } from 'lucide-react';
 
@@ -60,9 +59,9 @@ export function DevApprovalsTabs({
             currentUserId={currentUserId}
             isStudio={isStudio}
           />
-          <CreateApprovalForm projectId={projectId} projectSlug={projectSlug}
-                              workspace="development" isStudio={isStudio}
-                              kind="frontend" ctaLabel="+ הוסיפו עמוד פרונט" />
+          <p className="text-[11px] text-muted-fg">
+            הרשימה נטענת מעץ העמודים של הפרויקט. כדי להוסיף / להסיר עמוד — ערכו את עץ העמודים בעמוד הפרויקט.
+          </p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -78,9 +77,9 @@ export function DevApprovalsTabs({
             currentUserId={currentUserId}
             isStudio={isStudio}
           />
-          <CreateApprovalForm projectId={projectId} projectSlug={projectSlug}
-                              workspace="development" isStudio={isStudio}
-                              kind="cms" ctaLabel="+ הוסיפו עמוד CMS" />
+          <p className="text-[11px] text-muted-fg">
+            הרשימה נטענת מעץ העמודים. URL ברירת המחדל: סביבת ה-staging + ה-slug של העמוד. אפשר לדרוס ידנית בעריכת השורה.
+          </p>
         </div>
       )}
     </div>

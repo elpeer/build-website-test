@@ -27,6 +27,10 @@ export interface ApprovalRowData {
   status: ApprovalStatus;
   metadata: Json | null;
   kind?: string | null;
+  /** When true the row renders read-only — name only, no link, no status
+   *  flip, no comments. Used in the dev workspace for pages that don't
+   *  have a usable preview/CMS URL yet. */
+  disabled?: boolean;
 }
 
 interface ThreadInfo {
@@ -163,6 +167,27 @@ function ApprovalTableRow({
   }
 
   const messageCount = thread.messages.length;
+  const disabled = approval.disabled === true;
+
+  // Disabled row — page exists in the tree but no link to view it. Render
+  // a stripped-down read-only version, no status flip, no comments.
+  if (disabled) {
+    return (
+      <li>
+        <div className="flex items-center gap-2 px-3 py-2 opacity-60">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium text-muted-fg">{approval.title}</p>
+            <p className="text-[11px] text-muted-fg italic">
+              ממתין ללינק תצוגה — יוצג כשיהיה זמין
+            </p>
+          </div>
+          <span className="shrink-0 rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-500">
+            ללא לינק
+          </span>
+        </div>
+      </li>
+    );
+  }
 
   return (
     <li>
@@ -281,11 +306,15 @@ function ApprovalTableRow({
                       aria-label="ערוך">
                 <Edit2 className="h-4 w-4" />
               </button>
-              <button type="button" onClick={handleDelete}
-                      className="shrink-0 rounded p-1.5 text-red-600 hover:bg-red-50"
-                      aria-label="מחק">
-                <Trash2 className="h-4 w-4" />
-              </button>
+              {/* Dev rows are page-tree-driven — delete here would create
+                   orphans. Hide for kind=frontend/cms; keep for design. */}
+              {approval.kind !== 'frontend' && approval.kind !== 'cms' && (
+                <button type="button" onClick={handleDelete}
+                        className="shrink-0 rounded p-1.5 text-red-600 hover:bg-red-50"
+                        aria-label="מחק">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              )}
             </>
           )
         )}
