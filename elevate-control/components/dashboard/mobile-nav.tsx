@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { Menu, X, FolderKanban, Users, Settings, BookOpen, Shield } from 'lucide-react';
 import type { ProfileRow } from '@/lib/supabase/database.types';
@@ -9,6 +10,9 @@ type Profile = Pick<ProfileRow, 'id' | 'email' | 'full_name' | 'role' | 'studio_
 
 export function MobileNav({ user }: { user: Profile }) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -24,17 +28,12 @@ export function MobileNav({ user }: { user: Profile }) {
 
   function close() { setOpen(false); }
 
-  return (
+  // Render the drawer via a portal to document.body so it isn't trapped by an
+  // ancestor with `backdrop-filter` (which creates a containing block for
+  // `position: fixed` descendants on iOS Safari and some Chromium builds —
+  // that was making the drawer collapse to the topbar's 64px height).
+  const drawer = open ? (
     <>
-      <button type="button"
-              onClick={() => setOpen(true)}
-              className="inline-flex items-center justify-center rounded-md p-2 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 lg:hidden"
-              aria-label="פתח תפריט">
-        <Menu className="h-5 w-5" />
-      </button>
-
-      {open && (
-        <>
           <button type="button" aria-label="סגור תפריט" onClick={close}
                   className="fixed inset-0 z-[60] cursor-default bg-black/50 lg:hidden" />
 
@@ -80,8 +79,18 @@ export function MobileNav({ user }: { user: Profile }) {
               <p className="text-[11px]" dir="ltr">{user.email}</p>
             </div>
           </aside>
-        </>
-      )}
+    </>
+  ) : null;
+
+  return (
+    <>
+      <button type="button"
+              onClick={() => setOpen(true)}
+              className="inline-flex items-center justify-center rounded-md p-2 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 lg:hidden"
+              aria-label="פתח תפריט">
+        <Menu className="h-5 w-5" />
+      </button>
+      {mounted && drawer && createPortal(drawer, document.body)}
     </>
   );
 }
