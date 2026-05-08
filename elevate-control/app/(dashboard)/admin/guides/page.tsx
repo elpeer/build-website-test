@@ -19,6 +19,7 @@ interface GuideRow {
   visibility: 'global' | 'project';
   video_url: string | null;
   cover_url: string | null;
+  badge: string | null;
   published: boolean;
   position: number;
   updated_at: string;
@@ -52,7 +53,7 @@ export default async function GuidesAdminPage() {
     { data: assignmentsData },
   ] = await Promise.all([
     supabase.from('guide_articles')
-      .select('id, slug, title, description, content_md, content_html, category, category_id, visibility, video_url, cover_url, published, position, updated_at')
+      .select('id, slug, title, description, content_md, content_html, category, category_id, visibility, video_url, cover_url, badge, published, position, updated_at')
       .order('category', { ascending: true })
       .order('position', { ascending: true }),
     supabase.from('guide_categories')

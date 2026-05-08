@@ -3,11 +3,11 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  createGuideCategory, updateGuideCategory, deleteGuideCategory,
+  createGuideCategory, updateGuideCategory, deleteGuideCategory, moveGuideCategory,
 } from '@/app/actions/guides';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Edit2, Trash2, Save, X, Tag } from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X, Tag, ChevronUp, ChevronDown } from 'lucide-react';
 
 export interface CategoryRow {
   id: string;
@@ -17,7 +17,10 @@ export interface CategoryRow {
   guide_count?: number;
 }
 
-interface Props { categories: CategoryRow[] }
+interface Props {
+  categories: CategoryRow[];
+  /** Indices passed for arrow disabling: pass nothing if you don't care. */
+}
 
 /** Studio-only inline manager for guide categories. Lives next to the
  *  guides list on the admin page. */
@@ -47,8 +50,10 @@ export function GuideCategoriesAdmin({ categories }: Props) {
   return (
     <div className="space-y-3">
       <ul className="space-y-1.5">
-        {categories.map(c => (
+        {categories.map((c, i) => (
           <CategoryRowItem key={c.id} cat={c}
+                           isFirst={i === 0}
+                           isLast={i === categories.length - 1}
                            editing={editingId === c.id}
                            onEdit={() => setEditingId(c.id)}
                            onCancel={() => setEditingId(null)}
@@ -97,10 +102,12 @@ export function GuideCategoriesAdmin({ categories }: Props) {
 }
 
 function CategoryRowItem({
-  cat, editing, onEdit, onCancel, onSaved,
+  cat, editing, isFirst, isLast, onEdit, onCancel, onSaved,
 }: {
   cat: CategoryRow;
   editing: boolean;
+  isFirst: boolean;
+  isLast: boolean;
   onEdit: () => void;
   onCancel: () => void;
   onSaved: () => void;
@@ -108,6 +115,13 @@ function CategoryRowItem({
   const [label, setLabel] = useState(cat.label);
   const [slug,  setSlug]  = useState(cat.slug);
   const [, startTransition] = useTransition();
+
+  function move(direction: 'up' | 'down') {
+    startTransition(async () => {
+      await moveGuideCategory(cat.id, direction);
+      onSaved();
+    });
+  }
 
   function save() {
     startTransition(async () => {
@@ -150,6 +164,18 @@ function CategoryRowItem({
 
   return (
     <li className="flex items-center gap-2 rounded-md border border-border bg-background p-2">
+      <div className="flex shrink-0 flex-col">
+        <button type="button" onClick={() => move('up')} disabled={isFirst}
+                className="rounded p-0.5 text-muted-fg hover:bg-muted hover:text-brand disabled:opacity-25"
+                aria-label="הזז למעלה">
+          <ChevronUp className="h-3.5 w-3.5" />
+        </button>
+        <button type="button" onClick={() => move('down')} disabled={isLast}
+                className="rounded p-0.5 text-muted-fg hover:bg-muted hover:text-brand disabled:opacity-25"
+                aria-label="הזז למטה">
+          <ChevronDown className="h-3.5 w-3.5" />
+        </button>
+      </div>
       <Tag className="h-4 w-4 shrink-0 text-muted-fg" />
       <span className="flex-1 text-sm font-medium">{cat.label}</span>
       <code dir="ltr" className="text-xs text-muted-fg">{cat.slug}</code>

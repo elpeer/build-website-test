@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ExternalLink, PlayCircle, BookOpen } from 'lucide-react';
+import { ExternalLink, PlayCircle, BookOpen, Star } from 'lucide-react';
 import { SearchInput } from '@/components/ui/search-input';
 
 export interface GuideListItem {
@@ -13,6 +13,7 @@ export interface GuideListItem {
   category: string | null;
   cover_url: string | null;
   video_url: string | null;
+  badge: string | null;
 }
 
 export interface CategoryOption { slug: string; label: string }
@@ -125,6 +126,12 @@ export function GuidesList({ guides, projectSlug, categories = [] }: Props) {
                 </div>
               )}
               <div className="flex flex-1 flex-col gap-1.5 p-3">
+                {g.badge && (
+                  <span className="inline-flex w-fit items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-800">
+                    <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                    {g.badge}
+                  </span>
+                )}
                 <div className="flex items-start gap-2">
                   {!g.cover_url && (
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-brand/10 text-brand">

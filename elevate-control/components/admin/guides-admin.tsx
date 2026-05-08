@@ -3,7 +3,7 @@
 import { useMemo, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  createGuide, updateGuide, deleteGuide, setGuideAssignments,
+  createGuide, updateGuide, deleteGuide, setGuideAssignments, moveGuide,
 } from '@/app/actions/guides';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +12,7 @@ import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import { SearchInput } from '@/components/ui/search-input';
 import {
   Plus, Edit2, Trash2, Eye, EyeOff, ExternalLink, Save, X, AlertCircle,
-  Globe, FolderKanban,
+  Globe, FolderKanban, ChevronUp, ChevronDown, Star,
 } from 'lucide-react';
 
 interface GuideRow {
@@ -27,6 +27,7 @@ interface GuideRow {
   visibility: 'global' | 'project';
   video_url: string | null;
   cover_url: string | null;
+  badge: string | null;
   published: boolean;
   position: number;
   updated_at: string;
@@ -156,6 +157,11 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
             <Input name="video_url" dir="ltr" className="font-mono" placeholder="https://www.youtube.com/watch?v=..." />
           </div>
 
+          <div>
+            <Label className="text-xs">תווית הבלטה (אופציונלי)</Label>
+            <Input name="badge" placeholder='"הכי נפוץ", "חדש", "מומלץ"' />
+          </div>
+
           {createVisibility === 'project' && (
             <div className="rounded-md border border-border bg-background p-3">
               <Label className="text-xs">בחרו פרויקטים שיראו את המדריך</Label>
@@ -253,16 +259,25 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
       ) : null}
 
       <ul className="space-y-2">
-        {visibleGuides.map(g => (
-          <GuideRowItem key={g.id} guide={g}
-                        categories={categories}
-                        projects={projects}
-                        assignedProjectIds={assignmentsByGuide[g.id] ?? []}
-                        isEditing={editingId === g.id}
-                        onEdit={() => setEditingId(g.id)}
-                        onCancel={() => setEditingId(null)}
-                        onSaved={() => { setEditingId(null); router.refresh(); }} />
-        ))}
+        {visibleGuides.map(g => {
+          // First/last position info inside the same category, for arrow disabling.
+          const sameCat = guides
+            .filter(x => (x.category_id ?? '__null__') === (g.category_id ?? '__null__'))
+            .sort((a, b) => a.position - b.position);
+          const idx = sameCat.findIndex(x => x.id === g.id);
+          return (
+            <GuideRowItem key={g.id} guide={g}
+                          categories={categories}
+                          projects={projects}
+                          assignedProjectIds={assignmentsByGuide[g.id] ?? []}
+                          isFirst={idx === 0}
+                          isLast={idx === sameCat.length - 1}
+                          isEditing={editingId === g.id}
+                          onEdit={() => setEditingId(g.id)}
+                          onCancel={() => setEditingId(null)}
+                          onSaved={() => { setEditingId(null); router.refresh(); }} />
+          );
+        })}
       </ul>
     </div>
   );
@@ -270,12 +285,14 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
 
 function GuideRowItem({
   guide, categories, projects, assignedProjectIds,
-  isEditing, onEdit, onCancel, onSaved,
+  isFirst, isLast, isEditing, onEdit, onCancel, onSaved,
 }: {
   guide: GuideRow;
   categories: CategoryOption[];
   projects: ProjectOption[];
   assignedProjectIds: string[];
+  isFirst: boolean;
+  isLast: boolean;
   isEditing: boolean;
   onEdit: () => void; onCancel: () => void; onSaved: () => void;
 }) {
@@ -286,10 +303,18 @@ function GuideRowItem({
   const [assignedSet, setAssignedSet] = useState<Set<string>>(new Set(assignedProjectIds));
   const [videoUrl, setVideoUrl]       = useState(guide.video_url ?? '');
   const [coverUrl, setCoverUrl]       = useState(guide.cover_url ?? '');
+  const [badge, setBadge]             = useState(guide.badge ?? '');
   const [contentHtml, setContentHtml] = useState(guide.content_html || guide.content_md);
   const [published, setPublished]     = useState(guide.published);
   const [error, setError]             = useState<string | null>(null);
   const [, startTransition] = useTransition();
+
+  function move(direction: 'up' | 'down') {
+    startTransition(async () => {
+      await moveGuide(guide.id, direction);
+      onSaved();
+    });
+  }
 
   function toggleProject(id: string) {
     setAssignedSet(prev => {
@@ -308,6 +333,7 @@ function GuideRowItem({
         visibility,
         video_url: videoUrl || null,
         cover_url: coverUrl || null,
+        badge: badge.trim() || null,
         content_html: contentHtml, published,
       });
       if (!result.ok) { setError(result.error); return; }
@@ -335,6 +361,18 @@ function GuideRowItem({
     const categoryLabel = categories.find(c => c.id === guide.category_id)?.label ?? guide.category;
     return (
       <li className="flex items-start gap-3 rounded-md border border-border bg-background p-3">
+        <div className="flex shrink-0 flex-col">
+          <button type="button" onClick={() => move('up')} disabled={isFirst}
+                  className="rounded p-0.5 text-muted-fg hover:bg-muted hover:text-brand disabled:opacity-25"
+                  aria-label="הזז למעלה">
+            <ChevronUp className="h-3.5 w-3.5" />
+          </button>
+          <button type="button" onClick={() => move('down')} disabled={isLast}
+                  className="rounded p-0.5 text-muted-fg hover:bg-muted hover:text-brand disabled:opacity-25"
+                  aria-label="הזז למטה">
+            <ChevronDown className="h-3.5 w-3.5" />
+          </button>
+        </div>
         {guide.cover_url && (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={guide.cover_url} alt={guide.title}
@@ -343,6 +381,12 @@ function GuideRowItem({
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <p className="font-medium">{guide.title}</p>
+            {guide.badge && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">
+                <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                {guide.badge}
+              </span>
+            )}
             {categoryLabel && (
               <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-fg">{categoryLabel}</span>
             )}
@@ -422,6 +466,15 @@ function GuideRowItem({
           <Input value={videoUrl} dir="ltr" className="font-mono"
                  onChange={e => setVideoUrl(e.target.value)} />
         </div>
+      </div>
+
+      <div>
+        <Label className="text-xs">תווית הבלטה (Badge)</Label>
+        <Input value={badge} onChange={e => setBadge(e.target.value)}
+               placeholder='למשל: "הכי נפוץ", "חדש", "מומלץ" — השאירו ריק לבטל' />
+        <p className="mt-1 text-[11px] text-muted-fg">
+          תופיע כתווית כתומה ליד כותרת המדריך הן בכרטיסים והן בפנים.
+        </p>
       </div>
 
       <div className="rounded-md border border-border bg-background p-3">

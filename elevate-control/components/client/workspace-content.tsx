@@ -538,7 +538,7 @@ async function fetchGuidesForProject(projectId: string): Promise<GuideListItem[]
     { data: assignments },
   ] = await Promise.all([
     supabase.from('guide_articles')
-      .select('id, slug, title, description, category, cover_url, video_url, published, position, visibility')
+      .select('id, slug, title, description, category, cover_url, video_url, badge, published, position, visibility')
       .eq('published', true)
       .order('category', { ascending: true })
       .order('position', { ascending: true }),

@@ -30,6 +30,7 @@ export async function createGuide(formData: FormData): Promise<Result<{ id: stri
   const videoUrl    = (formData.get('video_url') as string | null)?.trim() || null;
   const coverUrl    = (formData.get('cover_url') as string | null)?.trim() || null;
   const visibility  = ((formData.get('visibility') as string | null)?.trim() || 'global') as 'global' | 'project';
+  const badge       = (formData.get('badge') as string | null)?.trim() || null;
   const contentHtml = (formData.get('content_html') as string | null) ?? '';
 
   if (!title) return { ok: false, error: 'כותרת חובה' };
@@ -38,7 +39,7 @@ export async function createGuide(formData: FormData): Promise<Result<{ id: stri
   const { data, error } = await auth.supabase
     .from('guide_articles')
     .insert({
-      slug, title, description, category, category_id: categoryId, visibility,
+      slug, title, description, category, category_id: categoryId, visibility, badge,
       video_url: videoUrl, cover_url: coverUrl,
       content_md: '',
       content_html: contentHtml,
@@ -62,6 +63,8 @@ export async function updateGuide(
     category?: string | null; category_id?: string | null;
     visibility?: 'global' | 'project';
     video_url?: string | null; cover_url?: string | null;
+    badge?: string | null;
+    position?: number;
     content_md?: string; content_html?: string; published?: boolean;
   }
 ): Promise<Result> {
@@ -70,6 +73,84 @@ export async function updateGuide(
 
   const { error } = await auth.supabase.from('guide_articles').update(patch).eq('id', id);
   if (error) return { ok: false, error: error.message };
+
+  revalidatePath('/admin/guides');
+  return { ok: true };
+}
+
+/**
+ * Move a guide one slot up or down within its category bucket. The
+ * caller decides direction; we swap positions with the closest neighbor
+ * that shares the same category_id (NULL is treated as its own bucket).
+ */
+export async function moveGuide(
+  id: string,
+  direction: 'up' | 'down'
+): Promise<Result> {
+  const auth = await requireStudioAdmin();
+  if (!auth.ok) return { ok: false, error: auth.error };
+
+  const { data: current } = await auth.supabase
+    .from('guide_articles')
+    .select('id, position, category_id')
+    .eq('id', id)
+    .single<{ id: string; position: number; category_id: string | null }>();
+  if (!current) return { ok: false, error: 'מדריך לא נמצא' };
+
+  let neighborQuery = auth.supabase
+    .from('guide_articles')
+    .select('id, position')
+    .limit(1);
+  if (current.category_id === null) neighborQuery = neighborQuery.is('category_id', null);
+  else neighborQuery = neighborQuery.eq('category_id', current.category_id);
+
+  if (direction === 'up') {
+    neighborQuery = neighborQuery.lt('position', current.position).order('position', { ascending: false });
+  } else {
+    neighborQuery = neighborQuery.gt('position', current.position).order('position', { ascending: true });
+  }
+
+  const { data: neighborRows } = await neighborQuery;
+  const neighbor = neighborRows?.[0] as { id: string; position: number } | undefined;
+  if (!neighbor) return { ok: true }; // already at the edge — no-op
+
+  // Swap the two positions in two updates.
+  await auth.supabase.from('guide_articles').update({ position: neighbor.position }).eq('id', current.id);
+  await auth.supabase.from('guide_articles').update({ position: current.position }).eq('id', neighbor.id);
+
+  revalidatePath('/admin/guides');
+  return { ok: true };
+}
+
+/** Same swap pattern, for guide categories. */
+export async function moveGuideCategory(
+  id: string,
+  direction: 'up' | 'down'
+): Promise<Result> {
+  const auth = await requireStudioAdmin();
+  if (!auth.ok) return { ok: false, error: auth.error };
+
+  const { data: current } = await auth.supabase
+    .from('guide_categories')
+    .select('id, position').eq('id', id)
+    .single<{ id: string; position: number }>();
+  if (!current) return { ok: false, error: 'קטגוריה לא נמצאה' };
+
+  let neighborQuery = auth.supabase
+    .from('guide_categories')
+    .select('id, position')
+    .limit(1);
+  if (direction === 'up') {
+    neighborQuery = neighborQuery.lt('position', current.position).order('position', { ascending: false });
+  } else {
+    neighborQuery = neighborQuery.gt('position', current.position).order('position', { ascending: true });
+  }
+  const { data: neighborRows } = await neighborQuery;
+  const neighbor = neighborRows?.[0] as { id: string; position: number } | undefined;
+  if (!neighbor) return { ok: true };
+
+  await auth.supabase.from('guide_categories').update({ position: neighbor.position }).eq('id', current.id);
+  await auth.supabase.from('guide_categories').update({ position: current.position }).eq('id', neighbor.id);
 
   revalidatePath('/admin/guides');
   return { ok: true };
