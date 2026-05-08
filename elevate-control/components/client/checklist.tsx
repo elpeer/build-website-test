@@ -1,15 +1,17 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  createChecklistItem, updateChecklistItem, deleteChecklistItem,
+  createChecklistItem, updateChecklistItem, deleteChecklistItem, recordFile,
 } from '@/app/actions/client-workspace';
+import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
   CheckCircle2, Circle, Hourglass, Minus, Plus, Trash2, ExternalLink, Save,
+  Upload, FileText,
 } from 'lucide-react';
 
 export type ChecklistStatus = 'pending' | 'in_progress' | 'done' | 'na';
@@ -111,7 +113,7 @@ export function Checklist({
         )}
         {items.map(item => (
           <ChecklistRow key={item.id} item={item}
-                        projectSlug={projectSlug} workspace={workspace}
+                        projectId={projectId} projectSlug={projectSlug} workspace={workspace}
                         isStudio={isStudio}
                         showFixField={showFixField}
                         showAmountField={showAmountField} />
@@ -169,9 +171,10 @@ export function Checklist({
 }
 
 function ChecklistRow({
-  item, projectSlug, workspace, isStudio, showFixField, showAmountField,
+  item, projectId, projectSlug, workspace, isStudio, showFixField, showAmountField,
 }: {
   item: ChecklistItemRow;
+  projectId: string;
   projectSlug: string;
   workspace: string;
   isStudio: boolean;
@@ -185,7 +188,35 @@ function ChecklistRow({
   const [fixDirty, setFixDirty] = useState(false);
   const [amountStr, setAmountStr] = useState(item.amount_cents != null ? String(item.amount_cents / 100) : '');
   const [amountDirty, setAmountDirty] = useState(false);
+  const [uploadingInvoice, setUploadingInvoice] = useState(false);
+  const invoiceInputRef = useRef<HTMLInputElement>(null);
   const [, startTransition] = useTransition();
+
+  async function handleInvoiceUpload(file: File | undefined) {
+    if (!file) return;
+    setUploadingInvoice(true);
+    try {
+      const supabase = createClient();
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'bin';
+      const path = `${projectId}/files/${workspace}/invoices/${crypto.randomUUID()}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from('client-files').upload(path, file, { contentType: file.type, upsert: false });
+      if (upErr) { setUploadingInvoice(false); return; }
+      const recorded = await recordFile({
+        projectId, projectSlug, workspace,
+        category: 'invoice', filename: file.name,
+        storagePath: path, mimeType: file.type, sizeBytes: file.size,
+      });
+      if (recorded.ok) {
+        await updateChecklistItem(item.id, { projectSlug, workspace },
+          { attachment_url: recorded.data.file_url });
+      }
+      if (invoiceInputRef.current) invoiceInputRef.current.value = '';
+      router.refresh();
+    } finally {
+      setUploadingInvoice(false);
+    }
+  }
 
   const Icon = STATUS_ICONS[item.status];
 
@@ -319,6 +350,44 @@ function ChecklistRow({
                   <Save className="ms-1 h-3.5 w-3.5" />
                   שמור
                 </Button>
+              )}
+            </div>
+          )}
+          {showAmountField && (
+            <div className="space-y-1.5 pt-1">
+              {item.attachment_url ? (
+                <div className="flex items-center gap-2 rounded-md bg-muted/40 px-3 py-2 text-xs">
+                  <FileText className="h-3.5 w-3.5 text-muted-fg" />
+                  <a href={item.attachment_url} target="_blank" rel="noopener noreferrer"
+                     className="flex-1 text-brand hover:underline">
+                    חשבונית
+                  </a>
+                  <a href={item.attachment_url} target="_blank" rel="noopener noreferrer"
+                     className="text-muted-fg hover:text-brand" aria-label="פתח">
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                  {isStudio && (
+                    <Button type="button" variant="ghost" size="sm"
+                            onClick={() => invoiceInputRef.current?.click()}
+                            disabled={uploadingInvoice}>
+                      <Upload className="ms-1 h-3 w-3" />
+                      החלף
+                    </Button>
+                  )}
+                </div>
+              ) : isStudio ? (
+                <Button type="button" variant="outline" size="sm"
+                        onClick={() => invoiceInputRef.current?.click()}
+                        disabled={uploadingInvoice} className="w-full justify-center border-dashed">
+                  <Upload className="ms-1 h-3.5 w-3.5" />
+                  {uploadingInvoice ? 'מעלה...' : 'העלאת חשבונית למילסטון'}
+                </Button>
+              ) : null}
+              {isStudio && (
+                <input ref={invoiceInputRef} type="file"
+                       accept="application/pdf,image/*"
+                       className="hidden"
+                       onChange={e => handleInvoiceUpload(e.target.files?.[0])} />
               )}
             </div>
           )}

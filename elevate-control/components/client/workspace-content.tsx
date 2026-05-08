@@ -217,20 +217,12 @@ export async function WorkspaceContent({
                      title="הצעות מחיר חתומות"
                      emptyText="טרם הועלתה הצעת מחיר חתומה" />
 
-          <SectionHeader title="שלבי תשלום וסטטוס" subtitle="המקדמה, יתרת התשלומים, סכום וחשבונית לכל שלב" />
+          <SectionHeader title="שלבי תשלום וסטטוס"
+                         subtitle="המקדמה, יתרת התשלומים, סכום וחשבונית — הכל לכל שלב במקום אחד." />
           <Checklist projectId={projectId} projectSlug={projectSlug} workspace="finance"
                      items={data.checklist} isStudio={isStudio}
                      clientCanAddItems={false}
                      showAmountField />
-
-          <SectionHeader title="חשבוניות" subtitle="חשבוניות שנשלחו אליכם אחרי כל תשלום" />
-          <FilesList projectId={projectId} projectSlug={projectSlug} workspace="finance"
-                     category="invoice"
-                     files={filesByCategory('invoice')}
-                     isStudio={isStudio}
-                     clientCanUpload={false}
-                     title="חשבוניות"
-                     emptyText="טרם נשלחו חשבוניות" />
         </div>
       );
 
