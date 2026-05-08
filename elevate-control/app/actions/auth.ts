@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createServiceClient } from '@/lib/supabase/server';
 
 /**
  * Send a magic-link to the given email. Supabase emails the link;
@@ -35,6 +35,61 @@ export async function signInWithMagicLink(formData: FormData) {
   }
 
   redirect('/sign-in?sent=1');
+}
+
+/**
+ * Sign in with email + password. Bypasses magic-link rate limits, useful
+ * when SMTP is throttled or for users who prefer a stable credential.
+ * The admin must seed the password first via setUserPassword().
+ */
+export async function signInWithPassword(formData: FormData) {
+  const email    = (formData.get('email')    as string | null)?.trim().toLowerCase();
+  const password = (formData.get('password') as string | null) ?? '';
+  const redirectAfter = (formData.get('redirect') as string | null) || null;
+
+  if (!email || !email.includes('@')) {
+    redirect('/sign-in?error=invalid-email');
+  }
+  if (!password) {
+    redirect('/sign-in?error=missing-password');
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithPassword({ email: email!, password });
+  if (error) {
+    redirect(`/sign-in?error=${encodeURIComponent('email/password לא תקינים')}`);
+  }
+
+  revalidatePath('/', 'layout');
+  redirect(redirectAfter || '/projects');
+}
+
+/**
+ * Studio-admin only: set or reset a password for a user. Uses the service
+ * role to call Supabase Auth Admin API directly. The new password lets
+ * the user sign in via signInWithPassword without needing a magic link.
+ */
+export async function setUserPassword(
+  userId: string,
+  newPassword: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+
+  // Only studio admins may set passwords
+  const { data: me } = await supabase.from('profiles')
+    .select('studio_admin').eq('id', user.id).single<{ studio_admin: boolean }>();
+  if (!me?.studio_admin) return { ok: false, error: 'אין לך הרשאה' };
+
+  if (!newPassword || newPassword.length < 8) {
+    return { ok: false, error: 'סיסמה חייבת להיות באורך 8 תווים לפחות' };
+  }
+
+  const admin = createServiceClient();
+  const { error } = await admin.auth.admin.updateUserById(userId, { password: newPassword });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
 }
 
 /**

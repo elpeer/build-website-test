@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { InviteClientForm } from '@/components/team/invite-client-form';
+import { SetPasswordButton } from '@/components/team/set-password-button';
 import { Shield, FolderKanban } from 'lucide-react';
 
 export const metadata = { title: 'חברי צוות' };
@@ -42,6 +43,12 @@ export default async function TeamPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/sign-in');
+
+  // Is the current user a studio admin? Controls password-reset visibility.
+  const { data: meProfile } = await supabase
+    .from('profiles').select('studio_admin').eq('id', user.id)
+    .single<{ studio_admin: boolean }>();
+  const canSetPassword = !!meProfile?.studio_admin;
 
   // All profiles the current user is "allowed" to see — RLS does the filtering
   const { data: profilesData } = await supabase
@@ -136,6 +143,9 @@ export default async function TeamPage() {
                               </Link>
                             ))}
                           </div>
+                        )}
+                        {canSetPassword && (
+                          <SetPasswordButton userId={p.id} userLabel={p.email} />
                         )}
                       </div>
                     </div>
