@@ -2,15 +2,16 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { setApprovalStatus, deleteApproval } from '@/app/actions/client-workspace';
+import { setApprovalStatus, deleteApproval, updateApproval } from '@/app/actions/client-workspace';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
   CommentThread, type CommentMessage, ThreadStatusPill,
 } from '@/components/client/comment-thread';
 import {
   CheckCircle2, AlertCircle, XCircle, Clock,
-  ExternalLink, MessageCircle, Trash2,
+  ExternalLink, MessageCircle, Trash2, Edit2, Save, X,
 } from 'lucide-react';
 
 export type ApprovalStatus = 'pending' | 'approved' | 'changes_requested' | 'rejected';
@@ -72,7 +73,16 @@ export function ApprovalCard({
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  const meta0 = approval.metadata ?? {};
+  const [editing, setEditing] = useState(false);
+  const [editTitle,    setEditTitle]    = useState(approval.title);
+  const [editDesc,     setEditDesc]     = useState(approval.description ?? '');
+  const [editLink,     setEditLink]     = useState(approval.link_url ?? '');
+  const [editDesktop,  setEditDesktop]  = useState((meta0.desktop_url as string | undefined) ?? '');
+  const [editMobile,   setEditMobile]   = useState((meta0.mobile_url  as string | undefined) ?? '');
+
   const Icon = STATUS_ICONS[approval.status];
+  const isDesign = workspace === 'design';
 
   function setStatus(next: ApprovalStatus) {
     setError(null);
@@ -82,6 +92,34 @@ export function ApprovalCard({
       if (!result.ok) setError(result.error);
       else { router.refresh(); }
     });
+  }
+
+  function saveEdit() {
+    setError(null);
+    const newMeta = isDesign
+      ? { ...(approval.metadata ?? {}),
+          desktop_url: editDesktop || null,
+          mobile_url:  editMobile  || null }
+      : approval.metadata;
+    startTransition(async () => {
+      const result = await updateApproval(approval.id, { projectSlug, workspace }, {
+        title: editTitle,
+        description: editDesc || null,
+        link_url: isDesign ? null : (editLink || null),
+        metadata: newMeta as never,
+      });
+      if (!result.ok) setError(result.error);
+      else { setEditing(false); router.refresh(); }
+    });
+  }
+
+  function cancelEdit() {
+    setEditTitle(approval.title);
+    setEditDesc(approval.description ?? '');
+    setEditLink(approval.link_url ?? '');
+    setEditDesktop((meta0.desktop_url as string | undefined) ?? '');
+    setEditMobile((meta0.mobile_url  as string | undefined) ?? '');
+    setEditing(false);
   }
 
   function handleDelete() {
@@ -103,10 +141,35 @@ export function ApprovalCard({
 
         <div className="min-w-0 flex-1 space-y-2">
           <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <h3 className="font-semibold">{approval.title}</h3>
-              {approval.description && (
-                <p className="mt-1 text-sm text-muted-fg">{approval.description}</p>
+            <div className="min-w-0 flex-1">
+              {editing ? (
+                <div className="space-y-2">
+                  <Input value={editTitle} onChange={e => setEditTitle(e.target.value)}
+                         placeholder="כותרת" />
+                  <Textarea value={editDesc} onChange={e => setEditDesc(e.target.value)} rows={2}
+                            placeholder="תיאור (אופציונלי)" />
+                  {isDesign ? (
+                    <div className="grid gap-2 md:grid-cols-2">
+                      <Input value={editDesktop} dir="ltr" className="font-mono text-sm"
+                             onChange={e => setEditDesktop(e.target.value)}
+                             placeholder="🖥️ לינק דסקטופ" />
+                      <Input value={editMobile} dir="ltr" className="font-mono text-sm"
+                             onChange={e => setEditMobile(e.target.value)}
+                             placeholder="📱 לינק מובייל" />
+                    </div>
+                  ) : (
+                    <Input value={editLink} dir="ltr" className="font-mono text-sm"
+                           onChange={e => setEditLink(e.target.value)}
+                           placeholder="https:// (אופציונלי)" />
+                  )}
+                </div>
+              ) : (
+                <>
+                  <h3 className="font-semibold">{approval.title}</h3>
+                  {approval.description && (
+                    <p className="mt-1 text-sm text-muted-fg">{approval.description}</p>
+                  )}
+                </>
               )}
             </div>
             <span className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[approval.status]}`}>
@@ -115,7 +178,7 @@ export function ApprovalCard({
             </span>
           </div>
 
-          {(() => {
+          {!editing && (() => {
             const meta = approval.metadata ?? {};
             const desktop = (meta.desktop_url as string | undefined) ?? null;
             const mobile  = (meta.mobile_url  as string | undefined) ?? null;
@@ -159,6 +222,21 @@ export function ApprovalCard({
           )}
 
           <div className="flex flex-wrap items-center gap-2 pt-1">
+            {editing ? (
+              <>
+                <Button type="button" variant="accent" size="sm"
+                        onClick={saveEdit} disabled={isPending || !editTitle.trim()}>
+                  <Save className="ms-1 h-3.5 w-3.5" />
+                  שמור
+                </Button>
+                <Button type="button" variant="ghost" size="sm"
+                        onClick={cancelEdit} disabled={isPending}>
+                  <X className="ms-1 h-3.5 w-3.5" />
+                  ביטול
+                </Button>
+              </>
+            ) : (
+              <>
             {approval.status !== 'approved' && (
               <Button type="button" variant="accent" size="sm"
                       onClick={() => setStatus('approved')} disabled={isPending}>
@@ -186,10 +264,18 @@ export function ApprovalCard({
               </span>
             )}
             {canDelete && (
-              <button type="button" onClick={handleDelete} disabled={isPending}
-                      className="text-red-600 hover:text-red-700 disabled:opacity-30" aria-label="מחק">
-                <Trash2 className="h-4 w-4" />
-              </button>
+              <>
+                <button type="button" onClick={() => setEditing(true)} disabled={isPending}
+                        className="text-muted-fg hover:text-brand disabled:opacity-30" aria-label="ערוך">
+                  <Edit2 className="h-4 w-4" />
+                </button>
+                <button type="button" onClick={handleDelete} disabled={isPending}
+                        className="text-red-600 hover:text-red-700 disabled:opacity-30" aria-label="מחק">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </>
+            )}
+              </>
             )}
           </div>
 

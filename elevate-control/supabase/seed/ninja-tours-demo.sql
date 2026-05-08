@@ -215,16 +215,25 @@ begin
   select id into v_appr_about_d from client_approvals where project_id=v_project_id and workspace='design' and title='אודות';
   select id into v_appr_attr_d  from client_approvals where project_id=v_project_id and workspace='design' and title='ארכיון אטרקציות';
 
-  -- ── Development: 5 frontend approvals ─────────────────────────────
+  -- ── Development: 5 frontend approvals + 3 CMS approvals ──────────
   delete from client_approvals where project_id = v_project_id and workspace = 'development';
-  insert into client_approvals (project_id, workspace, title, description, link_url, status, position, created_by) values
-    (v_project_id, 'development', 'דף הבית — staging',  'גרסת פרונט לבדיקה',    'https://staging.ninja-tours.co.il/',          'pending', 10, v_user_id),
-    (v_project_id, 'development', 'אודות — staging',    'גרסת פרונט לבדיקה',    'https://staging.ninja-tours.co.il/about',     'pending', 20, v_user_id),
-    (v_project_id, 'development', 'אטרקציות — staging', 'ארכיון עם פילטרים',    'https://staging.ninja-tours.co.il/attractions','pending', 30, v_user_id),
-    (v_project_id, 'development', 'צור קשר — staging',  'טופס פעיל',             'https://staging.ninja-tours.co.il/contact',   'pending', 40, v_user_id),
-    (v_project_id, 'development', 'תקנון — staging',     '',                      'https://staging.ninja-tours.co.il/terms',     'pending', 50, v_user_id);
+  insert into client_approvals (project_id, workspace, kind, title, description, link_url, status, position, created_by) values
+    (v_project_id, 'development', 'frontend', 'דף הבית — staging',  'גרסת פרונט לבדיקה',    'https://staging.ninja-tours.co.il/',          'pending', 10, v_user_id),
+    (v_project_id, 'development', 'frontend', 'אודות — staging',    'גרסת פרונט לבדיקה',    'https://staging.ninja-tours.co.il/about',     'pending', 20, v_user_id),
+    (v_project_id, 'development', 'frontend', 'אטרקציות — staging', 'ארכיון עם פילטרים',    'https://staging.ninja-tours.co.il/attractions','pending', 30, v_user_id),
+    (v_project_id, 'development', 'frontend', 'צור קשר — staging',  'טופס פעיל',             'https://staging.ninja-tours.co.il/contact',   'pending', 40, v_user_id),
+    (v_project_id, 'development', 'frontend', 'תקנון — staging',     '',                      'https://staging.ninja-tours.co.il/terms',     'pending', 50, v_user_id),
+    (v_project_id, 'development', 'cms',      'דף הבית בוורדפרס',   'אחרי הטמעת ניהול תוכן', 'https://ninja-tours.co.il/',                 'pending', 110, v_user_id),
+    (v_project_id, 'development', 'cms',      'אודות בוורדפרס',     'אחרי הטמעת ניהול תוכן', 'https://ninja-tours.co.il/about',            'pending', 120, v_user_id),
+    (v_project_id, 'development', 'cms',      'אטרקציות בוורדפרס',  'CPT + טקסונומיה',       'https://ninja-tours.co.il/attractions',      'pending', 130, v_user_id);
 
   select id into v_appr_home_dev from client_approvals where project_id=v_project_id and workspace='development' and title='דף הבית — staging';
+
+  -- ── Project links: brand book Figma + a Drive folder for client materials ──
+  delete from project_links where project_id = v_project_id and workspace in ('design', 'spec');
+  insert into project_links (project_id, workspace, category, url, label, created_by) values
+    (v_project_id, 'design', 'brand',            'https://www.figma.com/file/example/ninja-tours-brand', 'Figma — Brand Book', v_user_id),
+    (v_project_id, 'spec',   'client_materials', 'https://drive.google.com/drive/folders/example-ninja-tours-photos', 'תיקיית תמונות בדרייב', v_user_id);
 
   -- ── QA: testing checklist (with sample client_note for demo) ──────
   delete from checklist_items where project_id = v_project_id and workspace = 'qa';

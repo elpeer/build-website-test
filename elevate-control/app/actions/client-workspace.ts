@@ -104,6 +104,32 @@ export async function setApprovalStatus(
   return { ok: true };
 }
 
+export async function updateApproval(
+  approvalId: string,
+  ctx: { projectSlug: string; workspace: string },
+  patch: { title?: string; description?: string | null;
+           link_url?: string | null; thumbnail_url?: string | null;
+           metadata?: Json; }
+): Promise<Result> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+
+  const update: Record<string, unknown> = {};
+  if (patch.title !== undefined)         update.title         = patch.title.trim();
+  if (patch.description !== undefined)   update.description   = patch.description?.trim() || null;
+  if (patch.link_url !== undefined)      update.link_url      = patch.link_url?.trim() || null;
+  if (patch.thumbnail_url !== undefined) update.thumbnail_url = patch.thumbnail_url?.trim() || null;
+  if (patch.metadata !== undefined)      update.metadata      = patch.metadata;
+
+  const { error } = await supabase.from('client_approvals').update(update).eq('id', approvalId);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath(`/client/${ctx.projectSlug}/${ctx.workspace}`);
+  revalidatePath(`/projects/${ctx.projectSlug}`);
+  return { ok: true };
+}
+
 export async function deleteApproval(
   approvalId: string,
   ctx: { projectSlug: string; workspace: string }
