@@ -48,18 +48,34 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
   const [editingId, setEditingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [createHtml, setCreateHtml] = useState('');
+  const [createVisibility, setCreateVisibility] = useState<'global' | 'project'>('global');
+  const [createAssignedSet, setCreateAssignedSet] = useState<Set<string>>(new Set());
   const [, startTransition] = useTransition();
+
+  function toggleCreateProject(id: string) {
+    setCreateAssignedSet(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
 
   function handleCreate(formData: FormData) {
     formData.set('content_html', createHtml);
+    formData.set('visibility', createVisibility);
     setError(null);
     startTransition(async () => {
       const result = await createGuide(formData);
-      if (result.ok) {
-        setShowCreate(false);
-        setCreateHtml('');
-        router.refresh();
-      } else setError(result.error);
+      if (!result.ok) { setError(result.error); return; }
+      // Persist assignments if project visibility was chosen
+      if (createVisibility === 'project' && createAssignedSet.size > 0) {
+        await setGuideAssignments(result.data.id, Array.from(createAssignedSet));
+      }
+      setShowCreate(false);
+      setCreateHtml('');
+      setCreateVisibility('global');
+      setCreateAssignedSet(new Set());
+      router.refresh();
     });
   }
 
@@ -99,7 +115,8 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
             </div>
             <div>
               <Label className="text-xs">חשיפה</Label>
-              <select name="visibility" defaultValue="global"
+              <select value={createVisibility}
+                      onChange={e => setCreateVisibility(e.target.value as 'global' | 'project')}
                       className="block h-10 w-full rounded-md border border-border bg-background px-3 text-sm">
                 <option value="global">לכל הלקוחות</option>
                 <option value="project">לפרויקטים נבחרים</option>
@@ -114,6 +131,28 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
             <Label className="text-xs">לינק לוידאו (YouTube / Vimeo / Loom)</Label>
             <Input name="video_url" dir="ltr" className="font-mono" placeholder="https://www.youtube.com/watch?v=..." />
           </div>
+
+          {createVisibility === 'project' && (
+            <div className="rounded-md border border-border bg-background p-3">
+              <Label className="text-xs">בחרו פרויקטים שיראו את המדריך</Label>
+              <div className="mt-2 max-h-48 space-y-1 overflow-y-auto rounded-md border border-border bg-muted/20 p-2">
+                {projects.length === 0 ? (
+                  <p className="text-xs text-muted-fg">אין פרויקטים פעילים.</p>
+                ) : (
+                  projects.map(p => (
+                    <label key={p.id} className="flex items-center gap-2 rounded px-2 py-1 text-sm hover:bg-muted">
+                      <input type="checkbox"
+                             checked={createAssignedSet.has(p.id)}
+                             onChange={() => toggleCreateProject(p.id)} />
+                      <span className="flex-1 truncate">{p.name}</span>
+                      <code dir="ltr" className="text-[10px] text-muted-fg">{p.slug}</code>
+                    </label>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
           <div>
             <Label className="text-xs">תוכן</Label>
             <p className="mb-1 text-[11px] text-muted-fg">
@@ -135,9 +174,6 @@ export function GuidesAdmin({ guides, categories, projects, assignmentsByGuide }
                     onClick={() => { setShowCreate(false); setError(null); }}>ביטול</Button>
             <Button type="submit" variant="accent">צור מדריך</Button>
           </div>
-          <p className="text-[11px] text-muted-fg">
-            לאחר היצירה: לפרויקטים נבחרים — פתחו את המדריך ובחרו אילו פרויקטים יראו אותו.
-          </p>
         </form>
       )}
 

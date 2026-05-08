@@ -67,7 +67,7 @@ export function RichTextEditor({
     content: initialHtml,
     editorProps: {
       attributes: {
-        class: 'prose prose-sm max-w-none focus:outline-none min-h-[200px] prose-img:rounded-md prose-a:text-brand',
+        class: 'focus:outline-none min-h-[200px] max-w-none',
         dir: 'rtl',
       },
       handlePaste(view, event) {
