@@ -5,6 +5,8 @@ import { Checklist, type ChecklistItemRow, type ChecklistStatus } from './checkl
 import { FilesList, type ProjectFileRow } from './files-list';
 import { WorkspaceSettingInput } from './workspace-setting-input';
 import { ClientNotes } from './client-notes';
+import { CmsCredentials } from './cms-credentials';
+import { QaSeedButton } from './qa-seed-button';
 import { SupportTickets, type TicketRow } from './support-tickets';
 import { GuidesList, type GuideListItem } from './guides-list';
 import { Lock } from 'lucide-react';
@@ -56,7 +58,7 @@ async function fetchWorkspaceData(projectId: string, workspaceSlug: string) {
       .eq('project_id', projectId).eq('workspace', workspaceSlug)
       .order('position', { ascending: true }),
     supabase.from('checklist_items')
-      .select('id, workspace, title, description, link_url, input_type, input_value, attachment_url, status, position')
+      .select('id, workspace, title, description, link_url, input_type, input_value, client_note, amount_cents, attachment_url, status, position')
       .eq('project_id', projectId).eq('workspace', workspaceSlug)
       .order('position', { ascending: true }),
     supabase.from('project_files')
@@ -182,19 +184,31 @@ export async function WorkspaceContent({
     case 'finance':
       return (
         <div className="space-y-6">
-          <SectionHeader title="הצעת מחיר חתומה" subtitle="הצעת המחיר הסופית שאישרתם בחתימה" />
+          <SectionHeader title="הצעת מחיר לעיון"
+                         subtitle="הצעת המחיר ששלחנו אליכם — צפו, ואחרי שתחזירו אותה חתומה היא תופיע למטה." />
+          <FilesList projectId={projectId} projectSlug={projectSlug} workspace="finance"
+                     category="proposed_quote"
+                     files={filesByCategory('proposed_quote')}
+                     isStudio={isStudio}
+                     clientCanUpload={false}
+                     title="הצעת מחיר"
+                     emptyText="טרם הועלתה הצעת מחיר." />
+
+          <SectionHeader title="הצעת מחיר חתומה"
+                         subtitle="הגרסה החתומה — אפשר להעלות אותה בעצמכם או שנעלה כשנקבל אותה במייל." />
           <FilesList projectId={projectId} projectSlug={projectSlug} workspace="finance"
                      category="signed_quote"
                      files={filesByCategory('signed_quote')}
                      isStudio={isStudio}
-                     clientCanUpload={false}
-                     title="הצעות מחיר"
+                     clientCanUpload clientCanDelete={false}
+                     title="הצעות מחיר חתומות"
                      emptyText="טרם הועלתה הצעת מחיר חתומה" />
 
-          <SectionHeader title="שלבי תשלום וסטטוס" subtitle="המקדמה, יתרת התשלומים, וסימון מה שולם כבר" />
+          <SectionHeader title="שלבי תשלום וסטטוס" subtitle="המקדמה, יתרת התשלומים, סכום וחשבונית לכל שלב" />
           <Checklist projectId={projectId} projectSlug={projectSlug} workspace="finance"
                      items={data.checklist} isStudio={isStudio}
-                     clientCanAddItems={false} />
+                     clientCanAddItems={false}
+                     showAmountField />
 
           <SectionHeader title="חשבוניות" subtitle="חשבוניות שנשלחו אליכם אחרי כל תשלום" />
           <FilesList projectId={projectId} projectSlug={projectSlug} workspace="finance"
@@ -305,13 +319,16 @@ export async function WorkspaceContent({
                                  label="לינק ל-ClickUp"
                                  placeholder="https://app.clickup.com/..." currentValue={workspaceSettings.clickup_url ?? null}
                                  isStudio={isStudio} isUrl />
-          <SectionHeader title="Checklist בדיקות" />
-          <Checklist projectId={projectId} projectSlug={projectSlug} workspace="qa"
-                     items={data.checklist} isStudio={isStudio} clientCanAddItems={false} />
-          <SectionHeader title="דיווח באגים והערות"
-                         subtitle="כתבו כל בעיה כאן — נטפל ונדווח חזרה. אפשר להדביק צילום מסך." />
-          {workspaceCommentSection}
-          <SectionHeader title="קבצים מצורפים" />
+          <SectionHeader title="Checklist בדיקות"
+                         subtitle="לכל פריט יש שדה הערה — אם בדקתם ומשהו לא תקין כתבו פה ונתקן." />
+          {data.checklist.length === 0 && isStudio ? (
+            <QaSeedButton projectId={projectId} projectSlug={projectSlug} />
+          ) : (
+            <Checklist projectId={projectId} projectSlug={projectSlug} workspace="qa"
+                       items={data.checklist} isStudio={isStudio} clientCanAddItems={false}
+                       showFixField />
+          )}
+          <SectionHeader title="קבצים מצורפים" subtitle="צילומי מסך ועדויות נוספות לבעיות שמצאתם." />
           <FilesList projectId={projectId} projectSlug={projectSlug} workspace="qa"
                      files={filesNoCategory}
                      isStudio={isStudio} clientCanUpload clientCanDelete />
@@ -322,10 +339,17 @@ export async function WorkspaceContent({
     case 'content':
       return (
         <div className="space-y-6">
+          <CmsCredentials projectId={projectId} projectSlug={projectSlug}
+                          workspace="content"
+                          cmsUrl={workspaceSettings.cms_url ?? null}
+                          cmsUser={workspaceSettings.cms_user ?? null}
+                          cmsPassword={workspaceSettings.cms_password ?? null}
+                          isStudio={isStudio} />
           <WorkspaceSettingInput projectId={projectId} projectSlug={projectSlug}
-                                 workspace="content" settingKey="cms_url"
-                                 label="מערכת הזנת התוכן"
-                                 placeholder="https://..." currentValue={workspaceSettings.cms_url ?? null}
+                                 workspace="content" settingKey="external_content_url"
+                                 label="ממשק הזנת תוכן חיצוני (אופציונלי)"
+                                 placeholder="https://..."
+                                 currentValue={workspaceSettings.external_content_url ?? null}
                                  isStudio={isStudio} isUrl />
           <WorkspaceSettingInput projectId={projectId} projectSlug={projectSlug}
                                  workspace="content" settingKey="status_note"

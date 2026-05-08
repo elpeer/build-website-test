@@ -22,9 +22,17 @@ export interface ChecklistItemRow {
   link_url: string | null;
   input_type: string | null;     // 'text' | 'code' | 'url' | null
   input_value: string | null;
+  client_note: string | null;
+  amount_cents: number | null;
   attachment_url: string | null;
   status: ChecklistStatus;
   position: number;
+}
+
+function formatAmount(cents: number | null | undefined): string {
+  if (cents == null) return '';
+  const value = cents / 100;
+  return new Intl.NumberFormat('he-IL', { style: 'currency', currency: 'ILS', maximumFractionDigits: 0 }).format(value);
 }
 
 interface Props {
@@ -35,6 +43,13 @@ interface Props {
   isStudio: boolean;
   /** When false and !isStudio, hide the "+ Add item" form. Defaults to false (clients can't add items by default). */
   clientCanAddItems?: boolean;
+  /** Show an inline "report a fix / write feedback" textarea per item.
+   *  Used in QA so clients can attach concrete issues to each test item
+   *  instead of routing them through a separate comments stream. */
+  showFixField?: boolean;
+  /** Show an amount input per item (and a total at the bottom). Used by
+   *  the finance workspace for payment milestones. */
+  showAmountField?: boolean;
 }
 
 const STATUS_ICONS: Record<ChecklistStatus, typeof CheckCircle2> = {
@@ -52,7 +67,7 @@ const STATUS_LABELS: Record<ChecklistStatus, string> = {
 
 export function Checklist({
   projectId, projectSlug, workspace, items, isStudio,
-  clientCanAddItems = false,
+  clientCanAddItems = false, showFixField = false, showAmountField = false,
 }: Props) {
   const canAdd = isStudio || clientCanAddItems;
   const router = useRouter();
@@ -61,19 +76,25 @@ export function Checklist({
   const [newDesc, setNewDesc] = useState('');
   const [newInputType, setNewInputType] = useState<string>('');
   const [newLinkUrl, setNewLinkUrl] = useState('');
+  const [newAmount, setNewAmount] = useState('');
   const [, startTransition] = useTransition();
+
+  const totalCents  = items.reduce((sum, it) => sum + (it.amount_cents ?? 0), 0);
+  const paidCents   = items.filter(i => i.status === 'done').reduce((s, i) => s + (i.amount_cents ?? 0), 0);
 
   function handleCreate() {
     if (!newTitle.trim()) return;
+    const amountCents = newAmount ? Math.round(parseFloat(newAmount) * 100) : null;
     startTransition(async () => {
       const result = await createChecklistItem({
         projectId, projectSlug, workspace,
         title: newTitle, description: newDesc || null,
         link_url: newLinkUrl || null,
         input_type: newInputType || null,
+        amount_cents: amountCents,
       });
       if (result.ok) {
-        setNewTitle(''); setNewDesc(''); setNewInputType(''); setNewLinkUrl('');
+        setNewTitle(''); setNewDesc(''); setNewInputType(''); setNewLinkUrl(''); setNewAmount('');
         setShowCreate(false);
         router.refresh();
       }
@@ -91,9 +112,20 @@ export function Checklist({
         {items.map(item => (
           <ChecklistRow key={item.id} item={item}
                         projectSlug={projectSlug} workspace={workspace}
-                        isStudio={isStudio} />
+                        isStudio={isStudio}
+                        showFixField={showFixField}
+                        showAmountField={showAmountField} />
         ))}
       </ul>
+
+      {showAmountField && items.length > 0 && totalCents > 0 && (
+        <div className="flex items-center justify-between rounded-md border border-border bg-muted/30 px-3 py-2 text-sm">
+          <span className="text-muted-fg">סה״כ</span>
+          <span className="font-semibold">
+            {formatAmount(paidCents)} / {formatAmount(totalCents)} שולמו
+          </span>
+        </div>
+      )}
 
       {canAdd && (
         !showCreate ? (
@@ -111,6 +143,11 @@ export function Checklist({
                       placeholder="תיאור (אופציונלי)" />
             <Input value={newLinkUrl} onChange={e => setNewLinkUrl(e.target.value)}
                    dir="ltr" placeholder="לינק (אופציונלי)" />
+            {showAmountField && (
+              <Input value={newAmount} type="number" min="0" step="1"
+                     onChange={e => setNewAmount(e.target.value)}
+                     placeholder="סכום בשקלים (אופציונלי)" />
+            )}
             <select value={newInputType} onChange={e => setNewInputType(e.target.value)}
                     className="block h-10 w-full rounded-md border border-border bg-background px-3 text-sm">
               <option value="">ללא קלט</option>
@@ -132,16 +169,22 @@ export function Checklist({
 }
 
 function ChecklistRow({
-  item, projectSlug, workspace, isStudio,
+  item, projectSlug, workspace, isStudio, showFixField, showAmountField,
 }: {
   item: ChecklistItemRow;
   projectSlug: string;
   workspace: string;
   isStudio: boolean;
+  showFixField: boolean;
+  showAmountField: boolean;
 }) {
   const router = useRouter();
   const [value, setValue] = useState(item.input_value ?? '');
   const [dirty, setDirty] = useState(false);
+  const [fixNote, setFixNote] = useState(item.client_note ?? '');
+  const [fixDirty, setFixDirty] = useState(false);
+  const [amountStr, setAmountStr] = useState(item.amount_cents != null ? String(item.amount_cents / 100) : '');
+  const [amountDirty, setAmountDirty] = useState(false);
   const [, startTransition] = useTransition();
 
   const Icon = STATUS_ICONS[item.status];
@@ -156,6 +199,21 @@ function ChecklistRow({
     startTransition(async () => {
       await updateChecklistItem(item.id, { projectSlug, workspace }, { input_value: value });
       setDirty(false);
+      router.refresh();
+    });
+  }
+  function saveFixNote() {
+    startTransition(async () => {
+      await updateChecklistItem(item.id, { projectSlug, workspace }, { client_note: fixNote });
+      setFixDirty(false);
+      router.refresh();
+    });
+  }
+  function saveAmount() {
+    const cents = amountStr ? Math.round(parseFloat(amountStr) * 100) : null;
+    startTransition(async () => {
+      await updateChecklistItem(item.id, { projectSlug, workspace }, { amount_cents: cents });
+      setAmountDirty(false);
       router.refresh();
     });
   }
@@ -187,6 +245,11 @@ function ChecklistRow({
               )}
             </div>
             <div className="flex shrink-0 items-center gap-1">
+              {showAmountField && item.amount_cents != null && (
+                <span className="rounded-full bg-brand/10 px-2 py-0.5 text-xs font-semibold text-brand">
+                  {formatAmount(item.amount_cents)}
+                </span>
+              )}
               <select value={item.status}
                       onChange={e => setStatus(e.target.value as ChecklistStatus)}
                       className="h-7 rounded-full border-0 bg-muted px-2 text-xs">
@@ -224,6 +287,35 @@ function ChecklistRow({
               )}
               {dirty && (
                 <Button type="button" variant="accent" size="sm" onClick={saveValue}>
+                  <Save className="ms-1 h-3.5 w-3.5" />
+                  שמור
+                </Button>
+              )}
+            </div>
+          )}
+          {showFixField && (
+            <div className="space-y-1.5 pt-1">
+              <Textarea rows={2} value={fixNote}
+                        onChange={e => { setFixNote(e.target.value); setFixDirty(true); }}
+                        placeholder="כתבו פה אם משהו לא תקין או צריך תיקון..." />
+              {fixDirty && (
+                <Button type="button" variant="accent" size="sm" onClick={saveFixNote}>
+                  <Save className="ms-1 h-3.5 w-3.5" />
+                  שמור הערה
+                </Button>
+              )}
+            </div>
+          )}
+          {showAmountField && isStudio && (
+            <div className="flex items-end gap-2 pt-1">
+              <div className="flex-1 space-y-1">
+                <label className="block text-xs text-muted-fg">סכום (₪)</label>
+                <Input value={amountStr} type="number" min="0" step="1"
+                       onChange={e => { setAmountStr(e.target.value); setAmountDirty(true); }}
+                       placeholder="0" />
+              </div>
+              {amountDirty && (
+                <Button type="button" variant="accent" size="sm" onClick={saveAmount}>
                   <Save className="ms-1 h-3.5 w-3.5" />
                   שמור
                 </Button>

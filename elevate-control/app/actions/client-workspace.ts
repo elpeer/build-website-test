@@ -324,6 +324,7 @@ export async function createChecklistItem(input: {
   projectId: string; projectSlug: string; workspace: string;
   title: string; description?: string | null;
   link_url?: string | null; input_type?: string | null;
+  amount_cents?: number | null;
 }): Promise<Result<{ id: string }>> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -346,6 +347,7 @@ export async function createChecklistItem(input: {
       description: input.description?.trim() || null,
       link_url:    input.link_url?.trim() || null,
       input_type:  input.input_type ?? null,
+      amount_cents: input.amount_cents ?? null,
       position,
       created_by:  user.id,
     })
@@ -361,6 +363,8 @@ export async function updateChecklistItem(
   ctx: { projectSlug: string; workspace: string },
   patch: { title?: string; description?: string | null;
            link_url?: string | null; input_value?: string | null;
+           client_note?: string | null;
+           amount_cents?: number | null;
            attachment_url?: string | null; status?: ChecklistStatus }
 ): Promise<Result> {
   const supabase = await createClient();
@@ -388,6 +392,48 @@ export async function deleteChecklistItem(
   const { error } = await supabase.from('checklist_items').delete().eq('id', itemId);
   if (error) return { ok: false, error: error.message };
   revalidatePath(`/client/${ctx.projectSlug}/${ctx.workspace}`);
+  return { ok: true };
+}
+
+/**
+ * Standard QA checklist — created with one click on an empty QA workspace.
+ * Items here mirror what a senior tester would actually walk through before
+ * shipping a marketing site. Studio users can edit/delete after creation.
+ */
+const STANDARD_QA_CHECKLIST: { title: string; description?: string }[] = [
+  { title: 'תצוגה במובייל', description: 'מעבר על כל העמודים בגדלי מסך 360, 414, 768 — בלי גלילה אופקית, בלי טקסט קטוע.' },
+  { title: 'תצוגה בדסקטופ', description: 'בדיקת רוחב 1280, 1440, 1920 — תמונות חדות, אין רווחים שבורים.' },
+  { title: 'בדיקת קישורים פנימיים', description: 'כל קישור בתפריט / פוטר / כפתור CTA מוביל ליעד הנכון.' },
+  { title: 'טפסים וטריגרים', description: 'טופס יצירת קשר נשלח ומגיע למייל, הודעת תודה מוצגת.' },
+  { title: 'קוד אנליטיקס + פיקסלים', description: 'GA4, Meta Pixel, Tag Manager טוענים בלי שגיאות בקונסול.' },
+  { title: 'מהירות עמוד', description: 'בדיקת PageSpeed Insights — ירוק במובייל ובדסקטופ.' },
+  { title: 'נגישות', description: 'בדיקת ניגודיות, תיוגים, כפתור נגישות פעיל.' },
+  { title: 'SEO בסיסי', description: 'Title + meta description לכל עמוד, תמונות עם alt, sitemap.xml + robots.txt.' },
+  { title: 'בדיקת דפדפנים', description: 'Chrome, Safari, Firefox, Edge — לפחות גרסה אחרונה.' },
+  { title: 'הגהה אחרונה', description: 'מעבר טקסטואלי על כל העמודים — בלי שגיאות הקלדה.' },
+];
+
+export async function createStandardQaChecklist(
+  ctx: { projectId: string; projectSlug: string }
+): Promise<Result> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+
+  const rows = STANDARD_QA_CHECKLIST.map((it, i) => ({
+    project_id:  ctx.projectId,
+    workspace:   'qa',
+    title:       it.title,
+    description: it.description ?? null,
+    status:      'pending' as const,
+    position:    (i + 1) * 10,
+    created_by:  user.id,
+  }));
+  const { error } = await supabase.from('checklist_items').insert(rows);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath(`/projects/${ctx.projectSlug}/manage/qa`);
+  revalidatePath(`/client/${ctx.projectSlug}/qa`);
   return { ok: true };
 }
 
