@@ -149,6 +149,7 @@ export type PageRow = {
   status: PageStatus;
   order: number;
   notes: string | null;
+  cms_url_override: string | null;
   created_by: string | null;
   assigned_to: string | null;
   created_at: string;
@@ -183,6 +184,7 @@ export type SectionDefinitionRow = {
   cpt_driven: boolean;
   cpt_slug: string | null;
   category: string | null;
+  kind: string | null;
   is_global: boolean;
   created_at: string;
   updated_at: string;

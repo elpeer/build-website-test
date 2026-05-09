@@ -62,7 +62,7 @@ export async function updateSectionDefinition(
   id: string,
   patch: {
     name_he?: string | null; name_en?: string | null; description?: string | null;
-    category?: string | null; recipe_id?: string | null;
+    category?: string | null; kind?: string | null; recipe_id?: string | null;
     cpt_driven?: boolean; cpt_slug?: string | null;
   }
 ): Promise<Result> {

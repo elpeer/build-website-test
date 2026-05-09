@@ -47,6 +47,7 @@ export default async function StudioMembersAdminPage() {
   const { data: profilesData } = await supabase
     .from('profiles')
     .select('id, email, full_name, avatar_url, role, studio_admin, created_at')
+    .neq('role', 'client')
     .order('created_at', { ascending: true });
   const profiles = (profilesData ?? []) as ProfileRow[];
 
@@ -54,6 +55,7 @@ export default async function StudioMembersAdminPage() {
     .from('studio_invitations')
     .select('id, email, role, studio_admin, created_at, accepted_at')
     .is('accepted_at', null)
+    .neq('role', 'client')
     .order('created_at', { ascending: false });
   const invitations = (invitesData ?? []) as InvitationRow[];
 

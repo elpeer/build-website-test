@@ -59,7 +59,7 @@ export function MobileNav({ user }: { user: Profile }) {
             <div className="flex-1 overflow-y-auto">
               <nav className="space-y-1 p-3">
                 <Item href="/projects"        icon={FolderKanban} onClose={close}>פרויקטים</Item>
-                <Item href="/team"            icon={Users}        onClose={close}>חברי צוות</Item>
+                <Item href="/clients"         icon={Users}        onClose={close}>לקוחות</Item>
                 <Item href="/section-library" icon={BookOpen}     onClose={close}>מאגר סקשנים</Item>
                 <Item href="/settings"        icon={Settings}     onClose={close}>הגדרות</Item>
               </nav>
@@ -67,9 +67,8 @@ export function MobileNav({ user }: { user: Profile }) {
               {user.studio_admin && (
                 <div className="border-t border-zinc-200 p-3">
                   <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">אדמין</p>
-                  <Item href="/admin/studio-members"     icon={Shield}   onClose={close}>חברי סטודיו</Item>
-                  <Item href="/admin/section-definitions" icon={Settings} onClose={close}>קטלוג סקשנים</Item>
-                  <Item href="/admin/guides"             icon={BookOpen} onClose={close}>מאגר מדריכים</Item>
+                  <Item href="/admin/studio-members" icon={Shield}   onClose={close}>חברי סטודיו</Item>
+                  <Item href="/admin/guides"         icon={BookOpen} onClose={close}>מאגר מדריכים</Item>
                 </div>
               )}
             </div>
