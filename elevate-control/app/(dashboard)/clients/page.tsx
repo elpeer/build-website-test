@@ -79,18 +79,28 @@ export default async function ClientsPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight">
-            <Users className="h-7 w-7" />
-            לקוחות
-          </h1>
-          <p className="mt-1 text-sm text-muted-fg">
-            ניהול הלקוחות שלכם — הזמנה, שיוך לפרויקטים, וגישה לדאשבורד שלהם.
-          </p>
-        </div>
-        <InviteClientForm projects={projects} />
+      <header>
+        <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight">
+          <Users className="h-7 w-7" />
+          לקוחות
+        </h1>
+        <p className="mt-1 text-sm text-muted-fg">
+          ניהול הלקוחות שלכם — הזמנה, שיוך לפרויקטים, קביעת סיסמה ועריכה.
+        </p>
       </header>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>הזמנת לקוח חדש</CardTitle>
+          <CardDescription>
+            לקוח קיים ייוסף לפרויקט מיידית. אם המייל לא רשום עדיין — תישלח הזמנה
+            והוא יצורף בכניסה הראשונה. אפשר לקבוע סיסמה ראשונית מיידית.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <InviteClientForm projects={projects} />
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

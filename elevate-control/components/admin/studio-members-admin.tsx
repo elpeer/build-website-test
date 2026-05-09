@@ -24,8 +24,9 @@ interface Props {
   invitations: InvitationRow[];
 }
 
+// Studio members = roles other than 'client'. Clients live on /clients.
 const ROLE_LABELS: Record<string, string> = {
-  super_admin: 'אדמין-על', pm: 'PM', designer: 'מעצב', developer: 'מפתח', client: 'לקוח',
+  super_admin: 'אדמין-על', pm: 'PM', designer: 'מעצב', developer: 'מפתח',
 };
 const ROLE_PILLS: Record<string, string> = {
   super_admin: 'bg-amber-100 text-amber-800', pm: 'bg-blue-100 text-blue-700',

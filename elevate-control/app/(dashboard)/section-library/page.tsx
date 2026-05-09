@@ -15,11 +15,24 @@ export default async function SectionLibraryPage() {
     .from('profiles').select('studio_admin').eq('id', user.id).single<{ studio_admin: boolean }>();
   const canEdit = !!profile?.studio_admin;
 
-  const { data: defsData } = await supabase
-    .from('section_definitions')
-    .select('id, slug, name_he, name_en, description, category, kind, recipe_id, cpt_driven, cpt_slug, is_global, preview_url, content_schema')
-    .order('kind', { ascending: true })
-    .order('slug', { ascending: true });
+  // Try to select with the new 'kind' column. If migration 0019 hasn't
+  // been applied yet, retry without it so the page still renders.
+  let defsData: unknown[] | null = null;
+  {
+    const r = await supabase
+      .from('section_definitions')
+      .select('id, slug, name_he, name_en, description, category, kind, recipe_id, cpt_driven, cpt_slug, is_global, preview_url, content_schema')
+      .order('slug', { ascending: true });
+    if (r.error) {
+      const r2 = await supabase
+        .from('section_definitions')
+        .select('id, slug, name_he, name_en, description, category, recipe_id, cpt_driven, cpt_slug, is_global, preview_url, content_schema')
+        .order('slug', { ascending: true });
+      defsData = (r2.data ?? []).map(d => ({ ...(d as object), kind: null }));
+    } else {
+      defsData = r.data ?? [];
+    }
+  }
 
   const defs = (defsData ?? []) as DefinitionRow[];
 
