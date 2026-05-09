@@ -5,10 +5,10 @@ import type { ProfileRow } from '@/lib/supabase/database.types';
 type Profile = Pick<ProfileRow, 'id' | 'email' | 'full_name' | 'avatar_url' | 'role' | 'studio_admin'>;
 
 const NAV_ITEMS: { label: string; href: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { label: 'פרויקטים',         href: '/projects',          icon: FolderKanban },
-  { label: 'חברי צוות',        href: '/team',              icon: Users },
-  { label: 'מאגר סקשנים',      href: '/section-library',   icon: BookOpen },
-  { label: 'הגדרות',            href: '/settings',          icon: Settings },
+  { label: 'פרויקטים',     href: '/projects',        icon: FolderKanban },
+  { label: 'לקוחות',       href: '/clients',         icon: Users },
+  { label: 'מאגר סקשנים',  href: '/section-library', icon: BookOpen },
+  { label: 'הגדרות',        href: '/settings',        icon: Settings },
 ];
 
 export function Sidebar({ user }: { user: Profile }) {
@@ -47,13 +47,6 @@ export function Sidebar({ user }: { user: Profile }) {
           >
             <Shield className="h-4 w-4" />
             <span>חברי סטודיו</span>
-          </Link>
-          <Link
-            href="/admin/section-definitions"
-            className="mt-1 flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-fg hover:bg-muted hover:text-foreground"
-          >
-            <Settings className="h-4 w-4" />
-            <span>קטלוג סקשנים</span>
           </Link>
           <Link
             href="/admin/guides"
