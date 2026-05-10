@@ -1,205 +1,220 @@
 # Session Handoff — Elevate Control
 
-**Read this file first when starting a new Claude Code session on this repo.** It captures where we left off, what's done, and what's next.
+**Read this file first when starting a new Claude Code session on this repo.**
+Combined with `CLAUDE.md` (auto-loaded), this captures everything you need to know
+to be productive in 2 minutes. The codebase, git history, and migrations contain
+the full truth — this doc points at them.
 
 ---
 
-## Where we are
-
-**Phase 1 — Foundation** is **code-complete** (committed locally on `main`, commit `e86e703`). The DB migration has been **written but not yet applied** to the live Supabase project. The app has **not yet been deployed** to Vercel.
-
-### What exists in the repo
-
-| Area | Status | Files |
-|------|--------|-------|
-| Database schema | ✅ written | `supabase/migrations/0001_initial_schema.sql` (470 lines, 12 tables, RLS, 26 seeded section_definitions) |
-| Next.js 15 scaffold | ✅ complete | `package.json`, `tsconfig.json`, `next.config.ts`, `tailwind.config.ts`, `app/layout.tsx`, `app/globals.css` |
-| Supabase clients | ✅ complete | `lib/supabase/{server,client,middleware,database.types}.ts` |
-| Auth flow | ✅ complete (magic-link) | `app/sign-in/page.tsx`, `app/auth/callback/route.ts`, `app/actions/auth.ts`, `components/auth/sign-in-form.tsx` |
-| Middleware | ✅ complete | `middleware.ts` — protects all routes, redirects unauthed → `/sign-in` |
-| Dashboard shell | ✅ complete | `app/projects/{layout,page}.tsx`, `components/dashboard/{sidebar,topbar}.tsx` |
-| UI primitives | ✅ minimal set | `components/ui/{button,card,input}.tsx` (shadcn-style) |
-| Skills | ✅ in `.claude/skills/` | `elevate-website-builder` (copied from agency repo), `elevate-control-builder` (new — for working on this repo) |
-| Docs | ✅ written | `README.md`, `CLAUDE.md`, `NEXT_STEPS.md`, `docs/architecture.md`, `docs/data-model.md`, `docs/integration-claude.md` |
-
-### What does NOT yet exist
-
-- `/projects/new` — form to create a new project (we never built it; manual SQL insert is the workaround)
-- `/projects/[slug]` — project detail page (page tree, members, designs)
-- Page CRUD UI
-- Section editor UI
-- Design upload UI
-- MCP server (Phase 3)
-- Vercel deployment (env vars not set, redirect URLs not configured in Supabase Auth)
-
----
-
-## Pre-flight checklist (do these BEFORE the new session)
-
-If any of these fail, do them in this order. Each one is independent and can be re-run safely.
-
-### 1. Push the code to GitHub (if not already done)
-
-```bash
-cd elevate-control       # whatever path you cloned to
-git push -u origin main
-```
-
-The initial commit `e86e703` should already exist locally. If `git push` succeeds, skip.
-
-### 2. Apply the DB migration
-
-Supabase Dashboard → SQL Editor → paste `supabase/migrations/0001_initial_schema.sql` → Run.
-
-Verify in Table Editor that 10 tables appeared:
-`profiles`, `projects`, `project_members`, `cpts`, `taxonomies`, `pages`, `sections`, `section_definitions`, `designs`, `activity_log`.
-
-### 3. Become a studio admin
-
-In Supabase SQL Editor, run:
-```sql
--- After you've signed in via magic-link at least once,
--- this elevates your auth user to studio admin.
-update profiles
-set studio_admin = true,
-    role = 'super_admin'
-where email = 'YOUR-EMAIL@example.com';
-```
-
-### 4. Configure local env
-
-```bash
-cp .env.example .env.local
-```
-
-Edit `.env.local` and fill in:
-- `NEXT_PUBLIC_SUPABASE_URL` = `https://siohhswzfuckkdhpuyop.supabase.co`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` = the publishable key
-- `SUPABASE_SECRET_KEY` = the service_role JWT (kept secret)
-- `NEXT_PUBLIC_APP_URL` = `http://localhost:3000` (for dev) or your Vercel URL (for prod env vars)
-
-### 5. Verify locally
-
-```bash
-pnpm install      # or npm install
-pnpm dev
-```
-
-Open http://localhost:3000 → should redirect to `/sign-in`. Magic-link flow should work end to end.
-
-### 6. Grant the new sandbox access to this repo
-
-In Claude Code settings (claude.ai/code → Permissions / Repository access), add `elpeer/elevate-managment-system` to the allowed list so the new session's MCP/proxy can read & write.
-
----
-
-## Starting the new session
-
-Open Claude Code in the repo's working directory (whatever you cloned to). Send this as your **first message**:
-
-> אני ממשיך את הפרויקט elevate-control. תקרא את `HANDOFF.md` ו-`CLAUDE.md`, תוודא שאתה מבין איפה עצרנו, ותגיד לי מה אתה רואה ועל מה ממליץ להמשיך מ-Phase 2.
-
-The new Claude will:
-1. Read `HANDOFF.md` (this file) → understand the state
-2. Read `CLAUDE.md` → understand the conventions
-3. Read at least one of the docs (probably `architecture.md`) → understand the system
-4. Confirm with you what to build next
-
----
-
-## Phase 2 priorities (what's next)
-
-In rough order — pick whatever you want first. They're independent:
-
-### 2.1 — Create-project form (`/projects/new`)
-Server action that inserts a new `projects` row + creates the creator as `owner` in `project_members`. Form fields: name, slug (auto-suggested from name), client_name, has_wordpress, has_mobile_design, target_at.
-
-### 2.2 — Project detail page (`/projects/[slug]`)
-Tabs: **Overview** (status, dates, members) · **Pages** (page tree) · **CPTs** · **Designs** · **Activity**. Read-only initially, edits come in 2.3.
-
-### 2.3 — Page tree CRUD
-Add/remove/reorder pages within a project. Per-page status update via dropdown. Page detail panel showing assigned designer + sections.
-
-### 2.4 — Section editor
-List of `section_definitions` to pick from. Click → adds a `sections` row to the page. Edit notes, content (basic JSON editor for now), reorder via drag.
-
-### 2.5 — Design upload
-Drag-and-drop into a project page. Upload to Supabase Storage bucket `designs/`. Auto-detect viewport (desktop/mobile) by aspect ratio. Show thumbnail in the page detail.
-
-### 2.6 — Real-time activity feed
-Right rail in project detail showing recent `activity_log` entries via Supabase Realtime channel. Format: "Designer X uploaded design for Hero section · 5 min ago".
-
----
-
-## Working conventions (carryovers)
-
-- **Hebrew RTL** is the default in all UI. English text via dual `data-i18n` spans + body class toggle when we add a language switcher.
-- **All mutations through Server Actions**, not API routes. API routes only for webhooks (GitHub) and the future MCP server.
-- **All tables have RLS.** Use `is_studio_admin()` and `is_project_member()` helpers — don't rewrite the policy logic.
-- **Service role key** only inside server-side code. Never in browser bundles.
-- **Migrations**: every schema change is a new numbered file in `supabase/migrations/`. Never edit `0001_initial_schema.sql` retroactively.
-
----
-
-## If anything goes wrong
-
-| Symptom | Likely cause | Fix |
-|---------|--------------|-----|
-| `Cannot read properties of null (reading 'auth')` | Env vars not loaded | Check `.env.local` exists, restart `pnpm dev` |
-| `magic-link redirects to localhost from prod` | `NEXT_PUBLIC_APP_URL` not set in Vercel | Add it to Vercel env vars + Supabase Auth allow-list |
-| `RLS denied` on a query | Not yet `studio_admin`, not yet `project_member` | Run step 3 SQL above |
-| Migration error: `type already exists` | DB has stale partial state | Drop + recreate the project, OR drop offending types manually |
-| New Claude session has no MCP access | Permission not granted on session start | Re-do step 6, then close + reopen the Claude Code session |
-
----
-
-## File this came with
+## Quick orientation
 
 ```
 elevate-control/
-├── HANDOFF.md              ← THIS FILE
-├── README.md
-├── CLAUDE.md
-├── NEXT_STEPS.md
-├── .env.example
-├── .gitignore
-├── .eslintrc.json
-├── package.json
-├── tsconfig.json
-├── next.config.ts
-├── tailwind.config.ts
-├── postcss.config.js
-├── middleware.ts
-├── app/
-│   ├── layout.tsx
-│   ├── page.tsx                       (redirects /  →  /projects)
-│   ├── globals.css
-│   ├── actions/auth.ts
-│   ├── auth/callback/route.ts
-│   ├── sign-in/page.tsx
-│   └── projects/
-│       ├── layout.tsx                 (authed shell)
-│       └── page.tsx                   (project list)
+├── app/                          ← Next.js 15 App Router routes
+│   ├── (dashboard)/              ← studio-side (PMs, designers, devs)
+│   │   ├── projects/[slug]/      ← project page + tree + per-page editor
+│   │   ├── clients/              ← client list (role='client')
+│   │   ├── admin/
+│   │   │   ├── studio-members/   ← studio team management
+│   │   │   ├── guides/           ← guides library admin (CRUD + categories)
+│   │   │   └── section-definitions/  ← section catalog (no longer in nav,
+│   │   │                              CRUD now lives inside /section-library)
+│   │   ├── section-library/      ← unified catalog browser + edit
+│   │   └── team/                 ← legacy users page (kept, not in nav)
+│   ├── (client)/                 ← client-facing portal
+│   │   └── client/[projectSlug]/ ← per-project workspaces (finance, design,
+│   │                              development, qa, content, training, etc.)
+│   └── actions/                  ← server actions (one file per domain)
 ├── components/
-│   ├── ui/{button,card,input}.tsx
-│   ├── auth/sign-in-form.tsx
-│   ├── dashboard/{sidebar,topbar}.tsx
-│   └── projects/project-card.tsx
+│   ├── client/                   ← workspace UI (approvals, files, checklist…)
+│   ├── projects/                 ← studio project UI (page-tree, github panel…)
+│   ├── admin/                    ← studio admin UI (guides, sections, members)
+│   ├── auth/, dashboard/, team/, ui/  ← support
+│   └── ui/sortable.tsx           ← reusable @dnd-kit wrapper
 ├── lib/
-│   ├── utils.ts                       (cn, formatDateHe, slugify)
-│   └── supabase/
-│       ├── server.ts                  (createClient + createServiceClient)
-│       ├── client.ts
-│       ├── middleware.ts              (updateSession)
-│       └── database.types.ts          (placeholder until `pnpm db:types`)
-├── supabase/
-│   └── migrations/0001_initial_schema.sql
-├── docs/
-│   ├── architecture.md
-│   ├── data-model.md
-│   └── integration-claude.md
-└── .claude/
-    └── skills/
-        ├── elevate-website-builder/   (8 reference files)
-        └── elevate-control-builder/   (this system's own skill stub)
+│   ├── supabase/                 ← server.ts, client.ts, database.types.ts
+│   ├── client-workspaces.ts      ← workspace catalog + isWorkspaceUnlocked()
+│   ├── preview-links.ts          ← match page slug → repo HTML file
+│   └── ai/                       ← Claude prompt + schemas for design analysis
+├── supabase/migrations/          ← versioned SQL (0001 → 0020 currently)
+└── supabase/seed/                ← idempotent demo seeds (ninja-tours +
+                                    full guide library)
 ```
+
+---
+
+## Database migrations status
+
+These all exist in `supabase/migrations/`. **Several may not yet be applied
+to the live Supabase project — check before assuming.**
+
+| #  | File | What it does | Critical? |
+|----|------|--------------|-----------|
+| 0001–0014 | initial schema, projects, pages, sections, designs, comments, files, notifications | core tables | applied |
+| 0015 | `qa_fix_notes_and_cms_creds.sql` | `checklist_items.client_note` + `amount_cents` | **may need to apply** |
+| 0016 | `project_links_and_approval_kind.sql` | `project_links` table + `client_approvals.kind` | **may need to apply** |
+| 0017 | `guide_categories_and_project_visibility.sql` | `guide_categories` table + `guide_articles.visibility` + `project_guide_assignments` | **may need to apply** |
+| 0018 | `dev_workspace_page_aware.sql` | `client_approvals.page_id` + `pages.cms_url_override` | **may need to apply** |
+| 0019 | `section_definitions_kind.sql` | `section_definitions.kind` (with heuristic backfill) | **may need to apply** |
+| 0020 | `pages_preview_override_and_dev_status.sql` | `pages.preview_url_override` + `pages.dev_status` | **may need to apply** |
+
+**To check what's applied**: any failing query like "column X does not exist"
+in a server log = the corresponding migration hasn't run. The user (or CI)
+runs migrations manually via Supabase SQL Editor; we don't apply them from
+Claude.
+
+If asked to apply, hand the user a raw GitHub URL like:
+`https://raw.githubusercontent.com/elpeer/build-website-test/main/elevate-control/supabase/migrations/0020_pages_preview_override_and_dev_status.sql`
+
+---
+
+## Recent feature work (most recent first)
+
+Use `git log --oneline -30` for the full list. Each commit message describes
+what changed and why — read those before re-implementing anything.
+
+### Page tree + dev workflow (commits c439170, 5c293b6)
+- Per-row inline editors for **frontend link** (green pill) AND **CMS link**
+  (purple pill). Manual override > auto-detect.
+- Per-row `dev_status` dropdown (4 values: `in_dev` / `awaiting_pm` /
+  `pm_approved` / `client_visible`).
+- Client dev workspace **only shows pages with `dev_status='client_visible'`**.
+- Same fields exposed in the inner page editor (`PageDevSettings` card).
+
+### Page-tree-driven dev workspace (commit 79d4a64)
+- Dev workspace pages come from the project's site tree, not free-form
+  approvals. Bootstrapped lazily — first view auto-creates `client_approvals`
+  rows for every page × kind ('frontend', 'cms').
+- Frontend link from `findPagePreview()` (GitHub repo + Vercel URL).
+- CMS link from `workspace_settings.development.staging_url + page.slug` or
+  per-page `cms_url_override`.
+
+### Compact page tree (commit fa7c4b7)
+- Replaced big card-per-page with single-line rows.
+- Drag-and-drop reorder within parent (uses indent ▶▶/◀◀ for cross-bucket).
+- Inline preview status (replaces the old `PagesPreviewBoard`).
+
+### Guides system (commits ecc08d7, e61e161, 2e69ec5, 1cf276d, 699d6f2, 25bbb80)
+- Categories CRUD with reorder (drag + arrows) at `/admin/guides`.
+- Per-guide visibility (`global` / `project`) + project assignments.
+- 46 baseline guides across 8 categories (`supabase/seed/guides-library-part1/2/3.sql`).
+- Tiptap editor with **slash-command menu** (Notion-style) — `components/ui/slash-{extension,items,menu}.tsx`.
+- Frontend + admin both use the same `prose` typography classes for parity.
+- Filters: chip-row by category + free-text search.
+
+### Workspace UX (commits 7404e2a, 5105299, 23ae3f5, 6668b04, 052e361, 95530d7, 908a090)
+- Reject button removed from approvals (only Approve / Request Fix).
+- Workspace-level comments hidden in finance/spec/design/dev/launch/training.
+- Finance: per-milestone amount + invoice upload, quote-sent vs signed-quote.
+- Content: CMS credentials block (URL+user+password with copy buttons).
+- QA: standard checklist seed button + inline fix-request per item.
+- Approvals: ClickUp-style dense table; Dev workspace splits into Frontend/CMS tabs.
+- Files: rename inline; new `project_links` for "link or file" cases (spec materials, design brand book).
+
+### Nav + people (commits 3941408, dfe6306)
+- Sidebar "חברי צוות" → "לקוחות" (`/clients`, role='client' only).
+- Studio members (`/admin/studio-members`) excludes clients; per-row password reset via `SetPasswordButton`.
+- "קטלוג סקשנים" admin entry removed; CRUD lives inside `/section-library`.
+- Mobile drawer side-flip (right edge, RTL), portal-rendered to escape backdrop-filter container.
+
+### Auth (commits 1f2893d, 44a496f)
+- Password sign-in alongside magic-link to bypass Supabase SMTP rate limits.
+- Studio admins get `SetPasswordButton` to set/reset any user's password.
+
+---
+
+## Architecture decisions worth knowing
+
+1. **All UI is RTL-first Hebrew.** Use logical CSS (`start`/`end`, `inline-start`,
+   `ms-`/`me-`). Test with `dir="rtl"` (set globally on `<html>`).
+
+2. **RLS is strict.** Every table has policies. Studio admins get `is_studio_admin()`
+   blanket access; other users go through `is_project_member()`.
+
+3. **Server actions are the API.** Never expose `SUPABASE_SECRET_KEY` to the
+   browser. `createServiceClient()` (in `lib/supabase/server.ts`) is for
+   server-only privileged ops (e.g. inviting users).
+
+4. **Client visibility in dev workspace is gated by `pages.dev_status`** — only
+   `client_visible` shows up. This is the studio's "publish to client" lever.
+
+5. **Sections catalog (`section_definitions`) is the AI's vocabulary.** When
+   Claude analyzes a design upload, it must pick a `definition_slug` from the
+   catalog — variant content goes into the per-instance `sections.content` JSONB,
+   the canonical type stays consistent across projects.
+
+6. **Drag-and-drop uses `@dnd-kit`** with optimistic UI mirror state. The shared
+   wrapper is `components/ui/sortable.tsx`. Always pair drag with arrow buttons
+   (accessibility + filtered views).
+
+7. **Tiptap editor:** `prose prose-sm max-w-none ...` Tailwind Typography on both
+   the editor surface AND the read-only render so what writers see matches what
+   clients see.
+
+---
+
+## Pushing to main
+
+Direct pushes to `main` from the Claude harness are blocked by the proxy with
+`ERR Unable to parse branch information from push data`. **Workaround that
+works:**
+
+1. `git push origin main:claude/rebuild-hero-component-n9Caj` (the designated branch)
+2. Open a PR via `mcp__github__create_pull_request` (base=main, head=claude/...)
+3. Merge via `mcp__github__merge_pull_request`
+4. `git fetch origin main && git reset --hard origin/main` to sync local
+
+The user has explicitly approved this PR-merge flow.
+
+---
+
+## Open ideas the user has expressed interest in (not yet implemented)
+
+From the "growth ideas" brainstorm — pick one and ask before starting:
+
+- **Account/Client hierarchy** — group multiple projects under one client
+  organization (Meir Group with Volvo + Honda + ...). Highest ROI for
+  multi-project clients.
+- **Maintenance contracts + hours bank** — recurring revenue + automatic
+  hours deduction per ticket. Foundation for upsells.
+- **ClickUp two-way sync** — biggest daily-efficiency win. Webhooks both
+  directions, time tracking → hours bank.
+- **Smart upsell triggers** — Claude-driven "client X likely needs SEO
+  package" surfaced on the studio dashboard.
+- **Vercel auto-pull tree** — listed pages auto-discovered from the project's
+  Vercel deployment instead of hand-entered. Originally deferred.
+- **Per-milestone invoices** — partially done (attachment_url on checklist
+  items), inline upload UI built.
+
+---
+
+## Common workflows for the next session
+
+### "Add a feature to the dev workspace"
+1. Read this file + `CLAUDE.md`.
+2. `grep` for `case 'development'` in `components/client/workspace-content.tsx`.
+3. The dev workspace is **page-tree-driven** — see `buildDevPageRows()` in the
+   same file. Pages are filtered by `dev_status='client_visible'`.
+
+### "Fix something in the page tree"
+1. Main file: `components/projects/page-tree.tsx` (~700 lines, has its own
+   sortable, drag, indent, link inputs, status picker).
+2. Server actions: `app/actions/pages.ts`.
+
+### "Touch the database"
+1. Add a new migration: `supabase/migrations/00XX_<descriptive>.sql`. Increment
+   sequentially. Always idempotent (`if not exists`, `on conflict do nothing`).
+2. Update `lib/supabase/database.types.ts` to add the new column to the row type.
+3. After commit, hand the user the raw GitHub URL of the new migration.
+
+### "Show me what changed recently"
+- `git log --oneline -20`
+- `git show <sha>` for any commit
+- Each commit message is detailed (read them, don't guess)
+
+---
+
+_Last updated: end of a long session that built page-tree + dev workspace +
+guides system + nav split + clients page + section library + auth password +
+many UX polishes. The user is at 90% context and starting fresh._
