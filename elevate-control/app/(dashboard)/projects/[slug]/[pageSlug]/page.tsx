@@ -8,6 +8,7 @@ import { SectionRow } from '@/components/sections/section-row';
 import { DesignUploader } from '@/components/designs/design-uploader';
 import { PageStructureSuggester } from '@/components/pages/page-structure-suggester';
 import { DeletePageButton } from '@/components/pages/delete-page-button';
+import { PageDevSettings } from '@/components/projects/page-dev-settings';
 import type { DesignViewport, PageStatus, PageType, SectionStatus } from '@/lib/supabase/database.types';
 
 interface Props {
@@ -27,8 +28,11 @@ interface PageRecord {
   name_en: string | null;
   type: PageType;
   status: PageStatus;
+  dev_status: 'in_dev' | 'awaiting_pm' | 'pm_approved' | 'client_visible';
   notes: string | null;
   creation_context: unknown;
+  preview_url_override: string | null;
+  cms_url_override: string | null;
 }
 
 interface SectionRecord {
@@ -97,7 +101,7 @@ export default async function PageDetailPage({ params }: Props) {
 
   const { data: page } = await supabase
     .from('pages')
-    .select('id, slug, name_he, name_en, type, status, notes, creation_context')
+    .select('id, slug, name_he, name_en, type, status, dev_status, notes, creation_context, preview_url_override, cms_url_override')
     .eq('project_id', project.id)
     .eq('slug', pageSlug)
     .single<PageRecord>();
@@ -181,6 +185,16 @@ export default async function PageDetailPage({ params }: Props) {
           childrenCount={childrenCount ?? 0}
         />
       </header>
+
+      <PageDevSettings
+        pageId={page.id}
+        projectSlug={project.slug}
+        initial={{
+          preview_url_override: page.preview_url_override,
+          cms_url_override:     page.cms_url_override,
+          dev_status:           page.dev_status ?? 'in_dev',
+        }}
+      />
 
       {page.notes && (
         <Card>

@@ -30,8 +30,10 @@ interface PageRow {
   name_he: string | null;
   type: PageType;
   status: PageStatus;
+  dev_status: 'in_dev' | 'awaiting_pm' | 'pm_approved' | 'client_visible';
   order: number;
   parent_id: string | null;
+  preview_url_override: string | null;
 }
 
 // Weighted progress per page status (rough but useful at a glance)
@@ -58,7 +60,7 @@ export default async function ProjectPage({ params }: Props) {
 
   // Pages
   const { data: pagesData } = await supabase
-    .from('pages').select('id, slug, name_he, type, status, order, parent_id')
+    .from('pages').select('id, slug, name_he, type, status, dev_status, order, parent_id, preview_url_override')
     .eq('project_id', project.id).order('order', { ascending: true });
   const pages: PageRow[] = (pagesData ?? []) as PageRow[];
 
@@ -68,19 +70,25 @@ export default async function ProjectPage({ params }: Props) {
     .eq('project_id', project.id).order('order', { ascending: true });
   const cpts = (cptsData ?? []) as { id: string; slug: string; name_he: string | null; name_en: string | null }[];
 
-  // Preview links — match each page to its HTML file in GitHub + Vercel URL.
-  // Inlined into the tree (no more separate "preview links" card).
+  // Preview links — manual override on the page row wins over the
+  // GitHub-detected URL. The auto-detection still runs so we know whether
+  // the file exists in the repo.
   const previews: Record<string, PreviewInfo> = {};
   if (pages.length > 0) {
     const { files, vercelUrl, error: ghError } = await listProjectHtmlFiles(project.id as string);
-    if (!ghError || vercelUrl) {
-      for (const p of pages) {
-        const info = findPagePreview(files, p.slug, vercelUrl);
-        previews[p.id] = {
-          status: info.status === 'found' ? 'found' : 'missing',
-          previewUrl: info.previewUrl ?? null,
-        };
+    const haveGh = !ghError || !!vercelUrl;
+    for (const p of pages) {
+      const override = (p as PageRow & { preview_url_override?: string | null }).preview_url_override;
+      if (override) {
+        previews[p.id] = { status: 'found', previewUrl: override };
+        continue;
       }
+      if (!haveGh) continue;
+      const info = findPagePreview(files, p.slug, vercelUrl);
+      previews[p.id] = {
+        status: info.status === 'found' ? 'found' : 'missing',
+        previewUrl: info.previewUrl ?? null,
+      };
     }
   }
 

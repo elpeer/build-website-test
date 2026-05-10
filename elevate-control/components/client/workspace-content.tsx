@@ -557,13 +557,18 @@ async function buildDevPageRows(input: {
   // 1. Pages — for tree order use parent + order.
   const { data: pagesData } = await supabase
     .from('pages')
-    .select('id, slug, name_he, parent_id, order, cms_url_override')
+    .select('id, slug, name_he, parent_id, order, cms_url_override, preview_url_override, dev_status')
     .eq('project_id', input.projectId)
     .order('order', { ascending: true });
-  const pages = (pagesData ?? []) as Array<{
+  const allPages = (pagesData ?? []) as Array<{
     id: string; slug: string; name_he: string | null;
-    parent_id: string | null; order: number; cms_url_override: string | null;
+    parent_id: string | null; order: number;
+    cms_url_override: string | null;
+    preview_url_override: string | null;
+    dev_status: 'in_dev' | 'awaiting_pm' | 'pm_approved' | 'client_visible' | null;
   }>;
+  // Client-facing dev workspace only shows pages flagged as visible.
+  const pages = allPages.filter(p => (p.dev_status ?? 'in_dev') === 'client_visible');
 
   // 2. Tree-flatten depth-first to keep visual order consistent with the
   //    studio site tree.
@@ -647,8 +652,14 @@ async function buildDevPageRows(input: {
     const a = linkedByPageKind.get(`${p.id}|${kind}`);
     let linkUrl: string | null = null;
     if (kind === 'frontend') {
-      const info = findPagePreview(files, p.slug, vercelUrl);
-      linkUrl = info.previewUrl ?? null;
+      // Manual override wins over the GitHub-detected URL.
+      const fOverride = (p.preview_url_override ?? '').trim();
+      if (fOverride) {
+        linkUrl = fOverride;
+      } else {
+        const info = findPagePreview(files, p.slug, vercelUrl);
+        linkUrl = info.previewUrl ?? null;
+      }
     } else {
       // CMS link: per-page override, otherwise staging_url + slug.
       const override = (p.cms_url_override ?? '').trim();
