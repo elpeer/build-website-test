@@ -79,18 +79,10 @@ const STATUS_PILLS: Record<PageStatus, string> = {
   live: 'bg-green-50 text-green-700',
 };
 
-interface CptOption {
-  id: string;
-  slug: string;
-  name_he: string | null;
-  name_en: string | null;
-}
-
 interface Props {
   projectId: string;
   projectSlug: string;
   pages: PageRow[];
-  cpts?: CptOption[];
   /** Map<pageId, PreviewInfo> — populated server-side from GitHub/Vercel. */
   previews?: Record<string, PreviewInfo>;
   /** Base URL used to derive CMS link as `${cmsBaseUrl}/${page.slug}`
@@ -98,19 +90,17 @@ interface Props {
   cmsBaseUrl?: string | null;
 }
 
-export function PageTree({ projectId, projectSlug, pages, cpts = [], previews = {}, cmsBaseUrl = null }: Props) {
+export function PageTree({ projectId, projectSlug, pages, previews = {}, cmsBaseUrl = null }: Props) {
   const router = useRouter();
   const [showForm, setShowForm] = useState(pages.length === 0);
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
   const [type, setType] = useState<PageType>('page');
-  const [cptId, setCptId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [query, setQuery] = useState('');
   const [reorderError, setReorderError] = useState<string | null>(null);
-  const needsCpt = type === 'archive' || type === 'single';
 
   // Optimistic mirror of pages — drag/indent updates this immediately.
   const [tree, setTree] = useState(pages);
@@ -271,16 +261,12 @@ export function PageTree({ projectId, projectSlug, pages, cpts = [], previews = 
   function handleSubmit(formData: FormData) {
     formData.set('slug', slug);
     formData.set('type', type);
-    if (needsCpt) {
-      if (!cptId) { setError('בחרו CPT לעמוד מסוג זה'); return; }
-      formData.set('cpt_id', cptId);
-    }
     setError(null);
     startTransition(async () => {
       const result = await createPage(formData);
       if (result.ok) {
         setName(''); setSlug(''); setSlugManuallyEdited(false);
-        setType('page'); setCptId(''); setShowForm(false);
+        setType('page'); setShowForm(false);
         router.refresh();
       } else {
         setError(result.error);
@@ -374,29 +360,6 @@ export function PageTree({ projectId, projectSlug, pages, cpts = [], previews = 
               })}
             </div>
           </div>
-
-          {needsCpt && (
-            <div className="space-y-2">
-              <Label htmlFor="page_cpt_id">CPT מקושר <span className="text-accent">*</span></Label>
-              {cpts.length === 0 ? (
-                <p className="text-sm text-muted-fg">
-                  אין CPTs מוגדרים בפרויקט.{' '}
-                  <a href={`/projects/${projectSlug}/cpts`} className="text-brand underline">הוסיפו CPT</a>{' '}
-                  תחילה.
-                </p>
-              ) : (
-                <select id="page_cpt_id" value={cptId} onChange={e => setCptId(e.target.value)}
-                        className="block h-10 w-full rounded-md border border-border bg-background px-3 text-sm" required>
-                  <option value="">— בחרו CPT —</option>
-                  {cpts.map(c => (
-                    <option key={c.id} value={c.id}>
-                      {c.name_he ?? c.name_en ?? c.slug} ({c.slug})
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-          )}
 
           {error && (
             <div className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">

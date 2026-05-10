@@ -30,11 +30,7 @@ export async function createPage(formData: FormData): Promise<CreatePageResult> 
   if (!nameHe)     return { ok: false, error: 'שם העמוד הוא שדה חובה' };
 
   const type = (ALLOWED_TYPES.includes(typeInput as PageType) ? typeInput : 'page') as PageType;
-  const needsCpt = type === 'archive' || type === 'single';
-  if (needsCpt && !cptIdInput) {
-    return { ok: false, error: 'עמוד מסוג זה דורש בחירת CPT' };
-  }
-  const cptId = needsCpt ? cptIdInput : null;
+  const cptId = cptIdInput;
   const slug = slugify(slugInput || nameHe);
   if (!slug) return { ok: false, error: 'לא הצלחנו ליצור slug תקין מהשם' };
 
