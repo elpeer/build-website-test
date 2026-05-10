@@ -57,6 +57,20 @@ export default async function ProjectPage({ params }: Props) {
 
   const { data: project, error } = await supabase
     .from('projects').select('*').in('slug', slugLookupCandidates(slug)).maybeSingle();
+
+  // Temporary diagnostic for the Hebrew-slug 404 — visible in Vercel logs.
+  if (!project) {
+    const { data: { user } } = await supabase.auth.getUser();
+    console.log('[ProjectPage 404 debug]', {
+      paramRaw: _slugRaw,
+      paramRawCodes: Array.from(_slugRaw).map(c => c.codePointAt(0)?.toString(16)),
+      slugNFC: slug,
+      candidates: slugLookupCandidates(slug),
+      lookupError: error?.message ?? null,
+      userId: user?.id ?? null,
+    });
+  }
+
   if (error || !project) notFound();
 
   // Pages
