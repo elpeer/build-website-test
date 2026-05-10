@@ -41,20 +41,43 @@ export function formatRelativeHe(iso: string | null | undefined): string {
 }
 
 /**
- * Slugify a Hebrew or English string for URLs / slugs.
- * Hebrew chars are kept (browsers handle them); spaces → hyphens.
- * Output is normalized to Unicode NFC so DB lookups round-trip
- * regardless of whether the input came from the keyboard or pasted
- * (browsers can deliver decomposed forms in some setups).
+ * Hebrew → Latin transliteration map. Single-char (`ב` → `b`) values
+ * go through translate(); multi-char values (`ש` → `sh`) get an
+ * explicit replace pass first.
+ *
+ * ASCII-only slugs are required because Vercel's edge layer 404s on
+ * URLs containing many non-ASCII bytes — see slugify().
+ */
+const HEBREW_MULTI: Record<string, string> = {
+  'ש': 'sh', 'צ': 'ts', 'ץ': 'ts', 'ח': 'ch',
+};
+const HEBREW_SINGLE: Record<string, string> = {
+  'א': 'a', 'ב': 'b', 'ג': 'g', 'ד': 'd', 'ה': 'h', 'ו': 'v',
+  'ז': 'z', 'ט': 't', 'י': 'y', 'כ': 'k', 'ך': 'k', 'ל': 'l',
+  'מ': 'm', 'ם': 'm', 'נ': 'n', 'ן': 'n', 'ס': 's', 'ע': 'a',
+  'פ': 'p', 'ף': 'p', 'ק': 'k', 'ר': 'r', 'ת': 't',
+};
+
+/**
+ * Slugify a Hebrew or English string for URLs / slugs. Output is
+ * always ASCII (lowercase letters, digits, hyphen) — Hebrew chars get
+ * transliterated; any other non-ASCII chars are stripped.
  */
 export function slugify(input: string): string {
-  return input
-    .normalize('NFC')
-    .trim()
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s-]/gu, '')
+  let s = input.normalize('NFC').toLowerCase().trim();
+  // Multi-char Hebrew first.
+  for (const [he, lat] of Object.entries(HEBREW_MULTI)) {
+    s = s.replaceAll(he, lat);
+  }
+  // Single-char Hebrew.
+  s = Array.from(s)
+    .map(c => HEBREW_SINGLE[c] ?? c)
+    .join('');
+  return s
+    .replace(/[^a-z0-9\s-]/g, '')   // strip remaining non-ASCII (Arabic, Cyrillic, …)
     .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 /** Normalize a slug coming from a dynamic route param so it matches
