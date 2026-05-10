@@ -63,3 +63,12 @@ export function slugify(input: string): string {
 export function normalizeSlugParam(s: string): string {
   return s.normalize('NFC');
 }
+
+/** Return both Unicode normalization forms of a slug (NFC + NFD).
+ *  Use with Supabase `.in('slug', slugLookupCandidates(s))` to find
+ *  rows that were saved before slugify() started enforcing NFC. */
+export function slugLookupCandidates(s: string): string[] {
+  const nfc = s.normalize('NFC');
+  const nfd = s.normalize('NFD');
+  return nfc === nfd ? [nfc] : [nfc, nfd];
+}

@@ -5,7 +5,7 @@ import {
   Settings, Sparkles,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
-import { formatDateHe } from '@/lib/utils';
+import { formatDateHe, slugLookupCandidates } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageTree, type PreviewInfo } from '@/components/projects/page-tree';
 import { ActivityFeed } from '@/components/activity/activity-feed';
@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props) {
   const { slug: _slugRaw } = await params; const slug = _slugRaw.normalize('NFC');
   const supabase = await createClient();
   const { data } = await supabase
-    .from('projects').select('name').eq('slug', slug).single();
+    .from('projects').select('name').in('slug', slugLookupCandidates(slug)).maybeSingle();
   return { title: data?.name ?? 'פרויקט' };
 }
 
@@ -56,7 +56,7 @@ export default async function ProjectPage({ params }: Props) {
   const supabase = await createClient();
 
   const { data: project, error } = await supabase
-    .from('projects').select('*').eq('slug', slug).single();
+    .from('projects').select('*').in('slug', slugLookupCandidates(slug)).maybeSingle();
   if (error || !project) notFound();
 
   // Pages
