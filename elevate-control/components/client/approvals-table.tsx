@@ -174,12 +174,14 @@ function ApprovalTableRow({
 
   // Disabled row — page exists in the tree but no link to view it. Render
   // a stripped-down read-only version, no status flip, no comments.
-  const indentStyle = approval.depth ? { marginInlineStart: `${approval.depth * 20}px` } : undefined;
+  const depth = approval.depth ?? 0;
+  const treeConnector = depth > 0 ? <TreeConnector depth={depth} /> : null;
 
   if (disabled) {
     return (
       <li>
-        <div className="flex items-center gap-2 px-3 py-2 opacity-60" style={indentStyle}>
+        <div className="flex items-center gap-2 px-3 py-2 opacity-60">
+          {treeConnector}
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-muted-fg">{approval.title}</p>
             <p className="text-[11px] text-muted-fg italic">
@@ -196,7 +198,8 @@ function ApprovalTableRow({
 
   return (
     <li>
-      <div className="flex items-center gap-2 px-3 py-2 hover:bg-muted/30" style={indentStyle}>
+      <div className="flex items-center gap-2 px-3 py-2 hover:bg-muted/30">
+        {treeConnector}
         {/* Title + description */}
         <div className="min-w-0 flex-1">
           {editing ? (
@@ -347,5 +350,32 @@ function ApprovalTableRow({
         </div>
       )}
     </li>
+  );
+}
+
+/** Tree-style "└" connector rendered before nested rows so the
+ *  hierarchy is visible (matches the studio page tree). The vertical
+ *  trunk is full-height; the horizontal stub meets the row at its
+ *  vertical center. RTL-safe via logical positioning. */
+function TreeConnector({ depth }: { depth: number }) {
+  const STEP = 20;
+  return (
+    <div
+      aria-hidden
+      className="relative shrink-0 self-stretch"
+      style={{ width: `${depth * STEP}px` }}
+    >
+      <div
+        className="absolute top-0 bottom-0 w-px bg-border"
+        style={{ insetInlineStart: `${(depth - 1) * STEP + STEP / 2}px` }}
+      />
+      <div
+        className="absolute top-1/2 h-px bg-border"
+        style={{
+          insetInlineStart: `${(depth - 1) * STEP + STEP / 2}px`,
+          width: `${STEP / 2}px`,
+        }}
+      />
+    </div>
   );
 }
