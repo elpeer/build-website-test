@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
   CheckCircle2, Circle, Hourglass, Minus, Plus, Trash2, ExternalLink, Save,
-  Upload, FileText,
+  Upload, FileText, Edit2, X,
 } from 'lucide-react';
 
 export type ChecklistStatus = 'pending' | 'in_progress' | 'done' | 'na';
@@ -190,6 +190,9 @@ function ChecklistRow({
   const [amountDirty, setAmountDirty] = useState(false);
   const [uploadingInvoice, setUploadingInvoice] = useState(false);
   const invoiceInputRef = useRef<HTMLInputElement>(null);
+  const [editingMeta, setEditingMeta] = useState(false);
+  const [titleDraft, setTitleDraft] = useState(item.title);
+  const [descDraft, setDescDraft] = useState(item.description ?? '');
   const [, startTransition] = useTransition();
 
   async function handleInvoiceUpload(file: File | undefined) {
@@ -255,6 +258,29 @@ function ChecklistRow({
       router.refresh();
     });
   }
+  function saveMeta() {
+    const title = titleDraft.trim();
+    if (!title) return;
+    startTransition(async () => {
+      await updateChecklistItem(item.id, { projectSlug, workspace },
+        { title, description: descDraft.trim() || null });
+      setEditingMeta(false);
+      router.refresh();
+    });
+  }
+  function cancelMetaEdit() {
+    setTitleDraft(item.title);
+    setDescDraft(item.description ?? '');
+    setEditingMeta(false);
+  }
+  function removeInvoice() {
+    if (!confirm('להסיר את החשבונית?')) return;
+    startTransition(async () => {
+      await updateChecklistItem(item.id, { projectSlug, workspace },
+        { attachment_url: null });
+      router.refresh();
+    });
+  }
 
   return (
     <li className="rounded-md border border-border bg-background p-3">
@@ -267,32 +293,64 @@ function ChecklistRow({
         </button>
         <div className="min-w-0 flex-1 space-y-1.5">
           <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <p className={`font-medium ${item.status === 'done' ? 'text-muted-fg line-through' : ''}`}>
-                {item.title}
-              </p>
-              {item.description && (
-                <p className="mt-0.5 text-sm text-muted-fg">{item.description}</p>
+            <div className="min-w-0 flex-1">
+              {editingMeta ? (
+                <div className="space-y-1.5">
+                  <Input value={titleDraft} onChange={e => setTitleDraft(e.target.value)}
+                         placeholder="כותרת" className="h-8 text-sm font-medium" />
+                  <Input value={descDraft} onChange={e => setDescDraft(e.target.value)}
+                         placeholder="תיאור (אופציונלי)" className="h-8 text-xs" />
+                </div>
+              ) : (
+                <>
+                  <p className={`font-medium ${item.status === 'done' ? 'text-muted-fg line-through' : ''}`}>
+                    {item.title}
+                  </p>
+                  {item.description && (
+                    <p className="mt-0.5 text-sm text-muted-fg">{item.description}</p>
+                  )}
+                </>
               )}
             </div>
             <div className="flex shrink-0 items-center gap-1">
-              {showAmountField && item.amount_cents != null && (
+              {showAmountField && item.amount_cents != null && !editingMeta && (
                 <span className="rounded-full bg-brand/10 px-2 py-0.5 text-xs font-semibold text-brand">
                   {formatAmount(item.amount_cents)}
                 </span>
               )}
-              <select value={item.status}
-                      onChange={e => setStatus(e.target.value as ChecklistStatus)}
-                      className="h-7 rounded-full border-0 bg-muted px-2 text-xs">
-                {(Object.keys(STATUS_LABELS) as ChecklistStatus[]).map(s =>
-                  <option key={s} value={s}>{STATUS_LABELS[s]}</option>
-                )}
-              </select>
+              {!editingMeta && (
+                <select value={item.status}
+                        onChange={e => setStatus(e.target.value as ChecklistStatus)}
+                        className="h-7 rounded-full border-0 bg-muted px-2 text-xs">
+                  {(Object.keys(STATUS_LABELS) as ChecklistStatus[]).map(s =>
+                    <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+                  )}
+                </select>
+              )}
               {isStudio && (
-                <button type="button" onClick={handleDelete}
-                        className="text-red-600 hover:text-red-700" aria-label="מחק">
-                  <Trash2 className="h-4 w-4" />
-                </button>
+                editingMeta ? (
+                  <>
+                    <button type="button" onClick={saveMeta}
+                            className="rounded p-1 text-green-600 hover:bg-green-50" aria-label="שמור">
+                      <Save className="h-4 w-4" />
+                    </button>
+                    <button type="button" onClick={cancelMetaEdit}
+                            className="rounded p-1 text-zinc-600 hover:bg-zinc-100" aria-label="ביטול">
+                      <X className="h-4 w-4" />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button type="button" onClick={() => setEditingMeta(true)}
+                            className="rounded p-1 text-muted-fg hover:bg-muted hover:text-brand" aria-label="ערוך">
+                      <Edit2 className="h-4 w-4" />
+                    </button>
+                    <button type="button" onClick={handleDelete}
+                            className="text-red-600 hover:text-red-700" aria-label="מחק">
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </>
+                )
               )}
             </div>
           </div>
@@ -367,12 +425,19 @@ function ChecklistRow({
                     <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                   {isStudio && (
-                    <Button type="button" variant="ghost" size="sm"
-                            onClick={() => invoiceInputRef.current?.click()}
-                            disabled={uploadingInvoice}>
-                      <Upload className="ms-1 h-3 w-3" />
-                      החלף
-                    </Button>
+                    <>
+                      <Button type="button" variant="ghost" size="sm"
+                              onClick={() => invoiceInputRef.current?.click()}
+                              disabled={uploadingInvoice}>
+                        <Upload className="ms-1 h-3 w-3" />
+                        החלף
+                      </Button>
+                      <button type="button" onClick={removeInvoice}
+                              className="rounded p-1 text-red-600 hover:bg-red-50"
+                              aria-label="הסר חשבונית" title="הסר חשבונית">
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </>
                   )}
                 </div>
               ) : isStudio ? (
