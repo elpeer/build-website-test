@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   createPage, reorderAndReparentPages,
-  setPagePreviewUrlOverride, setPageDevStatus,
+  setPagePreviewUrlOverride, setPageCmsUrlOverride, setPageDevStatus,
   type PageDevStatus,
 } from '@/app/actions/pages';
 import { slugify } from '@/lib/utils';
@@ -24,7 +24,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import {
   Plus, FileText, Layers, Folder, AlertTriangle, Settings, AlertCircle, ChevronLeft,
-  GripVertical, IndentIncrease, IndentDecrease, ExternalLink, CheckCircle2, X,
+  GripVertical, IndentIncrease, IndentDecrease, ExternalLink, CheckCircle2, X, Edit2,
 } from 'lucide-react';
 import type { PageStatus, PageType } from '@/lib/supabase/database.types';
 
@@ -38,6 +38,7 @@ interface PageRow {
   order: number;
   parent_id?: string | null;
   preview_url_override?: string | null;
+  cms_url_override?: string | null;
 }
 
 const DEV_STATUS_LABELS: Record<PageDevStatus, string> = {
@@ -92,9 +93,12 @@ interface Props {
   cpts?: CptOption[];
   /** Map<pageId, PreviewInfo> — populated server-side from GitHub/Vercel. */
   previews?: Record<string, PreviewInfo>;
+  /** Base URL used to derive CMS link as `${cmsBaseUrl}/${page.slug}`
+   *  when no manual override is set on the row. */
+  cmsBaseUrl?: string | null;
 }
 
-export function PageTree({ projectId, projectSlug, pages, cpts = [], previews = {} }: Props) {
+export function PageTree({ projectId, projectSlug, pages, cpts = [], previews = {}, cmsBaseUrl = null }: Props) {
   const router = useRouter();
   const [showForm, setShowForm] = useState(pages.length === 0);
   const [name, setName] = useState('');
@@ -305,6 +309,7 @@ export function PageTree({ projectId, projectSlug, pages, cpts = [], previews = 
         <SortableTreeList
           items={flatRender}
           previews={previews}
+          cmsBaseUrl={cmsBaseUrl}
           projectSlug={projectSlug}
           onReorder={handleReorder}
           onIndent={handleIndent}
@@ -418,10 +423,11 @@ export function PageTree({ projectId, projectSlug, pages, cpts = [], previews = 
 // ─── Sortable flat tree (depth shown via indent) ──────────────────────────
 
 function SortableTreeList({
-  items, previews, projectSlug, onReorder, onIndent, onOutdent, isPending, dragDisabled,
+  items, previews, cmsBaseUrl, projectSlug, onReorder, onIndent, onOutdent, isPending, dragDisabled,
 }: {
   items: Array<{ page: PageRow; depth: number }>;
   previews: Record<string, PreviewInfo>;
+  cmsBaseUrl: string | null;
   projectSlug: string;
   onReorder: (activeId: string, overId: string) => void;
   onIndent: (id: string) => void;
@@ -457,6 +463,7 @@ function SortableTreeList({
                 page={page}
                 depth={depth}
                 preview={preview}
+                cmsBaseUrl={cmsBaseUrl}
                 projectSlug={projectSlug}
                 canIndent={!!prevAtSameDepth}
                 canOutdent={canOutdent}
@@ -474,12 +481,13 @@ function SortableTreeList({
 }
 
 function SortableTreeRow({
-  page, depth, preview, projectSlug, canIndent, canOutdent,
+  page, depth, preview, cmsBaseUrl, projectSlug, canIndent, canOutdent,
   onIndent, onOutdent, isPending, dragDisabled,
 }: {
   page: PageRow;
   depth: number;
   preview?: PreviewInfo;
+  cmsBaseUrl: string | null;
   projectSlug: string;
   canIndent: boolean;
   canOutdent: boolean;
@@ -533,10 +541,18 @@ function SortableTreeRow({
           <span className="ms-2 text-[11px] text-muted-fg" dir="ltr">/{page.slug}</span>
         </Link>
 
-        <PreviewLinkInput
+        <LinkInput
           page={page}
+          kind="frontend"
           autoUrl={preview?.previewUrl ?? null}
           autoStatus={preview?.status ?? null}
+          projectSlug={projectSlug}
+        />
+        <LinkInput
+          page={page}
+          kind="cms"
+          autoUrl={cmsBaseUrl && page.slug ? `${cmsBaseUrl}/${page.slug}` : null}
+          autoStatus={null}
           projectSlug={projectSlug}
         />
 
@@ -545,44 +561,55 @@ function SortableTreeRow({
         <Link href={`/projects/${projectSlug}/${page.slug}`}
               className="shrink-0 rounded p-1 text-muted-fg hover:bg-muted hover:text-brand"
               aria-label="פתח עמוד">
-          <ChevronLeft className="h-3.5 w-3.5 rtl:rotate-180" />
+          <ChevronLeft className="h-3.5 w-3.5" />
         </Link>
       </div>
     </li>
   );
 }
 
-/** Inline preview-URL field — paste/edit a manual override for this page.
- *  Falls back to the auto-detected URL from GitHub/Vercel when blank.
- *  The displayed link is always clickable (opens in a new tab) and the
- *  pencil toggles edit mode without leaving the tree. */
-function PreviewLinkInput({
-  page, autoUrl, autoStatus, projectSlug,
+/** Inline link field — works for both 'frontend' and 'cms' kinds. The
+ *  pill shows the resolved URL (override > auto), the pencil toggles
+ *  paste-edit mode without leaving the tree, and the resolved URL is
+ *  always clickable with target=_blank. */
+function LinkInput({
+  page, kind, autoUrl, autoStatus, projectSlug,
 }: {
   page: PageRow;
+  kind: 'frontend' | 'cms';
   autoUrl: string | null;
   autoStatus: 'found' | 'missing' | null;
   projectSlug: string;
 }) {
   const router = useRouter();
-  const override = page.preview_url_override ?? '';
+  const override = (kind === 'frontend' ? page.preview_url_override : page.cms_url_override) ?? '';
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(override);
   const [, startTransition] = useTransition();
 
   const resolved = override || autoUrl;
-  const sourceTag = override ? 'ידני' : (autoUrl ? 'גיט' : null);
+  const isFrontend = kind === 'frontend';
+  const label = isFrontend ? 'פרונט' : 'ניהול';
+  const colorClass = isFrontend
+    ? 'bg-green-50 text-green-700 hover:bg-green-100'
+    : 'bg-purple-50 text-purple-700 hover:bg-purple-100';
+
+  async function persist(next: string | null) {
+    return isFrontend
+      ? setPagePreviewUrlOverride(page.id, projectSlug, next)
+      : setPageCmsUrlOverride(page.id, projectSlug, next);
+  }
 
   function save() {
     startTransition(async () => {
-      await setPagePreviewUrlOverride(page.id, projectSlug, value || null);
+      await persist(value || null);
       setEditing(false);
       router.refresh();
     });
   }
   function clear() {
     startTransition(async () => {
-      await setPagePreviewUrlOverride(page.id, projectSlug, null);
+      await persist(null);
       setValue('');
       setEditing(false);
       router.refresh();
@@ -592,6 +619,7 @@ function PreviewLinkInput({
   if (editing) {
     return (
       <div className="flex shrink-0 items-center gap-1">
+        <span className="text-[11px] font-semibold text-muted-fg">{label}:</span>
         <input value={value} dir="ltr" autoFocus
                onChange={e => setValue(e.target.value)}
                onKeyDown={e => {
@@ -599,7 +627,7 @@ function PreviewLinkInput({
                  if (e.key === 'Escape') { setValue(override); setEditing(false); }
                }}
                placeholder="https://..."
-               className="h-7 w-56 rounded border border-border bg-background px-2 text-xs font-mono" />
+               className="h-7 w-48 rounded border border-border bg-background px-2 text-xs font-mono" />
         <button type="button" onClick={save}
                 className="rounded p-1 text-green-600 hover:bg-green-50" aria-label="שמור">
           <CheckCircle2 className="h-3.5 w-3.5" />
@@ -619,29 +647,31 @@ function PreviewLinkInput({
   }
 
   return (
-    <div className="flex shrink-0 items-center gap-1">
+    <div className="flex shrink-0 items-center gap-0.5">
       {resolved ? (
         <a href={resolved} target="_blank" rel="noopener noreferrer"
-           className="inline-flex items-center gap-1 rounded-md bg-green-50 px-2 py-0.5 text-[11px] font-medium text-green-700 hover:bg-green-100"
-           title={`פתח: ${resolved}${sourceTag ? ` (מקור: ${sourceTag})` : ''}`}>
-          <CheckCircle2 className="h-3 w-3" />
-          תצוגה
+           className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-medium ${colorClass}`}
+           title={`פתח (${label}): ${resolved}${override ? ' · ידני' : (autoUrl ? ' · אוטומטי' : '')}`}>
+          {label}
           <ExternalLink className="h-3 w-3" />
         </a>
-      ) : autoStatus === 'missing' ? (
+      ) : isFrontend && autoStatus === 'missing' ? (
         <span className="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800"
               title="לא נמצא קובץ HTML תואם ב-GitHub">
-          <AlertTriangle className="h-3 w-3" /> חסר
+          {label}
+          <AlertTriangle className="h-3 w-3" />
         </span>
       ) : (
-        <span className="inline-flex items-center gap-1 rounded-md bg-zinc-100 px-2 py-0.5 text-[11px] text-zinc-500">
-          ללא לינק
+        <span className="inline-flex items-center gap-1 rounded-md bg-zinc-100 px-2 py-0.5 text-[11px] text-zinc-500"
+              title={`לא הוגדר לינק ${label}`}>
+          {label}
         </span>
       )}
       <button type="button" onClick={() => setEditing(true)}
-              className="rounded p-1 text-muted-fg hover:text-brand"
-              aria-label="ערוך לינק תצוגה">
-        <ExternalLink className="h-3 w-3 opacity-50" />
+              className="rounded p-1 text-muted-fg hover:bg-muted hover:text-brand"
+              aria-label={`ערוך לינק ${label}`}
+              title={`הדבק לינק ${label}`}>
+        <Edit2 className="h-3 w-3" />
       </button>
     </div>
   );

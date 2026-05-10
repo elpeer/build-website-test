@@ -34,6 +34,7 @@ interface PageRow {
   order: number;
   parent_id: string | null;
   preview_url_override: string | null;
+  cms_url_override: string | null;
 }
 
 // Weighted progress per page status (rough but useful at a glance)
@@ -60,7 +61,7 @@ export default async function ProjectPage({ params }: Props) {
 
   // Pages
   const { data: pagesData } = await supabase
-    .from('pages').select('id, slug, name_he, type, status, dev_status, order, parent_id, preview_url_override')
+    .from('pages').select('id, slug, name_he, type, status, dev_status, order, parent_id, preview_url_override, cms_url_override')
     .eq('project_id', project.id).order('order', { ascending: true });
   const pages: PageRow[] = (pagesData ?? []) as PageRow[];
 
@@ -240,6 +241,7 @@ export default async function ProjectPage({ params }: Props) {
                   pages={pages}
                   cpts={cpts}
                   previews={previews}
+                  cmsBaseUrl={(settings.development?.staging_url ?? '').trim().replace(/\/$/, '') || null}
                 />
               </CardContent>
             </Card>
