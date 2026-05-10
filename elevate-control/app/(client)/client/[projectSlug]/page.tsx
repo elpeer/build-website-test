@@ -14,14 +14,14 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { projectSlug } = await params;
+  const { projectSlug: _projectSlugRaw } = await params; const projectSlug = _projectSlugRaw.normalize('NFC');
   return { title: `אזור הלקוח · ${projectSlug}` };
 }
 
 interface OverrideRow { workspace: string; unlocked: boolean; message: string | null }
 
 export default async function ClientDashboardPage({ params }: Props) {
-  const { projectSlug } = await params;
+  const { projectSlug: _projectSlugRaw } = await params; const projectSlug = _projectSlugRaw.normalize('NFC');
   const supabase = await createClient();
 
   const { data: project } = await supabase

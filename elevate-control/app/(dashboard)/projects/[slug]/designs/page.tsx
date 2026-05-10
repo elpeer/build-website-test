@@ -38,12 +38,12 @@ const VIEWPORT_TABS: { value: DesignViewport | 'all'; label: string; icon: typeo
 ];
 
 export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;
+  const { slug: _slugRaw } = await params; const slug = _slugRaw.normalize('NFC');
   return { title: `עיצובים · ${slug}` };
 }
 
 export default async function DesignsPage({ params, searchParams }: Props) {
-  const { slug } = await params;
+  const { slug: _slugRaw } = await params; const slug = _slugRaw.normalize('NFC');
   const { viewport: viewportFilter } = await searchParams;
   const supabase = await createClient();
 

@@ -21,12 +21,12 @@ interface CptRow {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;
+  const { slug: _slugRaw } = await params; const slug = _slugRaw.normalize('NFC');
   return { title: `CPTs · ${slug}` };
 }
 
 export default async function CptsPage({ params }: Props) {
-  const { slug } = await params;
+  const { slug: _slugRaw } = await params; const slug = _slugRaw.normalize('NFC');
   const supabase = await createClient();
 
   const { data: project } = await supabase

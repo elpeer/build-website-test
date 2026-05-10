@@ -83,12 +83,12 @@ const VIEWPORT_LABELS: Record<DesignViewport, string> = {
 };
 
 export async function generateMetadata({ params }: Props) {
-  const { slug, pageSlug } = await params;
+  const { slug: _slugRaw, pageSlug: _pageSlugRaw } = await params; const slug = _slugRaw.normalize('NFC'); const pageSlug = _pageSlugRaw.normalize('NFC');
   return { title: `${pageSlug} · ${slug}` };
 }
 
 export default async function PageDetailPage({ params }: Props) {
-  const { slug, pageSlug } = await params;
+  const { slug: _slugRaw, pageSlug: _pageSlugRaw } = await params; const slug = _slugRaw.normalize('NFC'); const pageSlug = _pageSlugRaw.normalize('NFC');
   const supabase = await createClient();
 
   const { data: project } = await supabase

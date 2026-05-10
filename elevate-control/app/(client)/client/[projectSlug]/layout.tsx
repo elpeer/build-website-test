@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default async function ClientProjectLayout({ children, params }: Props) {
-  const { projectSlug } = await params;
+  const { projectSlug: _projectSlugRaw } = await params; const projectSlug = _projectSlugRaw.normalize('NFC');
   const supabase = await createClient();
 
   const { data: project } = await supabase

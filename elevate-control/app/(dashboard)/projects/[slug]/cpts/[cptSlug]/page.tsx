@@ -32,12 +32,12 @@ interface TaxonomyRecord {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { slug, cptSlug } = await params;
+  const { slug: _slugRaw, cptSlug: _cptSlugRaw } = await params; const slug = _slugRaw.normalize('NFC'); const cptSlug = _cptSlugRaw.normalize('NFC');
   return { title: `${cptSlug} · CPT · ${slug}` };
 }
 
 export default async function CptDetailPage({ params }: Props) {
-  const { slug, cptSlug } = await params;
+  const { slug: _slugRaw, cptSlug: _cptSlugRaw } = await params; const slug = _slugRaw.normalize('NFC'); const cptSlug = _cptSlugRaw.normalize('NFC');
   const supabase = await createClient();
 
   const { data: project } = await supabase

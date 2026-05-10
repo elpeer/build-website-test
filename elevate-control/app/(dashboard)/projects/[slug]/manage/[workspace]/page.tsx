@@ -14,13 +14,13 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { slug, workspace } = await params;
+  const { slug: _slugRaw, workspace } = await params; const slug = _slugRaw.normalize('NFC');
   const meta = WORKSPACE_BY_SLUG[workspace as WorkspaceSlug];
   return { title: `${meta?.label ?? workspace} · ${slug}` };
 }
 
 export default async function StudioWorkspaceManagePage({ params }: Props) {
-  const { slug, workspace } = await params;
+  const { slug: _slugRaw, workspace } = await params; const slug = _slugRaw.normalize('NFC');
   const meta = WORKSPACE_BY_SLUG[workspace as WorkspaceSlug];
   if (!meta) notFound();
 
