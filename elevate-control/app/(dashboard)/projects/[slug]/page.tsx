@@ -65,12 +65,6 @@ export default async function ProjectPage({ params }: Props) {
     .eq('project_id', project.id).order('order', { ascending: true });
   const pages: PageRow[] = (pagesData ?? []) as PageRow[];
 
-  // CPTs (still needed for the "create page" form)
-  const { data: cptsData } = await supabase
-    .from('cpts').select('id, slug, name_he, name_en')
-    .eq('project_id', project.id).order('order', { ascending: true });
-  const cpts = (cptsData ?? []) as { id: string; slug: string; name_he: string | null; name_en: string | null }[];
-
   // Preview links — manual override on the page row wins over the
   // GitHub-detected URL. The auto-detection still runs so we know whether
   // the file exists in the repo.
@@ -239,7 +233,6 @@ export default async function ProjectPage({ params }: Props) {
                   projectId={project.id as string}
                   projectSlug={project.slug as string}
                   pages={pages}
-                  cpts={cpts}
                   previews={previews}
                   cmsBaseUrl={(settings.development?.staging_url ?? '').trim().replace(/\/$/, '') || null}
                 />
