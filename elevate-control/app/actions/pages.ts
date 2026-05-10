@@ -177,6 +177,50 @@ export async function setPageCmsUrlOverride(
   return { ok: true };
 }
 
+/** Per-page MANUAL preview URL — wins over the GitHub-detected one.
+ *  Used in the frontend tab of the dev workspace. */
+export async function setPagePreviewUrlOverride(
+  pageId: string,
+  projectSlug: string,
+  url: string | null
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+  const { error } = await supabase
+    .from('pages')
+    .update({ preview_url_override: url?.trim() || null })
+    .eq('id', pageId);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath(`/projects/${projectSlug}`);
+  revalidatePath(`/client/${projectSlug}/development`);
+  return { ok: true };
+}
+
+const DEV_STATUSES = ['in_dev', 'awaiting_pm', 'pm_approved', 'client_visible'] as const;
+export type PageDevStatus = typeof DEV_STATUSES[number];
+
+/** Dev-workflow status. Only 'client_visible' enables the page row in
+ *  the client-facing development workspace. */
+export async function setPageDevStatus(
+  pageId: string,
+  projectSlug: string,
+  status: PageDevStatus
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (!DEV_STATUSES.includes(status)) return { ok: false, error: 'סטטוס לא חוקי' };
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+  const { error } = await supabase
+    .from('pages')
+    .update({ dev_status: status })
+    .eq('id', pageId);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath(`/projects/${projectSlug}`);
+  revalidatePath(`/client/${projectSlug}/development`);
+  return { ok: true };
+}
+
 export async function reorderAndReparentPages(
   projectSlug: string,
   updates: Array<{ id: string; parent_id: string | null; order: number }>

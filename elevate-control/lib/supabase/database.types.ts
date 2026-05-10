@@ -150,6 +150,8 @@ export type PageRow = {
   order: number;
   notes: string | null;
   cms_url_override: string | null;
+  preview_url_override: string | null;
+  dev_status: 'in_dev' | 'awaiting_pm' | 'pm_approved' | 'client_visible';
   created_by: string | null;
   assigned_to: string | null;
   created_at: string;

@@ -3,7 +3,11 @@
 import { useEffect, useMemo, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { createPage, reorderAndReparentPages } from '@/app/actions/pages';
+import {
+  createPage, reorderAndReparentPages,
+  setPagePreviewUrlOverride, setPageDevStatus,
+  type PageDevStatus,
+} from '@/app/actions/pages';
 import { slugify } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,9 +34,25 @@ interface PageRow {
   name_he: string | null;
   type: PageType;
   status: PageStatus;
+  dev_status?: PageDevStatus;
   order: number;
   parent_id?: string | null;
+  preview_url_override?: string | null;
 }
+
+const DEV_STATUS_LABELS: Record<PageDevStatus, string> = {
+  in_dev:         'בפיתוח',
+  awaiting_pm:    'ממתין לבדיקת מנהל',
+  pm_approved:    'מאושר ע״י מנהל',
+  client_visible: 'מאושר לצפיית לקוח',
+};
+
+const DEV_STATUS_PILLS: Record<PageDevStatus, string> = {
+  in_dev:         'bg-amber-50 text-amber-800 border-amber-200',
+  awaiting_pm:    'bg-blue-50 text-blue-700 border-blue-200',
+  pm_approved:    'bg-purple-50 text-purple-700 border-purple-200',
+  client_visible: 'bg-green-50 text-green-700 border-green-200',
+};
 
 export interface PreviewInfo {
   status: 'found' | 'missing';
@@ -513,31 +533,14 @@ function SortableTreeRow({
           <span className="ms-2 text-[11px] text-muted-fg" dir="ltr">/{page.slug}</span>
         </Link>
 
-        {/* Preview status — used to live in PagesPreviewBoard, now inline. */}
-        {preview && (
-          preview.status === 'found' && preview.previewUrl ? (
-            <a href={preview.previewUrl} target="_blank" rel="noopener noreferrer"
-               className="inline-flex shrink-0 items-center gap-1 rounded-md bg-green-50 px-2 py-0.5 text-[11px] font-medium text-green-700 hover:bg-green-100"
-               title="פתח תצוגה">
-              <CheckCircle2 className="h-3 w-3" />
-              תצוגה
-              <ExternalLink className="h-3 w-3" />
-            </a>
-          ) : preview.status === 'found' ? (
-            <span className="inline-flex shrink-0 items-center gap-1 rounded-md bg-green-50 px-2 py-0.5 text-[11px] font-medium text-green-700">
-              <CheckCircle2 className="h-3 w-3" /> נמצא
-            </span>
-          ) : (
-            <span className="inline-flex shrink-0 items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800"
-                  title="לא נמצא קובץ HTML תואם ב-GitHub">
-              <AlertTriangle className="h-3 w-3" /> חסר
-            </span>
-          )
-        )}
+        <PreviewLinkInput
+          page={page}
+          autoUrl={preview?.previewUrl ?? null}
+          autoStatus={preview?.status ?? null}
+          projectSlug={projectSlug}
+        />
 
-        <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${STATUS_PILLS[page.status]}`}>
-          {STATUS_LABELS[page.status]}
-        </span>
+        <DevStatusPicker page={page} projectSlug={projectSlug} />
 
         <Link href={`/projects/${projectSlug}/${page.slug}`}
               className="shrink-0 rounded p-1 text-muted-fg hover:bg-muted hover:text-brand"
@@ -546,5 +549,128 @@ function SortableTreeRow({
         </Link>
       </div>
     </li>
+  );
+}
+
+/** Inline preview-URL field — paste/edit a manual override for this page.
+ *  Falls back to the auto-detected URL from GitHub/Vercel when blank.
+ *  The displayed link is always clickable (opens in a new tab) and the
+ *  pencil toggles edit mode without leaving the tree. */
+function PreviewLinkInput({
+  page, autoUrl, autoStatus, projectSlug,
+}: {
+  page: PageRow;
+  autoUrl: string | null;
+  autoStatus: 'found' | 'missing' | null;
+  projectSlug: string;
+}) {
+  const router = useRouter();
+  const override = page.preview_url_override ?? '';
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(override);
+  const [, startTransition] = useTransition();
+
+  const resolved = override || autoUrl;
+  const sourceTag = override ? 'ידני' : (autoUrl ? 'גיט' : null);
+
+  function save() {
+    startTransition(async () => {
+      await setPagePreviewUrlOverride(page.id, projectSlug, value || null);
+      setEditing(false);
+      router.refresh();
+    });
+  }
+  function clear() {
+    startTransition(async () => {
+      await setPagePreviewUrlOverride(page.id, projectSlug, null);
+      setValue('');
+      setEditing(false);
+      router.refresh();
+    });
+  }
+
+  if (editing) {
+    return (
+      <div className="flex shrink-0 items-center gap-1">
+        <input value={value} dir="ltr" autoFocus
+               onChange={e => setValue(e.target.value)}
+               onKeyDown={e => {
+                 if (e.key === 'Enter') save();
+                 if (e.key === 'Escape') { setValue(override); setEditing(false); }
+               }}
+               placeholder="https://..."
+               className="h-7 w-56 rounded border border-border bg-background px-2 text-xs font-mono" />
+        <button type="button" onClick={save}
+                className="rounded p-1 text-green-600 hover:bg-green-50" aria-label="שמור">
+          <CheckCircle2 className="h-3.5 w-3.5" />
+        </button>
+        {override && (
+          <button type="button" onClick={clear}
+                  className="rounded p-1 text-red-600 hover:bg-red-50" aria-label="נקה override">
+            <X className="h-3.5 w-3.5" />
+          </button>
+        )}
+        <button type="button" onClick={() => { setValue(override); setEditing(false); }}
+                className="rounded p-1 text-zinc-500 hover:bg-zinc-100" aria-label="ביטול">
+          <X className="h-3.5 w-3.5" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex shrink-0 items-center gap-1">
+      {resolved ? (
+        <a href={resolved} target="_blank" rel="noopener noreferrer"
+           className="inline-flex items-center gap-1 rounded-md bg-green-50 px-2 py-0.5 text-[11px] font-medium text-green-700 hover:bg-green-100"
+           title={`פתח: ${resolved}${sourceTag ? ` (מקור: ${sourceTag})` : ''}`}>
+          <CheckCircle2 className="h-3 w-3" />
+          תצוגה
+          <ExternalLink className="h-3 w-3" />
+        </a>
+      ) : autoStatus === 'missing' ? (
+        <span className="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800"
+              title="לא נמצא קובץ HTML תואם ב-GitHub">
+          <AlertTriangle className="h-3 w-3" /> חסר
+        </span>
+      ) : (
+        <span className="inline-flex items-center gap-1 rounded-md bg-zinc-100 px-2 py-0.5 text-[11px] text-zinc-500">
+          ללא לינק
+        </span>
+      )}
+      <button type="button" onClick={() => setEditing(true)}
+              className="rounded p-1 text-muted-fg hover:text-brand"
+              aria-label="ערוך לינק תצוגה">
+        <ExternalLink className="h-3 w-3 opacity-50" />
+      </button>
+    </div>
+  );
+}
+
+/** Inline dev_status dropdown — colored pill that the studio can flip
+ *  without entering the page. Only 'client_visible' makes the page
+ *  visible in the client-facing development workspace. */
+function DevStatusPicker({ page, projectSlug }: { page: PageRow; projectSlug: string }) {
+  const router = useRouter();
+  const [, startTransition] = useTransition();
+  const current: PageDevStatus = page.dev_status ?? 'in_dev';
+
+  function setStatus(next: PageDevStatus) {
+    if (next === current) return;
+    startTransition(async () => {
+      await setPageDevStatus(page.id, projectSlug, next);
+      router.refresh();
+    });
+  }
+
+  return (
+    <select value={current}
+            onChange={e => setStatus(e.target.value as PageDevStatus)}
+            title={current === 'client_visible' ? 'גלוי ללקוח בפיתוח' : 'לא גלוי ללקוח עדיין'}
+            className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[11px] font-medium focus:outline-none ${DEV_STATUS_PILLS[current]}`}>
+      {(Object.keys(DEV_STATUS_LABELS) as PageDevStatus[]).map(s => (
+        <option key={s} value={s}>{DEV_STATUS_LABELS[s]}</option>
+      ))}
+    </select>
   );
 }
