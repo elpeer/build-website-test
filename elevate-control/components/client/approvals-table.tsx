@@ -315,8 +315,8 @@ function ApprovalTableRow({
                 <Edit2 className="h-4 w-4" />
               </button>
               {/* Dev rows are page-tree-driven — delete here would create
-                   orphans. Hide for kind=frontend/cms; keep for design. */}
-              {approval.kind !== 'frontend' && approval.kind !== 'cms' && (
+                   orphans. Hide only for the development workspace. */}
+              {workspace !== 'development' && (
                 <button type="button" onClick={handleDelete}
                         className="shrink-0 rounded p-1.5 text-red-600 hover:bg-red-50"
                         aria-label="מחק">
