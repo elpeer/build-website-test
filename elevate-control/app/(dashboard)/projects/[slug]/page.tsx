@@ -30,7 +30,7 @@ interface PageRow {
   name_he: string | null;
   type: PageType;
   status: PageStatus;
-  dev_status: 'in_dev' | 'awaiting_pm' | 'pm_approved' | 'client_visible';
+  dev_status: 'awaiting_dev' | 'in_dev' | 'awaiting_pm' | 'pm_approved' | 'client_visible' | 'client_visible_full';
   order: number;
   parent_id: string | null;
   preview_url_override: string | null;

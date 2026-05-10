@@ -42,17 +42,21 @@ interface PageRow {
 }
 
 const DEV_STATUS_LABELS: Record<PageDevStatus, string> = {
-  in_dev:         'בפיתוח',
-  awaiting_pm:    'ממתין לבדיקת מנהל',
-  pm_approved:    'מאושר ע״י מנהל',
-  client_visible: 'מאושר לצפיית לקוח',
+  awaiting_dev:        'ממתין לפיתוח',
+  in_dev:              'בפיתוח',
+  awaiting_pm:         'ממתין לבדיקת מנהל',
+  pm_approved:         'מאושר ע״י מנהל',
+  client_visible:      'מאושר לצפיית לקוח פרונט',
+  client_visible_full: 'מאושר לצפיית לקוח ניהול',
 };
 
 const DEV_STATUS_PILLS: Record<PageDevStatus, string> = {
-  in_dev:         'bg-amber-50 text-amber-800 border-amber-200',
-  awaiting_pm:    'bg-blue-50 text-blue-700 border-blue-200',
-  pm_approved:    'bg-purple-50 text-purple-700 border-purple-200',
-  client_visible: 'bg-green-50 text-green-700 border-green-200',
+  awaiting_dev:        'bg-zinc-50 text-zinc-600 border-zinc-200',
+  in_dev:              'bg-amber-50 text-amber-800 border-amber-200',
+  awaiting_pm:         'bg-blue-50 text-blue-700 border-blue-200',
+  pm_approved:         'bg-purple-50 text-purple-700 border-purple-200',
+  client_visible:      'bg-green-50 text-green-700 border-green-200',
+  client_visible_full: 'bg-emerald-100 text-emerald-800 border-emerald-300',
 };
 
 export interface PreviewInfo {
@@ -641,12 +645,14 @@ function LinkInput({
 }
 
 /** Inline dev_status dropdown — colored pill that the studio can flip
- *  without entering the page. Only 'client_visible' makes the page
- *  visible in the client-facing development workspace. */
+ *  without entering the page. 'client_visible' exposes the page on
+ *  the client's frontend tab; 'client_visible_full' also exposes it
+ *  on the CMS tab. */
 function DevStatusPicker({ page, projectSlug }: { page: PageRow; projectSlug: string }) {
   const router = useRouter();
   const [, startTransition] = useTransition();
-  const current: PageDevStatus = page.dev_status ?? 'in_dev';
+  const current: PageDevStatus = page.dev_status ?? 'awaiting_dev';
+  const visible = current === 'client_visible' || current === 'client_visible_full';
 
   function setStatus(next: PageDevStatus) {
     if (next === current) return;
@@ -659,7 +665,7 @@ function DevStatusPicker({ page, projectSlug }: { page: PageRow; projectSlug: st
   return (
     <select value={current}
             onChange={e => setStatus(e.target.value as PageDevStatus)}
-            title={current === 'client_visible' ? 'גלוי ללקוח בפיתוח' : 'לא גלוי ללקוח עדיין'}
+            title={visible ? 'גלוי ללקוח בפיתוח' : 'לא גלוי ללקוח עדיין'}
             className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[11px] font-medium focus:outline-none ${DEV_STATUS_PILLS[current]}`}>
       {(Object.keys(DEV_STATUS_LABELS) as PageDevStatus[]).map(s => (
         <option key={s} value={s}>{DEV_STATUS_LABELS[s]}</option>
