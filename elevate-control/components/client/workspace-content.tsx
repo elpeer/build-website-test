@@ -580,13 +580,15 @@ async function buildDevPageRows(input: {
   });
   childrenByParent.forEach(arr => arr.sort((a, b) => a.order - b.order));
   const orderedPages: typeof pages = [];
-  const walk = (parentId: string | null) => {
+  const depthByPageId = new Map<string, number>();
+  const walk = (parentId: string | null, depth: number) => {
     (childrenByParent.get(parentId) ?? []).forEach(p => {
       orderedPages.push(p);
-      walk(p.id);
+      depthByPageId.set(p.id, depth);
+      walk(p.id, depth + 1);
     });
   };
-  walk(null);
+  walk(null, 0);
 
   // 3. Existing dev approvals.
   const devApprovals = input.approvals.filter(a => a.workspace === 'development');
@@ -675,6 +677,7 @@ async function buildDevPageRows(input: {
       status: (a?.status ?? 'pending'),
       metadata: a?.metadata ?? null,
       kind,
+      depth: depthByPageId.get(p.id) ?? 0,
       disabled: !linkUrl,
     };
   }

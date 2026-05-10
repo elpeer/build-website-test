@@ -27,6 +27,9 @@ export interface ApprovalRowData {
   status: ApprovalStatus;
   metadata: Json | null;
   kind?: string | null;
+  /** Depth in the page tree — used to indent nested pages in the dev
+   *  workspace so the list mirrors the studio site tree. */
+  depth?: number;
   /** When true the row renders read-only — name only, no link, no status
    *  flip, no comments. Used in the dev workspace for pages that don't
    *  have a usable preview/CMS URL yet. */
@@ -171,10 +174,12 @@ function ApprovalTableRow({
 
   // Disabled row — page exists in the tree but no link to view it. Render
   // a stripped-down read-only version, no status flip, no comments.
+  const indentStyle = approval.depth ? { marginInlineStart: `${approval.depth * 20}px` } : undefined;
+
   if (disabled) {
     return (
       <li>
-        <div className="flex items-center gap-2 px-3 py-2 opacity-60">
+        <div className="flex items-center gap-2 px-3 py-2 opacity-60" style={indentStyle}>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-muted-fg">{approval.title}</p>
             <p className="text-[11px] text-muted-fg italic">
@@ -191,7 +196,7 @@ function ApprovalTableRow({
 
   return (
     <li>
-      <div className="flex items-center gap-2 px-3 py-2 hover:bg-muted/30">
+      <div className="flex items-center gap-2 px-3 py-2 hover:bg-muted/30" style={indentStyle}>
         {/* Title + description */}
         <div className="min-w-0 flex-1">
           {editing ? (
