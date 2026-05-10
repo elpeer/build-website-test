@@ -193,11 +193,19 @@ export async function setPagePreviewUrlOverride(
   return { ok: true };
 }
 
-const DEV_STATUSES = ['in_dev', 'awaiting_pm', 'pm_approved', 'client_visible'] as const;
+const DEV_STATUSES = [
+  'awaiting_dev',
+  'in_dev',
+  'awaiting_pm',
+  'pm_approved',
+  'client_visible',       // frontend tab only
+  'client_visible_full',  // frontend + CMS tabs
+] as const;
 export type PageDevStatus = typeof DEV_STATUSES[number];
 
-/** Dev-workflow status. Only 'client_visible' enables the page row in
- *  the client-facing development workspace. */
+/** Dev-workflow status. 'client_visible' exposes the page in the
+ *  client-facing dev workspace's frontend tab; 'client_visible_full'
+ *  also exposes it in the CMS tab. */
 export async function setPageDevStatus(
   pageId: string,
   projectSlug: string,

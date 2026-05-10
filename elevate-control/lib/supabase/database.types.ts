@@ -151,7 +151,7 @@ export type PageRow = {
   notes: string | null;
   cms_url_override: string | null;
   preview_url_override: string | null;
-  dev_status: 'in_dev' | 'awaiting_pm' | 'pm_approved' | 'client_visible';
+  dev_status: 'awaiting_dev' | 'in_dev' | 'awaiting_pm' | 'pm_approved' | 'client_visible' | 'client_visible_full';
   created_by: string | null;
   assigned_to: string | null;
   created_at: string;

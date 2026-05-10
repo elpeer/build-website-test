@@ -23,17 +23,21 @@ interface Props {
 }
 
 const DEV_STATUS_LABELS: Record<PageDevStatus, string> = {
-  in_dev:         'בפיתוח',
-  awaiting_pm:    'ממתין לבדיקת מנהל',
-  pm_approved:    'מאושר ע״י מנהל',
-  client_visible: 'מאושר לצפיית לקוח',
+  awaiting_dev:        'ממתין לפיתוח',
+  in_dev:              'בפיתוח',
+  awaiting_pm:         'ממתין לבדיקת מנהל',
+  pm_approved:         'מאושר ע״י מנהל',
+  client_visible:      'מאושר לצפיית לקוח פרונט',
+  client_visible_full: 'מאושר לצפיית לקוח ניהול',
 };
 
 const DEV_STATUS_COLORS: Record<PageDevStatus, string> = {
-  in_dev:         'border-amber-200 bg-amber-50 text-amber-800',
-  awaiting_pm:    'border-blue-200 bg-blue-50 text-blue-700',
-  pm_approved:    'border-purple-200 bg-purple-50 text-purple-700',
-  client_visible: 'border-green-200 bg-green-50 text-green-700',
+  awaiting_dev:        'border-zinc-200 bg-zinc-50 text-zinc-600',
+  in_dev:              'border-amber-200 bg-amber-50 text-amber-800',
+  awaiting_pm:         'border-blue-200 bg-blue-50 text-blue-700',
+  pm_approved:         'border-purple-200 bg-purple-50 text-purple-700',
+  client_visible:      'border-green-200 bg-green-50 text-green-700',
+  client_visible_full: 'border-emerald-300 bg-emerald-100 text-emerald-800',
 };
 
 export function PageDevSettings({ pageId, projectSlug, initial }: Props) {
@@ -82,7 +86,7 @@ export function PageDevSettings({ pageId, projectSlug, initial }: Props) {
           <span>הגדרות פיתוח של העמוד</span>
           <select value={status}
                   onChange={e => changeStatus(e.target.value as PageDevStatus)}
-                  title={status === 'client_visible' ? 'גלוי ללקוח בעמוד הפיתוח' : 'לא גלוי ללקוח בעמוד הפיתוח'}
+                  title={(status === 'client_visible' || status === 'client_visible_full') ? 'גלוי ללקוח בעמוד הפיתוח' : 'לא גלוי ללקוח בעמוד הפיתוח'}
                   className={`rounded-full border px-3 py-1 text-xs font-medium focus:outline-none ${DEV_STATUS_COLORS[status]}`}>
             {(Object.keys(DEV_STATUS_LABELS) as PageDevStatus[]).map(s => (
               <option key={s} value={s}>{DEV_STATUS_LABELS[s]}</option>

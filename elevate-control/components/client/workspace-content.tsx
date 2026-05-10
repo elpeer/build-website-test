@@ -565,10 +565,19 @@ async function buildDevPageRows(input: {
     parent_id: string | null; order: number;
     cms_url_override: string | null;
     preview_url_override: string | null;
-    dev_status: 'in_dev' | 'awaiting_pm' | 'pm_approved' | 'client_visible' | null;
+    dev_status:
+      | 'awaiting_dev' | 'in_dev' | 'awaiting_pm' | 'pm_approved'
+      | 'client_visible' | 'client_visible_full' | null;
   }>;
-  // Client-facing dev workspace only shows pages flagged as visible.
-  const pages = allPages.filter(p => (p.dev_status ?? 'in_dev') === 'client_visible');
+  // Client-facing dev workspace shows pages flagged as visible. Two
+  // levels: 'client_visible' = frontend tab only,
+  //         'client_visible_full' = frontend + CMS tabs.
+  const pages = allPages.filter(p =>
+    p.dev_status === 'client_visible' || p.dev_status === 'client_visible_full'
+  );
+  const cmsVisibleIds = new Set(
+    allPages.filter(p => p.dev_status === 'client_visible_full').map(p => p.id)
+  );
 
   // 2. Tree-flatten depth-first to keep visual order consistent with the
   //    studio site tree.
@@ -623,9 +632,11 @@ async function buildDevPageRows(input: {
     project_id: string; workspace: string; kind: string; page_id: string;
     title: string; position: number;
   }> = [];
-  const KINDS: Array<'frontend' | 'cms'> = ['frontend', 'cms'];
   orderedPages.forEach((p, idx) => {
-    KINDS.forEach(kind => {
+    const kindsForPage: Array<'frontend' | 'cms'> = cmsVisibleIds.has(p.id)
+      ? ['frontend', 'cms']
+      : ['frontend'];
+    kindsForPage.forEach(kind => {
       if (linkedByPageKind.has(`${p.id}|${kind}`)) return;
       toCreate.push({
         project_id: input.projectId, workspace: 'development', kind,
@@ -683,7 +694,9 @@ async function buildDevPageRows(input: {
   }
 
   const frontendRows = orderedPages.map(p => rowFor(p, 'frontend'));
-  const cmsRows      = orderedPages.map(p => rowFor(p, 'cms'));
+  // CMS tab only includes pages explicitly flagged as 'client_visible_full'.
+  const cmsRows      = orderedPages.filter(p => cmsVisibleIds.has(p.id))
+                                   .map(p => rowFor(p, 'cms'));
 
   // 8. Augment approvalThreadInfo with the bootstrapped rows so the table
   //    shows comment counts. (Empty thread for fresh ones.)

@@ -28,7 +28,7 @@ interface PageRecord {
   name_en: string | null;
   type: PageType;
   status: PageStatus;
-  dev_status: 'in_dev' | 'awaiting_pm' | 'pm_approved' | 'client_visible';
+  dev_status: 'awaiting_dev' | 'in_dev' | 'awaiting_pm' | 'pm_approved' | 'client_visible' | 'client_visible_full';
   notes: string | null;
   creation_context: unknown;
   preview_url_override: string | null;
@@ -192,7 +192,7 @@ export default async function PageDetailPage({ params }: Props) {
         initial={{
           preview_url_override: page.preview_url_override,
           cms_url_override:     page.cms_url_override,
-          dev_status:           page.dev_status ?? 'in_dev',
+          dev_status:           page.dev_status ?? 'awaiting_dev',
         }}
       />
 
