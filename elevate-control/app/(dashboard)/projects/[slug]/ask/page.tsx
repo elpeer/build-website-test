@@ -8,7 +8,7 @@ import { AskClient } from '@/components/projects/ask-client';
 interface Props { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;
+  const { slug: _slugRaw } = await params; const slug = _slugRaw.normalize('NFC');
   return { title: `שאל את Claude · ${slug}` };
 }
 
@@ -21,7 +21,7 @@ const SUGGESTIONS = [
 ];
 
 export default async function AskProjectPage({ params }: Props) {
-  const { slug } = await params;
+  const { slug: _slugRaw } = await params; const slug = _slugRaw.normalize('NFC');
   const supabase = await createClient();
   const { data: project } = await supabase
     .from('projects').select('id, slug, name').eq('slug', slug)

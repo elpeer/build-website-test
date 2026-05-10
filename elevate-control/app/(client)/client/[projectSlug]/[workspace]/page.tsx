@@ -15,13 +15,13 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { projectSlug, workspace } = await params;
+  const { projectSlug: _projectSlugRaw, workspace } = await params; const projectSlug = _projectSlugRaw.normalize('NFC');
   const meta = WORKSPACE_BY_SLUG[workspace as WorkspaceSlug];
   return { title: `${meta?.label ?? workspace} · ${projectSlug}` };
 }
 
 export default async function ClientWorkspacePage({ params, searchParams }: Props) {
-  const { projectSlug, workspace } = await params;
+  const { projectSlug: _projectSlugRaw, workspace } = await params; const projectSlug = _projectSlugRaw.normalize('NFC');
   const sp = await searchParams;
   const previewAsClient = sp?.as === 'client';
   const meta = WORKSPACE_BY_SLUG[workspace as WorkspaceSlug];

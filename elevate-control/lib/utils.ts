@@ -43,12 +43,23 @@ export function formatRelativeHe(iso: string | null | undefined): string {
 /**
  * Slugify a Hebrew or English string for URLs / slugs.
  * Hebrew chars are kept (browsers handle them); spaces → hyphens.
+ * Output is normalized to Unicode NFC so DB lookups round-trip
+ * regardless of whether the input came from the keyboard or pasted
+ * (browsers can deliver decomposed forms in some setups).
  */
 export function slugify(input: string): string {
   return input
+    .normalize('NFC')
     .trim()
     .toLowerCase()
     .replace(/[^\p{L}\p{N}\s-]/gu, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
+}
+
+/** Normalize a slug coming from a dynamic route param so it matches
+ *  what slugify() stored in the DB. Apply to every `params.slug`
+ *  before using it in a Supabase `.eq('slug', …)` lookup. */
+export function normalizeSlugParam(s: string): string {
+  return s.normalize('NFC');
 }

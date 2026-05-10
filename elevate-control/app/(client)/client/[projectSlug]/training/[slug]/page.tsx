@@ -9,7 +9,7 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;
+  const { slug: _slugRaw } = await params; const slug = _slugRaw.normalize('NFC');
   return { title: `מדריך · ${slug}` };
 }
 
@@ -37,7 +37,7 @@ function youtubeEmbed(url: string): string | null {
 }
 
 export default async function ClientGuidePage({ params }: Props) {
-  const { projectSlug, slug } = await params;
+  const { projectSlug: _projectSlugRaw, slug: _slugRaw } = await params; const projectSlug = _projectSlugRaw.normalize('NFC'); const slug = _slugRaw.normalize('NFC');
   const supabase = await createClient();
 
   const { data: guide } = await supabase

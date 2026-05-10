@@ -44,7 +44,7 @@ const PROGRESS_WEIGHTS: Record<PageStatus, number> = {
 };
 
 export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;
+  const { slug: _slugRaw } = await params; const slug = _slugRaw.normalize('NFC');
   const supabase = await createClient();
   const { data } = await supabase
     .from('projects').select('name').eq('slug', slug).single();
@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function ProjectPage({ params }: Props) {
-  const { slug } = await params;
+  const { slug: _slugRaw } = await params; const slug = _slugRaw.normalize('NFC');
   const supabase = await createClient();
 
   const { data: project, error } = await supabase

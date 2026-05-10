@@ -31,12 +31,12 @@ const VIEWPORT_LABELS: Record<DesignViewport, string> = {
 };
 
 export async function generateMetadata({ params }: Props) {
-  const { pageSlug } = await params;
+  const { pageSlug: _pageSlugRaw } = await params; const pageSlug = _pageSlugRaw.normalize('NFC');
   return { title: `עיצוב · ${pageSlug}` };
 }
 
 export default async function DesignDetailPage({ params }: Props) {
-  const { slug, pageSlug, designId } = await params;
+  const { slug: _slugRaw, pageSlug: _pageSlugRaw, designId } = await params; const slug = _slugRaw.normalize('NFC'); const pageSlug = _pageSlugRaw.normalize('NFC');
   const supabase = await createClient();
 
   const { data: project } = await supabase

@@ -25,12 +25,12 @@ interface InvitationRow {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;
+  const { slug: _slugRaw } = await params; const slug = _slugRaw.normalize('NFC');
   return { title: `צוות · ${slug}` };
 }
 
 export default async function TeamPage({ params }: Props) {
-  const { slug } = await params;
+  const { slug: _slugRaw } = await params; const slug = _slugRaw.normalize('NFC');
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
