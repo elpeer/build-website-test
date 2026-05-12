@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { UserPlus, Mail, Trash2, AlertCircle, CheckCircle2, Clock, Shield } from 'lucide-react';
 import { SetPasswordButton } from '@/components/team/set-password-button';
+import { DeleteUserButton } from '@/components/team/delete-user-button';
 import type { UserRole } from '@/lib/supabase/database.types';
 
 interface ProfileRow {
@@ -192,7 +193,10 @@ export function StudioMembersAdmin({ currentUserId, profiles, invitations }: Pro
                     Admin
                   </label>
                  </div>
-                 <SetPasswordButton userId={p.id} userLabel={p.email} />
+                 <div className="mt-2 flex flex-wrap items-center gap-2">
+                   <SetPasswordButton userId={p.id} userLabel={p.email} />
+                   {!isSelf && <DeleteUserButton userId={p.id} userLabel={p.email} />}
+                 </div>
                 </li>
               );
             })}

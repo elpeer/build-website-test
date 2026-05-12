@@ -101,3 +101,29 @@ export async function signOut() {
   revalidatePath('/', 'layout');
   redirect('/sign-in');
 }
+
+/**
+ * Studio-admin only: hard-delete a user account. Cascades to profiles
+ * and project_members via the FK. The current user can't delete
+ * themselves.
+ */
+export async function deleteUser(
+  userId: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+  if (user.id === userId) return { ok: false, error: 'לא ניתן למחוק את עצמך' };
+
+  const { data: me } = await supabase.from('profiles')
+    .select('studio_admin').eq('id', user.id).single<{ studio_admin: boolean }>();
+  if (!me?.studio_admin) return { ok: false, error: 'אין לך הרשאה' };
+
+  const admin = createServiceClient();
+  const { error } = await admin.auth.admin.deleteUser(userId);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath('/clients');
+  revalidatePath('/admin/studio-members');
+  return { ok: true };
+}
