@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { InviteClientForm } from '@/components/team/invite-client-form';
 import { SetPasswordButton } from '@/components/team/set-password-button';
+import { DeleteUserButton } from '@/components/team/delete-user-button';
 import { Users, FolderKanban } from 'lucide-react';
 
 export const metadata = { title: 'לקוחות' };
@@ -149,7 +150,10 @@ export default async function ClientsPage() {
                           <p className="mt-1 text-xs text-amber-700">⚠ עדיין לא משויך לפרויקט</p>
                         )}
                         {canSetPassword && (
-                          <SetPasswordButton userId={p.id} userLabel={p.email} />
+                          <div className="mt-2 flex flex-wrap items-center gap-2">
+                            <SetPasswordButton userId={p.id} userLabel={p.email} />
+                            <DeleteUserButton userId={p.id} userLabel={p.email} />
+                          </div>
                         )}
                       </div>
                     </div>
