@@ -26,7 +26,7 @@ export default async function ClientDashboardPage({ params }: Props) {
 
   const { data: project } = await supabase
     .from('projects')
-    .select('id, slug, name, client_name, description, current_stage, vercel_url, target_at, kickoff_at, launched_at, workspace_settings')
+    .select('id, slug, name, client_name, description, current_stage, vercel_url, target_at, kickoff_at, launched_at, workspace_settings, progress_override, progress_note')
     .eq('slug', projectSlug)
     .single<{
       id: string; slug: string; name: string; client_name: string | null;
@@ -34,6 +34,8 @@ export default async function ClientDashboardPage({ params }: Props) {
       vercel_url: string | null; target_at: string | null;
       kickoff_at: string | null; launched_at: string | null;
       workspace_settings: Record<string, Record<string, string | null>> | null;
+      progress_override: number | null;
+      progress_note: string | null;
     }>();
   if (!project) notFound();
 
@@ -58,7 +60,9 @@ export default async function ClientDashboardPage({ params }: Props) {
   const stageIdx = ['quote','spec','design','frontend','backend','qa','integrations','launch','live']
     .indexOf(project.current_stage);
   const totalStages = 8; // 'live' is terminal
-  const progressPercent = Math.round((stageIdx / totalStages) * 100);
+  const autoPercent = Math.round((stageIdx / totalStages) * 100);
+  const progressPercent = project.progress_override ?? autoPercent;
+  const progressNote = project.progress_note?.trim() || null;
 
   return (
     <div className="space-y-5">
@@ -92,7 +96,8 @@ export default async function ClientDashboardPage({ params }: Props) {
           <Stat
             icon={<ChevronLeft className="h-3.5 w-3.5" />}
             label="התקדמות"
-            value={`${progressPercent}%`} />
+            value={`${progressPercent}%`}
+            note={progressNote} />
           <Stat
             icon={<MessageCircle className="h-3.5 w-3.5" />}
             label="תגובות פתוחות"
@@ -151,8 +156,9 @@ export default async function ClientDashboardPage({ params }: Props) {
   );
 }
 
-function Stat({ icon, label, value, accent }: {
+function Stat({ icon, label, value, accent, note }: {
   icon: React.ReactNode; label: string; value: string; accent?: 'amber';
+  note?: string | null;
 }) {
   return (
     <div className={`flex flex-col items-center text-center sm:items-start sm:text-start ${
@@ -163,6 +169,11 @@ function Stat({ icon, label, value, accent }: {
         {label}
       </p>
       <p className="text-sm font-semibold sm:text-base">{value}</p>
+      {note && (
+        <p className="mt-0.5 text-[11px] font-medium text-green-700 sm:text-xs">
+          {note}
+        </p>
+      )}
     </div>
   );
 }

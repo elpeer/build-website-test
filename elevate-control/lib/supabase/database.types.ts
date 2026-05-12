@@ -92,6 +92,8 @@ export type ProjectRow = {
   kickoff_at: string | null;
   target_at: string | null;
   launched_at: string | null;
+  progress_override: number | null;
+  progress_note: string | null;
   created_by: string | null;
   pm_id: string | null;
   created_at: string;

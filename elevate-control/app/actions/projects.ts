@@ -89,3 +89,35 @@ export async function createProject(formData: FormData): Promise<CreateProjectRe
   revalidatePath('/projects');
   return { ok: true, slug: project.slug };
 }
+
+/**
+ * PM-only: override the auto-calculated progress percent shown to the
+ * client, plus an optional "what's left" note rendered under it in
+ * the client overview.
+ */
+export async function setProjectProgress(
+  projectId: string,
+  projectSlug: string,
+  percent: number | null,
+  note: string | null
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+
+  let cleanPercent: number | null = null;
+  if (percent !== null && percent !== undefined && !Number.isNaN(percent)) {
+    cleanPercent = Math.max(0, Math.min(100, Math.round(percent)));
+  }
+  const cleanNote = (note ?? '').trim() || null;
+
+  const { error } = await supabase
+    .from('projects')
+    .update({ progress_override: cleanPercent, progress_note: cleanNote })
+    .eq('id', projectId);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath(`/projects/${projectSlug}`);
+  revalidatePath(`/client/${projectSlug}`);
+  return { ok: true };
+}
