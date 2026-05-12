@@ -110,8 +110,12 @@ export default async function ProjectPage({ params }: Props) {
 
   // Stats
   const totalPages = pages.length;
-  const progressPercent = totalPages === 0 ? 0
+  const autoProgressPercent = totalPages === 0 ? 0
     : Math.round(pages.reduce((s, p) => s + (PROGRESS_WEIGHTS[p.status] ?? 0), 0) / totalPages);
+  // PM-set override (same value the client sees) wins over the page-weighted auto.
+  const overridePercent = project.progress_override as number | null;
+  const progressPercent = overridePercent ?? autoProgressPercent;
+  const progressNote = ((project.progress_note as string | null) ?? '').trim() || null;
 
   const { count: openCommentsCount } = await supabase
     .from('comment_threads')
@@ -193,6 +197,8 @@ export default async function ProjectPage({ params }: Props) {
                 icon={<TrendingUp className="h-4 w-4" />} label="התקדמות הפרויקט"
                 value={`${progressPercent}%`}
                 progress={progressPercent}
+                hint={progressNote ?? (overridePercent != null ? 'ערך ידני' : null)}
+                accent={progressNote || overridePercent != null ? 'green' : undefined}
               />
               <StatCard
                 icon={<FileText className="h-4 w-4" />} label="עמודים בפרויקט"
