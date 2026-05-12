@@ -23,6 +23,19 @@ export default async function DashboardLayout({ children }: { children: React.Re
     );
   }
 
+  // Clients only see their per-project client workspace — never the
+  // studio dashboard. Bounce them to the first project they belong to.
+  if (profile.role === 'client' && !profile.studio_admin) {
+    const { data: membership } = await supabase
+      .from('project_members')
+      .select('projects(slug)')
+      .eq('user_id', user.id)
+      .limit(1)
+      .maybeSingle<{ projects: { slug: string } | null }>();
+    const projectSlug = membership?.projects?.slug;
+    redirect(projectSlug ? `/client/${projectSlug}` : '/sign-in?error=no-projects');
+  }
+
   return (
     <div className="flex min-h-screen bg-muted">
       <Sidebar user={profile} />

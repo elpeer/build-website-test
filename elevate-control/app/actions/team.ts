@@ -97,6 +97,14 @@ export async function inviteMember(formData: FormData): Promise<Result<{ status:
   }
   const newUserId = created.user.id;
 
+  // The handle_new_user trigger creates the profile with the default
+  // `role='designer'`. If the project role is 'client', flip the global
+  // profile role too so the user shows up under /clients (not /admin/studio-members)
+  // and route guards can keep them out of the studio dashboard.
+  if (role === 'client') {
+    await admin.from('profiles').update({ role: 'client' }).eq('id', newUserId);
+  }
+
   const { error: memberInsertErr } = await admin
     .from('project_members')
     .insert({
