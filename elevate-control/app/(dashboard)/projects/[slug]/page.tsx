@@ -14,6 +14,7 @@ import { GithubActivity } from '@/components/projects/github-activity';
 import { listProjectHtmlFiles } from '@/app/actions/github';
 import { findPagePreview } from '@/lib/preview-links';
 import { StageControl } from '@/components/projects/stage-control';
+import { ProgressOverrideEditor } from '@/components/projects/progress-override-editor';
 import { ClientCommentsFeed } from '@/components/projects/client-comments-feed';
 import { WorkspaceNavigator } from '@/components/projects/workspace-navigator';
 import { FloatingToc, FloatingTocMobile, type TocItem } from '@/components/projects/floating-toc';
@@ -202,11 +203,21 @@ export default async function ProjectPage({ params }: Props) {
           </section>
 
           {/* Stages */}
-          <section id="stages" className="scroll-mt-6">
+          <section id="stages" className="scroll-mt-6 space-y-3">
             <StageControl
               projectId={project.id as string}
               projectSlug={project.slug as string}
               currentStage={(project.current_stage as ProjectStage) ?? 'quote'}
+            />
+            <ProgressOverrideEditor
+              projectId={project.id as string}
+              projectSlug={project.slug as string}
+              initialPercent={(project.progress_override as number | null) ?? null}
+              initialNote={(project.progress_note as string | null) ?? null}
+              fallbackPercent={Math.round(
+                (Math.max(0, ['quote','spec','design','frontend','backend','qa','integrations','launch','live']
+                  .indexOf((project.current_stage as string) ?? 'quote')) / 8) * 100
+              )}
             />
           </section>
 
