@@ -39,19 +39,28 @@ export function StudioMembersAdmin({ currentUserId, profiles, invitations }: Pro
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<UserRole>('designer');
   const [studioAdmin, setStudioAdmin] = useState(false);
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  function generatePassword() {
+    const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const buf = new Uint32Array(12);
+    crypto.getRandomValues(buf);
+    setPassword(Array.from(buf, b => chars[b % chars.length]).join(''));
+  }
+
   function handleInvite(formData: FormData) {
     setError(null); setSuccess(null);
+    if (password && password.length >= 8) formData.set('password', password);
     startTransition(async () => {
       const result = await inviteToStudio(formData);
       if (result.ok) {
-        setEmail(''); setRole('designer'); setStudioAdmin(false);
+        setEmail(''); setRole('designer'); setStudioAdmin(false); setPassword('');
         setSuccess(result.data.status === 'updated'
           ? 'המשתמש כבר קיים — התפקיד עודכן.'
-          : 'נשלחה הזמנה. ההגדרות יחולו בכניסה הראשונה.');
+          : 'המשתמש נוצר — שלחו לו את הסיסמה והוא יוכל להתחבר מיידית.');
         router.refresh();
       } else setError(result.error);
     });
@@ -114,9 +123,21 @@ export function StudioMembersAdmin({ currentUserId, profiles, invitations }: Pro
                  onChange={e => setStudioAdmin(e.target.checked)} className="h-4 w-4" />
           <span>סמן כ-Studio Admin (גישה מלאה למערכת)</span>
         </label>
-        <p className="text-xs text-muted-fg">
-          PMs ו-Studio Admins מצורפים אוטומטית כחברים בכל פרויקט חדש שייפתח.
-        </p>
+        <div className="space-y-1.5">
+          <Label htmlFor="invite_password">סיסמה ראשונית (אופציונלי, 8+ תווים)</Label>
+          <div className="flex items-center gap-2">
+            <Input id="invite_password" value={password} dir="ltr" className="font-mono text-sm"
+                   onChange={e => setPassword(e.target.value)}
+                   placeholder="ריק → תיוצר אוטומטית" />
+            <Button type="button" variant="outline" size="sm" onClick={generatePassword}>
+              הגרל
+            </Button>
+          </div>
+          <p className="text-xs text-muted-fg">
+            אם תשאירו ריק, תיוצר סיסמה אקראית. שלחו אותה לחבר הצוות בנפרד.
+            PMs ו-Studio Admins מצורפים אוטומטית כחברים בכל פרויקט חדש שייפתח.
+          </p>
+        </div>
         {error && (
           <div className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-2 text-xs text-red-700">
             <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" /><span>{error}</span>

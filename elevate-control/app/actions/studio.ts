@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient, createServiceClient } from '@/lib/supabase/server';
+import { sendWelcomeEmail } from '@/lib/notify';
 import type { UserRole } from '@/lib/supabase/database.types';
 
 type Result<T = undefined> =
@@ -61,23 +62,41 @@ export async function inviteToStudio(formData: FormData): Promise<Result<{ statu
     return { ok: true, data: { status: 'updated' } };
   }
 
-  // Not on the platform — store invitation + fire auth invite.
-  const { error: inviteError } = await admin
-    .from('studio_invitations')
-    .upsert({ email, role, studio_admin: studioAdmin, invited_by: auth.userId },
-            { onConflict: 'email' });
-  if (inviteError) return { ok: false, error: inviteError.message };
+  // Not on the platform — provision an auth user with a password so the
+  // member can sign in immediately. Profile + role come from the
+  // on_auth_user_created trigger followed by the role update below.
+  const passwordInput = ((formData.get('password') as string | null) ?? '').trim();
+  const password = passwordInput.length >= 8 ? passwordInput : randomPassword();
 
-  try {
-    await admin.auth.admin.inviteUserByEmail(email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
-    });
-  } catch (e) {
-    console.warn('inviteUserByEmail failed (non-fatal):', (e as Error).message);
+  const { data: created, error: createErr } =
+    await admin.auth.admin.createUser({ email, password, email_confirm: true });
+  if (createErr || !created?.user) {
+    return { ok: false, error: createErr?.message ?? 'יצירת המשתמש נכשלה' };
   }
+
+  await admin
+    .from('profiles')
+    .update({ role, studio_admin: studioAdmin })
+    .eq('id', created.user.id);
+
+  const { data: inviter } = await admin
+    .from('profiles').select('full_name').eq('id', auth.userId).maybeSingle<{ full_name: string | null }>();
+
+  await sendWelcomeEmail({
+    email,
+    inviterName: inviter?.full_name ?? null,
+    isStudioMember: true,
+  });
 
   revalidatePath('/admin/studio-members');
   return { ok: true, data: { status: 'invited' } };
+}
+
+function randomPassword(): string {
+  const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const buf = new Uint32Array(12);
+  crypto.getRandomValues(buf);
+  return Array.from(buf, b => chars[b % chars.length]).join('');
 }
 
 /**

@@ -114,20 +114,21 @@ export async function sendNotification(input: SendInput): Promise<void> {
 
 function wrapEmail(i: SendInput): string {
   const cta = i.ctaHref && i.ctaLabel
-    ? `<p style="margin:24px 0;"><a href="${i.ctaHref}" style="display:inline-block;background:#1f2937;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600;">${escape(i.ctaLabel)}</a></p>`
+    ? `<p style="margin:28px 0 8px;text-align:center;"><a href="${i.ctaHref}" style="display:inline-block;background:#0f172a;color:#fff;padding:14px 32px;border-radius:9999px;text-decoration:none;font-weight:600;font-size:15px;letter-spacing:.02em;">${escape(i.ctaLabel)}</a></p>`
     : '';
 
   return `<!doctype html>
-<html dir="rtl" lang="he"><body style="font-family:system-ui,Heebo,Segoe UI,sans-serif;background:#fafaf7;padding:24px;color:#1f2937;">
-  <div style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;">
-    <p style="margin:0 0 12px;color:#6b7280;font-size:13px;">${escape(i.preview)}</p>
-    <h1 style="margin:0 0 16px;font-size:18px;line-height:1.4;">${escape(i.subject)}</h1>
-    <div style="font-size:14px;line-height:1.6;">${i.bodyHtml}</div>
+<html dir="rtl" lang="he"><body style="margin:0;font-family:'Heebo',system-ui,Segoe UI,sans-serif;background:linear-gradient(180deg,#faf7f2 0%,#f5f1ea 100%);padding:32px 16px;color:#1f2937;">
+  <div style="max-width:600px;margin:0 auto;background:#ffffff;border:1px solid #ece6dc;border-radius:18px;padding:36px 32px;box-shadow:0 8px 24px rgba(15,23,42,0.04);">
+    <div style="margin-bottom:18px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#b45309;font-weight:600;">Elevate Control</div>
+    <p style="margin:0 0 8px;color:#9ca3af;font-size:12px;">${escape(i.preview)}</p>
+    <h1 style="margin:0 0 18px;font-size:22px;line-height:1.4;font-weight:700;color:#0f172a;">${escape(i.subject)}</h1>
+    <div style="font-size:15px;line-height:1.7;color:#334155;">${i.bodyHtml}</div>
     ${cta}
-    <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;">
-    <p style="margin:0;color:#9ca3af;font-size:12px;">
-      ${i.fromActor ? `נשלח על ידי ${escape(i.fromActor)} · ` : ''}
-      Elevate Control
+    <hr style="border:none;border-top:1px solid #ece6dc;margin:28px 0 16px;">
+    <p style="margin:0;color:#9ca3af;font-size:12px;text-align:center;">
+      ${i.fromActor ? `נשלח על ידי <strong style="color:#475569;">${escape(i.fromActor)}</strong> · ` : ''}
+      Elevate Digital Studio
     </p>
   </div>
 </body></html>`;
@@ -267,4 +268,61 @@ export async function notifyNewTicket(input: {
       <blockquote style="margin:8px 0;padding:12px;background:#fef2f2;border-inline-start:3px solid #ef4444;border-radius:0 6px 6px 0;white-space:pre-wrap;">${escape(input.body.slice(0, 400))}${input.body.length > 400 ? '…' : ''}</blockquote>
     `,
   });
+}
+
+// ─── Welcome email for newly-invited users ────────────────────────────────
+
+/**
+ * Send a friendly Hebrew welcome email to someone the admin just added to
+ * the platform. Email is informational — the user's account is already
+ * usable (email_confirm=true + password set), so the link points to the
+ * sign-in page, not a magic-link activation.
+ */
+export async function sendWelcomeEmail(input: {
+  email: string;
+  fullName?: string | null;
+  inviterName?: string | null;
+  projectName?: string | null;
+  isStudioMember?: boolean;
+}): Promise<void> {
+  const client = getClient();
+  if (!client) return;
+
+  const signInUrl = `${appUrl()}/sign-in`;
+  const greetingName = input.fullName?.trim() || input.email.split('@')[0];
+  const audience = input.isStudioMember ? 'צוות הסטודיו' : 'הפרויקט';
+  const projectLine = input.projectName
+    ? `<p>נוספת כחבר/ה בפרויקט <strong>${escape(input.projectName)}</strong>.</p>`
+    : `<p>נוספת כחבר/ה ב${audience} שלנו.</p>`;
+
+  const inviterLine = input.inviterName
+    ? `<p style="color:#64748b;font-size:14px;">המזמין/ה: ${escape(input.inviterName)}</p>`
+    : '';
+
+  const bodyHtml = `
+    <p>שלום ${escape(greetingName)} 👋</p>
+    <p>ברוכים הבאים ל-<strong>Elevate Control</strong> — מערכת ניהול הפרויקטים של Elevate Digital Studio.</p>
+    ${projectLine}
+    <p>פרטי ההתחברות שלך נשלחים אליך בנפרד. לחיצה על הכפתור תיקח אותך לעמוד הכניסה.</p>
+    ${inviterLine}
+  `;
+
+  try {
+    await client.emails.send({
+      from:    from(),
+      to:      [input.email],
+      subject: 'ברוכים הבאים ל-Elevate Control',
+      html:    wrapEmail({
+        to:        [],
+        subject:   'ברוכים הבאים ל-Elevate Control',
+        preview:   'הוזמנת למערכת — לחצו לכניסה',
+        bodyHtml,
+        ctaLabel:  'כניסה למערכת',
+        ctaHref:   signInUrl,
+        fromActor: input.inviterName ?? undefined,
+      }),
+    });
+  } catch (e) {
+    console.warn('[notify] welcome send failed:', (e as Error).message);
+  }
 }

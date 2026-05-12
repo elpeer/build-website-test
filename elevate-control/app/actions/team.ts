@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient, createServiceClient } from '@/lib/supabase/server';
+import { sendWelcomeEmail } from '@/lib/notify';
 import type { MemberRole } from '@/lib/supabase/database.types';
 
 type Result<T = undefined> =
@@ -81,40 +82,67 @@ export async function inviteMember(formData: FormData): Promise<Result<{ status:
     return { ok: true, data: { status: 'attached' } };
   }
 
-  // Not yet on the platform — record a pending invitation
-  const { error: inviteError } = await supabase
-    .from('project_invitations')
-    .upsert({
+  // Not yet on the platform — provision an auth user with the admin-
+  // supplied password (or an auto-generated one) so they can sign in
+  // immediately. The email confirmation flag is true so no verification
+  // step is required. The on_auth_user_created trigger creates the
+  // public.profiles row synchronously.
+  const passwordInput = ((formData.get('password') as string | null) ?? '').trim();
+  const password = passwordInput.length >= 8 ? passwordInput : randomPassword();
+
+  const { data: created, error: createErr } =
+    await admin.auth.admin.createUser({ email, password, email_confirm: true });
+  if (createErr || !created?.user) {
+    return { ok: false, error: createErr?.message ?? 'יצירת המשתמש נכשלה' };
+  }
+  const newUserId = created.user.id;
+
+  const { error: memberInsertErr } = await admin
+    .from('project_members')
+    .insert({
       project_id: projectId,
-      email,
+      user_id:    newUserId,
       role,
-      invited_by: user.id,
-    }, { onConflict: 'project_id,email' });
+      added_by:   user.id,
+    });
+  if (memberInsertErr && memberInsertErr.code !== '23505') {
+    return { ok: false, error: memberInsertErr.message };
+  }
 
-  if (inviteError) return { ok: false, error: inviteError.message };
+  // Resolve inviter name + project name for the welcome email.
+  const [{ data: meProfile }, { data: projectRow }] = await Promise.all([
+    admin.from('profiles').select('full_name').eq('id', user.id).maybeSingle<{ full_name: string | null }>(),
+    admin.from('projects').select('name').eq('id', projectId).maybeSingle<{ name: string }>(),
+  ]);
 
-  await supabase.from('activity_log').insert({
+  await admin.from('activity_log').insert({
     project_id:  projectId,
     actor_id:    user.id,
     kind:        'member_invited',
-    entity_type: 'project_invitation',
+    entity_type: 'project_member',
     entity_id:   null,
-    summary:     `נשלחה הזמנה: ${email} (${role})`,
+    summary:     `נוסף לפרויקט: ${email} (${role})`,
   });
 
-  // Optionally trigger an actual auth invite email (service-role only).
-  // This will create an auth user and send a magic-link email. Safe to call —
-  // if the user already exists in auth.users, it errors quietly and we move on.
-  try {
-    await admin.auth.admin.inviteUserByEmail(email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
-    });
-  } catch (e) {
-    console.warn('inviteUserByEmail failed (non-fatal):', (e as Error).message);
-  }
+  // Welcome email — informational only; the user can already sign in.
+  await sendWelcomeEmail({
+    email,
+    inviterName: meProfile?.full_name ?? null,
+    projectName: projectRow?.name ?? null,
+    isStudioMember: false,
+  });
 
   if (projectSlug) revalidatePath(`/projects/${projectSlug}/team`);
-  return { ok: true, data: { status: 'invited' } };
+  return { ok: true, data: { status: 'attached' } };
+}
+
+/** 12-char random password used when the admin didn't pick one. The
+ *  admin can reset it later via SetPasswordButton. */
+function randomPassword(): string {
+  const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const buf = new Uint32Array(12);
+  crypto.getRandomValues(buf);
+  return Array.from(buf, b => chars[b % chars.length]).join('');
 }
 
 export async function updateMemberRole(

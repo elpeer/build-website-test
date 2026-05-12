@@ -52,15 +52,19 @@ export function InviteClientForm({ projects }: Props) {
     formData.set('project_id', projectId);
     formData.set('project_slug', projects.find(p => p.id === projectId)?.slug ?? '');
     formData.set('role', 'client');
+    if (setPwdNow && password.length >= 8) {
+      formData.set('password', password);
+    }
 
     startTransition(async () => {
       const result = await inviteMember(formData);
       if (!result.ok) { setError(result.error); return; }
 
-      // If we want to set a password and the user already has a profile
-      // (`status === 'attached'`), look it up and call setUserPassword.
+      // If the email matched an existing platform user we still want to
+      // honor the password the admin typed — inviteMember only sets the
+      // password on the new-user path.
       let pwdMessage = '';
-      if (setPwdNow && password.length >= 8 && result.data.status === 'attached') {
+      if (setPwdNow && password.length >= 8) {
         const supabase = createClient();
         const { data: profile } = await supabase
           .from('profiles').select('id').ilike('email', email.trim()).maybeSingle<{ id: string }>();
@@ -70,15 +74,11 @@ export function InviteClientForm({ projects }: Props) {
             setError(`הוזמן בהצלחה אבל הגדרת הסיסמה נכשלה: ${r2.error}`);
             return;
           }
-          pwdMessage = ' סיסמה נשמרה — שלחו ללקוח את המייל והסיסמה.';
+          pwdMessage = ' הסיסמה הוגדרה — שלחו ללקוח את המייל והסיסמה והוא יוכל להתחבר מיידית.';
         }
-      } else if (setPwdNow && password.length >= 8) {
-        pwdMessage = ' (סיסמה תיקבע אחרי שהלקוח יקבל את ההזמנה ויתחבר פעם ראשונה — אפשר גם לקבוע מהשורה שלו).';
       }
 
-      setSuccess((result.data.status === 'attached'
-        ? 'הלקוח נוסף לפרויקט מיידית.'
-        : 'נשלחה הזמנה. הלקוח יצורף עם ההתחברות הראשונה שלו.') + pwdMessage);
+      setSuccess('הלקוח נוסף לפרויקט.' + pwdMessage);
       setEmail('');
       setPassword('');
       router.refresh();
