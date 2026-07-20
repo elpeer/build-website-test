@@ -9,6 +9,7 @@ import { DesignUploader } from '@/components/designs/design-uploader';
 import { PageStructureSuggester } from '@/components/pages/page-structure-suggester';
 import { DeletePageButton } from '@/components/pages/delete-page-button';
 import { PageDevSettings } from '@/components/projects/page-dev-settings';
+import { PageTypePicker } from '@/components/projects/page-type-picker';
 import type { DesignViewport, PageStatus, PageType, SectionStatus } from '@/lib/supabase/database.types';
 
 interface Props {
@@ -185,6 +186,12 @@ export default async function PageDetailPage({ params }: Props) {
           childrenCount={childrenCount ?? 0}
         />
       </header>
+
+      <PageTypePicker
+        pageId={page.id}
+        projectSlug={project.slug}
+        initialType={page.type}
+      />
 
       <PageDevSettings
         pageId={page.id}

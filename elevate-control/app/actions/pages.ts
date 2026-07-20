@@ -128,6 +128,39 @@ export async function deletePage(
   return { ok: true };
 }
 
+/**
+ * Change a page's type after creation (e.g. a page mistakenly created
+ * as 'page' that should be an 'archive'). When switching to a non-CPT
+ * type we clear cpt_id; the linkage for archive/single is derived from
+ * the page-tree hierarchy so no CPT pick is required here.
+ */
+export async function setPageType(
+  pageId: string,
+  projectSlug: string,
+  newType: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+
+  if (!ALLOWED_TYPES.includes(newType as PageType)) {
+    return { ok: false, error: 'סוג עמוד לא חוקי' };
+  }
+  const type = newType as PageType;
+  const patch: { type: PageType; cpt_id?: null } = { type };
+  // Non-CPT types shouldn't keep a dangling cpt_id.
+  if (type !== 'archive' && type !== 'single') patch.cpt_id = null;
+
+  const { error } = await supabase
+    .from('pages')
+    .update(patch)
+    .eq('id', pageId);
+  if (error) return { ok: false, error: error.message };
+
+  revalidatePath(`/projects/${projectSlug}`);
+  return { ok: true };
+}
+
 type UpdatePageStatusResult = { ok: boolean; error?: string };
 
 /**
