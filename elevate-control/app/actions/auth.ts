@@ -87,7 +87,14 @@ export async function setUserPassword(
   }
 
   const admin = createServiceClient();
-  const { error } = await admin.auth.admin.updateUserById(userId, { password: newPassword });
+  // Also confirm the email: a studio admin setting a password means the
+  // account is meant to be usable immediately. Without this, users created
+  // via the legacy invite flow (unconfirmed email) get "invalid
+  // email/password" on sign-in even though the password is correct.
+  const { error } = await admin.auth.admin.updateUserById(userId, {
+    password: newPassword,
+    email_confirm: true,
+  });
   if (error) return { ok: false, error: error.message };
   return { ok: true };
 }
