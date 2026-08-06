@@ -243,6 +243,8 @@ export async function postMessage(input: {
   threadId: string; projectSlug: string;
   body: string;
   attachments?: { url: string; name: string; mime: string; size_bytes: number }[];
+  // Optional: reply to a specific earlier message in the thread.
+  replyTo?: { id: string; author: string | null; snippet: string } | null;
   // Optional: create the thread on demand (used by client UI clicking "comment" on an approval)
   ensure?: {
     projectId: string;
@@ -272,15 +274,23 @@ export async function postMessage(input: {
     .from('profiles').select('full_name, email').eq('id', user.id).single<{ full_name: string | null; email: string }>();
   const label = profile?.full_name ?? profile?.email ?? null;
 
+  const insertRow: Record<string, unknown> = {
+    thread_id:    threadId,
+    author_id:    user.id,
+    author_label: label,
+    body:         input.body,
+    attachments:  (input.attachments ?? []) as unknown as Json,
+  };
+  // Only attach reply fields when actually replying — keeps normal
+  // comments working even before migration 0026 adds these columns.
+  if (input.replyTo?.id) {
+    insertRow.reply_to_id     = input.replyTo.id;
+    insertRow.reply_to_author = input.replyTo.author;
+    insertRow.reply_to_snippet = input.replyTo.snippet.slice(0, 140);
+  }
   const { data, error } = await supabase
     .from('comment_messages')
-    .insert({
-      thread_id:    threadId,
-      author_id:    user.id,
-      author_label: label,
-      body:         input.body,
-      attachments:  (input.attachments ?? []) as unknown as Json,
-    })
+    .insert(insertRow)
     .select('id').single<{ id: string }>();
   if (error || !data) return { ok: false, error: error?.message ?? 'נכשל' };
 

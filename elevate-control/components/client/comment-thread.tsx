@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { AnnotationCanvas } from '@/components/client/annotation-canvas';
 import {
   MessageCircle, Send, Paperclip, X, AlertCircle, CheckCircle2,
-  Hourglass, ImageIcon, FileText, Pencil,
+  Hourglass, ImageIcon, FileText, Pencil, CornerDownLeft,
 } from 'lucide-react';
 
 export interface CommentMessage {
@@ -19,6 +19,9 @@ export interface CommentMessage {
   body: string;
   attachments: Array<{ url: string; name: string; mime: string; size_bytes: number }>;
   created_at: string;
+  reply_to_id?: string | null;
+  reply_to_author?: string | null;
+  reply_to_snippet?: string | null;
 }
 
 type ThreadStatus = 'open' | 'in_progress' | 'resolved' | 'wont_fix';
@@ -65,12 +68,14 @@ export function CommentThread({
   const router = useRouter();
   const [messages, setMessages] = useState(initialMessages);
   const [body, setBody] = useState('');
+  const [replyingTo, setReplyingTo] = useState<{ id: string; author: string | null; snippet: string } | null>(null);
   const [attachments, setAttachments] = useState<{ file: File; previewUrl: string }[]>([]);
   const [annotating, setAnnotating] = useState<{ url: string; name: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [, startSending] = useTransition();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const composerRef = useRef<HTMLTextAreaElement>(null);
 
   // Live updates via Supabase Realtime
   useEffect(() => {
@@ -153,11 +158,13 @@ export function CommentThread({
           projectSlug,
           body,
           attachments: uploaded,
+          replyTo: replyingTo,
           ensure: !thread.id ? ensure : undefined,
         });
         if (!result.ok) { setError(result.error); return; }
 
         setBody('');
+        setReplyingTo(null);
         attachments.forEach(a => a.previewUrl && URL.revokeObjectURL(a.previewUrl));
         setAttachments([]);
         if (fileInputRef.current) fileInputRef.current.value = '';
@@ -205,8 +212,30 @@ export function CommentThread({
               }`}>
                 <div className="mb-1 flex items-center justify-between gap-2">
                   <span className="text-xs font-semibold">{m.author_label ?? 'משתמש'}</span>
-                  <span className="text-xs text-muted-fg">{date}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-fg">{date}</span>
+                    <button type="button"
+                            onClick={() => {
+                              setReplyingTo({
+                                id: m.id,
+                                author: m.author_label,
+                                snippet: (m.body || '(קובץ מצורף)').slice(0, 140),
+                              });
+                              composerRef.current?.focus();
+                            }}
+                            className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] text-muted-fg hover:bg-brand/10 hover:text-brand"
+                            title="השב על ההודעה הזו">
+                      <CornerDownLeft className="h-3 w-3" />
+                      השב
+                    </button>
+                  </div>
                 </div>
+                {m.reply_to_snippet && (
+                  <div className="mb-1.5 rounded-md border-s-2 border-brand/40 bg-background/60 px-2 py-1 text-xs text-muted-fg">
+                    <span className="font-semibold">{m.reply_to_author ?? 'משתמש'}: </span>
+                    <span className="italic">{m.reply_to_snippet}</span>
+                  </div>
+                )}
                 {m.body && <p className="whitespace-pre-wrap">{m.body}</p>}
                 {m.attachments?.length > 0 && (
                   <div className="mt-2 grid gap-2 sm:grid-cols-2">
@@ -243,10 +272,25 @@ export function CommentThread({
       )}
 
       <div className="space-y-2 border-t border-border pt-3">
-        <Textarea value={body} onChange={e => setBody(e.target.value)}
+        {replyingTo && (
+          <div className="flex items-start gap-2 rounded-md border-s-2 border-brand/50 bg-brand/5 px-2 py-1.5 text-xs">
+            <div className="min-w-0 flex-1">
+              <span className="font-semibold text-brand">משיב ל־{replyingTo.author ?? 'משתמש'}: </span>
+              <span className="text-muted-fg italic">{replyingTo.snippet}</span>
+            </div>
+            <button type="button" onClick={() => setReplyingTo(null)}
+                    className="shrink-0 rounded p-0.5 text-muted-fg hover:bg-muted hover:text-red-600"
+                    aria-label="בטל תגובה">
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        )}
+        <Textarea ref={composerRef} value={body} onChange={e => setBody(e.target.value)}
                   onPaste={handlePaste}
                   rows={2}
-                  placeholder={composerPlaceholder ?? (isStudio ? 'תגובה ללקוח...' : 'כתבו הערה (אפשר להדביק צילום מסך)...')}
+                  placeholder={replyingTo
+                    ? `תגובה ל־${replyingTo.author ?? 'משתמש'}...`
+                    : (composerPlaceholder ?? (isStudio ? 'תגובה ללקוח...' : 'כתבו הערה (אפשר להדביק צילום מסך)...'))}
                   className="resize-none" />
 
         {attachments.length > 0 && (
