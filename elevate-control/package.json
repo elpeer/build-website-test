@@ -23,16 +23,16 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@supabase/ssr": "^0.5.0",
     "@supabase/supabase-js": "^2.45.0",
-    "@tiptap/extension-bubble-menu": "3.22.5",
-    "@tiptap/extension-highlight": "3.22.5",
-    "@tiptap/extension-image": "3.22.5",
-    "@tiptap/extension-link": "3.22.5",
-    "@tiptap/extension-placeholder": "3.22.5",
-    "@tiptap/extension-text-align": "3.22.5",
-    "@tiptap/extension-underline": "3.22.5",
-    "@tiptap/react": "3.22.5",
-    "@tiptap/starter-kit": "3.22.5",
-    "@tiptap/suggestion": "3.22.5",
+    "@tiptap/extension-bubble-menu": "3.29.2",
+    "@tiptap/extension-highlight": "3.29.2",
+    "@tiptap/extension-image": "3.29.2",
+    "@tiptap/extension-link": "3.29.2",
+    "@tiptap/extension-placeholder": "3.29.2",
+    "@tiptap/extension-text-align": "3.29.2",
+    "@tiptap/extension-underline": "3.29.2",
+    "@tiptap/react": "3.29.2",
+    "@tiptap/starter-kit": "3.29.2",
+    "@tiptap/suggestion": "3.29.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.460.0",
@@ -60,5 +60,9 @@
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "overrides": {
+    "@tiptap/core": "3.29.2",
+    "@tiptap/pm": "3.29.2"
   }
 }
