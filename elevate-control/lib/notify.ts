@@ -201,7 +201,7 @@ export async function notifyApprovalStatus(input: {
   if (recipients.length === 0) return;
 
   const STATUS_LABELS: Record<string, string> = {
-    pending:           'ממתין',
+    pending:           'ממתין לפידבק לקוח',
     approved:          'אושר ✓',
     changes_requested: 'בקשה לתיקון',
     rejected:          'נדחה',
