@@ -326,6 +326,29 @@ export async function postMessage(input: {
   return { ok: true, data: { threadId, messageId: data.id } };
 }
 
+/** Mark a single comment message as handled/clear (✓), or clear the
+ *  mark. Shared state — both sides see it. */
+export async function setMessageAcknowledged(
+  messageId: string,
+  projectSlug: string,
+  done: boolean
+): Promise<Result> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+  const { error } = await supabase
+    .from('comment_messages')
+    .update({
+      acknowledged_at: done ? new Date().toISOString() : null,
+      acknowledged_by: done ? user.id : null,
+    })
+    .eq('id', messageId);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath(`/client/${projectSlug}`);
+  revalidatePath(`/projects/${projectSlug}`);
+  return { ok: true };
+}
+
 export async function setThreadPriority(
   threadId: string,
   projectSlug: string,

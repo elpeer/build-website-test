@@ -109,7 +109,7 @@ async function fetchWorkspaceData(projectId: string, workspaceSlug: string) {
   const { data: messagesData } = allThreadIds.length
     ? await supabase
         .from('comment_messages')
-        .select('id, thread_id, author_id, author_label, body, attachments, created_at')
+        .select('id, thread_id, author_id, author_label, body, attachments, created_at, reply_to_id, reply_to_author, reply_to_snippet, acknowledged_at')
         .in('thread_id', allThreadIds)
         .order('created_at', { ascending: true })
     : { data: [] as (CommentMessage & { thread_id: string })[] };

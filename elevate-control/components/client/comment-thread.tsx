@@ -2,14 +2,14 @@
 
 import { useState, useTransition, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { postMessage, setThreadStatus } from '@/app/actions/client-workspace';
+import { postMessage, setThreadStatus, setMessageAcknowledged } from '@/app/actions/client-workspace';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { AnnotationCanvas } from '@/components/client/annotation-canvas';
 import {
   MessageCircle, Send, Paperclip, X, AlertCircle, CheckCircle2,
-  Hourglass, ImageIcon, FileText, Pencil, CornerDownLeft,
+  Hourglass, ImageIcon, FileText, Pencil, CornerDownLeft, Check,
 } from 'lucide-react';
 
 export interface CommentMessage {
@@ -22,6 +22,7 @@ export interface CommentMessage {
   reply_to_id?: string | null;
   reply_to_author?: string | null;
   reply_to_snippet?: string | null;
+  acknowledged_at?: string | null;
 }
 
 type ThreadStatus = 'open' | 'in_progress' | 'resolved' | 'wont_fix';
@@ -183,6 +184,23 @@ export function CommentThread({
     });
   }
 
+  function toggleAck(messageId: string, current: boolean) {
+    // optimistic
+    setMessages(prev => prev.map(m =>
+      m.id === messageId ? { ...m, acknowledged_at: current ? null : new Date().toISOString() } : m
+    ));
+    startSending(async () => {
+      await setMessageAcknowledged(messageId, projectSlug, !current);
+      router.refresh();
+    });
+  }
+
+  // How many messages reply to each message id (for the "N תגובות" badge).
+  const replyCounts = new Map<string, number>();
+  for (const m of messages) {
+    if (m.reply_to_id) replyCounts.set(m.reply_to_id, (replyCounts.get(m.reply_to_id) ?? 0) + 1);
+  }
+
   return (
     <div className={`space-y-3 rounded-md border border-border bg-background ${compact ? 'p-3' : 'p-4'}`}>
       <div className="flex items-center justify-between gap-2">
@@ -205,15 +223,47 @@ export function CommentThread({
         <ul className="space-y-2">
           {messages.map(m => {
             const mine = m.author_id === currentUserId;
+            const acknowledged = !!m.acknowledged_at;
+            const replyCount = replyCounts.get(m.id) ?? 0;
+            // "New": a message from the other side that hasn't been marked
+            // handled yet — highlighted amber to draw the eye.
+            const isNew = !mine && !acknowledged;
             const date = new Date(m.created_at).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' });
             return (
               <li key={m.id} className={`rounded-lg border p-3 text-sm ${
-                mine ? 'border-brand/30 bg-brand/5' : 'border-border bg-muted/30'
+                isNew
+                  ? 'border-amber-300 bg-amber-50'
+                  : mine ? 'border-brand/30 bg-brand/5' : 'border-border bg-muted/30'
               }`}>
                 <div className="mb-1 flex items-center justify-between gap-2">
-                  <span className="text-xs font-semibold">{m.author_label ?? 'משתמש'}</span>
-                  <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-1.5 text-xs font-semibold">
+                    {m.author_label ?? 'משתמש'}
+                    {isNew && (
+                      <span className="rounded-full bg-amber-200 px-1.5 py-0.5 text-[10px] font-medium text-amber-900">
+                        חדש
+                      </span>
+                    )}
+                    {replyCount > 0 && (
+                      <span className="inline-flex items-center gap-0.5 rounded-full bg-brand/10 px-1.5 py-0.5 text-[10px] font-medium text-brand"
+                            title={`${replyCount} תגובות להודעה זו`}>
+                        <MessageCircle className="h-2.5 w-2.5" />
+                        {replyCount}
+                      </span>
+                    )}
+                  </span>
+                  <div className="flex items-center gap-1.5">
                     <span className="text-xs text-muted-fg">{date}</span>
+                    <button type="button"
+                            onClick={() => toggleAck(m.id, acknowledged)}
+                            className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] transition-colors ${
+                              acknowledged
+                                ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                                : 'text-muted-fg hover:bg-green-50 hover:text-green-700'
+                            }`}
+                            title={acknowledged ? 'בוטל הסימון' : 'סמן שטופל / ברור'}>
+                      <Check className="h-3 w-3" />
+                      {acknowledged ? 'טופל' : 'סמן'}
+                    </button>
                     <button type="button"
                             onClick={() => {
                               setReplyingTo({
