@@ -94,6 +94,20 @@ export function CommentThread({
     return () => { supabase.removeChannel(channel); };
   }, [thread.id]);
 
+  // Reconcile with server truth on router.refresh() — useState doesn't
+  // re-init from props, so without this a newly-posted message only
+  // showed after a full page reload. Union by id; server rows win.
+  useEffect(() => {
+    setMessages(prev => {
+      const byId = new Map<string, CommentMessage>();
+      for (const m of prev) byId.set(m.id, m);
+      for (const m of initialMessages) byId.set(m.id, { ...byId.get(m.id), ...m });
+      return Array.from(byId.values()).sort(
+        (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
+    });
+  }, [initialMessages]);
+
   function pickFiles(files: FileList | File[] | null) {
     if (!files) return;
     const arr = Array.from(files);
@@ -153,22 +167,48 @@ export function CommentThread({
         });
       }
 
+      // Optimistic append — show the message instantly instead of
+      // waiting on the server action (which also sends an email).
+      const tempId = `temp-${crypto.randomUUID()}`;
+      const myLabel = messages.find(m => m.author_id === currentUserId)?.author_label ?? 'אני';
+      const replyToSend = replyingTo;
+      const sentBody = body;
+      const optimistic: CommentMessage = {
+        id: tempId,
+        author_id: currentUserId,
+        author_label: myLabel,
+        body: sentBody,
+        attachments: uploaded,
+        created_at: new Date().toISOString(),
+        reply_to_id: replyToSend?.id ?? null,
+        reply_to_author: replyToSend?.author ?? null,
+        reply_to_snippet: replyToSend?.snippet ?? null,
+        acknowledged_at: null,
+      };
+      setMessages(prev => [...prev, optimistic]);
+      setBody('');
+      setReplyingTo(null);
+      const sentAttachments = attachments;
+      setAttachments([]);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+
       startSending(async () => {
         const result = await postMessage({
           threadId: thread.id ?? '',
           projectSlug,
-          body,
+          body: sentBody,
           attachments: uploaded,
-          replyTo: replyingTo,
+          replyTo: replyToSend,
           ensure: !thread.id ? ensure : undefined,
         });
-        if (!result.ok) { setError(result.error); return; }
-
-        setBody('');
-        setReplyingTo(null);
-        attachments.forEach(a => a.previewUrl && URL.revokeObjectURL(a.previewUrl));
-        setAttachments([]);
-        if (fileInputRef.current) fileInputRef.current.value = '';
+        if (!result.ok) {
+          setError(result.error);
+          setMessages(prev => prev.filter(m => m.id !== tempId)); // roll back
+          return;
+        }
+        // Swap the temp id for the real one so a later refresh dedupes.
+        setMessages(prev => prev.map(m => m.id === tempId ? { ...m, id: result.data.messageId } : m));
+        sentAttachments.forEach(a => a.previewUrl && URL.revokeObjectURL(a.previewUrl));
         router.refresh();
       });
     } finally {
@@ -230,7 +270,8 @@ export function CommentThread({
             const isNew = !mine && !acknowledged;
             const date = new Date(m.created_at).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' });
             return (
-              <li key={m.id} className={`rounded-lg border p-3 text-sm ${
+              <li key={m.id} id={`msg-${m.id}`}
+                  className={`scroll-mt-4 rounded-lg border p-3 text-sm transition-colors ${
                 isNew
                   ? 'border-amber-300 bg-amber-50'
                   : mine ? 'border-brand/30 bg-brand/5' : 'border-border bg-muted/30'
@@ -281,10 +322,23 @@ export function CommentThread({
                   </div>
                 </div>
                 {m.reply_to_snippet && (
-                  <div className="mb-1.5 rounded-md border-s-2 border-brand/40 bg-background/60 px-2 py-1 text-xs text-muted-fg">
-                    <span className="font-semibold">{m.reply_to_author ?? 'משתמש'}: </span>
-                    <span className="italic">{m.reply_to_snippet}</span>
-                  </div>
+                  <button type="button"
+                          onClick={() => {
+                            if (!m.reply_to_id) return;
+                            const el = document.getElementById(`msg-${m.reply_to_id}`);
+                            if (!el) return;
+                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            el.classList.add('ring-2', 'ring-brand');
+                            setTimeout(() => el.classList.remove('ring-2', 'ring-brand'), 1400);
+                          }}
+                          className="mb-1.5 flex w-full items-start gap-1 rounded-md border-s-2 border-brand/40 bg-background/60 px-2 py-1 text-start text-xs text-muted-fg hover:bg-brand/5"
+                          title="עבור להודעה המקורית">
+                    <CornerDownLeft className="mt-0.5 h-3 w-3 shrink-0 text-brand" />
+                    <span className="min-w-0">
+                      <span className="font-semibold">בתגובה ל־{m.reply_to_author ?? 'משתמש'}: </span>
+                      <span className="italic">{m.reply_to_snippet}</span>
+                    </span>
+                  </button>
                 )}
                 {m.body && <p className="whitespace-pre-wrap">{m.body}</p>}
                 {m.attachments?.length > 0 && (
