@@ -2,7 +2,9 @@
 
 import { useState, useTransition, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { postMessage, setThreadStatus, setMessageAcknowledged } from '@/app/actions/client-workspace';
+import {
+  postMessage, setThreadStatus, setMessageAcknowledged, editMessage, deleteMessage,
+} from '@/app/actions/client-workspace';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,6 +12,7 @@ import { AnnotationCanvas } from '@/components/client/annotation-canvas';
 import {
   MessageCircle, Send, Paperclip, X, AlertCircle, CheckCircle2,
   Hourglass, ImageIcon, FileText, Pencil, CornerDownLeft, Check,
+  Edit2, Trash2, Save,
 } from 'lucide-react';
 
 export interface CommentMessage {
@@ -70,6 +73,8 @@ export function CommentThread({
   const [messages, setMessages] = useState(initialMessages);
   const [body, setBody] = useState('');
   const [replyingTo, setReplyingTo] = useState<{ id: string; author: string | null; snippet: string } | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editBody, setEditBody] = useState('');
   const [attachments, setAttachments] = useState<{ file: File; previewUrl: string }[]>([]);
   const [annotating, setAnnotating] = useState<{ url: string; name: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -224,6 +229,31 @@ export function CommentThread({
     });
   }
 
+  function startEdit(id: string, currentBody: string) {
+    setEditingId(id);
+    setEditBody(currentBody);
+  }
+  function saveEdit(id: string) {
+    const next = editBody.trim();
+    if (!next) return;
+    setMessages(prev => prev.map(m => m.id === id ? { ...m, body: next } : m)); // optimistic
+    setEditingId(null);
+    startSending(async () => {
+      const r = await editMessage(id, projectSlug, next);
+      if (!r.ok) { setError(r.error); }
+      router.refresh();
+    });
+  }
+  function handleDelete(id: string) {
+    if (!confirm('למחוק את התגובה?')) return;
+    setMessages(prev => prev.filter(m => m.id !== id)); // optimistic
+    startSending(async () => {
+      const r = await deleteMessage(id, projectSlug);
+      if (!r.ok) { setError(r.error); router.refresh(); }
+      else router.refresh();
+    });
+  }
+
   function toggleAck(messageId: string, current: boolean) {
     // optimistic
     setMessages(prev => prev.map(m =>
@@ -319,6 +349,20 @@ export function CommentThread({
                       <CornerDownLeft className="h-3 w-3" />
                       השב
                     </button>
+                    {mine && editingId !== m.id && (
+                      <>
+                        <button type="button" onClick={() => startEdit(m.id, m.body)}
+                                className="inline-flex items-center rounded p-1 text-[11px] text-muted-fg hover:bg-brand/10 hover:text-brand"
+                                title="ערוך">
+                          <Edit2 className="h-3 w-3" />
+                        </button>
+                        <button type="button" onClick={() => handleDelete(m.id)}
+                                className="inline-flex items-center rounded p-1 text-[11px] text-muted-fg hover:bg-red-50 hover:text-red-600"
+                                title="מחק">
+                          <Trash2 className="h-3 w-3" />
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
                 {m.reply_to_snippet && (
@@ -340,7 +384,26 @@ export function CommentThread({
                     </span>
                   </button>
                 )}
-                {m.body && <p className="whitespace-pre-wrap">{m.body}</p>}
+                {editingId === m.id ? (
+                  <div className="space-y-2">
+                    <Textarea value={editBody} onChange={e => setEditBody(e.target.value)}
+                              rows={2} className="resize-none text-sm" />
+                    <div className="flex items-center gap-2">
+                      <Button type="button" variant="accent" size="sm"
+                              onClick={() => saveEdit(m.id)} disabled={!editBody.trim()}>
+                        <Save className="ms-1 h-3.5 w-3.5" />
+                        שמור
+                      </Button>
+                      <Button type="button" variant="ghost" size="sm"
+                              onClick={() => { setEditingId(null); setEditBody(''); }}>
+                        <X className="ms-1 h-3.5 w-3.5" />
+                        ביטול
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  m.body && <p className="whitespace-pre-wrap">{m.body}</p>
+                )}
                 {m.attachments?.length > 0 && (
                   <div className="mt-2 grid gap-2 sm:grid-cols-2">
                     {m.attachments.map((a, i) => (

@@ -330,6 +330,62 @@ export async function postMessage(input: {
   return { ok: true, data: { threadId, messageId: data.id } };
 }
 
+/** Author (or studio admin) edits the body of their own message. */
+export async function editMessage(
+  messageId: string,
+  projectSlug: string,
+  newBody: string
+): Promise<Result> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+  if (!newBody.trim()) return { ok: false, error: 'הודעה ריקה' };
+
+  const { data: msg } = await supabase
+    .from('comment_messages').select('author_id').eq('id', messageId)
+    .single<{ author_id: string | null }>();
+  if (!msg) return { ok: false, error: 'ההודעה לא נמצאה' };
+  const { data: me } = await supabase
+    .from('profiles').select('studio_admin').eq('id', user.id).single<{ studio_admin: boolean }>();
+  if (msg.author_id !== user.id && !me?.studio_admin) {
+    return { ok: false, error: 'אפשר לערוך רק תגובה שלך' };
+  }
+
+  const { error } = await supabase
+    .from('comment_messages').update({ body: newBody.trim() }).eq('id', messageId);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath(`/client/${projectSlug}`);
+  revalidatePath(`/projects/${projectSlug}`);
+  return { ok: true };
+}
+
+/** Author (or studio admin) deletes their own message. */
+export async function deleteMessage(
+  messageId: string,
+  projectSlug: string
+): Promise<Result> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: 'אינך מחובר' };
+
+  const { data: msg } = await supabase
+    .from('comment_messages').select('author_id').eq('id', messageId)
+    .single<{ author_id: string | null }>();
+  if (!msg) return { ok: false, error: 'ההודעה לא נמצאה' };
+  const { data: me } = await supabase
+    .from('profiles').select('studio_admin').eq('id', user.id).single<{ studio_admin: boolean }>();
+  if (msg.author_id !== user.id && !me?.studio_admin) {
+    return { ok: false, error: 'אפשר למחוק רק תגובה שלך' };
+  }
+
+  const { error } = await supabase
+    .from('comment_messages').delete().eq('id', messageId);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath(`/client/${projectSlug}`);
+  revalidatePath(`/projects/${projectSlug}`);
+  return { ok: true };
+}
+
 /** Mark a single comment message as handled/clear (✓), or clear the
  *  mark. Shared state — both sides see it. */
 export async function setMessageAcknowledged(
