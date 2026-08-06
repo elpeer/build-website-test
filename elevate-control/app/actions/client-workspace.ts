@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { after } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import {
   notifyNewComment, notifyApprovalStatus, notifyNewTicket,
@@ -299,27 +300,30 @@ export async function postMessage(input: {
     .update({ updated_at: new Date().toISOString() })
     .eq('id', threadId);
 
-  // Email the other side
-  const { data: thread } = await supabase
-    .from('comment_threads')
-    .select('project_id, workspace, title, context_type')
-    .eq('id', threadId)
-    .single<{ project_id: string; workspace: string | null; title: string | null; context_type: string }>();
-  const { data: actor } = await supabase
-    .from('profiles').select('role').eq('id', user.id)
-    .single<{ role: string }>();
-
-  if (thread && actor) {
-    await notifyNewComment({
-      projectId: thread.project_id,
-      projectSlug: input.projectSlug,
-      workspace: thread.workspace,
-      authorIsClient: actor.role === 'client',
-      authorLabel: label ?? 'משתמש',
-      body: input.body,
-      threadTitle: thread.title,
-    });
-  }
+  // Email the other side AFTER the response is sent, so posting a
+  // comment isn't blocked on Resend's network round-trip.
+  const bodyForEmail = input.body;
+  after(async () => {
+    const { data: thread } = await supabase
+      .from('comment_threads')
+      .select('project_id, workspace, title, context_type')
+      .eq('id', threadId)
+      .single<{ project_id: string; workspace: string | null; title: string | null; context_type: string }>();
+    const { data: actor } = await supabase
+      .from('profiles').select('role').eq('id', user.id)
+      .single<{ role: string }>();
+    if (thread && actor) {
+      await notifyNewComment({
+        projectId: thread.project_id,
+        projectSlug: input.projectSlug,
+        workspace: thread.workspace,
+        authorIsClient: actor.role === 'client',
+        authorLabel: label ?? 'משתמש',
+        body: bodyForEmail,
+        threadTitle: thread.title,
+      });
+    }
+  });
 
   revalidatePath(`/client/${input.projectSlug}`);
   revalidatePath(`/projects/${input.projectSlug}`);
