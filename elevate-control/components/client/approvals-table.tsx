@@ -55,7 +55,7 @@ interface Props {
 }
 
 const STATUS_LABELS: Record<ApprovalStatus, string> = {
-  pending:           'ממתין',
+  pending:           'ממתין לפידבק לקוח',
   approved:          'אושר',
   changes_requested: 'תיקון',
   rejected:          'נדחה',
