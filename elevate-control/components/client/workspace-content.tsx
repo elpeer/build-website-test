@@ -123,6 +123,10 @@ async function fetchWorkspaceData(projectId: string, workspaceSlug: string) {
       body: m.body,
       attachments: Array.isArray(m.attachments) ? (m.attachments as unknown as CommentMessage['attachments']) : [],
       created_at: m.created_at,
+      reply_to_id: m.reply_to_id ?? null,
+      reply_to_author: m.reply_to_author ?? null,
+      reply_to_snippet: m.reply_to_snippet ?? null,
+      acknowledged_at: m.acknowledged_at ?? null,
     });
     messagesByThread.set(m.thread_id, arr);
   }
